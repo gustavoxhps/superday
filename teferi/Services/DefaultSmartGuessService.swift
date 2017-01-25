@@ -78,6 +78,7 @@ class DefaultSmartGuessService : SmartGuessService
     {
         let bestMatches = self.persistencyService.get()
             .filter(isWithinDistanceThreshold(from: location))
+            .filter(isSameWeekDay(from: location))
             .sorted(by: distance(from: location))
         
         guard bestMatches.count > 0 else { return nil }
@@ -121,6 +122,11 @@ class DefaultSmartGuessService : SmartGuessService
     {
         //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
         return { smartGuess in return smartGuess.location.distance(from: location) <= self.distanceThreshold }
+    }
+    
+    private func isSameWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
+    {
+        return { smartGuess in return Calendar.current.isDate(smartGuess.location.timestamp, inSameDayAs: location.timestamp)  }
     }
     
     private func distance(from location: CLLocation) -> (SmartGuess, SmartGuess) -> Bool
