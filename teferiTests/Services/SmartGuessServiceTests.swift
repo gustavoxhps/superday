@@ -10,6 +10,7 @@ class SmartGuessServiceTests : XCTestCase
     private var loggingService : MockLoggingService!
     private var settingsService : MockSettingsService!
     private var persistencyService : MockSmartGuessPersistencyService!
+    private let date = Date()
     
     private var smartGuessService : DefaultSmartGuessService!
     
@@ -27,15 +28,51 @@ class SmartGuessServiceTests : XCTestCase
                                                           persistencyService: self.persistencyService)
     }
     
+    func testGuessesAreFromSameWeekDayAsLocation()
+    {
+        self.persistencyService.smartGuesses =
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date.add(days: -1) ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date.add(days: -2) ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date.add(days: -3) ),
+               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure, date.add(days: -4) ),
+               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date.add(days: -5) ),
+               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure, date.add(days: -6) )]
+                .map(toLocation)
+                .map(toSmartGuess)
+        
+        let targetLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 41.9754219072948, longitude: -71.0230522245947), altitude: 1, horizontalAccuracy: 1, verticalAccuracy: 1, timestamp: date.add(days: -11))
+        
+        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let sameDay = smartGuess.location.timestamp.dayOfWeek == targetLocation.timestamp.dayOfWeek
+        
+        expect(sameDay).to(be(true))
+    }
+    
+    func testNoGuessesAreReturnedForWeekDayDifferentFromLocation()
+    {
+        self.persistencyService.smartGuesses =
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date.add(days: -1) ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date.add(days: -2) ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date.add(days: -3) )]
+                .map(toLocation)
+                .map(toSmartGuess)
+        
+        let targetLocation = CLLocation(coordinate: CLLocationCoordinate2D(latitude: 41.9754219072948, longitude: -71.0230522245947), altitude: 1, horizontalAccuracy: 1, verticalAccuracy: 1, timestamp: date.add(days: -11))
+        
+        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
+        
+        expect(smartGuess).to(beNil())
+    }
+    
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAway()
     {
         self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work ),
-               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure ),
-               ( 41.9754219072950, -71.0222522245947, teferi.Category.work ),
-               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure ) ]
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure, date ),
+               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date ),
+               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure, date ) ]
                 .map(toLocation)
                 .map(toSmartGuess)
         
@@ -49,11 +86,11 @@ class SmartGuessServiceTests : XCTestCase
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAwayEvenWithoutExtraGuessesHelpingTheWeight()
     {
         self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work ),
-               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure ),
-               ( 41.9754219072950, -71.0222522245947, teferi.Category.work ) ]
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure, date ),
+               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date ) ]
                 .map(toLocation)
                 .map(toSmartGuess)
         
@@ -67,11 +104,11 @@ class SmartGuessServiceTests : XCTestCase
     func testTheAmountOfGuessesInTheSameCategoryShouldMatterWhenComparingSimilarlyDistantGuessesEvenIfTheOutnumberedGuessIsCloser()
     {
         self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work ),
-               ( 41.9754219072950, -71.0222522245947, teferi.Category.work ),
-               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure ) ]
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date ),
+               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure, date ) ]
                 .map(toLocation)
                 .map(toSmartGuess)
         
@@ -85,12 +122,12 @@ class SmartGuessServiceTests : XCTestCase
     func testTheAmountOfGuessesInTheSameCategoryShouldMatterWhenComparingSimilarlyDistantGuesses()
     {
         self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work ),
-               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure ),
-               ( 41.9754219072950, -71.0222522245947, teferi.Category.work ),
-               ( 41.9754219072948, -71.0230522245947, teferi.Category.leisure ) ]
+            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
+               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date ),
+               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure, date ),
+               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date ),
+               ( 41.9754219072948, -71.0230522245947, teferi.Category.leisure, date ) ]
                 .map(toLocation)
                 .map(toSmartGuess)
         
@@ -101,9 +138,14 @@ class SmartGuessServiceTests : XCTestCase
         expect(smartGuess.category).to(equal(teferi.Category.work))
     }
     
-    private func toLocation(latLngCategory: (Double, Double, teferi.Category)) -> (CLLocation, teferi.Category)
+    private func toLocation(latLngCategory: (Double, Double, teferi.Category, Date)) -> (CLLocation, teferi.Category)
     {
-        return (CLLocation(latitude: latLngCategory.0, longitude: latLngCategory.1), latLngCategory.2)
+        return (CLLocation(coordinate: CLLocationCoordinate2D(latitude: latLngCategory.0, longitude: latLngCategory.1),
+                           altitude: 0,
+                           horizontalAccuracy: 1,
+                           verticalAccuracy: 1,
+                           timestamp: latLngCategory.3),
+                latLngCategory.2)
     }
     
     private func toSmartGuess(locationAndCategory: (CLLocation, teferi.Category)) -> SmartGuess
