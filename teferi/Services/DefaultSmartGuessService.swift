@@ -126,7 +126,7 @@ class DefaultSmartGuessService : SmartGuessService
     
     private func isSameWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
     {
-        return { smartGuess in return Calendar.current.isDate(smartGuess.location.timestamp, inSameDayAs: location.timestamp)  }
+        return { smartGuess in return smartGuess.location.timestamp.dayOfWeek == location.timestamp.dayOfWeek  }
     }
     
     private func distance(from location: CLLocation) -> (SmartGuess, SmartGuess) -> Bool
