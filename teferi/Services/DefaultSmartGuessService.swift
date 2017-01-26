@@ -7,6 +7,7 @@ class DefaultSmartGuessService : SmartGuessService
     
     //MARK: Fields
     private let distanceThreshold = 100.0
+    private let timeThreshold : TimeInterval = 5*60*60 //5h
     private let smartGuessErrorThreshold = 3
     private let smartGuessIdKey = "smartGuessId"
     
@@ -78,17 +79,14 @@ class DefaultSmartGuessService : SmartGuessService
     {
         let bestMatches = self.persistencyService.get()
             .filter(isWithinDistanceThreshold(from: location))
-            .filter(isSameWeekDay(from: location))
-            .sorted(by: distance(from: location))
+            .filter(isWithinTimeThresholdInNearByWeekDay(from: location))
         
         guard bestMatches.count > 0 else { return nil }
-        
-        let minimumDistance = bestMatches.first!.location.distance(from: location)
         
         guard let bestMatch =
             bestMatches
                 .groupBy(category)
-                .map(toWeightedDistance(from: location, withMinimumDistance: minimumDistance))
+                .map(toWeightedDistance(from: location))
                 .sorted(by: weight)
                 .first?.smartGuess else { return nil }
         
@@ -124,9 +122,20 @@ class DefaultSmartGuessService : SmartGuessService
         return { smartGuess in return smartGuess.location.distance(from: location) <= self.distanceThreshold }
     }
     
-    private func isSameWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
+    private func isWithinTimeThresholdInNearByWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
     {
-        return { smartGuess in return smartGuess.location.timestamp.dayOfWeek == location.timestamp.dayOfWeek  }
+        return { smartGuess in
+            
+            let smartGuessTimestamp = smartGuess.location.timestamp
+            let locationTimestamp = location.timestamp
+            
+            return abs(smartGuessTimestamp.timeIntervalBasedOnWeekDaySince(locationTimestamp)) <= self.timeThreshold
+        }
+    }
+    
+    private func timeDifference(from location: CLLocation) -> (SmartGuess, SmartGuess) -> Bool
+    {
+        return { (smartGuess1, smartGuess2) in abs(smartGuess1.location.timestamp.timeIntervalBasedOnWeekDaySince(location.timestamp)) > abs(smartGuess2.location.timestamp.timeIntervalBasedOnWeekDaySince(location.timestamp))  }
     }
     
     private func distance(from location: CLLocation) -> (SmartGuess, SmartGuess) -> Bool
@@ -139,27 +148,31 @@ class DefaultSmartGuessService : SmartGuessService
         return smartGuess.category
     }
     
-    private func toWeightedDistance(from location: CLLocation, withMinimumDistance minimumDistance: Double) ->
+    private func toWeightedDistance(from location: CLLocation) ->
         ([SmartGuess]) -> WeightedGuess
     {
         return { smartGuesses in
             
-            let weight = smartGuesses.reduce(0.0, self.weightedSumOfDistances(from: location, withMinimumDistance: minimumDistance))
-        
+            let weight = smartGuesses.reduce(0.0, self.weightedSumOfDistances(from: location))
+            
             return (smartGuesses.first!, weight: weight)
         }
     }
     
-    private func weightedSumOfDistances(from location: CLLocation, withMinimumDistance minimumDistance: Double) ->
+    private func weightedSumOfDistances(from location: CLLocation) ->
         (_ accumulator: Double, _ smartGuess: SmartGuess) -> Double
     {
-        let divideConstant = self.distanceThreshold - minimumDistance
-        
         return { (accumulator, smartGuess) in
             
+            let timeDifference = abs(location.timestamp.timeIntervalBasedOnWeekDaySince(smartGuess.location.timestamp))
+            let timeDifferenceWeight = (self.timeThreshold - timeDifference) / self.timeThreshold
+            
             let distance = smartGuess.location.distance(from: location)
-            let weight = (self.distanceThreshold - distance) / divideConstant
-            return accumulator + pow(weight, 2)
+            let distanceWeight = (self.distanceThreshold - distance) / self.distanceThreshold
+            
+            let combinedWeights = (distanceWeight + timeDifferenceWeight) / 2
+            
+            return accumulator + pow(combinedWeights, 2)
         }
     }
     
