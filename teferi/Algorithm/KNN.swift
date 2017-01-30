@@ -5,9 +5,13 @@ class KNN
     private typealias InstanceAndDistance = (instance: KNNInstance, distance: Double)
     private typealias customDistance = (KNNInstance, KNNInstance) -> Double
     
-    class func prediction(for testInstance: KNNInstance, usingK k: Int? = nil, with dataset: [KNNInstance], customDistance distance: customDistance) -> KNNInstance?
+    class func prediction(for testInstance: KNNInstance, usingK k: Int, with dataset: [KNNInstance], customDistance distance: customDistance) -> KNNInstance?
     {
-        let neighbors = getNeighbors(in: dataset, for: testInstance, withK: k ?? 1, customDistance: distance)
+        guard k > 0 else { return nil }
+        
+        guard dataset.count > 0 else { return nil }
+        
+        let neighbors = getNeighbors(in: dataset, for: testInstance, withK: k, customDistance: distance)
         let result = getResponse(neighbors: neighbors)
         
         return result
