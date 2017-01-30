@@ -144,6 +144,10 @@
 		7E3C069A1E30B7CA00859747 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C06971E30B7CA00859747 /* Storyboards.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
+		AC1E70F31E3F4C670090D474 /* KNNInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F21E3F4C670090D474 /* KNNInstance.swift */; };
+		AC1E70F51E3F4D1E0090D474 /* SmartGuessExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F41E3F4D1E0090D474 /* SmartGuessExtensions.swift */; };
+		AC1E70F71E3F792E0090D474 /* KNNAttributeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F61E3F792E0090D474 /* KNNAttributeType.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -334,6 +338,10 @@
 		7E3C06961E30B7CA00859747 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Strings.swift; path = Generated/Strings.swift; sourceTree = "<group>"; };
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
+		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
+		AC1E70F21E3F4C670090D474 /* KNNInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNInstance.swift; path = Algorithm/KNNInstance.swift; sourceTree = "<group>"; };
+		AC1E70F41E3F4D1E0090D474 /* SmartGuessExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SmartGuessExtensions.swift; path = Extensions/SmartGuessExtensions.swift; sourceTree = "<group>"; };
+		AC1E70F61E3F792E0090D474 /* KNNAttributeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNAttributeType.swift; path = Algorithm/KNNAttributeType.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -403,6 +411,7 @@
 		240AC7161D748C8800F21F4F /* teferi */ = {
 			isa = PBXGroup;
 			children = (
+				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
 				51899C391DED953000633D82 /* Styles */,
 				24CD8A461D7A13560017C53E /* Extensions */,
@@ -558,6 +567,7 @@
 				24564F621D83265900D9A8AE /* DateExtensions.swift */,
 				51EAA2871DC0BA910025680D /* UIViewExtensions.swift */,
 				51DB18751E26144F00E0182D /* CLLocationExtensions.swift */,
+				AC1E70F41E3F4D1E0090D474 /* SmartGuessExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -819,6 +829,16 @@
 				7E3C06971E30B7CA00859747 /* Storyboards.swift */,
 			);
 			name = Generated;
+			sourceTree = "<group>";
+		};
+		AC1E70EF1E3F4C120090D474 /* Algorithm */ = {
+			isa = PBXGroup;
+			children = (
+				AC1E70F61E3F792E0090D474 /* KNNAttributeType.swift */,
+				AC1E70F21E3F4C670090D474 /* KNNInstance.swift */,
+				AC1E70F01E3F4C490090D474 /* KNN.swift */,
+			);
+			name = Algorithm;
 			sourceTree = "<group>";
 		};
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
@@ -1126,6 +1146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2416B2811E27B8CC00CE283B /* TopBarViewController.swift in Sources */,
+				AC1E70F51E3F4D1E0090D474 /* SmartGuessExtensions.swift in Sources */,
 				24EB96741DE7080F0040C211 /* DefaultTrackingService.swift in Sources */,
 				24EB96791DE7080F0040C211 /* CoreDataModelAdapter.swift in Sources */,
 				24564F651D83265900D9A8AE /* DateExtensions.swift in Sources */,
@@ -1137,6 +1158,7 @@
 				24EB96751DE7080F0040C211 /* EditStateService.swift in Sources */,
 				24DE23F51E1BB33B0089B49E /* Activity.swift in Sources */,
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
+				AC1E70F31E3F4C670090D474 /* KNNInstance.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
 				51899C3B1DED954A00633D82 /* Color.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
@@ -1167,9 +1189,11 @@
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
 				2420A86A1DB6271000C0478C /* EditTimeSlotView.swift in Sources */,
 				24B03B651DA3864500452D16 /* AddTimeSlotView.swift in Sources */,
+				AC1E70F71E3F792E0090D474 /* KNNAttributeType.swift in Sources */,
 				2421F8C31D9BACB500AF8857 /* ClosureGestureRecognizer.swift in Sources */,
 				24DE23EE1E1BB3180089B49E /* CalendarDailyActivityView.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
+				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,
 				2482CAFC1DB12F9F00E892C1 /* OnboardingPage2.swift in Sources */,
 				24564F521D8320FC00D9A8AE /* TimelineViewController.swift in Sources */,
