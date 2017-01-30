@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -94,6 +94,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="599"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tx9-mT-IJt" userLabel="CalendarBackgroundView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="298"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="298" id="fsZ-Gh-krj"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zbj-TW-Dk2" userLabel="SemiTransparentView">
+                                <rect key="frame" x="0.0" y="298" width="375" height="301"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.80000000000000004" colorSpace="calibratedRGB"/>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="July 2016" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6jf-tP-iE3">
                                 <rect key="frame" x="151" y="19" width="74" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -184,9 +195,16 @@
                             <constraint firstItem="P1q-Pj-kdM" firstAttribute="top" secondItem="Ik7-d5-Fp7" secondAttribute="bottom" constant="10" id="Fbl-mO-ySS"/>
                             <constraint firstItem="6jf-tP-iE3" firstAttribute="centerX" secondItem="DFp-AB-6Sb" secondAttribute="centerX" id="J75-pR-fK0"/>
                             <constraint firstItem="Ik7-d5-Fp7" firstAttribute="width" secondItem="P1q-Pj-kdM" secondAttribute="width" id="KYO-GT-yKz"/>
+                            <constraint firstAttribute="trailing" secondItem="zbj-TW-Dk2" secondAttribute="trailing" id="Lvd-YM-3fl"/>
+                            <constraint firstItem="zbj-TW-Dk2" firstAttribute="leading" secondItem="DFp-AB-6Sb" secondAttribute="leading" id="MqP-4w-SN5"/>
+                            <constraint firstItem="zbj-TW-Dk2" firstAttribute="top" secondItem="tx9-mT-IJt" secondAttribute="bottom" id="N7z-bG-J4g"/>
                             <constraint firstItem="Ik7-d5-Fp7" firstAttribute="centerX" secondItem="DFp-AB-6Sb" secondAttribute="centerX" id="Pdt-2F-gvB"/>
+                            <constraint firstItem="tx9-mT-IJt" firstAttribute="top" secondItem="Cyd-UW-VYs" secondAttribute="bottom" id="aut-SH-HS2"/>
+                            <constraint firstItem="tx9-mT-IJt" firstAttribute="leading" secondItem="DFp-AB-6Sb" secondAttribute="leading" id="bbf-fy-HWJ"/>
                             <constraint firstItem="P1q-Pj-kdM" firstAttribute="centerX" secondItem="6jf-tP-iE3" secondAttribute="centerX" id="fLZ-D9-eAl"/>
                             <constraint firstItem="6jf-tP-iE3" firstAttribute="top" secondItem="Cyd-UW-VYs" secondAttribute="bottom" constant="19" id="h93-Rz-N5Q"/>
+                            <constraint firstItem="pGT-TS-34v" firstAttribute="top" secondItem="zbj-TW-Dk2" secondAttribute="bottom" id="hSq-69-tRA"/>
+                            <constraint firstAttribute="trailing" secondItem="tx9-mT-IJt" secondAttribute="trailing" id="lEn-MK-JVU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="P1q-Pj-kdM" secondAttribute="trailing" id="u5j-Xs-4rb"/>
                             <constraint firstAttribute="leadingMargin" secondItem="P1q-Pj-kdM" secondAttribute="leading" id="vel-aV-nA5"/>
                         </constraints>
@@ -195,6 +213,7 @@
                         </connections>
                     </view>
                     <connections>
+                        <outlet property="calendarHeightConstraint" destination="fsZ-Gh-krj" id="BRe-cq-AHJ"/>
                         <outlet property="calendarView" destination="P1q-Pj-kdM" id="pJ2-x8-kri"/>
                         <outlet property="dayOfWeekLabels" destination="Ik7-d5-Fp7" id="MCX-hh-XH3"/>
                         <outlet property="leftButton" destination="knj-9u-WUa" id="efc-Wq-pZF"/>
@@ -209,12 +228,16 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="260" y="1027"/>
+            <point key="canvasLocation" x="260" y="1026.8365817091455"/>
         </scene>
         <!--Top Bar View Controller-->
         <scene sceneID="Vyj-Xc-gnZ">
             <objects>
                 <viewController id="eTa-7N-qSX" customClass="TopBarViewController" customModule="teferi" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Fk1-SY-Zob"/>
+                        <viewControllerLayoutGuide type="bottom" id="ijI-eT-75H"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="iHQ-6M-pJq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -60,4 +60,23 @@ enum Category : String
             return .icCancel
         }
     }
+    
+    var name:String
+    {
+        switch(self)
+        {
+        case .friends:
+            return L10n.friends
+        case .work:
+            return L10n.work
+        case .leisure:
+            return L10n.leisure
+        case .commute:
+            return L10n.commute
+        case .food:
+            return L10n.food
+        case .unknown:
+            return L10n.unknown
+        }
+    }
 }

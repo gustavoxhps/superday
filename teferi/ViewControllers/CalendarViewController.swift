@@ -12,6 +12,7 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     @IBOutlet weak private var rightButton : UIButton!
     @IBOutlet weak private var dayOfWeekLabels : UIStackView!
     @IBOutlet weak private var calendarView : JTAppleCalendarView!
+    @IBOutlet weak private var calendarHeightConstraint : NSLayoutConstraint!
     
     private lazy var viewsToAnimate : [ UIView ] =
     {
@@ -24,7 +25,6 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         ]
     }()
     
-    private var layer = CAGradientLayer()
     private var disposeBag = DisposeBag()
     private var viewModel : CalendarViewModel!
     private var calendarCellsShouldAnimate = false
@@ -40,22 +40,7 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        
-        let layerWhiteFadePoint = Float(self.calendarView.frame.maxY / UIScreen.main.bounds.height)
-        
-        self.layer.frame = self.view.frame
-        self.layer.colors = [ Color.white.cgColor,
-                              Color.white.cgColor,
-                              Color.white.withAlphaComponent(0.5).cgColor,
-                              Color.white.withAlphaComponent(0.5).cgColor]
-        
-        self.layer.locations = [0.0,
-                                NSNumber(value: layerWhiteFadePoint),
-                                NSNumber(value: layerWhiteFadePoint + 0.001),
-                                1.0]
-        
-        self.view.layer.insertSublayer(layer, at: 0)
-        
+                
         //Configures the calendar
         self.calendarView.dataSource = self
         self.calendarView.delegate = self
@@ -99,13 +84,15 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     {
         guard !self.isVisible else { return }
         
-        self.slideCalendarCells()
+        self.calendarCellsShouldAnimate = true
+        self.calendarView.reloadData()
         
         DelayedSequence
             .start()
             .then(self.fadeOverlay(fadeIn: true))
             .after(0.105, self.fadeElements(fadeIn: true))
             .then(self.toggleInteraction(enable: true))
+            .then(dissableCalendarCellAnimation())
     }
     
     //MARK: Animations
@@ -130,11 +117,14 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         }
     }
     
-    private func slideCalendarCells()
+    private func dissableCalendarCellAnimation() -> (Double) -> ()
     {
-        self.calendarCellsShouldAnimate = true
-        self.calendarView.reloadData()
-        DispatchQueue.main.async { self.calendarCellsShouldAnimate = false }
+        return { delay in
+            Timer.schedule(withDelay: delay)
+            {
+                self.calendarCellsShouldAnimate = false
+            }
+        }
     }
     
     private func toggleInteraction(enable: Bool) -> (Double) -> ()
@@ -162,13 +152,11 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     }
     
     private func onCurrentCalendarDateChanged(_ date: Date)
-    {
-        let layerWhiteFadePoint = self.calculateWhiteFadePoint(forDate: date)
-        
-        self.layer.locations = [0.0,
-                                NSNumber(value: layerWhiteFadePoint),
-                                NSNumber(value: layerWhiteFadePoint + 0.001),
-                                1.0]
+    {        
+        self.calendarHeightConstraint.constant = self.calculateCalendarHeight(forDate: date)
+        UIView.animate(withDuration: 0.15) {
+            self.view.layoutIfNeeded()
+        }
         
         self.monthLabel.attributedText = self.getHeaderName(forDate: date)
         
@@ -182,7 +170,7 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         self.hide()
     }
     
-    private func calculateWhiteFadePoint(forDate date: Date) -> Float
+    private func calculateCalendarHeight(forDate date: Date) -> CGFloat
     {
         let startDay = (date.dayOfWeek + 6) % 7
         let daysInMonth = date.daysInMonth
@@ -190,7 +178,9 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         
         if (startDay + daysInMonth) % 7 != 0 { numberOfRows += 1 }
         
-        return Float(CGFloat(140 + 39 * numberOfRows) / UIScreen.main.bounds.height)
+        let cellHeight = self.calendarView.bounds.height / 6
+                
+        return self.calendarView.frame.origin.y + cellHeight * CGFloat(numberOfRows)
     }
     
     private func getHeaderName(forDate date: Date) -> NSMutableAttributedString

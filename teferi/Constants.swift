@@ -4,7 +4,7 @@ import CoreGraphics
 class Constants
 {
     ///All possible categories
-    static let categories : [Category] =  [ .commute, .food, .friends, .work, .leisure ]
+    static let categories : [Category] =  [ .commute, .food, .friends, .work, .leisure, .unknown ]
     
     ///Minimum size of the cosmetic line that appears on a TimeSlot cell.
     static let minLineSize = 12

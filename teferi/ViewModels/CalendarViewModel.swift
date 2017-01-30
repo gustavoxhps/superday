@@ -64,7 +64,6 @@ class CalendarViewModel
         let result =
             self.timeSlotService
                 .getTimeSlots(forDay: date)
-                .filter(categoryIsSet)
                 .groupBy(category)
                 .map(toActivity)
                 .sorted(by: category)

@@ -12,6 +12,7 @@ class CalendarCell : JTAppleDayCellView
     func reset(allowScrollingToDate: Bool)
     {
         self.clipsToBounds = true
+        self.backgroundColor = UIColor.clear
         self.backgroundView.layer.cornerRadius = 0
         self.backgroundView.backgroundColor = UIColor.clear
         self.isUserInteractionEnabled = allowScrollingToDate
