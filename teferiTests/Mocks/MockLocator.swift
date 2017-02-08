@@ -46,7 +46,6 @@ class MockLocator : ViewModelLocator
     {
         return TimelineViewModel(date: date,
                                  timeService: self.timeService,
-                                 metricsService: self.metricsService,
                                  appStateService: self.appStateService,
                                  timeSlotService: self.timeSlotService,
                                  editStateService: self.editStateService)

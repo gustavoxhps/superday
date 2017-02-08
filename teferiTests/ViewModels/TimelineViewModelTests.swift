@@ -25,7 +25,6 @@ class TimelineViewModelTests : XCTestCase
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
-                                           metricsService: self.metricsService,
                                            appStateService: self.appStateService,
                                            timeSlotService: self.timeSlotService,
                                            editStateService: self.editStateService)
@@ -41,7 +40,6 @@ class TimelineViewModelTests : XCTestCase
         let newMockTimeSlotService = MockTimeSlotService(timeService: self.timeService)
         _ = TimelineViewModel(date: Date().yesterday,
                               timeService: self.timeService,
-                              metricsService: self.metricsService,
                               appStateService: self.appStateService,
                               timeSlotService: newMockTimeSlotService,
                               editStateService: self.editStateService)
@@ -108,7 +106,6 @@ class TimelineViewModelTests : XCTestCase
      
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
-                                           metricsService: self.metricsService,
                                            appStateService: self.appStateService,
                                            timeSlotService: self.timeSlotService,
                                            editStateService: self.editStateService)

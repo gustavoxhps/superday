@@ -9,14 +9,44 @@ class TimelineViewModel
     private let disposeBag = DisposeBag()
     
     private let timeService : TimeService
-    private let metricsService : MetricsService
     private let appStateService : AppStateService
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
     
+    //MARK: Initializers
+    init(date: Date,
+         timeService: TimeService,
+         appStateService: AppStateService,
+         timeSlotService: TimeSlotService,
+         editStateService: EditStateService)
+    {
+        self.timeService = timeService
+        self.appStateService = appStateService
+        self.timeSlotService = timeSlotService
+        self.editStateService = editStateService
+        
+        self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
+        self.date = date.ignoreTimeComponents()
+        
+        self.timeObservable =
+            self.isCurrentDay ?
+                Observable<Int>.timer(0, period: 10, scheduler: MainScheduler.instance) :
+            Observable.empty()
+    }
+    
+    func notifyEditingBegan(point: CGPoint, index: Int)
+    {
+        self.editStateService
+            .notifyEditingBegan(point: point,
+                                timeSlot: self.timelineItems[index].timeSlot)
+    }
+    
     //MARK: Properties
     let date : Date
     let timeObservable : Observable<Int>
+    
+    var currentDay : Date { return self.timeService.now }
+    var isEditingObservable : Observable<Bool> { return self.editStateService.isEditingObservable }
     
     private(set) lazy var timeSlotCreatedObservable : Observable<Int> =
     {
@@ -62,41 +92,7 @@ class TimelineViewModel
         return timelineItems
     }()
     
-    var currentDay : Date { return self.timeService.now }
-    var isEditingObservable : Observable<Bool> { return self.editStateService.isEditingObservable }
-    
-    //MARK: Initializers
-    init(date: Date,
-         timeService: TimeService,
-         metricsService : MetricsService,
-         appStateService: AppStateService,
-         timeSlotService: TimeSlotService,
-         editStateService: EditStateService)
-    {
-        self.timeService = timeService
-        self.metricsService = metricsService
-        self.appStateService = appStateService
-        self.timeSlotService = timeSlotService
-        self.editStateService = editStateService
-        
-        self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
-        self.date = date.ignoreTimeComponents()
-        
-        self.timeObservable =
-            self.isCurrentDay ?
-                Observable<Int>.timer(0, period: 10, scheduler: MainScheduler.instance) :
-                Observable.empty()
-    }
-    
-    func notifyEditingBegan(point: CGPoint, index: Int)
-    {
-        self.editStateService
-            .notifyEditingBegan(point: point,
-                                timeSlot: self.timelineItems[index].timeSlot)
-    }
-    
     //MARK: Methods
-
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
     {
         return self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)

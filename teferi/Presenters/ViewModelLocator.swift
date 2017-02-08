@@ -53,14 +53,14 @@ class DefaultViewModelLocator : ViewModelLocator
     func getMainViewModel() -> MainViewModel
     {
         let viewModel = MainViewModel(timeService: self.timeService,
-                             metricsService: self.metricsService,
-                             appStateService: self.appStateService,
-                             settingsService: self.settingsService,
-                             timeSlotService: self.timeSlotService,
-                             locationService: self.locationService,
-                             editStateService: self.editStateService,
-                             smartGuessService: self.smartGuessService,
-                             selectedDateService: self.selectedDateService)
+                                      metricsService: self.metricsService,
+                                      appStateService: self.appStateService,
+                                      settingsService: self.settingsService,
+                                      timeSlotService: self.timeSlotService,
+                                      locationService: self.locationService,
+                                      editStateService: self.editStateService,
+                                      smartGuessService: self.smartGuessService,
+                                      selectedDateService: self.selectedDateService)
         
         return viewModel
     }
@@ -79,7 +79,6 @@ class DefaultViewModelLocator : ViewModelLocator
     {
         let viewModel = TimelineViewModel(date: date,
                                           timeService: self.timeService,
-                                          metricsService: self.metricsService,
                                           appStateService: self.appStateService,
                                           timeSlotService: self.timeSlotService,
                                           editStateService: self.editStateService)
