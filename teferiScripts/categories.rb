@@ -2,7 +2,7 @@ require 'json'
 
 currentPath = File.dirname(__FILE__)
 sourcePath = currentPath + "/categories.json"
-destinationPath = currentPath + "/Generated/Category.swift"
+destinationPath = File.expand_path("../teferi/Generated/Category.swift", currentPath)
 
 sourceFile = File.read(sourcePath)
 categories = JSON.parse(sourceFile).map { | c | c[0] }
