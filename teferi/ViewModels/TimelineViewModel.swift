@@ -110,51 +110,14 @@ class TimelineViewModel
     
     private func toTimelineItemIndex(_ timeSlot: TimeSlot) -> Int
     {
-        let previousIndex = self.timelineItems.count - 1
-        
-        let previousTimelineItem = self.timelineItems.safeGetElement(at: previousIndex)
-        let shouldDisplayCategory = TimelineViewModel.shouldDisplay(currentTimeSlot: timeSlot,
-                                                                    otherTimeSlot: previousTimelineItem?.timeSlot)
-        
-        var durations = [ self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot) ]
-        
-        if let slotToRecalculate = previousTimelineItem?.timeSlot, let previousDurations = previousTimelineItem?.durations
+        if let lastTimeSlot = self.timelineItems.last?.timeSlot
         {
-            slotToRecalculate.endTime = self.timeService.now
-            
-            let shouldDisplayDuration = TimelineViewModel.shouldDisplay(currentTimeSlot: slotToRecalculate,
-                                                                        otherTimeSlot: timeSlot)
-            
-            let recalculatedDuration : [ TimeInterval ]
-            if shouldDisplayDuration
-            {
-                recalculatedDuration = previousDurations
-            }
-            else
-            {
-                recalculatedDuration = []
-                durations = (previousDurations + durations)
-            }
-            
-            let otherTimeSlot = self.timelineItems.safeGetElement(at: previousIndex - 1)?.timeSlot
-            
-            let shouldDisplayPreviousCategory = TimelineViewModel.shouldDisplay(currentTimeSlot: slotToRecalculate,
-                                                                                otherTimeSlot: otherTimeSlot)
-            
-            self.timelineItems[previousIndex] = TimelineItem(timeSlot: slotToRecalculate,
-                                                             durations: recalculatedDuration,
-                                                             lastInPastDay: false,
-                                                             shouldDisplayCategoryName: shouldDisplayPreviousCategory)
+            lastTimeSlot.endTime = Date()
         }
         
-        
-        let timelineItem = TimelineItem(timeSlot: timeSlot,
-                                        durations: durations,
-                                        lastInPastDay: false,
-                                        shouldDisplayCategoryName: shouldDisplayCategory)
-        
-        self.timelineItems.append(timelineItem)
-        
+        let timeSlots = self.timelineItems.map { return $0.timeSlot } + [ timeSlot ]
+        self.timelineItems = self.getTimelineItems(fromTimeSlots: timeSlots)
+
         return self.timelineItems.count - 1
     }
     
@@ -169,50 +132,31 @@ class TimelineViewModel
     private func getTimelineItems(fromTimeSlots timeSlots: [TimeSlot]) -> [TimelineItem]
     {
         let count = timeSlots.count
-        var timelineItems = [TimelineItem]()
-        var previousTimeSlot : TimeSlot? = nil
-        var accumulatedDurations = [ TimeInterval ]()
         
-        for (index, timeSlot) in timeSlots.enumerated()
-        {
-            let nextIndex = index + 1
-            let nextTimeSlot = timeSlots.safeGetElement(at: nextIndex)
-            
-            let shouldDisplayCategory = TimelineViewModel.shouldDisplay(currentTimeSlot: timeSlot,
-                                                           otherTimeSlot: previousTimeSlot)
-            
-            let shouldDisplayDuration = TimelineViewModel.shouldDisplay(currentTimeSlot: timeSlot,
-                                                           otherTimeSlot: nextTimeSlot)
-
-            
-            accumulatedDurations.append(self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot))
-            let durations : [ TimeInterval ]
-            
-            if shouldDisplayDuration
-            {
-                durations = accumulatedDurations
-                accumulatedDurations = []
-            }
-            else
-            {
-                durations = []
-            }
-            
-            timelineItems.append(TimelineItem(timeSlot: timeSlot,
-                                              durations: durations,
-                                              lastInPastDay: self.isLastInPastDay(index, count: count),
-                                              shouldDisplayCategoryName: shouldDisplayCategory))
-            
-            previousTimeSlot = timeSlot
+        return timeSlots
+            .enumerated()
+            .reduce([TimelineItem]()) { accumulated, enumerated in
+                
+                let timeSlot = enumerated.element
+                let n = enumerated.offset
+                
+                if let last = accumulated.last, last.timeSlot.category == timeSlot.category
+                {
+                    return accumulated.dropLast() + [
+                        last.withoutDurations(),
+                        TimelineItem(timeSlot: timeSlot,
+                                     durations: last.durations + [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
+                                     lastInPastDay: self.isLastInPastDay(n, count: count),
+                                     shouldDisplayCategoryName: false)
+                    ]
+                }
+                
+                return accumulated + [
+                    TimelineItem(timeSlot: timeSlot,
+                                 durations: [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
+                                 lastInPastDay: self.isLastInPastDay(n, count: count),
+                                 shouldDisplayCategoryName: true)
+                ]
         }
-        
-        return timelineItems
-    }
-    
-    private static func shouldDisplay(currentTimeSlot: TimeSlot, otherTimeSlot: TimeSlot?) -> Bool
-    {
-        guard let previous = otherTimeSlot else { return true }
-        
-        return previous.category != currentTimeSlot.category
     }
 }
