@@ -24,8 +24,6 @@ class MockLocator : ViewModelLocator
     {
         return MainViewModel(timeService: self.timeService,
                              metricsService: self.metricsService,
-                             appStateService: self.appStateService,
-                             settingsService: self.settingsService,
                              timeSlotService: self.timeSlotService,
                              locationService: self.locationService,
                              editStateService: self.editStateService,
@@ -49,6 +47,15 @@ class MockLocator : ViewModelLocator
                                  appStateService: self.appStateService,
                                  timeSlotService: self.timeSlotService,
                                  editStateService: self.editStateService)
+    }
+    
+    func getPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = PermissionViewModel(timeService: self.timeService,
+                                            appStateService: self.appStateService,
+                                            settingsService: self.settingsService)
+        
+        return viewModel
     }
     
     func getCalendarViewModel() -> CalendarViewModel

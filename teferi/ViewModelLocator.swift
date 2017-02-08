@@ -9,6 +9,8 @@ protocol ViewModelLocator
     
     func getPagerViewModel() -> PagerViewModel
     
+    func getPermissionViewModel() -> PermissionViewModel
+    
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
     
     func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
@@ -54,14 +56,11 @@ class DefaultViewModelLocator : ViewModelLocator
     {
         let viewModel = MainViewModel(timeService: self.timeService,
                                       metricsService: self.metricsService,
-                                      appStateService: self.appStateService,
-                                      settingsService: self.settingsService,
                                       timeSlotService: self.timeSlotService,
                                       locationService: self.locationService,
                                       editStateService: self.editStateService,
                                       smartGuessService: self.smartGuessService,
                                       selectedDateService: self.selectedDateService)
-        
         return viewModel
     }
     
@@ -82,6 +81,15 @@ class DefaultViewModelLocator : ViewModelLocator
                                           appStateService: self.appStateService,
                                           timeSlotService: self.timeSlotService,
                                           editStateService: self.editStateService)
+        return viewModel
+    }
+    
+    func getPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = PermissionViewModel(timeService: self.timeService,
+                                            appStateService: self.appStateService,
+                                            settingsService: self.settingsService)
+        
         return viewModel
     }
     

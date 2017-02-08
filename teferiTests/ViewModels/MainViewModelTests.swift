@@ -35,8 +35,6 @@ class MainViewModelTests : XCTestCase
         
         self.viewModel = MainViewModel(timeService: self.timeService,
                                        metricsService: self.metricsService,
-                                       appStateService: self.appStateService,
-                                       settingsService: self.settingsService,
                                        timeSlotService: self.timeSlotService,
                                        locationService: self.locationService,
                                        editStateService: self.editStateService,
@@ -96,57 +94,6 @@ class MainViewModelTests : XCTestCase
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(editingEnded).to(beTrue())
-    }
-    
-    func testThePermissionStateShouldNotBeShownIfTheUserHasAlreadyAuthorized()
-    {
-        self.settingsService.hasLocationPermission = true
-        
-        var wouldShow : Bool? = nil
-        self.disposable = self.viewModel
-            .overlayStateObservable
-            .subscribe(onNext:  { shouldShow in wouldShow = shouldShow })
-        
-        expect(wouldShow).to(beFalse())
-    }
-    
-    func testIfThePermissionOverlayWasNeverShownItNeedsToBeShown()
-    {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = nil
-        
-        var wouldShow : Bool? = nil
-        self.disposable = self.viewModel
-            .overlayStateObservable
-            .subscribe(onNext: { shouldShow in wouldShow = shouldShow })
-        
-        expect(wouldShow).to(beTrue())
-    }
-    
-    func testThePermissionStateShouldBeShownIfItWasNotShownForOver24Hours()
-    {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = Date().add(days: -2)
-        
-        var wouldShow : Bool? = nil
-        self.disposable = self.viewModel
-            .overlayStateObservable
-            .subscribe(onNext:  { shouldShow in wouldShow = shouldShow })
-        
-        expect(wouldShow).to(beTrue())
-    }
-    
-    func testThePermissionStateShouldNotBeShownIfItWasLastShownInTheLast24Hours()
-    {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = Date().ignoreTimeComponents()
-        
-        var wouldShow : Bool? = nil
-        self.disposable = self.viewModel
-            .overlayStateObservable
-            .subscribe(onNext:  { shouldShow in wouldShow = shouldShow })
-        
-        expect(wouldShow).to(beFalse())
     }
     
     func testSmartGuessIsAddedIfLocationServiceReturnsKnownLastLocationOnAddNewSlot()

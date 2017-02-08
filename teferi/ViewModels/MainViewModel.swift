@@ -7,17 +7,13 @@ class MainViewModel
     // MARK: Fields
     private let timeService : TimeService
     private let metricsService : MetricsService
-    private let appStateService : AppStateService
     private let timeSlotService : TimeSlotService
-    private let settingsService : SettingsService
     private let locationService : LocationService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
     
     init(timeService: TimeService,
          metricsService: MetricsService,
-         appStateService: AppStateService,
-         settingsService: SettingsService,
          timeSlotService: TimeSlotService,
          locationService : LocationService,
          editStateService: EditStateService,
@@ -26,8 +22,6 @@ class MainViewModel
     {
         self.timeService = timeService
         self.metricsService = metricsService
-        self.appStateService = appStateService
-        self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.locationService = locationService
         self.editStateService = editStateService
@@ -49,31 +43,8 @@ class MainViewModel
     let isEditingObservable : Observable<Bool>
     let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
     
-    private(set) lazy var overlayStateObservable : Observable<Bool> =
-    {
-        return self.appStateService
-          .appStateObservable
-          .filter { $0 == .active }
-          .map { _ in return self.shouldShowLocationPermissionOverlay }
-    }()
-    
     // MARK: Properties
     var currentDate : Date { return self.timeService.now }
-    
-    var canIgnoreLocationPermission : Bool { return self.settingsService.canIgnoreLocationPermission }
-    
-    private var shouldShowLocationPermissionOverlay : Bool
-    {
-        if self.settingsService.hasLocationPermission { return false }
-        
-        //If user doesn't have permissions and we never showed the overlay, do it
-        guard let lastRequestedDate = self.settingsService.lastAskedForLocationPermission else { return true }
-        
-        let minimumRequestDate = lastRequestedDate.add(days: 1)
-        
-        //If we previously showed the overlay, we must only do it again after 24 hours
-        return minimumRequestDate < self.timeService.now
-    }
     
     //MARK: Methods
     
@@ -129,10 +100,6 @@ class MainViewModel
         
         self.editStateService.notifyEditingEnded()
     }
-    
-    func setLastAskedForLocationPermission() { self.settingsService.setLastAskedForLocationPermission(self.timeService.now) }
-    
-    func setAllowedLocationPermission() { self.settingsService.setAllowedLocationPermission() }
     
     func notifyEditingEnded() { self.editStateService.notifyEditingEnded() }
 }
