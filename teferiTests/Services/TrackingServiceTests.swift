@@ -6,7 +6,6 @@ import Nimble
 class TrackingServiceTests : XCTestCase
 {
     private let baseCoordinates = CLLocationCoordinate2D(latitude: 37.628060, longitude: -116.848463)
-    private let metersToLatitudeFactor = 1.0 / 111_000
     private let defaultMovementSpeed = 100.0 // (meters/minute)
     
     private var midnight : Date!
@@ -438,9 +437,8 @@ class TrackingServiceTests : XCTestCase
     
     func getLocation(withTimestamp date: Date, metersFromOrigin distance: Double, horizontalAccuracy: Double = 20) -> CLLocation
     {
-        let latitudeOffset = distance * self.metersToLatitudeFactor
-        let coordinates = CLLocationCoordinate2D(latitude: self.baseCoordinates.latitude + latitudeOffset,
-                                                 longitude: self.baseCoordinates.longitude)
+        let coordinates = self.baseCoordinates.offset(.north, meters: distance)
+        
         return CLLocation(coordinate: coordinates,
                           altitude: 0,
                           horizontalAccuracy: horizontalAccuracy,

@@ -138,6 +138,8 @@
 		7E3C06981E30B7CA00859747 /* Assets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C06951E30B7CA00859747 /* Assets.swift */; };
 		7E3C06991E30B7CA00859747 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C06961E30B7CA00859747 /* Strings.swift */; };
 		7E3C069A1E30B7CA00859747 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C06971E30B7CA00859747 /* Storyboards.swift */; };
+		7E57ECE91E30DF370094251E /* LocationExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */; };
+		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
@@ -330,6 +332,8 @@
 		7E3C06951E30B7CA00859747 /* Assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Assets.swift; path = Generated/Assets.swift; sourceTree = "<group>"; };
 		7E3C06961E30B7CA00859747 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Strings.swift; path = Generated/Strings.swift; sourceTree = "<group>"; };
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
+		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
+		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -461,6 +465,7 @@
 		24564F401D82FDBB00D9A8AE /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */,
 				24564F671D8326E700D9A8AE /* ColorExtensionsTests.swift */,
 				24564F681D8326E700D9A8AE /* DateExtensionsTests.swift */,
 			);
@@ -511,6 +516,7 @@
 		24A21B671D7C3E0800CEB4F3 /* teferiTests */ = {
 			isa = PBXGroup;
 			children = (
+				7E57ECEA1E30EBD40094251E /* Helpers */,
 				24564F401D82FDBB00D9A8AE /* Extensions */,
 				24168E351DC21038004F90AD /* Services */,
 				24E7860A1DC399740048F577 /* ViewControllers */,
@@ -821,6 +827,14 @@
 				7E3C06971E30B7CA00859747 /* Storyboards.swift */,
 			);
 			name = Generated;
+			sourceTree = "<group>";
+		};
+		7E57ECEA1E30EBD40094251E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				7E57ECEB1E30EC000094251E /* LocationExtensions.swift */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
@@ -1241,10 +1255,12 @@
 				24564F6E1D8326F100D9A8AE /* TimelineViewModelTests.swift in Sources */,
 				24168E3B1DC21125004F90AD /* MockNotificationService.swift in Sources */,
 				2416B2831E27C7D100CE283B /* TopBarViewModelTests.swift in Sources */,
+				7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */,
 				24B03B5F1D9E5BB900452D16 /* PagerViewModelTests.swift in Sources */,
 				ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */,
 				2416B27D1E278B1300CE283B /* CalendarViewControllerTests.swift in Sources */,
 				24564F7D1D83893900D9A8AE /* TimelineCellTests.swift in Sources */,
+				7E57ECE91E30DF370094251E /* LocationExtensionsTests.swift in Sources */,
 				24D73F2B1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift in Sources */,
 				24E7860C1DC399A90048F577 /* OnboardingPageViewControllerTests.swift in Sources */,
 				24564F6A1D8326E700D9A8AE /* DateExtensionsTests.swift in Sources */,
