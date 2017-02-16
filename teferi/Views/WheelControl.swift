@@ -220,11 +220,11 @@ class Wheel<T> : UIControl, TrigonometryHelper
         var animationSequence = DelayedSequence.start()
         
         let delay = 0.04
-        var lastCellUsed : UIButton?
+        var previewsCell : UIButton?
         
         for index in 0..<5
         {
-            let cell = viewModel.cell(before: lastCellUsed, clockwise: true, cellSize: cellSize)
+            let cell = viewModel.cell(before: previewsCell, clockwise: true, cellSize: cellSize)
             cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat.pi / 2 + CGFloat(index) * angleBetweenCells))
             cell.isHidden = true
 
@@ -232,7 +232,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
             
             animationSequence = animationSequence.after(TimeInterval(delay), animate(cell, presenting: true))
             
-            lastCellUsed = cell
+            previewsCell = cell
         }
     }
     
