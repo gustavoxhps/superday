@@ -52,10 +52,10 @@ class AddTimeSlotView : UIView
         wheel = Wheel(frame: self.bounds,
                       cellSize: CGSize(width: 50.0, height: 50.0),
                       centerPoint: self.addButton.center,
-                      radius: 170,
+                      radius: 120,
                       startAngle: CGFloat.pi / 4,
                       endAngle: CGFloat.pi * 5 / 4,
-                      angleBetweenCells: CGFloat.pi * 2 / 12.5,
+                      angleBetweenCells: CGFloat.pi * 2 / 12,
                       items: Category.all,
                       attributeSelector: self.toAttributes)
         
@@ -69,18 +69,18 @@ class AddTimeSlotView : UIView
             .addDisposableTo(disposeBag!)
     }
     
-//    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
-//    {
-//        for subview in self.subviews
-//        {
-//            if !subview.isHidden && subview.alpha > 0 && subview.isUserInteractionEnabled && subview.point(inside: convert(point, to: subview), with: event)
-//            {
-//                return true
-//            }
-//        }
-//        
-//        return false
-//    }
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
+    {
+        for subview in self.subviews
+        {
+            if !subview.isHidden && subview.alpha > 0 && subview.isUserInteractionEnabled && subview.point(inside: convert(point, to: subview), with: event)
+            {
+                return true
+            }
+        }
+        
+        return false
+    }
     
     //MARK: Methods
     func close()
@@ -104,12 +104,11 @@ class AddTimeSlotView : UIView
         
         if isAdding
         {
-            wheel.centerPoint = addButton.center
-            insertSubview(wheel, belowSubview: addButton)
+            wheel.show(below: addButton)
         }
         else
         {
-            wheel.removeFromSuperview()
+            wheel.hide()
         }
     }
     

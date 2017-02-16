@@ -1,126 +1,38 @@
-//
-//  WheelControl.swift
-//  teferi
-//
-//  Created by Juxhin Bakalli on 15/02/2017.
-//  Copyright © 2017 Toggl. All rights reserved.
-//
-
 import UIKit
 
-class WheelViewModel<V, T> where V: UIButton
-{
-    typealias attribute = (image: UIImage, color: UIColor)
-    
-    var visibleCells = [V]()
-    private var reusableCells = Set<V>()
-    
-    private let items : [T]
-    private let attributeSelector : (T) -> attribute
-    
-    init(items: [T], attributeSelector: @escaping ((T) -> (UIImage, UIColor))) {
-        self.items = items
-        self.attributeSelector = attributeSelector
-    }
-    
-    private func itemIndex(before index: Int?, clockwise: Bool) -> Int
-    {
-        guard let index = index else { return 0 }
-        
-        guard !items.isEmpty else { fatalError("empty data array") }
-        
-        guard items.count != 1 else { return 0 }
-        
-        let beforeIndex = index + (clockwise ? 1 : -1)
-        
-        guard beforeIndex < items.endIndex else { return items.startIndex }
-        
-        guard beforeIndex >= items.startIndex else { return items.endIndex - 1 }
-        
-        return beforeIndex
-    }
-    
-    func lastVisibleCell(clockwise: Bool) -> V?
-    {
-        guard !visibleCells.isEmpty else { return nil }
-        
-        return clockwise ? visibleCells.last! : visibleCells.first!
-    }
-    
-    func cell(before cell: V?, clockwise: Bool, cellSize: CGSize) -> V
-    {
-        let nextItemIndex = itemIndex(before: cell?.tag, clockwise: clockwise)
-
-        let attributes = attributeSelector(items[nextItemIndex])
-        
-        guard !reusableCells.isEmpty
-        else {
-            let cell = cellWithAttributes(cell: V(frame: CGRect(origin: .zero, size: cellSize)),
-                                          attributes: attributes)
-            cell.tag = nextItemIndex
-            cell.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
-            visibleCells.insert(cell, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
-            return cell
-        }
-        
-        let reusedCell = cellWithAttributes(cell: reusableCells.removeFirst(),
-                                            attributes: attributes)
-        reusedCell.tag = nextItemIndex
-        visibleCells.insert(reusedCell, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
-        
-        return reusedCell
-    }
-    
-    private func cellWithAttributes(cell: V, attributes: attribute) -> V
-    {
-        cell.backgroundColor = attributes.color
-        cell.setImage(attributes.image, for: .normal)
-        return cell
-    }
-    
-    func remove(cell: V)
-    {
-        guard visibleCells.count > 2 else { return }
-        
-        let index = visibleCells.index(of: cell)
-        visibleCells.remove(at: index!)
-        cell.isHidden = true
-        reusableCells.insert(cell)
-    }
-}
-
-// TODO: split this class into a thing that spins, and a thing that manages the cells
 class Wheel<T> : UIControl, TrigonometryHelper
 {
-    private var spinBehavior : UIDynamicItemBehavior?
-    private var animator: UIDynamicAnimator!
+    // MARK: - Flick components
+    private var flickBehavior : UIDynamicItemBehavior!
+    private var flickAnimator : UIDynamicAnimator!
+    private var lastFlickPoint : CGPoint!
+    private var flickView : UIView!
+    private var flickViewAttachment : UIAttachmentBehavior!
     
+    // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
     private var lastPanPoint : CGPoint!
-    private var spinningView : UIView!
-    private var spinningViewAttachment : UIAttachmentBehavior!
-    private var lastSpinPoint : CGPoint?
-    
+
     private let viewModel : WheelViewModel<UIButton, T>
     
     private let cellSize : CGSize
     private let radius : CGFloat
     private let startAngle : CGFloat
     private let endAngle : CGFloat
-    var centerPoint : CGPoint
+    private var centerPoint : CGPoint
+    private let angleBetweenCells : CGFloat
     
-    private var startPoint : CGPoint {
+    private var measurementStartPoint : CGPoint
+    {
         return CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
     }
     
-    private let angleBetweenCells : CGFloat
-    
     private lazy var startAnglePoint : CGPoint = {
-        return self.rotatePoint(target: self.startPoint, aroundOrigin: self.centerPoint, by: self.startAngle)
+        return self.rotatePoint(target: self.measurementStartPoint, aroundOrigin: self.centerPoint, by: self.startAngle)
     }()
     
     private lazy var endAnglePoint : CGPoint = {
-        return self.rotatePoint(target: self.startPoint, aroundOrigin: self.centerPoint, by: self.endAngle)
+        return self.rotatePoint(target: self.measurementStartPoint, aroundOrigin: self.centerPoint, by: self.endAngle)
     }()
     
     private lazy var allowedPath : UIBezierPath = {
@@ -132,6 +44,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         return ovalPath
     }()
     
+    // MARK: - Init
     init(
         frame : CGRect,
         cellSize: CGSize,
@@ -161,11 +74,6 @@ class Wheel<T> : UIControl, TrigonometryHelper
         
         super.init(frame: frame)
         
-        animator = UIDynamicAnimator(referenceView: self)
-        animator.setValue(true, forKey: "debugEnabled")
-        
-        setupCells()
-        
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
         panGesture.delaysTouchesBegan = false
         addGestureRecognizer(panGesture)
@@ -176,42 +84,12 @@ class Wheel<T> : UIControl, TrigonometryHelper
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupCells()
+    // MARK: - Pan gesture logic
+    @objc private func handlePan(_ sender: UIPanGestureRecognizer)
     {
-        // TODO: this method looks like it can probably be more concise
-        let firstAngle = CGFloat.pi / 2
+        resetFlickComponents()
         
-        let cellCenter = rotatePoint(target: startPoint, aroundOrigin: centerPoint, by: firstAngle)
-        
-        var cell = viewModel.cell(before: nil, clockwise: true, cellSize: cellSize)
-        cell.center = cellCenter
-        
-        addSubview(cell)
-        
-        var angleOfLastPoint = positiveAngle(startPoint: startPoint, endPoint: cell.center, anchorPoint: centerPoint)
-        
-        while abs(angleOfLastPoint - endAngle) > angleBetweenCells
-        {
-            let cellToAdd = viewModel.cell(before: cell, clockwise: true, cellSize: cellSize)
-            cellToAdd.center = rotatePoint(target: cell.center, aroundOrigin: centerPoint, by: angleBetweenCells)
-            self.addSubview(cellToAdd)
-            
-            cell = cellToAdd
-            angleOfLastPoint = positiveAngle(startPoint: startPoint, endPoint: cell.center, anchorPoint: centerPoint)
-        }
-    }
-    
-    func handlePan(_ sender: UIPanGestureRecognizer)
-    {
         let panPoint: CGPoint = sender.location(in: self)
-        
-        if let _ = spinningView
-        {
-            safelyRemoveBehavior(behavior: self.spinningViewAttachment)
-        }
-        
-        safelyRemoveBehavior(behavior: spinBehavior)
-        spinBehavior = nil
         
         switch sender.state {
         case .began:
@@ -242,95 +120,70 @@ class Wheel<T> : UIControl, TrigonometryHelper
         }
     }
     
-    func isInAllowedRange(point: CGPoint) -> Bool
+    // MARK: - Flick logic
+    private func flick(with velocity: CGPoint)
     {
-        // TODO: this should be doable with a simple dot product instead
-        return allowedPath.contains(point)
+        resetFlickComponents()
+        
+        flickAnimator = UIDynamicAnimator(referenceView: self)
+//        flickAnimator.setValue(true, forKey: "debugEnabled")
+        
+        let flickViewStartingAngle = positiveAngle(startPoint: measurementStartPoint, endPoint: lastPanPoint!, anchorPoint: centerPoint)
+        let flickViewCenter = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: flickViewStartingAngle)
+        flickView = UIView(frame: CGRect(origin: CGPoint(x: flickViewCenter.x - cellSize.width / 2, y: flickViewCenter.y - cellSize.height / 2), size: cellSize))
+        flickView.isUserInteractionEnabled = false
+        flickView.isHidden = true
+        addSubview(flickView)
+        
+        flickViewAttachment = UIAttachmentBehavior(item: flickView, attachedToAnchor: centerPoint)
+        flickAnimator.addBehavior(flickViewAttachment!)
+
+        flickBehavior = UIDynamicItemBehavior(items: [flickView])
+        flickBehavior.addLinearVelocity(velocity, for: flickView) // TODO: consider using tangental velocity directly (though this should not matter much)
+        flickBehavior.allowsRotation = false
+        flickBehavior.resistance = 4
+        flickBehavior.density = 1.5
+        flickBehavior.action = flickBehaviorAction
+        flickAnimator.addBehavior(flickBehavior)
     }
     
-//    private lazy var spinningView : UIView = {
-//        spinningView = UIView(frame: CGRect(origin: CGPoint(x: spinningViewCenter.x - cellSize.width / 2, y: spinningViewCenter.y - cellSize.height / 2), size: cellSize))
-//        spinningView.isUserInteractionEnabled = false
-//        spinningView.backgroundColor = .clear // TODO: hide instead
-//        ret addSubview(spinningView)
-//    }()
-    
-    func flick(with velocity: CGPoint)
+    private func resetFlickComponents()
     {
-        let spinningViewStartingAngle = positiveAngle(startPoint: startPoint, endPoint: lastPanPoint!, anchorPoint: centerPoint)
-        let spinningViewCenter = rotatePoint(target: startPoint, aroundOrigin: centerPoint, by: spinningViewStartingAngle)
-        
-        // TODO: consider putting the caching into a separete method
-        if let _ = spinningView // TODO: compare against nil instead
-        {
-            animator.removeBehavior(spinningViewAttachment!)
-            spinningView.center = spinningViewCenter
-            animator.addBehavior(spinningViewAttachment!)
-        }
+        flickAnimator = nil
+        flickBehavior = nil
+        flickView = nil
+        flickViewAttachment = nil
+        lastFlickPoint = nil
+    }
+    
+    func flickBehaviorAction()
+    {
+        guard let lastFlickPoint = lastFlickPoint
         else
         {
-            spinningView = UIView(frame: CGRect(origin: CGPoint(x: spinningViewCenter.x - cellSize.width / 2, y: spinningViewCenter.y - cellSize.height / 2), size: cellSize))
-            spinningView.isUserInteractionEnabled = false
-            spinningView.isHidden = true
-            addSubview(spinningView)
-            
-            spinningViewAttachment = UIAttachmentBehavior(item: spinningView, attachedToAnchor: centerPoint)
-            animator.addBehavior(spinningViewAttachment!)
+            self.lastFlickPoint = flickView.center
+            return
         }
         
-        safelyRemoveBehavior(behavior: spinBehavior)
-        spinBehavior?.action = nil
-        spinBehavior = nil
+        let angleToRotate = angle(startPoint: lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
         
-        spinBehavior = UIDynamicItemBehavior(items: [spinningView])
-        spinBehavior!.addLinearVelocity(velocity, for: spinningView) // TODO: consider using tangental velocity directly (though this should not matter much)
-        spinBehavior!.allowsRotation = false
-        spinBehavior!.resistance = 4
-        spinBehavior!.density = 1.5
-//        spinBehavior!.action = spinBehaviorAction
-        spinBehavior?.action = { [weak self] in
-            
-            guard
-                let lastSpinPoint = self?.lastSpinPoint,
-                let spinningView = self?.spinningView,
-                let centerPoint = self?.centerPoint,
-                let angle = self?.angle(startPoint: lastSpinPoint, endPoint: spinningView.center, anchorPoint: centerPoint)
-                
-                else {
-                    self?.lastSpinPoint = self?.spinningView.center
-                    return
-            }
-            
-            self?.handleMovement(angleToRotate: angle)
-            
-            self?.lastSpinPoint = self?.spinningView.center
-            
-        }
-        animator.addBehavior(spinBehavior!)
+        handleMovement(angleToRotate: angleToRotate)
+        
+        self.lastFlickPoint = flickView.center
     }
     
-//    func spinBehaviorAction()
-//    {
-//        guard let lastSpinPoint = lastSpinPoint else { return }
-//        
-//        let angleToRotate = angle(startPoint: lastSpinPoint, endPoint: spinningView.center, anchorPoint: centerPoint)
-//        
-//        handleMovement(angleToRotate: angleToRotate)
-//        
-//        self.lastSpinPoint = spinningView.center
-//    }
-    
-    func handleMovement(angleToRotate: CGFloat)
+    // MARK: - Rotation logic
+    private func handleMovement(angleToRotate: CGFloat)
     {
         let rotationDirection = angleToRotate < 0
-        
+
         let cells = viewModel.visibleCells
         
         cells.forEach({ (cell) in
             // TODO: this is prone to drifting of cells (change in radius) due to rounding errors
             //       much better to work with angles directly, and simply calculate positions from those
             cell.center = rotatePoint(target: cell.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
-            cell.isHidden = false
+//            cell.isHidden = false
             if !isInAllowedRange(point: cell.center)
             {
                 viewModel.remove(cell: cell)
@@ -340,7 +193,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         // TODO: the rotation direction should be determined inside this method, not outside
         guard var lastCellBasedOnRotationDirecation = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
         
-        var angleOfLastPoint = positiveAngle(startPoint: startPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
+        var angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
         
         var edgeAngle = (rotationDirection ? endAngle : startAngle)
         edgeAngle = toPositive(angle: edgeAngle)
@@ -349,28 +202,102 @@ class Wheel<T> : UIControl, TrigonometryHelper
         {
             let newCell = viewModel.cell(before: lastCellBasedOnRotationDirecation, clockwise: rotationDirection, cellSize: cellSize)
             newCell.center = rotatePoint(target: lastCellBasedOnRotationDirecation.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
-            newCell.isHidden = false
             
-            if newCell.superview == nil
-            {
-                addSubview(newCell)
-            }
+            addSubview(newCell)
             
             lastCellBasedOnRotationDirecation = newCell
-            angleOfLastPoint = positiveAngle(startPoint: startPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
+            angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
         }
     }
     
-    func safelyRemoveBehavior(behavior: UIDynamicBehavior?)
+    // MARK: - Presentation and dismissal logic
+    func show(below view: UIView)
     {
-        guard let behavior = behavior else { return }
+        view.superview?.insertSubview(self, belowSubview: view)
         
-        animator.removeBehavior(behavior)
+        self.centerPoint = view.center
+        
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = 0.04
+        var lastCellUsed : UIButton?
+        
+        for index in 0..<5
+        {
+            let cell = viewModel.cell(before: lastCellUsed, clockwise: true, cellSize: cellSize)
+            cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat.pi / 2 + CGFloat(index) * angleBetweenCells))
+            cell.isHidden = true
+
+            addSubview(cell)
+            
+            animationSequence = animationSequence.after(TimeInterval(delay), animate(cell, presenting: true))
+            
+            lastCellUsed = cell
+        }
+    }
+    
+    func hide()
+    {
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = 0.04
+        
+        for cell in viewModel.visibleCells.filter({ $0.frame.intersects(bounds) })
+        {
+            animationSequence = animationSequence.after(TimeInterval(delay), animate(cell, presenting: false))
+        }
+        
+        animationSequence.after(delay, cleanupAfterHide())
+    }
+    
+    private func cleanupAfterHide() -> (TimeInterval) -> ()
+    {
+        return { delay in
+            Timer.schedule(withDelay: delay)
+            {
+                self.resetFlickComponents()
+                self.viewModel.cleanAll()
+                self.removeFromSuperview()
+            }
+        }
+    }
+    
+    private func animate(_ cell: UIButton, presenting: Bool) -> (TimeInterval) -> ()
+    {
+        return { delay in
+            Timer.schedule(withDelay: delay)
+            {
+                cell.transform = presenting ?
+                    CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y) :
+                    CGAffineTransform.identity
+                
+                cell.isHidden = false
+                
+                let timingFunction = CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1)
+                
+                CATransaction.begin()
+                CATransaction.setAnimationTimingFunction(timingFunction)
+                
+                UIView.animate(withDuration: 0.225, animations: {
+                    cell.transform = presenting ?
+                        CGAffineTransform.identity :
+                        CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y)
+                })
+                
+                CATransaction.commit()
+            }
+        }
     }
     
     //mark: - Math functions
     
-    func shouldFlick(for velocity: CGPoint) -> Bool
+    private func isInAllowedRange(point: CGPoint) -> Bool
+    {
+        // TODO: this should be doable with a simple dot product instead
+        return allowedPath.contains(point)
+    }
+    
+    private func shouldFlick(for velocity: CGPoint) -> Bool
     {
         // TODO: this check should probably check tangental velocity instead,
         //       or at least use euclidean distance to calculate the speed

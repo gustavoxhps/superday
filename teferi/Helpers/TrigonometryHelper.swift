@@ -85,6 +85,6 @@ extension TrigonometryHelper
     {
         guard angle >= 0 else { return angle + 2 * CGFloat.pi }
         
-        return angle
+        return abs(angle)
     }
 }
