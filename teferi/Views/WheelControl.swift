@@ -183,7 +183,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
             // TODO: this is prone to drifting of cells (change in radius) due to rounding errors
             //       much better to work with angles directly, and simply calculate positions from those
             cell.center = rotatePoint(target: cell.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
-//            cell.isHidden = false
+
             if !isInAllowedRange(point: cell.center)
             {
                 viewModel.remove(cell: cell)
