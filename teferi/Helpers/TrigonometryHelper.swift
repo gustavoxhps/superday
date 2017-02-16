@@ -20,7 +20,7 @@ protocol TrigonometryHelper
     
     func angle(startPoint a: CGPoint, endPoint c: CGPoint, anchorPoint b: CGPoint) -> CGFloat
     
-    func toPozitive(angle: CGFloat) -> CGFloat
+    func toPositive(angle: CGFloat) -> CGFloat
 }
 
 extension TrigonometryHelper
@@ -62,7 +62,7 @@ extension TrigonometryHelper
     {
         let angleToReturn = angle(startPoint: a, endPoint: c, anchorPoint: b)
         
-        return toPozitive(angle: angleToReturn)
+        return toPositive(angle: angleToReturn)
     }
     
     func angle(startPoint a: CGPoint, endPoint c: CGPoint, anchorPoint b: CGPoint) -> CGFloat
@@ -81,7 +81,7 @@ extension TrigonometryHelper
         return angleToReturn
     }
     
-    func toPozitive(angle: CGFloat) -> CGFloat
+    func toPositive(angle: CGFloat) -> CGFloat
     {
         guard angle >= 0 else { return angle + 2 * CGFloat.pi }
         
