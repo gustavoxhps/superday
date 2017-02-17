@@ -12,6 +12,9 @@ class Wheel<T> : UIControl, TrigonometryHelper
     // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
     private var lastPanPoint : CGPoint!
+    
+    // MARK: - Tap gesture components
+    private var tapGesture : UITapGestureRecognizer!
 
     private let viewModel : WheelViewModel<UIButton, T>
     
@@ -79,6 +82,10 @@ class Wheel<T> : UIControl, TrigonometryHelper
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
         panGesture.delaysTouchesBegan = false
         addGestureRecognizer(panGesture)
+        
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        tapGesture.delaysTouchesBegan = false
+        addGestureRecognizer(tapGesture)
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -86,10 +93,16 @@ class Wheel<T> : UIControl, TrigonometryHelper
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Tap gesture logic
+    @objc private func handleTap(_ sender: UITapGestureRecognizer)
+    {
+        resetFlick()
+    }
+    
     // MARK: - Pan gesture logic
     @objc private func handlePan(_ sender: UIPanGestureRecognizer)
     {
-        resetFlickComponents()
+        resetFlick()
         
         let panPoint: CGPoint = sender.location(in: self)
         
@@ -125,7 +138,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
     // MARK: - Flick logic
     private func flick(with velocity: CGPoint)
     {
-        resetFlickComponents()
+        resetFlick()
         
         flickAnimator = UIDynamicAnimator(referenceView: self)
 //        flickAnimator.setValue(true, forKey: "debugEnabled")
@@ -149,7 +162,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         flickAnimator.addBehavior(flickBehavior)
     }
     
-    private func resetFlickComponents()
+    private func resetFlick()
     {
         flickAnimator = nil
         flickBehavior = nil
@@ -259,7 +272,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         return { delay in
             Timer.schedule(withDelay: delay)
             {
-                self.resetFlickComponents()
+                self.resetFlick()
                 self.viewModel.cleanAll()
                 self.removeFromSuperview()
             }
