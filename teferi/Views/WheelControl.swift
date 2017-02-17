@@ -226,6 +226,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         {
             let cell = viewModel.cell(before: previewsCell, clockwise: true, cellSize: cellSize)
             cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat.pi / 2 + CGFloat(index) * angleBetweenCells))
+            cell.isHidden = true
 
             addSubview(cell)
             
@@ -269,6 +270,8 @@ class Wheel<T> : UIControl, TrigonometryHelper
                 cell.transform = presenting ?
                     CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y) :
                     CGAffineTransform.identity
+                
+                cell.isHidden = false
                 
                 let timingFunction = CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1)
                 
