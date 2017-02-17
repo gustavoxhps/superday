@@ -93,8 +93,9 @@ class CalendarViewModel
     
     private func category(_ element1: Activity, _ element2: Activity) -> Bool
     {
-        let index1 = Constants.categories.index(of: element1.category)!
-        let index2 = Constants.categories.index(of: element2.category)!
+        let allCategories = Category.all
+        let index1 = allCategories.index(of: element1.category)!
+        let index2 = allCategories.index(of: element2.category)!
         
         return index1 > index2
     }
