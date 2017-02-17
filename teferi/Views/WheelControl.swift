@@ -15,6 +15,8 @@ class Wheel<T> : UIControl, TrigonometryHelper
 
     private let viewModel : WheelViewModel<UIButton, T>
     
+    private(set) var selectedItem : T?
+    
     private let cellSize : CGSize
     private let radius : CGFloat
     private let startAngle : CGFloat
@@ -201,6 +203,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         while abs(abs(angleOfLastPoint) - edgeAngle) > angleBetweenCells
         {
             let newCell = viewModel.cell(before: lastCellBasedOnRotationDirecation, clockwise: rotationDirection, cellSize: cellSize)
+            newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
             newCell.center = rotatePoint(target: lastCellBasedOnRotationDirecation.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
             
             addSubview(newCell)
@@ -211,7 +214,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
     }
     
     // MARK: - Presentation and dismissal logic
-    func show(below view: UIView)
+    func show(below view: UIView, showing nuberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
         view.superview?.insertSubview(self, belowSubview: view)
         
@@ -222,10 +225,11 @@ class Wheel<T> : UIControl, TrigonometryHelper
         let delay = 0.04
         var previewsCell : UIButton?
         
-        for index in 0..<5
+        for index in 0..<nuberToShow
         {
             let cell = viewModel.cell(before: previewsCell, clockwise: true, cellSize: cellSize)
-            cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat.pi / 2 + CGFloat(index) * angleBetweenCells))
+            cell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
+            cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
             cell.isHidden = true
 
             addSubview(cell)
@@ -287,6 +291,14 @@ class Wheel<T> : UIControl, TrigonometryHelper
                 CATransaction.commit()
             }
         }
+    }
+    
+    // MARK: - SelectionHandling
+    
+    @objc private func didSelectCell(_ sender: UIButton)
+    {
+        selectedItem = viewModel.items[sender.tag]
+        sendActions(for: .valueChanged)
     }
     
     // MARK: - Math functions

@@ -7,6 +7,7 @@ class AddTimeSlotView : UIView
 {
     //MARK: Fields
     private let isAddingVariable = Variable(false)
+    private var selectedCategory = Variable(Category.unknown)
     private var disposeBag : DisposeBag? = DisposeBag()
     
     @IBOutlet private weak var blur : UIView!
@@ -22,11 +23,7 @@ class AddTimeSlotView : UIView
     
     lazy var categoryObservable : Observable<Category> =
     {
-        let taps = Category.unknown//self.buttons.map
-//        { (category, button) in
-//            button.rx.tap.map { _ in return category }
-//        }
-        return Observable.from([taps])
+        return self.selectedCategory.asObservable()
     }()
     
     //MARK: Lifecycle methods
@@ -59,6 +56,8 @@ class AddTimeSlotView : UIView
                       items: Category.all,
                       attributeSelector: self.toAttributes)
         
+        wheel.addTarget(self, action: #selector(AddTimeSlotView.wheelChangedValue), for: .valueChanged)
+        
         //Bindings
         self.categoryObservable
             .subscribe(onNext: onNewCategory)
@@ -88,19 +87,26 @@ class AddTimeSlotView : UIView
         guard self.isAdding == true else { return }
         
         self.isAdding = false
-        self.animateButtons(isAdding: false)
+        self.animateAddButton(isAdding: false)
+    }
+    
+    func wheelChangedValue()
+    {
+        selectedCategory.value = wheel.selectedItem!
     }
     
     private func onNewCategory(category: Category)
     {
         self.isAdding = false
-        self.animateButtons(isAdding: false, category: category)
+        self.animateAddButton(isAdding: false)
+        
+        wheel.hide()
     }
     
     private func onAddButtonTapped()
     {
         self.isAdding = !self.isAdding
-        self.animateButtons(isAdding: self.isAdding)
+        self.animateAddButton(isAdding: self.isAdding)
         
         if isAdding
         {
@@ -112,7 +118,7 @@ class AddTimeSlotView : UIView
         }
     }
     
-    private func animateButtons(isAdding: Bool, category: Category = .unknown)
+    private func animateAddButton(isAdding: Bool)
     {
         let alpha = CGFloat(isAdding ? 1.0 : 0.0)
         let degrees = isAdding ? 45.0 : 0.0

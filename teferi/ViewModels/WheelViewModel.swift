@@ -7,7 +7,7 @@ class WheelViewModel<V, T> where V: UIButton
     private(set) var visibleCells = [V]()
     private var reusableCells = Set<V>()
     
-    private let items : [T]
+    private(set) var items : [T]
     private let attributeSelector : (T) -> attribute
     
     init(items: [T], attributeSelector: @escaping ((T) -> (UIImage, UIColor))) {
