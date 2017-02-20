@@ -10,7 +10,7 @@ class AddTimeSlotView : UIView
     private var selectedCategory = Variable(Category.unknown)
     private var disposeBag : DisposeBag? = DisposeBag()
     
-    @IBOutlet private weak var blur : UIView!
+    @IBOutlet private weak var blur : RadialGradientView!
     @IBOutlet private weak var addButton : UIButton!
     private var wheel : Wheel<Category>!
 
@@ -36,15 +36,6 @@ class AddTimeSlotView : UIView
         let cornerRadius = CGFloat(25)
         
         self.addButton.layer.cornerRadius = cornerRadius
-        
-        //Adds some blur to the background of the buttons
-        self.blur.frame = bounds;
-        let layer = CAGradientLayer()
-        layer.frame = self.blur.bounds
-        layer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
-        layer.locations = [0.0, 1.0]
-        self.blur.layer.addSublayer(layer)
-        self.blur.alpha = 0
         
         wheel = Wheel(frame: self.bounds,
                       cellSize: CGSize(width: 50.0, height: 50.0),
@@ -125,6 +116,9 @@ class AddTimeSlotView : UIView
         let options = isAdding ? UIViewAnimationOptions.curveEaseOut : UIViewAnimationOptions.curveEaseIn
 
         let delay : TimeInterval = 0
+        
+        blur.radialGradientCenterPoint = addButton.center
+        blur.radius = min(addButton.center.x, addButton.center.y)
         
         UIView.animate(withDuration: 0.2, delay: delay,
             options: options,
