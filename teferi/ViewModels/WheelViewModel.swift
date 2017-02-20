@@ -1,16 +1,16 @@
 import UIKit
 
-class WheelViewModel<V, T> where V: UIButton
+class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
 {
     typealias attribute = (image: UIImage, color: UIColor)
     
-    private(set) var visibleCells = [V]()
-    private var reusableCells = Set<V>()
+    private(set) var visibleCells = [ViewType]()
+    private var reusableCells = Set<ViewType>()
     
-    private(set) var items : [T]
-    private let attributeSelector : (T) -> attribute
+    private(set) var items : [ItemType]
+    private let attributeSelector : (ItemType) -> attribute
     
-    init(items: [T], attributeSelector: @escaping ((T) -> (UIImage, UIColor))) {
+    init(items: [ItemType], attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor))) {
         self.items = items
         self.attributeSelector = attributeSelector
     }
@@ -32,14 +32,14 @@ class WheelViewModel<V, T> where V: UIButton
         return beforeIndex
     }
     
-    func lastVisibleCell(clockwise: Bool) -> V?
+    func lastVisibleCell(clockwise: Bool) -> ViewType?
     {
         guard !visibleCells.isEmpty else { return nil }
         
         return clockwise ? visibleCells.last! : visibleCells.first!
     }
     
-    func cell(before cell: V?, clockwise: Bool, cellSize: CGSize) -> V
+    func cell(before cell: ViewType?, clockwise: Bool, cellSize: CGSize) -> ViewType
     {
         let nextItemIndex = itemIndex(before: cell?.tag, clockwise: clockwise)
         
@@ -47,7 +47,7 @@ class WheelViewModel<V, T> where V: UIButton
         
         guard !reusableCells.isEmpty
             else {
-                let cell = cellWithAttributes(cell: V(frame: CGRect(origin: .zero, size: cellSize)),
+                let cell = cellWithAttributes(cell: ViewType(frame: CGRect(origin: .zero, size: cellSize)),
                                               attributes: attributes)
                 cell.tag = nextItemIndex
                 cell.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
@@ -63,7 +63,7 @@ class WheelViewModel<V, T> where V: UIButton
         return reusedCell
     }
     
-    func remove(cell: V)
+    func remove(cell: ViewType)
     {
         let index = visibleCells.index(of: cell)
         visibleCells.remove(at: index!)
@@ -86,7 +86,7 @@ class WheelViewModel<V, T> where V: UIButton
         reusableCells.removeAll()
     }
     
-    private func cellWithAttributes(cell: V, attributes: attribute) -> V
+    private func cellWithAttributes(cell: ViewType, attributes: attribute) -> ViewType
     {
         cell.backgroundColor = attributes.color
         cell.setImage(attributes.image, for: .normal)

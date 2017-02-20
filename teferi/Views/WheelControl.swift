@@ -1,6 +1,6 @@
 import UIKit
 
-class Wheel<T> : UIControl, TrigonometryHelper
+class Wheel<ItemType> : UIControl, TrigonometryHelper
 {
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
@@ -16,9 +16,9 @@ class Wheel<T> : UIControl, TrigonometryHelper
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewModel : WheelViewModel<UIButton, T>
+    private let viewModel : WheelViewModel<UIButton, ItemType>
     
-    private(set) var selectedItem : T?
+    private(set) var selectedItem : ItemType?
     
     private let cellSize : CGSize
     private let radius : CGFloat
@@ -58,8 +58,8 @@ class Wheel<T> : UIControl, TrigonometryHelper
         startAngle: CGFloat,
         endAngle: CGFloat,
         angleBetweenCells: CGFloat,
-        items: [T],
-        attributeSelector: @escaping ((T) -> (UIImage, UIColor)))
+        items: [ItemType],
+        attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)))
     {
         // TODO: consider fatalError or otherwise ensuring the parameters cannot be messed up with
         // for example by switching them if they are inverted.
@@ -75,7 +75,7 @@ class Wheel<T> : UIControl, TrigonometryHelper
         self.centerPoint = centerPoint
         self.cellSize = cellSize
         
-        self.viewModel = WheelViewModel<UIButton, T>(items: items, attributeSelector: attributeSelector)
+        self.viewModel = WheelViewModel<UIButton, ItemType>(items: items, attributeSelector: attributeSelector)
         
         super.init(frame: frame)
         
