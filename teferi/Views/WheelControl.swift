@@ -63,8 +63,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         items: [ItemType],
         attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)))
     {
-        // TODO: consider fatalError or otherwise ensuring the parameters cannot be messed up with
-        // for example by switching them if they are inverted.
         if startAngle >= endAngle
         {
             fatalError("startAngle should be smaller than endAngle")
@@ -207,7 +205,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
             }
         })
         
-        // TODO: the rotation direction should be determined inside this method, not outside
         guard var lastCellBasedOnRotationDirecation = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
         
         var angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
