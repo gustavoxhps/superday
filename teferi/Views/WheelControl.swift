@@ -1,5 +1,10 @@
 import UIKit
 
+protocol WheelProtocol
+{
+    func dismissWheel()
+}
+
 class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
 {
     typealias ViewType = UIButton
@@ -15,7 +20,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     {
         didSet
         {
-            tapGesture.isEnabled = isSpinning
             viewModel.visibleCells.forEach { (cell) in
                 cell.isUserInteractionEnabled = !isSpinning
             }
@@ -28,6 +32,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
+    
+    var delegate : WheelProtocol?
 
     private let viewModel : WheelViewModel<ViewType, ItemType>
     
@@ -110,6 +116,12 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     {
         resetFlick()
         isSpinning = false
+        
+        let tapPoint: CGPoint = sender.location(in: self)
+        if distance(a: tapPoint, b: centerPoint) > radius + cellSize.width
+        {
+            delegate?.dismissWheel()
+        }
     }
     
     // MARK: - Pan gesture logic
