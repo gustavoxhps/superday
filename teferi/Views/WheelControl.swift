@@ -142,7 +142,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             
             if shouldFlick(for: velocity)
             {
-                flick(with: velocity)
+                flick(with: velocity, from: lastPanPoint!)
             }
             
             lastPanPoint = nil
@@ -154,7 +154,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     // MARK: - Flick logic
     
-    private func flick(with velocity: CGPoint)
+    private func flick(with velocity: CGPoint, from point: CGPoint)
     {
         resetFlick()
         
@@ -162,7 +162,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         flickAnimator.delegate = self
 //        flickAnimator.setValue(true, forKey: "debugEnabled")
         
-        let flickViewStartingAngle = positiveAngle(startPoint: measurementStartPoint, endPoint: lastPanPoint!, anchorPoint: centerPoint)
+        let flickViewStartingAngle = positiveAngle(startPoint: measurementStartPoint, endPoint: point, anchorPoint: centerPoint)
         let flickViewCenter = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: flickViewStartingAngle)
         flickView = UIView(frame: CGRect(origin: CGPoint(x: flickViewCenter.x - cellSize.width / 2, y: flickViewCenter.y - cellSize.height / 2), size: cellSize))
         flickView.isUserInteractionEnabled = false
@@ -176,6 +176,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         flickBehavior.addLinearVelocity(velocity, for: flickView) // TODO: consider using tangental velocity directly (though this should not matter much)
         flickBehavior.allowsRotation = false
         flickBehavior.resistance = 5
+        flickBehavior.elasticity = 1
         flickBehavior.density = 1.5
         flickBehavior.action = flickBehaviorAction
         flickAnimator.addBehavior(flickBehavior)
