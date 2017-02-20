@@ -1,6 +1,6 @@
 import UIKit
 
-class Wheel<ItemType> : UIControl, TrigonometryHelper
+class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
 {
     typealias ViewType = UIButton
     
@@ -10,6 +10,17 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     private var lastFlickPoint : CGPoint!
     private var flickView : UIView!
     private var flickViewAttachment : UIAttachmentBehavior!
+    
+    private var isSpinning : Bool = false
+    {
+        didSet
+        {
+            tapGesture.isEnabled = isSpinning
+            viewModel.visibleCells.forEach { (cell) in
+                cell.isUserInteractionEnabled = !isSpinning
+            }
+        }
+    }
     
     // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
@@ -52,6 +63,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     }()
     
     // MARK: - Init
+    
     init(
         frame : CGRect,
         cellSize: CGSize,
@@ -84,7 +96,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         addGestureRecognizer(panGesture)
         
         tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        tapGesture.delaysTouchesBegan = false
         addGestureRecognizer(tapGesture)
     }
     
@@ -94,12 +105,15 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     }
     
     // MARK: - Tap gesture logic
+    
     @objc private func handleTap(_ sender: UITapGestureRecognizer)
     {
         resetFlick()
+        isSpinning = false
     }
     
     // MARK: - Pan gesture logic
+    
     @objc private func handlePan(_ sender: UIPanGestureRecognizer)
     {
         resetFlick()
@@ -109,6 +123,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         switch sender.state {
         case .began:
             
+            isSpinning = true
             lastPanPoint = panPoint
             
         case .changed:
@@ -121,6 +136,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
             
         case .ended:
             
+            isSpinning = false
+            
             let velocity = sender.velocity(in: self)
             
             if shouldFlick(for: velocity)
@@ -131,16 +148,18 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
             lastPanPoint = nil
             
         default:
-            break
+            isSpinning = false
         }
     }
     
     // MARK: - Flick logic
+    
     private func flick(with velocity: CGPoint)
     {
         resetFlick()
         
         flickAnimator = UIDynamicAnimator(referenceView: self)
+        flickAnimator.delegate = self
 //        flickAnimator.setValue(true, forKey: "debugEnabled")
         
         let flickViewStartingAngle = positiveAngle(startPoint: measurementStartPoint, endPoint: lastPanPoint!, anchorPoint: centerPoint)
@@ -156,7 +175,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         flickBehavior = UIDynamicItemBehavior(items: [flickView])
         flickBehavior.addLinearVelocity(velocity, for: flickView) // TODO: consider using tangental velocity directly (though this should not matter much)
         flickBehavior.allowsRotation = false
-        flickBehavior.resistance = 4
+        flickBehavior.resistance = 5
         flickBehavior.density = 1.5
         flickBehavior.action = flickBehaviorAction
         flickAnimator.addBehavior(flickBehavior)
@@ -182,12 +201,30 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         
         let angleToRotate = angle(startPoint: lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
         
+        if distance(a: self.lastFlickPoint, b: flickView.center) == 0
+        {
+            isSpinning = false
+        }
+        
         handleMovement(angleToRotate: angleToRotate)
         
         self.lastFlickPoint = flickView.center
     }
     
+    // MARK: - UIDynamicAnimatorDelegate
+    
+    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
+    {
+        isSpinning = true
+    }
+    
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
+    {
+        isSpinning = false
+    }
+    
     // MARK: - Rotation logic
+    
     private func handleMovement(angleToRotate: CGFloat)
     {
         let rotationDirection = angleToRotate < 0
@@ -217,6 +254,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
             let newCell = viewModel.cell(before: lastCellBasedOnRotationDirecation, clockwise: rotationDirection, cellSize: cellSize)
             newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
             newCell.center = rotatePoint(target: lastCellBasedOnRotationDirecation.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
+            newCell.isUserInteractionEnabled = !isSpinning
             
             addSubview(newCell)
             
@@ -226,6 +264,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     }
     
     // MARK: - Presentation and dismissal logic
+    
     func show(below view: UIView, showing nuberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
         view.superview?.insertSubview(self, belowSubview: view)
