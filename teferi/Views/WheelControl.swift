@@ -257,7 +257,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     {
         var animationSequence = DelayedSequence.start()
         
-        let delay = 0.04
+        let delay = 0.02
         
         for cell in viewModel.visibleCells.filter({ $0.frame.intersects(bounds) })
         {
