@@ -2,6 +2,8 @@ import UIKit
 
 class Wheel<ItemType> : UIControl, TrigonometryHelper
 {
+    typealias ViewType = UIButton
+    
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
     private var flickAnimator : UIDynamicAnimator!
@@ -16,7 +18,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewModel : WheelViewModel<UIButton, ItemType>
+    private let viewModel : WheelViewModel<ViewType, ItemType>
     
     private(set) var selectedItem : ItemType?
     
@@ -75,7 +77,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         self.centerPoint = centerPoint
         self.cellSize = cellSize
         
-        self.viewModel = WheelViewModel<UIButton, ItemType>(items: items, attributeSelector: attributeSelector)
+        self.viewModel = WheelViewModel<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
         
         super.init(frame: frame)
         
@@ -236,7 +238,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         var animationSequence = DelayedSequence.start()
         
         let delay = 0.04
-        var previewsCell : UIButton?
+        var previewsCell : ViewType?
         
         for index in 0..<nuberToShow
         {
@@ -279,7 +281,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
         }
     }
     
-    private func animate(_ cell: UIButton, presenting: Bool) -> (TimeInterval) -> ()
+    private func animate(_ cell: ViewType, presenting: Bool) -> (TimeInterval) -> ()
     {
         return { delay in
             Timer.schedule(withDelay: delay)
@@ -308,7 +310,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper
     
     // MARK: - SelectionHandling
     
-    @objc private func didSelectCell(_ sender: UIButton)
+    @objc private func didSelectCell(_ sender: ViewType)
     {
         selectedItem = viewModel.items[sender.tag]
         sendActions(for: .valueChanged)
