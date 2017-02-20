@@ -70,6 +70,7 @@ class AddTimeSlotView : UIView, WheelProtocol
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        wheel.frame = bounds
         gradientLayer.frame = blur.bounds
     }
     
