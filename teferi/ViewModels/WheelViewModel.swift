@@ -45,22 +45,16 @@ class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
         
         let attributes = attributeSelector(items[nextItemIndex])
         
-        guard !reusableCells.isEmpty
-            else {
-                let cell = cellWithAttributes(cell: ViewType(frame: CGRect(origin: .zero, size: cellSize)),
-                                              attributes: attributes)
-                cell.tag = nextItemIndex
-                cell.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
-                visibleCells.insert(cell, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
-                return cell
-        }
+        var cellToReturn = reusableCells.isEmpty ?
+            ViewType(frame: CGRect(origin: .zero, size: cellSize)) :
+            reusableCells.removeFirst()
         
-        let reusedCell = cellWithAttributes(cell: reusableCells.removeFirst(),
-                                            attributes: attributes)
-        reusedCell.tag = nextItemIndex
-        visibleCells.insert(reusedCell, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
+        cellToReturn = cellWithAttributes( cell: cellToReturn, attributes: attributes)
+        cellToReturn.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
+        cellToReturn.tag = nextItemIndex
+        visibleCells.insert(cellToReturn, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
         
-        return reusedCell
+        return cellToReturn
     }
     
     func remove(cell: ViewType)
