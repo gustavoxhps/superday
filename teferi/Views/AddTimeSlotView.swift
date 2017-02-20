@@ -13,6 +13,7 @@ class AddTimeSlotView : UIView, WheelProtocol
     @IBOutlet private weak var blur : UIView!
     @IBOutlet private weak var addButton : UIButton!
     private var wheel : Wheel<Category>!
+    private let gradientLayer = CAGradientLayer()
 
     //MARK: Properties
     var isAdding : Bool
@@ -50,12 +51,10 @@ class AddTimeSlotView : UIView, WheelProtocol
         wheel.addTarget(self, action: #selector(AddTimeSlotView.wheelChangedValue), for: .valueChanged)
         
         //Adds some blur to the background of the buttons
-        self.blur.frame = bounds;
-        let layer = CAGradientLayer()
-        layer.frame = self.blur.bounds
-        layer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
-        layer.locations = [0.0, 1.0]
-        self.blur.layer.addSublayer(layer)
+        gradientLayer.frame = self.blur.bounds
+        gradientLayer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        self.blur.layer.addSublayer(gradientLayer)
         self.blur.alpha = 0
         
         //Bindings
@@ -66,6 +65,12 @@ class AddTimeSlotView : UIView, WheelProtocol
         self.addButton.rx.tap
             .subscribe(onNext: onAddButtonTapped)
             .addDisposableTo(disposeBag!)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        gradientLayer.frame = blur.bounds
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool

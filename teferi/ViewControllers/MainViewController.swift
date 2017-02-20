@@ -58,8 +58,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
         self.view.insertSubview(self.addButton, belowSubview: self.editView)
         self.addButton.snp.makeConstraints { make in
-            make.height.equalTo(320)
-            make.left.right.bottom.equalTo(self.view)
+            make.left.right.bottom.top.equalTo(self.view)
         }
         
         //Add fade overlay at bottom of timeline
