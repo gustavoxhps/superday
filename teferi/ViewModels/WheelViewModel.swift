@@ -26,11 +26,7 @@ class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
         
         let beforeIndex = index + (clockwise ? 1 : -1)
         
-        guard beforeIndex < items.endIndex else { return items.startIndex }
-        
-        guard beforeIndex >= items.startIndex else { return items.endIndex - 1 }
-        
-        return beforeIndex
+        return (beforeIndex + items.count) % items.count
     }
     
     func lastVisibleCell(clockwise: Bool) -> ViewType?
