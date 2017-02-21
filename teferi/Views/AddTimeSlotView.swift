@@ -7,7 +7,7 @@ class AddTimeSlotView : UIView, WheelProtocol
 {
     //MARK: Fields
     private let isAddingVariable = Variable(false)
-    private var selectedCategory = Variable(Category.unknown)
+    private let selectedCategory = Variable(Category.unknown)
     private var disposeBag : DisposeBag? = DisposeBag()
     
     @IBOutlet private weak var blur : UIView!
