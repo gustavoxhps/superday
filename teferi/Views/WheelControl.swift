@@ -201,14 +201,14 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     func flickBehaviorAction()
     {
-        guard let lastFlickPoint = lastFlickPoint
+        guard let _ = self.lastFlickPoint
         else
         {
             self.lastFlickPoint = flickView.center
             return
         }
         
-        let angleToRotate = angle(startPoint: lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
+        let angleToRotate = angle(startPoint: self.lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
         
         if distance(a: self.lastFlickPoint, b: flickView.center) == 0
         {
