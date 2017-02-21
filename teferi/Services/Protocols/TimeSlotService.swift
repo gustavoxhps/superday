@@ -1,4 +1,5 @@
 import RxSwift
+import CoreLocation
 
 ///Service that creates and updates TimeSlots
 protocol TimeSlotService
@@ -6,13 +7,11 @@ protocol TimeSlotService
     var timeSlotCreatedObservable : Observable<TimeSlot> { get }
     var timeSlotUpdatedObservable : Observable<TimeSlot> { get }
 
-    /**
-     Adds a new TimeSlot and ensures its validity.
-     
-     - Parameter timeSlot: The TimeSlot to be added.
-     - Returns: The found TimeSlots for the day or an empty array if there are none.
-     */
-    func add(timeSlot: TimeSlot)
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, location: CLLocation?) -> TimeSlot?
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
     
     /**
      Gets TimeSlots for any given day.

@@ -55,6 +55,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.timeSlotService = DefaultTimeSlotService(timeService: self.timeService,
                                                       loggingService: self.loggingService,
+                                                      locationService: self.locationService,
                                                       persistencyService: timeSlotPersistencyService)
         
         if #available(iOS 10.0, *)

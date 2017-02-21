@@ -151,6 +151,7 @@ class PagerViewControllerTests : XCTestCase
     private func createEmptyTimeSlot() -> TimeSlot
     {
         return TimeSlot(withStartTime: Date(),
+                        category: .unknown,
                         categoryWasSetByUser: false)
     }
 }

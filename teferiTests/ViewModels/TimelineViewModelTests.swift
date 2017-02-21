@@ -9,9 +9,10 @@ class TimelineViewModelTests : XCTestCase
     private var disposeBag : DisposeBag? = nil
     private var viewModel : TimelineViewModel!
     
-    private var timeService : TimeService!
+    private var timeService : MockTimeService!
     private var metricsService : MockMetricsService!
     private var appStateService : MockAppStateService!
+    private var locationService : MockLocationService!
     private var timeSlotService : MockTimeSlotService!
     private var editStateService : MockEditStateService!
     
@@ -21,8 +22,10 @@ class TimelineViewModelTests : XCTestCase
         self.timeService = MockTimeService()
         self.metricsService = MockMetricsService()
         self.appStateService = MockAppStateService()
+        self.locationService = MockLocationService()
         self.editStateService = MockEditStateService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
                                            appStateService: self.appStateService,
@@ -37,7 +40,8 @@ class TimelineViewModelTests : XCTestCase
     
     func testViewModelsForTheOlderDaysDoNotSubscribeForTimeSlotUpdates()
     {
-        let newMockTimeSlotService = MockTimeSlotService(timeService: self.timeService)
+        let newMockTimeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                         locationService: self.locationService)
         _ = TimelineViewModel(date: Date().yesterday,
                               timeService: self.timeService,
                               appStateService: self.appStateService,
@@ -49,8 +53,7 @@ class TimelineViewModelTests : XCTestCase
     
     func testTheNewlyAddedSlotHasNoEndTime()
     {
-        let timeSlot = self.createTimeSlot()
-        self.timeSlotService.add(timeSlot: timeSlot)
+        self.addTimeSlot()
         let lastSlot = viewModel.timelineItems.last!.timeSlot
         
         expect(lastSlot.endTime).to(beNil())
@@ -58,20 +61,18 @@ class TimelineViewModelTests : XCTestCase
     
     func testTheAddNewSlotsMethodEndsThePreviousTimeSlot()
     {
-        let timeSlot = self.createTimeSlot()
-        self.timeSlotService.add(timeSlot: timeSlot)
+        self.addTimeSlot()
         let firstSlot = viewModel.timelineItems.first!.timeSlot
         
-        let otherTimeSlot = self.createTimeSlot()
-        self.timeSlotService.add(timeSlot: otherTimeSlot)
+        self.addTimeSlot()
         
         expect(firstSlot.endTime).toNot(beNil())
     }
     
     func testConsecutiveTimeSlotsShouldNotDisplayTheCategoryText()
     {
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 0))
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 3))
+        self.addTimeSlot(minutesAfterNoon: 0)
+        self.addTimeSlot(minutesAfterNoon: 3)
         
         expect(self.viewModel.timelineItems.last!.shouldDisplayCategoryName).to(beFalse())
     }
@@ -80,10 +81,10 @@ class TimelineViewModelTests : XCTestCase
     {
         self.viewModel.refreshScreenObservable.subscribe(onNext: { _ in () }).addDisposableTo(self.disposeBag!)
         
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 0))
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 3))
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 5))
-        self.timeSlotService.add(timeSlot: self.createTimeSlot(minutesAfterNoon: 8))
+        self.addTimeSlot(minutesAfterNoon: 0)
+        self.addTimeSlot(minutesAfterNoon: 3)
+        self.addTimeSlot(minutesAfterNoon: 5)
+        self.addTimeSlot(minutesAfterNoon: 8)
         
         self.timeSlotService.update(timeSlot: self.viewModel.timelineItems[2].timeSlot, withCategory: .leisure, setByUser: true)
         
@@ -94,16 +95,16 @@ class TimelineViewModelTests : XCTestCase
     
     func testTheViewModelInitializesVerifyingTheShouldDisplayCategoryLogic()
     {
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
-        self.timeSlotService.add(timeSlot: self.createTimeSlot())
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
+        self.addTimeSlot()
         
-        let timeSlot = self.createTimeSlot()
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.addTimeSlot()
         self.timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure, setByUser: true)
         
-        self.timeSlotService.add(timeSlot: self.createTimeSlot())
-        self.timeSlotService.add(timeSlot: self.createTimeSlot())
-     
+        self.addTimeSlot()
+        self.addTimeSlot()
+        
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
                                            appStateService: self.appStateService,
@@ -115,9 +116,13 @@ class TimelineViewModelTests : XCTestCase
             .forEach { i, result in expect(self.viewModel.timelineItems[i].shouldDisplayCategoryName).to(equal(result)) }
     }
     
-    private func createTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
+    @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
         let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
-        return TimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)) 	, category: .work, categoryWasSetByUser: false)
+        
+        return self.timeSlotService.addTimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)),
+                                                category: .work,
+                                                categoryWasSetByUser: false,
+                                                tryUsingLatestLocation: false)!
     }
 }

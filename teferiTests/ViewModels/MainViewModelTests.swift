@@ -31,12 +31,12 @@ class MainViewModelTests : XCTestCase
         self.editStateService = MockEditStateService()
         self.smartGuessService = MockSmartGuessService()
         self.selectedDateService = MockSelectedDateService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
         
         self.viewModel = MainViewModel(timeService: self.timeService,
                                        metricsService: self.metricsService,
                                        timeSlotService: self.timeSlotService,
-                                       locationService: self.locationService,
                                        editStateService: self.editStateService,
                                        smartGuessService: self.smartGuessService,
                                        selectedDateService: self.selectedDateService)
@@ -66,8 +66,7 @@ class MainViewModelTests : XCTestCase
     
     func testTheUpdateMethodCallsTheMetricsService()
     {
-        let timeSlot = self.createTimeSlot(withCategory: .work)
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.addTimeSlot(withCategory: .work)
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
@@ -75,8 +74,7 @@ class MainViewModelTests : XCTestCase
     
     func testTheUpdateTimeSlotMethodChangesATimeSlotsCategory()
     {
-        let timeSlot = self.createTimeSlot(withCategory: .work)
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.addTimeSlot(withCategory: .work)
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(timeSlot.category).to(equal(Category.commute))
@@ -89,8 +87,7 @@ class MainViewModelTests : XCTestCase
             .isEditingObservable
             .subscribe(onNext: { editingEnded = !$0 })
         
-        let timeSlot = self.createTimeSlot(withCategory: .work)
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.addTimeSlot(withCategory: .work)
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(editingEnded).to(beTrue())
@@ -109,11 +106,11 @@ class MainViewModelTests : XCTestCase
     func testSmartGuessIsStrikedIfCategoryWasWrongOnUpdateTimeSlotMethod()
     {
         let location = CLLocation(latitude:43.4211, longitude:4.7562)
-        let timeSlot = TimeSlot(withStartTime: Date(),
-                                smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
-                                location: location)
         
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(),
+                                                        smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
+                                                        location: location)!
+        
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.last?.errorCount).to(equal(1))
@@ -122,14 +119,12 @@ class MainViewModelTests : XCTestCase
     func testSmartGuessIsAddedIfUpdatingATimeSlotWithNoSmartGuesses()
     {
         let previousCount = self.smartGuessService.smartGuesses.count
-        let timeSlot = TimeSlot(
-            withStartTime: Date(timeIntervalSinceNow: -100),
-            endTime: Date(),
-            category: .food,
-            location: CLLocation(latitude:43.4211, longitude:4.7562),
-            categoryWasSetByUser: true)
         
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(timeIntervalSinceNow: -100),
+                                                        category: .food,
+                                                        categoryWasSetByUser: true,
+                                                        location: CLLocation(latitude:43.4211, longitude:4.7562))!
+        
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
@@ -138,18 +133,21 @@ class MainViewModelTests : XCTestCase
     func testTheUpdateMethodMarksTimeSlotAsSetByUser()
     {
         let location = CLLocation(latitude:43.4211, longitude:4.7562)
-        let timeSlot = TimeSlot(withStartTime: Date(),
-                                smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
-                                location: location)
         
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(),
+                                                        smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
+                                                        location: location)!
+        
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(timeSlot.categoryWasSetByUser).to(beTrue())
     }
     
-    private func createTimeSlot(withCategory category: teferi.Category) -> TimeSlot
+    private func addTimeSlot(withCategory category: teferi.Category) -> TimeSlot
     {
-        return  TimeSlot(withStartTime: Date(), category: category, categoryWasSetByUser: false)
+        return self.timeSlotService.addTimeSlot(withStartTime: Date(),
+                                                category: category,
+                                                categoryWasSetByUser: false,
+                                                tryUsingLatestLocation: false)!
     }
 }

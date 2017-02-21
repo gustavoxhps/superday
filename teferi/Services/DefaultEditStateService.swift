@@ -12,6 +12,7 @@ class DefaultEditStateService : EditStateService
         self.isEditingObservable = self.isEditingVariable.asObservable()
         self.beganEditingVariable = Variable((CGPoint(),
                                               TimeSlot(withStartTime: timeService.now,
+                                                       category: .unknown,
                                                        categoryWasSetByUser: false)))
         
         self.beganEditingObservable = self.beganEditingVariable.asObservable()

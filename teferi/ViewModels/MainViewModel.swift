@@ -8,14 +8,12 @@ class MainViewModel
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let timeSlotService : TimeSlotService
-    private let locationService : LocationService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
     
     init(timeService: TimeService,
          metricsService: MetricsService,
          timeSlotService: TimeSlotService,
-         locationService : LocationService,
          editStateService: EditStateService,
          smartGuessService : SmartGuessService,
          selectedDateService : SelectedDateService)
@@ -23,7 +21,6 @@ class MainViewModel
         self.timeService = timeService
         self.metricsService = metricsService
         self.timeSlotService = timeSlotService
-        self.locationService = locationService
         self.editStateService = editStateService
         self.smartGuessService = smartGuessService
         
@@ -55,19 +52,18 @@ class MainViewModel
      */
     func addNewSlot(withCategory category: Category)
     {
-        let currentLocation = self.locationService.getLastKnownLocation()
+        guard let timeSlot =
+            self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now,
+                                             category: category,
+                                             categoryWasSetByUser: true,
+                                             tryUsingLatestLocation: true)
+            else { return }
         
-        let newSlot = TimeSlot(withStartTime: self.timeService.now,
-                               category: category,
-                               location: currentLocation,
-                               categoryWasSetByUser: true)
-        
-        if let location = currentLocation
+        if let location = timeSlot.location
         {
-            self.smartGuessService.add(withCategory: category, location: location)
+            self.smartGuessService.add(withCategory: timeSlot.category, location: location)
         }
         
-        self.timeSlotService.add(timeSlot: newSlot)
         self.metricsService.log(event: .timeSlotManualCreation)
     }
     

@@ -9,13 +9,13 @@ class OnboardingPage1 : OnboardingPage
     private lazy var timeSlots : [TimeSlot] =
     {
         return [
-            TimeSlot(withStartTime: self.getDate(addingHours: 9, andMinutes: 30),
-                     endTime: self.getDate(addingHours: 10, andMinutes: 0),
-                     category: .leisure, categoryWasSetByUser: false),
+            self.getTimeSlot(withStartTime: self.getDate(addingHours: 9, andMinutes: 30),
+                             endTime: self.getDate(addingHours: 10, andMinutes: 0),
+                             category: .leisure),
             
-            TimeSlot(withStartTime: self.getDate(addingHours: 10, andMinutes: 0),
-                     endTime: self.getDate(addingHours: 10, andMinutes: 55),
-                     category: .work, categoryWasSetByUser: false)
+            self.getTimeSlot(withStartTime: self.getDate(addingHours: 10, andMinutes: 0),
+                             endTime: self.getDate(addingHours: 10, andMinutes: 55),
+                             category: .work)
         ]
     }()
     
