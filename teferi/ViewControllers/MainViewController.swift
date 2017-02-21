@@ -57,9 +57,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         //Add button
         self.addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
         self.view.insertSubview(self.addButton, belowSubview: self.editView)
-        self.addButton.snp.makeConstraints { make in
-            make.left.right.bottom.top.equalTo(self.view)
-        }
+        self.addButton.constrainEdges(to: self.view)
         
         //Add fade overlay at bottom of timeline
         let bottomFadeOverlay = self.fadeOverlay(startColor: Color.white,
