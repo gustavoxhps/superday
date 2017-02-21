@@ -240,14 +240,17 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
 
         let cells = viewModel.visibleCells
         
-        cells.forEach({ (cell) in
-            cell.center = rotatePoint(target: cell.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
-
+        let pointToBaseMovement = rotatePoint(target: cells.first!.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
+        
+        for (index, cell) in cells.enumerated()
+        {
+            cell.center = rotatePoint(target: pointToBaseMovement, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat(index) * angleBetweenCells))
+            
             if !isInAllowedRange(point: cell.center)
             {
                 viewModel.remove(cell: cell)
             }
-        })
+        }
         
         guard var lastCellBasedOnRotationDirection = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
         
