@@ -1,6 +1,6 @@
 import UIKit
 
-class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
+class WheelViewHandler<ViewType, ItemType> where ViewType: UIButton
 {
     typealias Attribute = (image: UIImage, color: UIColor)
     

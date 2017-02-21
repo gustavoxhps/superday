@@ -29,7 +29,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewModel : WheelViewModel<ViewType, ItemType>
+    private let viewModel : WheelViewHandler<ViewType, ItemType>
     
     private(set) var selectedItem : ItemType?
     
@@ -90,7 +90,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         self.cellSize = cellSize
         self.dismissAction = dismissAction
         
-        self.viewModel = WheelViewModel<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
+        self.viewModel = WheelViewHandler<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
         
         super.init(frame: frame)
         
