@@ -3,7 +3,7 @@ import RxSwift
 import QuartzCore
 import CoreGraphics
 
-class AddTimeSlotView : UIView, WheelProtocol
+class AddTimeSlotView : UIView
 {
     //MARK: Fields
     private let isAddingVariable = Variable(false)
@@ -46,8 +46,9 @@ class AddTimeSlotView : UIView, WheelProtocol
                       endAngle: CGFloat.pi * 5 / 4,
                       angleBetweenCells: CGFloat.pi * 2 / 12,
                       items: Category.all,
-                      attributeSelector: self.toAttributes)
-        wheel.delegate = self
+                      attributeSelector: self.toAttributes,
+                      dismissAction: wheelDismissAction)
+
         wheel.addTarget(self, action: #selector(AddTimeSlotView.wheelChangedValue), for: .valueChanged)
         
         //Adds some blur to the background of the buttons
@@ -88,6 +89,11 @@ class AddTimeSlotView : UIView, WheelProtocol
     }
     
     //MARK: Methods
+    func wheelDismissAction(wheel: Wheel<Category>)
+    {
+        close()
+    }
+    
     func close()
     {
         guard self.isAdding == true else { return }
@@ -152,12 +158,5 @@ class AddTimeSlotView : UIView, WheelProtocol
     private func toAttributes(category: Category) -> (UIImage, UIColor)
     {
         return (category.icon.image, category.color)
-    }
-    
-    // MARK: - WheelProtocol
-    
-    func dismissWheel()
-    {
-        close()
     }
 }

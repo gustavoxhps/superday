@@ -1,13 +1,9 @@
 import UIKit
 
-protocol WheelProtocol
-{
-    func dismissWheel()
-}
-
 class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
 {
     typealias ViewType = UIButton
+    typealias DismissType = ((Wheel<ItemType>) -> ())
     
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
@@ -32,8 +28,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
-    
-    var delegate : WheelProtocol?
 
     private let viewModel : WheelViewModel<ViewType, ItemType>
     
@@ -45,6 +39,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     private let endAngle : CGFloat
     private var centerPoint : CGPoint
     private let angleBetweenCells : CGFloat
+    private let dismissAction : DismissType?
     
     private var measurementStartPoint : CGPoint
     {
@@ -79,7 +74,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         endAngle: CGFloat,
         angleBetweenCells: CGFloat,
         items: [ItemType],
-        attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)))
+        attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)),
+        dismissAction: DismissType?)
     {
         if startAngle >= endAngle
         {
@@ -92,6 +88,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         self.radius = radius
         self.centerPoint = centerPoint
         self.cellSize = cellSize
+        self.dismissAction = dismissAction
         
         self.viewModel = WheelViewModel<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
         
@@ -120,7 +117,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         let tapPoint: CGPoint = sender.location(in: self)
         if distance(a: tapPoint, b: centerPoint) > radius + cellSize.width
         {
-            delegate?.dismissWheel()
+            dismissAction?(self)
         }
     }
     
