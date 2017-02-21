@@ -21,7 +21,7 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X2e-Ng-Zy0">
-                    <rect key="frame" x="320" y="323" width="50" height="50"/>
+                    <rect key="frame" x="329" y="332" width="50" height="50"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="50" id="6Bh-5x-hbf"/>
                         <constraint firstAttribute="height" constant="50" id="7y5-gY-7dQ"/>
@@ -34,9 +34,9 @@
                 <constraint firstAttribute="bottom" secondItem="b7d-Tp-kcU" secondAttribute="bottom" id="7OW-V0-JMD"/>
                 <constraint firstAttribute="trailing" secondItem="b7d-Tp-kcU" secondAttribute="trailing" id="Pqz-FR-w2B"/>
                 <constraint firstItem="b7d-Tp-kcU" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.5" id="VF4-46-8L1"/>
-                <constraint firstAttribute="trailing" secondItem="X2e-Ng-Zy0" secondAttribute="trailing" constant="25" id="Y3Z-OR-yrN"/>
+                <constraint firstAttribute="trailing" secondItem="X2e-Ng-Zy0" secondAttribute="trailing" constant="16" id="Y3Z-OR-yrN"/>
                 <constraint firstItem="b7d-Tp-kcU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="pvi-Sb-dbx"/>
-                <constraint firstAttribute="bottom" secondItem="X2e-Ng-Zy0" secondAttribute="bottom" constant="25" id="sdQ-x6-oTM"/>
+                <constraint firstAttribute="bottom" secondItem="X2e-Ng-Zy0" secondAttribute="bottom" constant="16" id="sdQ-x6-oTM"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
