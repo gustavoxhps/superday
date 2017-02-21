@@ -10,7 +10,10 @@ class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
     private(set) var items : [ItemType]
     private let attributeSelector : (ItemType) -> Attribute
     
-    init(items: [ItemType], attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor))) {
+    init(items: [ItemType], attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)))
+    {
+        guard !items.isEmpty else { fatalError("empty data array") }
+        
         self.items = items
         self.attributeSelector = attributeSelector
     }
@@ -18,8 +21,6 @@ class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
     private func itemIndex(before index: Int?, clockwise: Bool) -> Int
     {
         guard let index = index else { return 0 }
-        
-        guard !items.isEmpty else { fatalError("empty data array") }
         
         guard items.count != 1 else { return 0 }
         
