@@ -280,7 +280,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         var animationSequence = DelayedSequence.start()
         
-        let delay = 0.04
+        let delay = TimeInterval(0.04)
         var previousCell : ViewType?
         
         for index in 0..<numberToShow
@@ -292,7 +292,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
 
             addSubview(cell)
             
-            animationSequence = animationSequence.after(TimeInterval(delay), animate(cell, presenting: true))
+            animationSequence = animationSequence.after(delay, animate(cell, presenting: true))
             
             previousCell = cell
         }
@@ -302,11 +302,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     {
         var animationSequence = DelayedSequence.start()
         
-        let delay = 0.02
+        let delay = TimeInterval(0.02)
         
         for cell in viewModel.visibleCells.filter({ $0.frame.intersects(bounds) })
         {
-            animationSequence = animationSequence.after(TimeInterval(delay), animate(cell, presenting: false))
+            animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
         }
         
         animationSequence.after(delay, cleanupAfterHide())
@@ -329,9 +329,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         return { delay in
             Timer.schedule(withDelay: delay)
             {
+                let translationTransform = CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y)
+                
                 cell.transform = presenting ?
-                    CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y) :
-                    CGAffineTransform.identity
+                    translationTransform :
+                    .identity
                 
                 cell.isHidden = false
                 
@@ -342,8 +344,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
                 
                 UIView.animate(withDuration: 0.225, animations: {
                     cell.transform = presenting ?
-                        CGAffineTransform.identity :
-                        CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y)
+                        .identity :
+                        translationTransform
                 })
                 
                 CATransaction.commit()
