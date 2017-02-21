@@ -41,7 +41,7 @@ class AddTimeSlotView : UIView, WheelProtocol
         wheel = Wheel(frame: self.bounds,
                       cellSize: CGSize(width: 50.0, height: 50.0),
                       centerPoint: self.addButton.center,
-                      radius: 120,
+                      radius: 110,
                       startAngle: CGFloat.pi / 4,
                       endAngle: CGFloat.pi * 5 / 4,
                       angleBetweenCells: CGFloat.pi * 2 / 12,
