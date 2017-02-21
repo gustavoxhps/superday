@@ -2,13 +2,13 @@ import UIKit
 
 class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
 {
-    typealias attribute = (image: UIImage, color: UIColor)
+    typealias Attribute = (image: UIImage, color: UIColor)
     
     private(set) var visibleCells = [ViewType]()
     private var reusableCells = Set<ViewType>()
     
     private(set) var items : [ItemType]
-    private let attributeSelector : (ItemType) -> attribute
+    private let attributeSelector : (ItemType) -> Attribute
     
     init(items: [ItemType], attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor))) {
         self.items = items
@@ -80,7 +80,7 @@ class WheelViewModel<ViewType, ItemType> where ViewType: UIButton
         reusableCells.removeAll()
     }
     
-    private func cellWithAttributes(cell: ViewType, attributes: attribute) -> ViewType
+    private func cellWithAttributes(cell: ViewType, attributes: Attribute) -> ViewType
     {
         cell.backgroundColor = attributes.color
         cell.setImage(attributes.image, for: .normal)

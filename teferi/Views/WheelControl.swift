@@ -172,7 +172,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         flickAnimator = UIDynamicAnimator(referenceView: self)
         flickAnimator.delegate = self
-//        flickAnimator.setValue(true, forKey: "debugEnabled")
         
         let flickViewStartingAngle = positiveAngle(startPoint: measurementStartPoint, endPoint: point, anchorPoint: centerPoint)
         let flickViewCenter = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: flickViewStartingAngle)
@@ -185,7 +184,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         flickAnimator.addBehavior(flickViewAttachment!)
 
         flickBehavior = UIDynamicItemBehavior(items: [flickView])
-        flickBehavior.addLinearVelocity(velocity, for: flickView) // TODO: consider using tangental velocity directly (though this should not matter much)
+        flickBehavior.addLinearVelocity(velocity, for: flickView)
         flickBehavior.allowsRotation = false
         flickBehavior.resistance = 5
         flickBehavior.elasticity = 1
@@ -245,8 +244,6 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         let cells = viewModel.visibleCells
         
         cells.forEach({ (cell) in
-            // TODO: this is prone to drifting of cells (change in radius) due to rounding errors
-            //       much better to work with angles directly, and simply calculate positions from those
             cell.center = rotatePoint(target: cell.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
 
             if !isInAllowedRange(point: cell.center)
@@ -255,30 +252,30 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             }
         })
         
-        guard var lastCellBasedOnRotationDirecation = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
+        guard var lastCellBasedOnRotationDirection = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
         
-        var angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
+        var angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirection.center, anchorPoint: centerPoint)
         
         var edgeAngle = (rotationDirection ? endAngle : startAngle)
         edgeAngle = toPositive(angle: edgeAngle)
         
         while abs(abs(angleOfLastPoint) - edgeAngle) > angleBetweenCells
         {
-            let newCell = viewModel.cell(before: lastCellBasedOnRotationDirecation, clockwise: rotationDirection, cellSize: cellSize)
+            let newCell = viewModel.cell(before: lastCellBasedOnRotationDirection, clockwise: rotationDirection, cellSize: cellSize)
             newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
-            newCell.center = rotatePoint(target: lastCellBasedOnRotationDirecation.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
+            newCell.center = rotatePoint(target: lastCellBasedOnRotationDirection.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
             newCell.isUserInteractionEnabled = !isSpinning
             
             addSubview(newCell)
             
-            lastCellBasedOnRotationDirecation = newCell
-            angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirecation.center, anchorPoint: centerPoint)
+            lastCellBasedOnRotationDirection = newCell
+            angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirection.center, anchorPoint: centerPoint)
         }
     }
     
     // MARK: - Presentation and dismissal logic
     
-    func show(below view: UIView, showing nuberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
+    func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
         view.superview?.insertSubview(self, belowSubview: view)
         
@@ -289,7 +286,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         let delay = 0.04
         var previewsCell : ViewType?
         
-        for index in 0..<nuberToShow
+        for index in 0..<numberToShow
         {
             let cell = viewModel.cell(before: previewsCell, clockwise: true, cellSize: cellSize)
             cell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
@@ -369,14 +366,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     private func isInAllowedRange(point: CGPoint) -> Bool
     {
-        // TODO: this should be doable with a simple dot product instead
         return allowedPath.contains(point)
     }
     
     private func shouldFlick(for velocity: CGPoint) -> Bool
     {
-        // TODO: this check should probably check tangental velocity instead,
-        //       or at least use euclidean distance to calculate the speed
         return max( abs( velocity.x ) , abs( velocity.y ) ) > 200
     }
 }
