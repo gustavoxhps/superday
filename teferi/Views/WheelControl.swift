@@ -328,7 +328,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
         }
         
-        animationSequence.after(delay, cleanupAfterHide())
+        animationSequence.after(animationDuration, cleanupAfterHide())
     }
     
     private func cleanupAfterHide() -> (TimeInterval) -> ()
