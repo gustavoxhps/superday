@@ -1,6 +1,6 @@
 import UIKit
 
-class WheelViewHandler<ViewType, ItemType> where ViewType: UIButton
+class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
 {
     typealias Attribute = (image: UIImage, color: UIColor)
     
@@ -18,27 +18,27 @@ class WheelViewHandler<ViewType, ItemType> where ViewType: UIButton
         self.attributeSelector = attributeSelector
     }
     
-    private func itemIndex(before index: Int?, clockwise: Bool) -> Int
+    private func itemIndex(before index: Int?, forward: Bool) -> Int
     {
         guard let index = index else { return 0 }
         
         guard items.count != 1 else { return 0 }
         
-        let beforeIndex = index + (clockwise ? 1 : -1)
+        let beforeIndex = index + (forward ? 1 : -1)
         
         return (beforeIndex + items.count) % items.count
     }
     
-    func lastVisibleCell(clockwise: Bool) -> ViewType?
+    func lastVisibleCell(forward: Bool) -> ViewType?
     {
         guard !visibleCells.isEmpty else { return nil }
         
-        return clockwise ? visibleCells.last! : visibleCells.first!
+        return forward ? visibleCells.last! : visibleCells.first!
     }
     
-    func cell(before cell: ViewType?, clockwise: Bool, cellSize: CGSize) -> ViewType
+    func cell(before cell: ViewType?, forward: Bool, cellSize: CGSize) -> ViewType
     {
-        let nextItemIndex = itemIndex(before: cell?.tag, clockwise: clockwise)
+        let nextItemIndex = itemIndex(before: cell?.tag, forward: forward)
         
         let attributes = attributeSelector(items[nextItemIndex])
         
@@ -50,7 +50,7 @@ class WheelViewHandler<ViewType, ItemType> where ViewType: UIButton
         cellToReturn.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
         cellToReturn.adjustsImageWhenHighlighted = false
         cellToReturn.tag = nextItemIndex
-        visibleCells.insert(cellToReturn, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
+        visibleCells.insert(cellToReturn, at: forward ? visibleCells.endIndex : visibleCells.startIndex)
         
         return cellToReturn
     }

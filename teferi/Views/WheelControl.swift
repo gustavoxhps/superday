@@ -16,7 +16,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     {
         didSet
         {
-            viewModel.visibleCells.forEach { (cell) in
+            viewHandler.visibleCells.forEach { (cell) in
                 cell.isUserInteractionEnabled = !isSpinning
             }
         }
@@ -29,7 +29,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewModel : WheelViewHandler<ViewType, ItemType>
+    private let viewHandler : ItemViewHandler<ViewType, ItemType>
     
     private(set) var selectedItem : ItemType?
     
@@ -97,7 +97,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         self.cellSize = cellSize
         self.dismissAction = dismissAction
         
-        self.viewModel = WheelViewHandler<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
+        self.viewHandler = ItemViewHandler<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
         
         super.init(frame: frame)
         
@@ -252,7 +252,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     {
         let rotationDirection = angleToRotate < 0
 
-        let cells = viewModel.visibleCells
+        let cells = viewHandler.visibleCells
         
         let pointToBaseMovement = rotatePoint(target: cells.first!.center, aroundOrigin: centerPoint, by: toPositive(angle: angleToRotate))
         
@@ -262,11 +262,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             
             if !isInAllowedRange(point: cell.center)
             {
-                viewModel.remove(cell: cell)
+                viewHandler.remove(cell: cell)
             }
         }
         
-        guard var lastCellBasedOnRotationDirection = viewModel.lastVisibleCell(clockwise: rotationDirection) else { return }
+        guard var lastCellBasedOnRotationDirection = viewHandler.lastVisibleCell(forward: rotationDirection) else { return }
         
         var angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirection.center, anchorPoint: centerPoint)
         
@@ -275,7 +275,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         while abs(abs(angleOfLastPoint) - edgeAngle) > angleBetweenCells
         {
-            let newCell = viewModel.cell(before: lastCellBasedOnRotationDirection, clockwise: rotationDirection, cellSize: cellSize)
+            let newCell = viewHandler.cell(before: lastCellBasedOnRotationDirection, forward: rotationDirection, cellSize: cellSize)
             newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
             newCell.center = rotatePoint(target: lastCellBasedOnRotationDirection.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
             newCell.isUserInteractionEnabled = !isSpinning
@@ -304,7 +304,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         for index in 0..<numberToShow
         {
-            let cell = viewModel.cell(before: previousCell, clockwise: true, cellSize: cellSize)
+            let cell = viewHandler.cell(before: previousCell, forward: true, cellSize: cellSize)
             cell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
             cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
             cell.isHidden = true
@@ -323,7 +323,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         let delay = TimeInterval(0.02)
         
-        for cell in viewModel.visibleCells.filter({ $0.frame.intersects(bounds) })
+        for cell in viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) })
         {
             animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
         }
@@ -337,7 +337,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             Timer.schedule(withDelay: delay)
             {
                 self.resetFlick()
-                self.viewModel.cleanAll()
+                self.viewHandler.cleanAll()
                 self.removeFromSuperview()
             }
         }
@@ -383,7 +383,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     
     @objc private func didSelectCell(_ sender: ViewType)
     {
-        selectedItem = viewModel.items[sender.tag]
+        selectedItem = viewHandler.items[sender.tag]
         sendActions(for: .valueChanged)
     }
     
