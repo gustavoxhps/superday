@@ -338,6 +338,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
                     translationTransform :
                     .identity
                 
+                cell.alpha = presenting ? 0.0 : 1.0
+                
                 cell.isHidden = false
                 
                 let timingFunction = CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1)
@@ -345,10 +347,13 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
                 CATransaction.begin()
                 CATransaction.setAnimationTimingFunction(timingFunction)
                 
-                UIView.animate(withDuration: 0.225, animations: {
+                UIView.animate(withDuration: 0.225, animations:
+                {
                     cell.transform = presenting ?
                         .identity :
                         translationTransform
+                    
+                    cell.alpha = presenting ? 1.0 : 0.0
                 })
                 
                 CATransaction.commit()
