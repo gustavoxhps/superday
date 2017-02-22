@@ -8,6 +8,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
 {
     private var timeService : MockTimeService!
     private var loggingService : LoggingService!
+    private var locationService : MockLocationService!
     private var timeSlotService : MockTimeSlotService!
     private var notificationService : PostiOSTenNotificationService!
     
@@ -15,7 +16,9 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     {
         self.timeService = MockTimeService()
         self.loggingService = MockLoggingService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.locationService = MockLocationService()
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
         
         self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
                                                                  loggingService: self.loggingService,
@@ -24,7 +27,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     
     func testFakeTimeSlotIsInsertedInNotification()
     {
-        self.timeSlotService.add(timeSlot: TimeSlot(withStartTime: Date(), category: .work, categoryWasSetByUser: false))
+        self.timeSlotService.addTimeSlot(withStartTime: Date(), category: .work, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: Date())
         
         waitUntil { done in
@@ -38,7 +41,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     
     func testFakeTimeSlotIsNotInsertionInNotification()
     {
-        self.timeSlotService.add(timeSlot: TimeSlot(withStartTime: Date(), category: .work, categoryWasSetByUser: false))
+        self.timeSlotService.addTimeSlot(withStartTime: Date(), category: .work, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         
         print(timeSlotService.getTimeSlots(forDay: Date()))
         

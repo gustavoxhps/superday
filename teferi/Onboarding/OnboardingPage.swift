@@ -159,4 +159,14 @@ class OnboardingPage : UIViewController
             },
             completion: nil)
     }
+    
+    func getTimeSlot(withStartTime startTime: Date, endTime: Date, category: Category) -> TimeSlot
+    {
+        let timeSlot = TimeSlot(withStartTime: startTime,
+                                category: category,
+                                categoryWasSetByUser: false)
+        timeSlot.endTime = endTime
+        
+        return timeSlot
+    }
 }

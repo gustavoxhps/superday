@@ -18,8 +18,10 @@ class TimelineViewControllerTests : XCTestCase
         self.locator = MockLocator()
         
         self.locator.timeService.mockDate = self.noon.addingTimeInterval(-120)
-        self.locator.timeSlotService.add(timeSlot: TimeSlot(withStartTime: self.noon.addingTimeInterval(-120),
-                                                            categoryWasSetByUser: true))
+        self.locator.timeSlotService.addTimeSlot(withStartTime: self.noon.addingTimeInterval(-120),
+                                                 category: .unknown,
+                                                 categoryWasSetByUser: true,
+                                                 tryUsingLatestLocation: false)
         self.viewModel = self.locator.getTimelineViewModel(forDate: self.noon)
         
         self.timelineViewController = TimelineViewController(viewModel: self.viewModel)
@@ -36,7 +38,7 @@ class TimelineViewControllerTests : XCTestCase
     func testScrollingIsDisabledWhenEnteringEditMode()
     {
         self.locator.editStateService.notifyEditingBegan(point: CGPoint(),
-                                                         timeSlot: TimeSlot(withStartTime: Date(),  categoryWasSetByUser: false));
+                                                         timeSlot: TimeSlot(withStartTime: Date(), category: .unknown, categoryWasSetByUser: false));
         
         let scrollView = self.timelineViewController.tableView!
         
@@ -45,7 +47,7 @@ class TimelineViewControllerTests : XCTestCase
     
     func testScrollingIsEnabledWhenExitingEditMode()
     {
-        self.locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: TimeSlot(withStartTime: Date(), categoryWasSetByUser: false));
+        self.locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: TimeSlot(withStartTime: Date(), category: .unknown, categoryWasSetByUser: false));
         self.locator.editStateService.notifyEditingEnded();
         
         let scrollView = self.timelineViewController.tableView!

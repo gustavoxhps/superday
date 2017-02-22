@@ -16,7 +16,8 @@ class OnboardingPageViewControllerTests : XCTestCase
         
         self.notificationService = MockNotificationService()
         self.onBoardingPageViewController = controller.inject(MockTimeService(),
-                                                              MockTimeSlotService(timeService: MockTimeService()),
+                                                              MockTimeSlotService(timeService: MockTimeService(),
+                                                                                  locationService: MockLocationService()),
                                                               MockSettingsService(),
                                                               DefaultAppStateService(),
                                                               MainViewController(),

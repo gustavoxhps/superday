@@ -57,7 +57,6 @@ class DefaultViewModelLocator : ViewModelLocator
         let viewModel = MainViewModel(timeService: self.timeService,
                                       metricsService: self.metricsService,
                                       timeSlotService: self.timeSlotService,
-                                      locationService: self.locationService,
                                       editStateService: self.editStateService,
                                       smartGuessService: self.smartGuessService,
                                       selectedDateService: self.selectedDateService)

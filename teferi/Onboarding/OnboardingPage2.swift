@@ -13,13 +13,13 @@ class OnboardingPage2 : OnboardingPage
     private lazy var timeSlots : [TimeSlot] =
     {
         return [
-            TimeSlot(withStartTime: self.getDate(addingHours: 10, andMinutes: 30),
-                     endTime: self.getDate(addingHours: 11, andMinutes: 0),
-                     category: .friends, categoryWasSetByUser: false),
+            self.getTimeSlot(withStartTime: self.getDate(addingHours: 10, andMinutes: 30),
+                             endTime: self.getDate(addingHours: 11, andMinutes: 0),
+                             category: .friends),
             
-            TimeSlot(withStartTime: self.getDate(addingHours: 11, andMinutes: 0),
-                     endTime: self.getDate(addingHours: 11, andMinutes: 55),
-                     category: .work, categoryWasSetByUser: false)
+            self.getTimeSlot(withStartTime: self.getDate(addingHours: 11, andMinutes: 0),
+                             endTime: self.getDate(addingHours: 11, andMinutes: 55),
+                             category: .work)
         ]
     }()
     
@@ -35,9 +35,9 @@ class OnboardingPage2 : OnboardingPage
     {   
         let slot = self.timeSlots[self.editIndex]
         self.editedTimeSlot = TimeSlot(withStartTime: slot.startTime,
-                                       endTime: slot.endTime,
                                        category: self.editTo,
                                        categoryWasSetByUser: false)
+        self.editedTimeSlot.endTime = slot.endTime
         
         self.initAnimatedTitleText(self.textView)
         self.timelineCells = self.initAnimatingTimeline(with: self.timeSlots, in: self.timelineView)
@@ -179,5 +179,4 @@ class OnboardingPage2 : OnboardingPage
             }
         }
     }
-    
 }
