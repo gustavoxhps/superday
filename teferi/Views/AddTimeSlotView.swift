@@ -45,7 +45,7 @@ class AddTimeSlotView : UIView
                       startAngle: CGFloat.pi / 4,
                       endAngle: CGFloat.pi * 5 / 4,
                       angleBetweenCells: 0.45,
-                      items: Category.all,
+                      items: Category.all.filter({ $0 != .unknown }),
                       attributeSelector: self.toAttributes,
                       dismissAction: wheelDismissAction)
 
