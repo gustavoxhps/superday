@@ -46,6 +46,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         return CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
     }
     
+    private let animationDuration = TimeInterval(0.225)
+    
     private lazy var startAnglePoint : CGPoint = {
         return self.rotatePoint(target: self.measurementStartPoint, aroundOrigin: self.centerPoint, by: self.startAngle)
     }()
@@ -334,6 +336,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
             {
                 let translationTransform = CGAffineTransform(translationX: self.centerPoint.x - cell.center.x, y: self.centerPoint.y - cell.center.y)
                 
+                let scaleTransform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+                
                 cell.transform = presenting ?
                     translationTransform :
                     .identity
@@ -347,11 +351,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
                 CATransaction.begin()
                 CATransaction.setAnimationTimingFunction(timingFunction)
                 
-                UIView.animate(withDuration: 0.225, animations:
+                UIView.animate(withDuration: self.animationDuration, animations:
                 {
                     cell.transform = presenting ?
                         .identity :
-                        translationTransform
+                        scaleTransform.concatenating(translationTransform)
                     
                     cell.alpha = presenting ? 1.0 : 0.0
                 })
