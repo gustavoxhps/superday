@@ -48,6 +48,7 @@ class WheelViewHandler<ViewType, ItemType> where ViewType: UIButton
         
         cellToReturn = cellWithAttributes( cell: cellToReturn, attributes: attributes)
         cellToReturn.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
+        cellToReturn.adjustsImageWhenHighlighted = false
         cellToReturn.tag = nextItemIndex
         visibleCells.insert(cellToReturn, at: clockwise ? visibleCells.endIndex : visibleCells.startIndex)
         
