@@ -142,6 +142,9 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
+		AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* WheelControl.swift */; };
+		AC3901F41E5665CF008063C7 /* WheelViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* WheelViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
@@ -335,6 +338,9 @@
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
+		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrigonometryHelper.swift; path = Helpers/TrigonometryHelper.swift; sourceTree = "<group>"; };
+		AC0A632B1E548FE800D56433 /* WheelControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelControl.swift; path = Views/WheelControl.swift; sourceTree = "<group>"; };
+		AC3901F31E5665CF008063C7 /* WheelViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelViewHandler.swift; path = ViewModels/WheelViewHandler.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
@@ -458,6 +464,7 @@
 				24116A031D9DACCD00762BD6 /* AnimationHelpers.swift */,
 				2421F8C21D9BACB500AF8857 /* ClosureGestureRecognizer.swift */,
 				24EB96821DE709790040C211 /* DelayedSequence.swift */,
+				AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -588,6 +595,7 @@
 				BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */,
 				24564F4C1D83207900D9A8AE /* TimelineViewModel.swift */,
 				2416B27E1E27B71E00CE283B /* TopBarViewModel.swift */,
+				AC3901F31E5665CF008063C7 /* WheelViewHandler.swift */,
 			);
 			name = ViewModels;
 			sourceTree = "<group>";
@@ -631,6 +639,7 @@
 				2407A9871D9D512D00066889 /* LaunchAnimationView.swift */,
 				24564F531D83254E00D9A8AE /* TimelineCell.swift */,
 				24564F541D83254E00D9A8AE /* TimelineCell.xib */,
+				AC0A632B1E548FE800D56433 /* WheelControl.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -927,6 +936,7 @@
 				TargetAttributes = {
 					240AC7131D748C8800F21F4F = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = B227VTMZ94;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -1176,6 +1186,7 @@
 				24564F601D8325CC00D9A8AE /* TimeSlot.swift in Sources */,
 				24D18E301DF06B9E0046B202 /* SmartGuessModelAdapter.swift in Sources */,
 				513535D61DA2756C00A365A9 /* OnboardingPageViewController.swift in Sources */,
+				AC3901F41E5665CF008063C7 /* WheelViewHandler.swift in Sources */,
 				24224B081E28E37700AD7575 /* TimelineItem.swift in Sources */,
 				24EB96761DE7080F0040C211 /* TimeSlotService.swift in Sources */,
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
@@ -1194,6 +1205,7 @@
 				247F05F81D87322600451BAD /* LocationService.swift in Sources */,
 				24B03B5B1D9E4D1100452D16 /* SettingsService.swift in Sources */,
 				24DE23F21E1BB32F0089B49E /* CalendarViewController.swift in Sources */,
+				AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */,
 				51EAA2881DC0BA910025680D /* UIViewExtensions.swift in Sources */,
 				246531721DA7B4A10066DFE0 /* PreiOSTenNotificationService.swift in Sources */,
 				2482CAFF1DB12F9F00E892C1 /* OnboardingPager.swift in Sources */,
@@ -1226,6 +1238,7 @@
 				7E3C06991E30B7CA00859747 /* Strings.swift in Sources */,
 				24EB96851DE709830040C211 /* PredicateExtensions.swift in Sources */,
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
+				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,
 				24564F4D1D83207900D9A8AE /* MainViewModel.swift in Sources */,
 				2416B27F1E27B71E00CE283B /* TopBarViewModel.swift in Sources */,
 				247F05FA1D87325600451BAD /* PersistencyService.swift in Sources */,
@@ -1440,7 +1453,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B227VTMZ94;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = teferi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1462,7 +1475,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = B227VTMZ94;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = teferi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

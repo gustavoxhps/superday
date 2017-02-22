@@ -71,7 +71,7 @@ class EditTimeSlotView : UIView
         
         self.alpha = 1
         
-        self.editButtons = Constants.categories
+        self.editButtons = Category.all
             .filter { c in c != .unknown && c != timeSlot.category }
             .map { category in return self.mapCategoryIntoView(category, timeSlot) }
         
