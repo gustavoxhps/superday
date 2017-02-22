@@ -46,6 +46,11 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         return CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
     }
     
+    private var cellDiagonalDistance: CGFloat
+    {
+        return sqrt(pow(cellSize.width, 2) + pow(cellSize.height, 2))
+    }
+    
     private let animationDuration = TimeInterval(0.225)
     
     private lazy var startAnglePoint : CGPoint = {
@@ -133,6 +138,13 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         switch sender.state {
         case .began:
+            
+            if distance(a: panPoint, b: centerPoint) > radius + cellDiagonalDistance * 1.5
+            {
+                dismissAction?(self)
+                sender.isEnabled = false
+                return
+            }
             
             isSpinning = true
             lastPanPoint = panPoint
@@ -282,6 +294,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         view.superview?.insertSubview(self, belowSubview: view)
         
         self.centerPoint = view.center
+        
+        self.panGesture.isEnabled = true
         
         var animationSequence = DelayedSequence.start()
         
