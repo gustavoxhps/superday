@@ -59,7 +59,7 @@ class TimelineViewControllerTests : XCTestCase
     {   
         let indexPath = IndexPath(row: self.viewModel.timelineItems.count - 1, section: 0)
         let cell = self.timelineViewController.tableView(self.timelineViewController.tableView, cellForRowAt: indexPath) as! TimelineCell
-        let elapsedTimeLabel = cell.subviews[4] as! UILabel
+        let elapsedTimeLabel = cell.subviews[5] as! UILabel
         let beforeElapsedTimeText = elapsedTimeLabel.text
         
         self.locator.timeService.mockDate = self.noon

@@ -82,7 +82,7 @@ class OnboardingPage2 : OnboardingPage
             let cell = self.timelineCells[self.editIndex]
             let slot = self.timeSlots[self.editIndex]
             self.editView.onEditBegan(
-                point: cell.categoryIcon.convert(cell.categoryIcon.center, to: self.timelineView),
+                point: cell.categoryCircle.convert(cell.categoryCircle.center, to: self.timelineView),
                 timeSlot: slot)
         }
     }
@@ -120,7 +120,7 @@ class OnboardingPage2 : OnboardingPage
     
     private func moveCursorToCell(delay : TimeInterval)
     {
-        moveCursor(to: { self.timelineCells[self.editIndex].categoryIcon! },
+        moveCursor(to: { self.timelineCells[self.editIndex].categoryCircle! },
                    offset: CGPoint(x: 5, y: 5), delay: delay)
     }
     
