@@ -16,16 +16,16 @@
 
 
 //Categories
-"Commute" = "commute";
-"Work" = "work";
-"Food" = "food";
-"Leisure" = "leisure";
-"Family" = "family";
-"Shopping" = "shopping";
-"Friends" = "friends";
-"Hobby" = "hobby";
-"Household" = "household";
-"Fitness" = "fitness";
-"Kids" = "kids";
-"School" = "school";
-"Unknown" = "unknown";
+"Commute" = "Commute";
+"Work" = "Work";
+"Food" = "Food";
+"Leisure" = "Leisure";
+"Family" = "Family";
+"Shopping" = "Shopping";
+"Friends" = "Friends";
+"Hobby" = "Hobby";
+"Household" = "Household";
+"Fitness" = "Fitness";
+"Kids" = "Kids";
+"School" = "School";
+"Unknown" = "Unknown";
