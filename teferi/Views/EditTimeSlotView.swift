@@ -143,16 +143,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         while isMovingFarward ? lastCellBasedOnDirection.frame.minX + cellSize.width < rightBoundryX : lastCellBasedOnDirection.frame.minX - cellSpacing > leftBoundryX
         {
-            
-            print(isInAllowedRange(lastCellBasedOnDirection))
-            
             let newCell = viewHandler.cell(before: lastCellBasedOnDirection, forward: isMovingFarward, cellSize: cellSize)
             newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
-            
             newCell.center = CGPoint(x: lastCellBasedOnDirection.center.x + pageWidth * (isMovingFarward ? 1 : -1), y: mainY)
             
-            print(isInAllowedRange(newCell))
-            print(newCell.frame.minX, leftBoundryX, rightBoundryX, newCell.frame.maxX)
             applyScaleTransformIfNeeded(at: newCell)
             
             addSubview(newCell)
