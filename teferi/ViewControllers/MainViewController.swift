@@ -89,7 +89,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     
      private func createBindings()
      {
-        self.gestureRecognizer = ClosureGestureRecognizer(withClosure: { self.viewModel.notifyEditingEnded() })
+        editView.dismissAction = { self.viewModel.notifyEditingEnded() }
         
         //Edit state
         self.viewModel
@@ -112,8 +112,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .dateObservable
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
-        
-        self.editView.addGestureRecognizer(self.gestureRecognizer)
         
         //Add button must be added like this due to .xib/.storyboard restrictions
         self.view.insertSubview(self.addButton, belowSubview: self.editView)

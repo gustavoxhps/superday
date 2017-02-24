@@ -52,6 +52,8 @@ class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
         cellToReturn.tag = nextItemIndex
         visibleCells.insert(cellToReturn, at: forward ? visibleCells.endIndex : visibleCells.startIndex)
         
+        cellToReturn.transform = .identity
+        
         return cellToReturn
     }
     
