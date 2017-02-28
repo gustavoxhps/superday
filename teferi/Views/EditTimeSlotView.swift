@@ -121,11 +121,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     {
         guard movement != 0 else { return }
         
-        let isMovingFarward = movement < 0
+        let isMovingForward = movement < 0
         
         let cells = viewHandler.visibleCells
 
-        let pointToBaseMovement = isMovingFarward ? CGPoint(x: cells.first!.center.x + movement, y: mainY) : CGPoint(x: cells[1].center.x + movement - pageWidth, y: mainY)
+        let pointToBaseMovement = isMovingForward ? CGPoint(x: cells.first!.center.x + movement, y: mainY) : CGPoint(x: cells[1].center.x + movement - pageWidth, y: mainY)
 
         for (index, cell) in cells.enumerated()
         {
@@ -139,13 +139,13 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         applyScaleTransformIfNeeded(at: cells.first!)
         
-        guard var lastCellBasedOnDirection = viewHandler.lastVisibleCell(forward: isMovingFarward) else { return }
+        guard var lastCellBasedOnDirection = viewHandler.lastVisibleCell(forward: isMovingForward) else { return }
         
-        while isMovingFarward ? lastCellBasedOnDirection.frame.minX + cellSize.width < rightBoundryX : lastCellBasedOnDirection.frame.minX - cellSpacing > leftBoundryX
+        while isMovingForward ? lastCellBasedOnDirection.frame.minX + cellSize.width < rightBoundryX : lastCellBasedOnDirection.frame.minX - cellSpacing > leftBoundryX
         {
-            let newCell = viewHandler.cell(before: lastCellBasedOnDirection, forward: isMovingFarward, cellSize: cellSize)
+            let newCell = viewHandler.cell(before: lastCellBasedOnDirection, forward: isMovingForward, cellSize: cellSize)
             newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
-            newCell.center = CGPoint(x: lastCellBasedOnDirection.center.x + pageWidth * (isMovingFarward ? 1 : -1), y: mainY)
+            newCell.center = CGPoint(x: lastCellBasedOnDirection.center.x + pageWidth * (isMovingForward ? 1 : -1), y: mainY)
             
             applyScaleTransformIfNeeded(at: newCell)
             
@@ -190,7 +190,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         self.alpha = 1.0
         
-        let items = Category.all .filter { $0 != .unknown && $0 != timeSlot.category }
+        let items = Category.all.filter { $0 != .unknown && $0 != timeSlot.category }
         
         viewHandler?.cleanAll()
         viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))
