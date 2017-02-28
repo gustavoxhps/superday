@@ -21,6 +21,8 @@ protocol TimeSlotService
      */
     func getTimeSlots(forDay day: Date) -> [TimeSlot]
     
+    func getTimeSlots(sinceDaysAgo days: Int) -> [TimeSlot]
+    
     /**
      Changes the category of an existing TimeSlot.
      

@@ -16,5 +16,5 @@ class Constants
     static let editAnimationDuration = 0.08
     
     //Notification category identifier
-    static let notificationTimeSlotCategorySelectionIdentifier = "notificationTimeSlotCategorySelectionIdentifier"
+    static let notificationCategoryId = "notificationTimeSlotCategorySelectionIdentifier"
 }

@@ -31,7 +31,7 @@ class TimelineViewModel
         self.timeObservable =
             self.isCurrentDay ?
                 Observable<Int>.timer(0, period: 10, scheduler: MainScheduler.instance) :
-            Observable.empty()
+                Observable.empty()
     }
     
     func notifyEditingBegan(point: CGPoint, index: Int)
@@ -77,6 +77,20 @@ class TimelineViewModel
         
         return Observable.of(stateObservable, updateObservable).merge()
     }()
+    
+    private(set) lazy var editViewObservable : Observable<Int> =
+    {
+        guard self.isCurrentDay else { return Observable<Int>.empty() }
+        
+        let observable =
+            self.appStateService
+                .appStateObservable
+                .filter(self.appWasOpenedViaNotification)
+                .map { _ in return self.timelineItems.count - 1 }
+                .distinctUntilChanged()
+        
+        return observable
+    }()
 			
     private(set) lazy var timelineItems : [TimelineItem] =
     {
@@ -100,6 +114,8 @@ class TimelineViewModel
     {
         return self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
     }
+
+    private func appWasOpenedViaNotification(_ appState: AppState) -> Bool { return appState == .activeFromNotification }
 
     private func appIsActive(_ appState: AppState) -> Bool { return appState == .active }
 

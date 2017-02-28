@@ -64,6 +64,11 @@ class TimelineViewController : UITableViewController
             .isEditingObservable
             .subscribe(onNext: self.onIsEditing)
             .addDisposableTo(self.disposeBag)
+        
+        self.viewModel
+            .editViewObservable
+            .subscribe(onNext: self.onEditView)
+            .addDisposableTo(self.disposeBag)
     }
     
     private func onTimeSlotCreated(atIndex index: Int)
@@ -100,6 +105,25 @@ class TimelineViewController : UITableViewController
         
         let indexPath = IndexPath(row: self.viewModel.timelineItems.count - 1, section: 0)
         self.tableView.reloadRows(at: [indexPath], with: .none)
+    }
+    
+    private func onEditView(_ index: Int)
+    {
+        DispatchQueue.main.async
+        {
+            let scrollIndexPath = IndexPath(row: index + 1, section: 0)
+            let lastCellIndexPath = IndexPath(row: index, section: 0)
+
+            self.tableView.scrollToRow(at: scrollIndexPath, at: .bottom, animated: false)
+        
+            let lastCell = self.tableView(self.tableView, cellForRowAt: lastCellIndexPath) as! TimelineCell
+            let centerPoint = lastCell.categoryCircle.convert(lastCell.categoryCircle.center, to: nil)
+        
+            //We need to check if the cell is on screen because multiple view controllers can be loaded at the same time
+            guard lastCell.window != nil else { return }
+            
+            self.onCategoryTapped(point: centerPoint, index: index)
+        }
     }
     
     private func onCategoryTapped(point: CGPoint, index: Int)

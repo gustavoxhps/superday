@@ -9,6 +9,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 {   
     //MARK: Fields
     private var invalidateOnWakeup = false
+    private var showEditViewOnWakeup = false
     private let disposeBag = DisposeBag()
     private let notificationAuthorizationVariable = Variable(false)
     
@@ -62,6 +63,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         {
             self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
                                                                      loggingService: self.loggingService,
+                                                                     settingsService: self.settingsService,
                                                                      timeSlotService: self.timeSlotService)
         }
         else
@@ -92,12 +94,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         {
             self.locationService.startLocationTracking()
             return true
-        }
-        
-        if #available(iOS 10.0, *)
-        {
-            let notificationService = self.notificationService as? PostiOSTenNotificationService
-            notificationService?.setUserNotificationActions()
         }
         
         self.initializeWindowIfNeeded()
@@ -193,11 +189,22 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             self.invalidateOnWakeup = false
             self.appStateService.currentAppState = .needsRefreshing
         }
+        
+        if self.showEditViewOnWakeup
+        {
+            self.showEditViewOnWakeup = false
+            self.appStateService.currentAppState = .activeFromNotification
+        }
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
     {
         self.notificationAuthorizationVariable.value = true
+    }
+    
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification)
+    {
+        self.showEditViewOnWakeup = true
     }
     
     func application(_ application: UIApplication,
