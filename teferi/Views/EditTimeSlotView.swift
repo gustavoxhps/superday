@@ -170,7 +170,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         let scaleFactor = abs(distanceOutOfLeftBound / cellSize.width)
         
         let scaleTransform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-        let positionTransform = CGAffineTransform(translationX: cellSize.width / 2 - scaleFactor * cellSize.width / 2, y: 1)
+        let positionTransform = CGAffineTransform(translationX: cellSize.width / 2 - scaleFactor * cellSize.width / 2, y: 0)
         
         cell.transform = scaleTransform.concatenating(positionTransform)
     }
