@@ -143,7 +143,9 @@ class TimelineViewModel
                 let timeSlot = enumerated.element
                 let n = enumerated.offset
                 
-                if let last = accumulated.last, last.timeSlot.category == timeSlot.category
+                if timeSlot.category != .unknown,
+                    let last = accumulated.last,
+                    last.timeSlot.category == timeSlot.category
                 {
                     return accumulated.dropLast() + [
                         last.withoutDurations(),

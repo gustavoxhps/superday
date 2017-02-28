@@ -51,13 +51,7 @@
                     </accessibility>
                     <constraints>
                         <constraint firstAttribute="width" constant="32" id="Vwj-5s-bBh"/>
-                        <constraint firstAttribute="height" constant="32" id="dtC-VY-JbA">
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                    <integer key="value" value="16"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </constraint>
+                        <constraint firstAttribute="height" constant="32" id="dtC-VY-JbA"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">

@@ -77,6 +77,14 @@ class TimelineViewModelTests : XCTestCase
         expect(self.viewModel.timelineItems.last!.shouldDisplayCategoryName).to(beFalse())
     }
     
+    func testViewModelNeverMergesUnknownTimeSlots()
+    {
+        self.addTimeSlot(minutesAfterNoon: 0, category: .unknown)
+        self.addTimeSlot(minutesAfterNoon: 3, category: .unknown)
+        
+        expect(self.viewModel.timelineItems.last!.shouldDisplayCategoryName).to(beTrue())
+    }
+    
     func testUpdatingTheNthTimeSlotShouldRecalculateWhetherTheNPlus1thShouldDisplayTheCategoryTextOrNot()
     {
         self.viewModel.refreshScreenObservable.subscribe(onNext: { _ in () }).addDisposableTo(self.disposeBag!)
@@ -118,10 +126,15 @@ class TimelineViewModelTests : XCTestCase
     
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
+        return self.addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)
+    }
+    
+    @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category) -> TimeSlot
+    {
         let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         
         return self.timeSlotService.addTimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)),
-                                                category: .work,
+                                                category: category,
                                                 categoryWasSetByUser: false,
                                                 tryUsingLatestLocation: false)!
     }
