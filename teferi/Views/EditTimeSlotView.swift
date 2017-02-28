@@ -15,7 +15,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     private var leftBoundryX : CGFloat!
     private var rightBoundryX : CGFloat!
     
-    private let cellSize : CGSize = CGSize(width: 50.0, height: 50.0)
+    private let cellSize : CGSize = CGSize(width: 40.0, height: 40.0)
     private let cellSpacing : CGFloat = 10.0
     private var pageWidth : CGFloat { return cellSize.width + cellSpacing }
     private let animationDuration = TimeInterval(0.334)
