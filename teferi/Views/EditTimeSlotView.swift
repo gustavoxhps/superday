@@ -258,7 +258,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         let delay = TimeInterval(0.02)
         let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
         
-        UIView.animate(withDuration: TimeInterval(0.02) * Double(cellsToAnimate.count) + self.animationDuration,
+        UIView.animate(withDuration: delay * Double(cellsToAnimate.count) + self.animationDuration,
                        delay: 0.0,
                        options: .curveLinear,
                        animations:  {
