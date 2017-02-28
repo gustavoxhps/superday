@@ -18,7 +18,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     private let cellSize : CGSize = CGSize(width: 40.0, height: 40.0)
     private let cellSpacing : CGFloat = 10.0
     private var pageWidth : CGFloat { return cellSize.width + cellSpacing }
-    private let animationDuration = TimeInterval(0.334)
+    private let animationDuration = TimeInterval(0.225)
     
     
     var dismissAction : DismissType?
@@ -199,7 +199,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         firstImageView.backgroundColor = timeSlot.category.color
         firstImageView.layer.cornerRadius = 16
         firstImageView.contentMode = .center
-        firstImageView.alpha = 0
         
         self.addSubview(firstImageView)
         firstImageView.snp.makeConstraints { make in
@@ -211,7 +210,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         UIView.animate(withDuration: Constants.editAnimationDuration * 3)
         {
             self.backgroundColor = Color.white.withAlphaComponent(0.6)
-            firstImageView.alpha = 1
+        }
+        
+        UIView.animate(withDuration: 0.192) { 
+            firstImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
         }
         
         self.firstImageView = firstImageView
@@ -258,7 +260,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         let delay = TimeInterval(0.02)
         let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
         
-        UIView.animate(withDuration: delay * Double(cellsToAnimate.count) + self.animationDuration,
+        UIView.animate(withDuration: animationDuration ,
                        delay: 0.0,
                        options: .curveLinear,
                        animations:  {
@@ -266,7 +268,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
                         self.firstImageView!.alpha = 0
         },
                        completion: { (_) in
-                        self.alpha = 0
                         self.firstImageView!.removeFromSuperview()
         })
         
@@ -284,6 +285,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             Timer.schedule(withDelay: delay)
             {
                 self.viewHandler.cleanAll()
+                self.alpha = 0
             }
         }
     }
@@ -302,7 +304,9 @@ class EditTimeSlotView : UIView, TrigonometryHelper
                 
                 cell.isHidden = false
                 
-                let timingFunction = CAMediaTimingFunction(controlPoints: 0.175, 0.885, 0.32, 1)
+                let timingFunction = presenting ?
+                    CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1) :
+                    CAMediaTimingFunction(controlPoints: 0.175, 0.885, 0.32, 1)
                 
                 CATransaction.begin()
                 CATransaction.setAnimationTimingFunction(timingFunction)
@@ -323,11 +327,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     {
         let cells = viewHandler.visibleCells
         
-        let animationDuration = (abs(offset) / pageWidth) * 0.25
+        let animationDuration = 0.334
         
         UIView.animate(withDuration: TimeInterval(animationDuration),
                        delay: 0.0,
-                       options: .curveEaseIn,
+                       options: .curveEaseInOut,
                        animations:
             {
                 cells.forEach { (cell) in

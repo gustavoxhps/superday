@@ -13,7 +13,7 @@ class Constants
     static let firstLocationFile = "firstLocationFile"
     
     ///Duration of the fade in/out edit animation
-    static let editAnimationDuration = 0.08
+    static let editAnimationDuration = 0.09
     
     //Notification category identifier
     static let notificationCategoryId = "notificationTimeSlotCategorySelectionIdentifier"
