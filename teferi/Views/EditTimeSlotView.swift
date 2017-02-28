@@ -256,8 +256,21 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         var animationSequence = DelayedSequence.start()
         
         let delay = TimeInterval(0.02)
+        let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
         
-        for cell in viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
+        UIView.animate(withDuration: TimeInterval(0.02) * Double(cellsToAnimate.count) + self.animationDuration,
+                       delay: 0.0,
+                       options: .curveLinear,
+                       animations:  {
+                        self.backgroundColor = Color.white.withAlphaComponent(0)
+                        self.firstImageView!.alpha = 0
+        },
+                       completion: { (_) in
+                        self.alpha = 0
+                        self.firstImageView!.removeFromSuperview()
+        })
+        
+        for cell in cellsToAnimate
         {
             animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
         }
@@ -271,18 +284,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             Timer.schedule(withDelay: delay)
             {
                 self.viewHandler.cleanAll()
-                
-                UIView.animate(withDuration: self.animationDuration,
-                               delay: 0.0,
-                               options: .curveLinear,
-                               animations:  {
-                                self.backgroundColor = Color.white.withAlphaComponent(0)
-                                self.firstImageView!.alpha = 0
-                },
-                               completion: { (_) in
-                                self.alpha = 0
-                                self.firstImageView!.removeFromSuperview()
-                } )
             }
         }
     }
