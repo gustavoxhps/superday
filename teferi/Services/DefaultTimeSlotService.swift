@@ -94,6 +94,18 @@ class DefaultTimeSlotService : TimeSlotService
         return timeSlots
     }
     
+    func getTimeSlots(sinceDaysAgo days: Int) -> [TimeSlot]
+    {
+        let today = self.timeService.now.ignoreTimeComponents()
+        
+        let startTime = today.add(days: -days).ignoreTimeComponents() as NSDate
+        let endTime = today.tomorrow.ignoreTimeComponents() as NSDate
+        let predicate = Predicate(parameter: "startTime", rangesFromDate: startTime, toDate: endTime)
+        
+        let timeSlots = self.persistencyService.get(withPredicate: predicate)
+        return timeSlots
+    }
+    
     func update(timeSlot: TimeSlot, withCategory category: Category, setByUser: Bool)
     {
         guard self.canChangeCategory(of: timeSlot, to: category, setByUser: setByUser) else { return }
