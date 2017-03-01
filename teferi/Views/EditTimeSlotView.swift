@@ -215,39 +215,20 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
         plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
         
-        
-        UIView.animate(withDuration: Constants.editAnimationDuration * 3)
-        {
+        self.animate({ 
             self.backgroundColor = Color.white.withAlphaComponent(0.6)
-        }
+        }, duration: Constants.editAnimationDuration * 3)
         
         animate({ 
-            UIView.animate(withDuration: 0.192) {
-                self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
-                self.plusImageView?.alpha = 1.0
-            }
-        }, withControlPoints: 0.0, 0.0, 0.2, 1)
+            self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
+            self.plusImageView?.alpha = 1.0
+        }, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1)
         
         animate({
-            UIView.animate(withDuration: 0.102) {
-                self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-            }
-        }, withControlPoints: 0.4, 0.0, 1, 1)
-        
+            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        }, duration: 0.102, withControlPoints: 0.4, 0.0, 1, 1)
         
         show(from: CGPoint(x: point.x - 16, y: point.y - 9))
-    }
-    
-    private func animate(_ closure: ()->(), withControlPoints c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float)
-    {
-        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
-        
-        CATransaction.begin()
-        CATransaction.setAnimationTimingFunction(timingFunction)
-        
-        closure()
-        
-        CATransaction.commit()
     }
     
     private func show(from point: CGPoint)
@@ -283,37 +264,37 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     {
         guard viewHandler != nil else { return }
         
-        animate({
-            UIView.animate(withDuration: 0.192, animations: {
-                self.plusImageView!.transform = .identity
-                
-                if let selectedItem = self.selectedItem, selectedItem != .unknown
-                {
-                    self.plusImageView!.alpha = 0
-                    self.currentCategoryBackgroundView?.backgroundColor = selectedItem.color
-                    self.currentCategoryImageView?.image = UIImage(asset: selectedItem.icon)
-                    self.currentCategoryImageView?.isHidden = false
-                }
-                
-                self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-                
-            }) { (_) in
-                UIView.animate(withDuration: 0.09, animations: { 
-                    self.currentCategoryImageView!.transform = .identity
-                }, completion: { (_) in
-                    self.plusImageView!.removeFromSuperview()
-                    self.currentCategoryImageView?.removeFromSuperview()
-                    self.currentCategoryBackgroundView!.removeFromSuperview()
-                })
+        let firstSetpOfAnimation = {
+            self.plusImageView!.transform = .identity
+            
+            if let selectedItem = self.selectedItem, selectedItem != .unknown
+            {
+                self.plusImageView!.alpha = 0
+                self.currentCategoryBackgroundView?.backgroundColor = selectedItem.color
+                self.currentCategoryImageView?.image = UIImage(asset: selectedItem.icon)
+                self.currentCategoryImageView?.isHidden = false
             }
-        }, withControlPoints: 0.0, 0.0, 0.2, 1)
+            
+            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        }
         
-        UIView.animate(withDuration: animationDuration ,
-                       delay: 0.0,
-                       options: .curveLinear,
-                       animations:  {
-                        self.backgroundColor = Color.white.withAlphaComponent(0)
-        })
+        let secondStepOfAnimation = {
+            self.currentCategoryImageView!.transform = .identity
+        }
+        
+        let cleanupAfterAnimation = {
+            self.plusImageView!.removeFromSuperview()
+            self.currentCategoryImageView?.removeFromSuperview()
+            self.currentCategoryBackgroundView!.removeFromSuperview()
+        }
+        
+        animate(firstSetpOfAnimation, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1) {
+            self.animate(secondStepOfAnimation, duration: 0.09, withControlPoints: 0.0, 0.0, 0.2, 1, completion: cleanupAfterAnimation)
+        }
+        
+        animate({ 
+            self.backgroundColor = Color.white.withAlphaComponent(0)
+        }, duration: animationDuration, options: [.curveLinear])
         
         var animationSequence = DelayedSequence.start()
         
@@ -354,21 +335,19 @@ class EditTimeSlotView : UIView, TrigonometryHelper
                 
                 cell.isHidden = false
                 
-                let closureToAnimateWithTimingFunction = {
-                    UIView.animate(withDuration: self.animationDuration, animations: {
-                            cell.transform = presenting ?
-                                .identity :
+                let changesToAnimate = {
+                        cell.transform = presenting ?
+                            .identity :
                             scaleTransform
-                    })
                 }
                 
                 if presenting
                 {
-                    self.animate(closureToAnimateWithTimingFunction, withControlPoints: 0.23, 1, 0.32, 1)
+                    self.animate(changesToAnimate, duration: self.animationDuration, withControlPoints: 0.23, 1, 0.32, 1)
                 }
                 else
                 {
-                    self.animate(closureToAnimateWithTimingFunction, withControlPoints: 0.175, 0.885, 0.32, 1)
+                    self.animate(changesToAnimate, duration: self.animationDuration, withControlPoints: 0.175, 0.885, 0.32, 1)
                 }
             }
         }
@@ -380,25 +359,59 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         let animationDuration = 0.334
         
-        UIView.animate(withDuration: TimeInterval(animationDuration),
-                       delay: 0.0,
-                       options: .curveEaseInOut,
-                       animations:
-            {
-                cells.forEach { (cell) in
-                    cell.center = CGPoint(x: cell.center.x + offset, y: self.mainY)
-                    if !self.isInAllowedRange(cell)
-                    {
-                        self.viewHandler.remove(cell: cell)
-                    }
+        animate({
+            cells.forEach { (cell) in
+                cell.center = CGPoint(x: cell.center.x + offset, y: self.mainY)
+                if !self.isInAllowedRange(cell)
+                {
+                    self.viewHandler.remove(cell: cell)
                 }
-                self.applyScaleTransformIfNeeded(at: cells.first!, customX: offset < 0 ? self.leftBoundryX : self.leftBoundryX + self.pageWidth)
-            },
-                       completion: nil
-        )
+            }
+            self.applyScaleTransformIfNeeded(at: cells.first!, customX: offset < 0 ? self.leftBoundryX : self.leftBoundryX + self.pageWidth)
+        }, duration: TimeInterval(animationDuration),
+           options: [.curveEaseInOut])
     }
     
     // MARK: - Conveniece methods
+    private func animate(
+        _ changes: @escaping ()->(),
+        duration: Double,
+        delay: Double = 0.0,
+        options: [UIViewAnimationOptions] = [],
+        withControlPoints c1x: Float = 0,
+        _ c1y: Float = 0,
+        _ c2x: Float = 0,
+        _ c2y: Float = 0,
+        completion: (()->())? = nil)
+    {
+        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
+        
+        CATransaction.begin()
+        CATransaction.setAnimationTimingFunction(timingFunction)
+
+        UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            options: [],
+            animations: changes) { (_) in
+                completion?()
+        }
+        
+        CATransaction.commit()
+    }
+    
+//    private func animate(_ closure: ()->(), withControlPoints c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float)
+//    {
+//        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
+//        
+//        CATransaction.begin()
+//        CATransaction.setAnimationTimingFunction(timingFunction)
+//        
+//        closure()
+//        
+//        CATransaction.commit()
+//    }
+    
     private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
     {
         let imageView = UIImageView(image: image)
