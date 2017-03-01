@@ -8,7 +8,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     //MARK: Properties
     private var onEditEnded : ((TimeSlot, Category) -> Void)!
     private var timeSlot : TimeSlot!
-    private var selectedItem : Category!
+    private var selectedItem : Category?
     
     private var currentCategoryBackgroundView : UIView? = nil
     private var currentCategoryImageView : UIImageView? = nil
@@ -200,15 +200,19 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         viewHandler?.cleanAll()
         viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))
         
+        
+        currentCategoryBackgroundView?.removeFromSuperview()
         currentCategoryBackgroundView = UIView()
         currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
         currentCategoryBackgroundView?.layer.cornerRadius = 16
         addSubviewWithConstraints(currentCategoryBackgroundView!, basedOn: point)
         
+        currentCategoryImageView?.removeFromSuperview()
         currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
         currentCategoryImageView?.isHidden = timeSlot.category == .unknown
 
-        plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .center, basedOn: point)
+        plusImageView?.removeFromSuperview()
+        plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
         plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
         
         
@@ -244,34 +248,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         closure()
         
         CATransaction.commit()
-    }
-    
-    private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
-    {
-        let imageView = UIImageView(image: image)
-        imageView.layer.cornerRadius = cornerRadius
-        imageView.contentMode = contentMode
-        
-        self.addSubview(imageView)
-        
-        imageView.snp.makeConstraints { make in
-            make.width.height.equalTo(15.4)
-            make.top.equalTo(point.y - 15.6)
-            make.left.equalTo(point.x - 23.6)
-        }
-        
-        return imageView
-    }
-    
-    private func addSubviewWithConstraints(_ viewToAdd: UIView, basedOn point: CGPoint)
-    {
-        self.addSubview(viewToAdd)
-        
-        viewToAdd.snp.makeConstraints { make in
-            make.width.height.equalTo(32)
-            make.top.equalTo(point.y - 24)
-            make.left.equalTo(point.x - 32)
-        }
     }
     
     private func show(from point: CGPoint)
@@ -311,21 +287,26 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             UIView.animate(withDuration: 0.192, animations: {
                 self.plusImageView!.transform = .identity
                 
-                if self.selectedItem != .unknown
+                if let selectedItem = self.selectedItem, selectedItem != .unknown
                 {
                     self.plusImageView!.alpha = 0
-                    self.currentCategoryBackgroundView?.backgroundColor = self.selectedItem.color
-                    self.currentCategoryImageView?.image = UIImage(asset: self.selectedItem.icon)
+                    self.currentCategoryBackgroundView?.backgroundColor = selectedItem.color
+                    self.currentCategoryImageView?.image = UIImage(asset: selectedItem.icon)
                     self.currentCategoryImageView?.isHidden = false
                 }
-                self.currentCategoryImageView?.transform = .identity
+                
+                self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                
             }) { (_) in
-                self.plusImageView!.removeFromSuperview()
-                self.currentCategoryImageView?.removeFromSuperview()
-                self.currentCategoryBackgroundView!.removeFromSuperview()
+                UIView.animate(withDuration: 0.09, animations: { 
+                    self.currentCategoryImageView!.transform = .identity
+                }, completion: { (_) in
+                    self.plusImageView!.removeFromSuperview()
+                    self.currentCategoryImageView?.removeFromSuperview()
+                    self.currentCategoryBackgroundView!.removeFromSuperview()
+                })
             }
         }, withControlPoints: 0.0, 0.0, 0.2, 1)
-        
         
         UIView.animate(withDuration: animationDuration ,
                        delay: 0.0,
@@ -373,21 +354,22 @@ class EditTimeSlotView : UIView, TrigonometryHelper
                 
                 cell.isHidden = false
                 
-                let timingFunction = presenting ?
-                    CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1) :
-                    CAMediaTimingFunction(controlPoints: 0.175, 0.885, 0.32, 1)
-                
-                CATransaction.begin()
-                CATransaction.setAnimationTimingFunction(timingFunction)
-                
-                UIView.animate(withDuration: self.animationDuration, animations:
-                    {
-                        cell.transform = presenting ?
-                            .identity :
+                let closureToAnimateWithTimingFunction = {
+                    UIView.animate(withDuration: self.animationDuration, animations: {
+                            cell.transform = presenting ?
+                                .identity :
                             scaleTransform
-                })
+                    })
+                }
                 
-                CATransaction.commit()
+                if presenting
+                {
+                    self.animate(closureToAnimateWithTimingFunction, withControlPoints: 0.23, 1, 0.32, 1)
+                }
+                else
+                {
+                    self.animate(closureToAnimateWithTimingFunction, withControlPoints: 0.175, 0.885, 0.32, 1)
+                }
             }
         }
     }
@@ -414,6 +396,35 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             },
                        completion: nil
         )
+    }
+    
+    // MARK: - Conveniece methods
+    private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
+    {
+        let imageView = UIImageView(image: image)
+        imageView.layer.cornerRadius = cornerRadius
+        imageView.contentMode = contentMode
+        
+        self.addSubview(imageView)
+        
+        imageView.snp.makeConstraints { make in
+            make.width.height.equalTo(15)
+            make.top.equalTo(point.y - 15.4)
+            make.left.equalTo(point.x - 23.4)
+        }
+        
+        return imageView
+    }
+    
+    private func addSubviewWithConstraints(_ viewToAdd: UIView, basedOn point: CGPoint)
+    {
+        self.addSubview(viewToAdd)
+        
+        viewToAdd.snp.makeConstraints { make in
+            make.width.height.equalTo(32)
+            make.top.equalTo(point.y - 24)
+            make.left.equalTo(point.x - 32)
+        }
     }
     
     // MARK: - for hacky onboarding animations

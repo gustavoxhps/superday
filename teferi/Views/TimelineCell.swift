@@ -75,10 +75,7 @@ class TimelineCell : UITableViewCell
         let image = UIImage(asset: asset)!
         let icon = self.categoryIcon!
         icon.image = image
-        icon.contentMode =
-            image.size.width > icon.bounds.size.width ||
-            image.size.height > icon.bounds.size.height
-            ? .scaleAspectFit : .center
+        icon.contentMode = .scaleAspectFit
     }
     
     /// Updates the label that displays the description and starting time of the slot
