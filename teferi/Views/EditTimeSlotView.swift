@@ -8,7 +8,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     //MARK: Properties
     private var onEditEnded : ((TimeSlot, Category) -> Void)!
     private var timeSlot : TimeSlot!
-    private var firstImageView : UIImageView? = nil
+    private var selectedItem : Category!
+    
+    private var currentCategoryBackgroundView : UIView? = nil
+    private var currentCategoryImageView : UIImageView? = nil
+    private var plusImageView : UIImageView? = nil
     
     private var viewHandler : ItemViewHandler<ViewType, Category>!
     private var mainY : CGFloat!
@@ -66,8 +70,8 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     // MARK: - SelectionHandling
     @objc private func didSelectCell(_ sender: ViewType)
     {
-        let selectedItem = viewHandler.items[sender.tag]
-        onEditEnded(timeSlot, selectedItem)
+        selectedItem = viewHandler.items[sender.tag]
+        onEditEnded(timeSlot, selectedItem!)
     }
     
     // MARK: - Tap gesture logic
@@ -187,6 +191,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         setNeedsLayout()
         
         self.timeSlot = timeSlot
+        self.selectedItem = timeSlot.category
         
         self.alpha = 1.0
         
@@ -195,31 +200,78 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         viewHandler?.cleanAll()
         viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))
         
-        let firstImageView = UIImageView(image: UIImage(asset: Category.unknown.icon))
-        firstImageView.backgroundColor = timeSlot.category.color
-        firstImageView.layer.cornerRadius = 16
-        firstImageView.contentMode = .center
+        currentCategoryBackgroundView = UIView()
+        currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
+        currentCategoryBackgroundView?.layer.cornerRadius = 16
+        addSubviewWithConstraints(currentCategoryBackgroundView!, basedOn: point)
         
-        self.addSubview(firstImageView)
-        firstImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(32)
-            make.top.equalTo(point.y - 24)
-            make.left.equalTo(point.x - 32)
-        }
+        currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
+        currentCategoryImageView?.isHidden = timeSlot.category == .unknown
+
+        plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .center, basedOn: point)
+        plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
+        
         
         UIView.animate(withDuration: Constants.editAnimationDuration * 3)
         {
             self.backgroundColor = Color.white.withAlphaComponent(0.6)
         }
         
-        UIView.animate(withDuration: 0.192) { 
-            firstImageView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
-        }
+        animate({ 
+            UIView.animate(withDuration: 0.192) {
+                self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
+                self.plusImageView?.alpha = 1.0
+            }
+        }, withControlPoints: 0.0, 0.0, 0.2, 1)
         
-        self.firstImageView = firstImageView
+        animate({
+            UIView.animate(withDuration: 0.102) {
+                self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+            }
+        }, withControlPoints: 0.4, 0.0, 1, 1)
         
         
         show(from: CGPoint(x: point.x - 16, y: point.y - 9))
+    }
+    
+    private func animate(_ closure: ()->(), withControlPoints c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float)
+    {
+        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
+        
+        CATransaction.begin()
+        CATransaction.setAnimationTimingFunction(timingFunction)
+        
+        closure()
+        
+        CATransaction.commit()
+    }
+    
+    private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
+    {
+        let imageView = UIImageView(image: image)
+        imageView.layer.cornerRadius = cornerRadius
+        imageView.contentMode = contentMode
+        
+        self.addSubview(imageView)
+        
+        imageView.snp.makeConstraints { make in
+            make.width.height.equalTo(15.4)
+            make.top.equalTo(point.y - 15.6)
+            make.left.equalTo(point.x - 23.6)
+        }
+        
+        return imageView
+    }
+    
+    private func addSubviewWithConstraints(_ viewToAdd: UIView, basedOn point: CGPoint)
+    {
+        self.addSubview(viewToAdd)
+        
+        viewToAdd.snp.makeConstraints { make in
+            make.width.height.equalTo(32)
+            make.top.equalTo(point.y - 24)
+            make.left.equalTo(point.x - 32)
+        }
     }
     
     private func show(from point: CGPoint)
@@ -255,21 +307,37 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     {
         guard viewHandler != nil else { return }
         
-        var animationSequence = DelayedSequence.start()
+        animate({
+            UIView.animate(withDuration: 0.192, animations: {
+                self.plusImageView!.transform = .identity
+                
+                if self.selectedItem != .unknown
+                {
+                    self.plusImageView!.alpha = 0
+                    self.currentCategoryBackgroundView?.backgroundColor = self.selectedItem.color
+                    self.currentCategoryImageView?.image = UIImage(asset: self.selectedItem.icon)
+                    self.currentCategoryImageView?.isHidden = false
+                }
+                self.currentCategoryImageView?.transform = .identity
+            }) { (_) in
+                self.plusImageView!.removeFromSuperview()
+                self.currentCategoryImageView?.removeFromSuperview()
+                self.currentCategoryBackgroundView!.removeFromSuperview()
+            }
+        }, withControlPoints: 0.0, 0.0, 0.2, 1)
         
-        let delay = TimeInterval(0.02)
-        let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
         
         UIView.animate(withDuration: animationDuration ,
                        delay: 0.0,
                        options: .curveLinear,
                        animations:  {
                         self.backgroundColor = Color.white.withAlphaComponent(0)
-                        self.firstImageView!.alpha = 0
-        },
-                       completion: { (_) in
-                        self.firstImageView!.removeFromSuperview()
         })
+        
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = TimeInterval(0.02)
+        let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
         
         for cell in cellsToAnimate
         {
@@ -286,6 +354,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             {
                 self.viewHandler.cleanAll()
                 self.alpha = 0
+                self.selectedItem = nil
             }
         }
     }
