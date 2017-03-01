@@ -400,18 +400,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         CATransaction.commit()
     }
     
-//    private func animate(_ closure: ()->(), withControlPoints c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float)
-//    {
-//        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
-//        
-//        CATransaction.begin()
-//        CATransaction.setAnimationTimingFunction(timingFunction)
-//        
-//        closure()
-//        
-//        CATransaction.commit()
-//    }
-    
     private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
     {
         let imageView = UIImageView(image: image)
