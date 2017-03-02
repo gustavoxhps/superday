@@ -6,7 +6,7 @@ import Nimble
 
 class SmartGuessServiceTests : XCTestCase
 {
-    private typealias TestData = (distanceFromTarget: Double, category: teferi.Category)
+    private typealias TestData = (distanceFromTarget: Double, category: teferi.Category, date: Date)
     private typealias LocationAndCategory = (location: CLLocation, category: teferi.Category)
     
     private var timeService : MockTimeService!
@@ -33,17 +33,29 @@ class SmartGuessServiceTests : XCTestCase
     
     func testGuessesAreReturnedWithTimestampsWithinThresholdFromLocation()
     {
-        self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date.add(days: -1).addingTimeInterval(19400) ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date.add(days: -2).addingTimeInterval(19400) ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date.add(days: -3).addingTimeInterval(19400) ),
-               ( 41.9754219072948, -71.0229522245947, teferi.Category.leisure, date.add(days: -4) ),
-               ( 41.9754219072950, -71.0222522245947, teferi.Category.work, date.add(days: -5).addingTimeInterval(19400) ),
-               ( 41.9757219072951, -71.0225522245947, teferi.Category.leisure, date.add(days: -6).addingTimeInterval(19400) )]
-                .map(toLocation)
-                .map(toSmartGuess)
+        let targetLocation = CLLocation(
+            coordinate: CLLocationCoordinate2D(
+                latitude: 41.9754219072948,
+                longitude: -71.0230522245947),
+            altitude: 0,
+            horizontalAccuracy: 0,
+            verticalAccuracy: 0,
+            timestamp: date.add(days: -11))
         
-        let targetLocation = self.toLocation(latLngCategory: (41.9754219072948, -71.0230522245947, nil, date.add(days: -11))).0
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 08, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
+            (distanceFromTarget: 53, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
+            (distanceFromTarget: 54, category: .leisure, date: date.add(days: -4)),
+            (distanceFromTarget: 59, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
+            (distanceFromTarget: 66, category: .leisure, date: date.add(days: -6).addingTimeInterval(19400))
+        ]
+        
+        self.persistencyService.smartGuesses =
+            testInput
+                .map(toLocation(offsetFrom: targetLocation))
+                .map(toSmartGuess)
         
         let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
         
@@ -52,14 +64,26 @@ class SmartGuessServiceTests : XCTestCase
     
     func testNoGuessesAreReturnedWithTimestampsFurtherThanThresholdFromLocation()
     {
-        self.persistencyService.smartGuesses =
-            [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date.add(days: -1) ),
-               ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date.add(days: -2) ),
-               ( 41.9753219072949, -71.0224522245947, teferi.Category.work, date.add(days: -3) )]
-                .map(toLocation)
-                .map(toSmartGuess)
+        let targetLocation = CLLocation(
+            coordinate: CLLocationCoordinate2D(
+                latitude: 41.9754219072948,
+                longitude: -71.0230522245947),
+            altitude: 0,
+            horizontalAccuracy: 0,
+            verticalAccuracy: 0,
+            timestamp: date.add(days: -5))
         
-        let targetLocation = self.toLocation(latLngCategory: (41.9754219072948, -71.0230522245947, nil, date.add(days: -5))).0
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 08, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
+            (distanceFromTarget: 53, category: .work, date: date.add(days: -3).addingTimeInterval(19400))
+        ]
+        
+        self.persistencyService.smartGuesses =
+            testInput
+                .map(toLocation(offsetFrom: targetLocation))
+                .map(toSmartGuess)
         
         let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
         
@@ -72,12 +96,12 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
         [
-            (distanceFromTarget: 08, category: .leisure),
-            (distanceFromTarget: 50, category: .work),
-            (distanceFromTarget: 53, category: .leisure),
-            (distanceFromTarget: 54, category: .work),
-            (distanceFromTarget: 59, category: .work),
-            (distanceFromTarget: 66, category: .work)
+            (distanceFromTarget: 08, category: .leisure, date: date),
+            (distanceFromTarget: 50, category: .work, date: date),
+            (distanceFromTarget: 53, category: .leisure, date: date),
+            (distanceFromTarget: 54, category: .work, date: date),
+            (distanceFromTarget: 59, category: .work, date: date),
+            (distanceFromTarget: 66, category: .work, date: date)
         ]
         
         self.persistencyService.smartGuesses =
@@ -96,11 +120,11 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
         [
-            (distanceFromTarget: 08, category: .leisure),
-            (distanceFromTarget: 50, category: .work),
-            (distanceFromTarget: 54, category: .work),
-            (distanceFromTarget: 59, category: .work),
-            (distanceFromTarget: 66, category: .work)
+            (distanceFromTarget: 08, category: .leisure, date: date),
+            (distanceFromTarget: 50, category: .work, date: date),
+            (distanceFromTarget: 54, category: .work, date: date),
+            (distanceFromTarget: 59, category: .work, date: date),
+            (distanceFromTarget: 66, category: .work, date: date)
         ]
         
         self.persistencyService.smartGuesses =
@@ -119,11 +143,11 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
         [
-            (distanceFromTarget: 50, category: .work),
-            (distanceFromTarget: 54, category: .work),
-            (distanceFromTarget: 59, category: .work),
-            (distanceFromTarget: 53, category: .leisure),
-            (distanceFromTarget: 66, category: .work)
+            (distanceFromTarget: 50, category: .work, date: date),
+            (distanceFromTarget: 54, category: .work, date: date),
+            (distanceFromTarget: 59, category: .work, date: date),
+            (distanceFromTarget: 53, category: .leisure, date: date),
+            (distanceFromTarget: 66, category: .work, date: date)
         ]
         
         self.persistencyService.smartGuesses =
@@ -142,12 +166,12 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
         [
-            (distanceFromTarget: 41, category: .work),
-            (distanceFromTarget: 45, category: .work),
-            (distanceFromTarget: 46, category: .work),
-            (distanceFromTarget: 47, category: .leisure),
-            (distanceFromTarget: 53, category: .leisure),
-            (distanceFromTarget: 56, category: .work)
+            (distanceFromTarget: 41, category: .work, date: date),
+            (distanceFromTarget: 45, category: .work, date: date),
+            (distanceFromTarget: 46, category: .work, date: date),
+            (distanceFromTarget: 47, category: .leisure, date: date),
+            (distanceFromTarget: 53, category: .leisure, date: date),
+            (distanceFromTarget: 56, category: .work, date: date)
         ]
         
         self.persistencyService.smartGuesses =
