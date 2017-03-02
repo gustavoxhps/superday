@@ -1,23 +1,33 @@
 import Foundation
 
-class KNN
+class KNN<ItemType, LabelType> where LabelType: Hashable
 {
-    private typealias InstanceAndDistance = (instance: KNNInstance, distance: Double)
-    private typealias customDistance = (KNNInstance, KNNInstance) -> Double
+    private typealias InstanceAndDistance = (instance: ItemType, distance: Double)
+    private typealias customDistance = (ItemType, ItemType) -> Double
+    private typealias getLabelActionType = (ItemType) -> LabelType
     
-    class func prediction(for testInstance: KNNInstance, usingK k: Int, with dataset: [KNNInstance], customDistance distance: customDistance) -> KNNInstance?
+    class func prediction(
+        for testInstance: ItemType,
+        usingK k: Int,
+        with dataset: [ItemType],
+        customDistance distance: customDistance,
+        labelAction getLabel: getLabelActionType) -> ItemType?
     {
         guard k > 0 else { return nil }
         
         guard dataset.count > 0 else { return nil }
         
         let neighbors = getNeighbors(in: dataset, for: testInstance, withK: k, customDistance: distance)
-        let result = getResponse(neighbors: neighbors)
+        let result = getResponse(neighbors: neighbors, labelAction: getLabel)
         
         return result
     }
     
-    private class func getNeighbors(in trainingSet: [KNNInstance], for testInstance: KNNInstance, withK k: Int, customDistance distance: customDistance) -> [KNNInstance]
+    private class func getNeighbors(
+        in trainingSet: [ItemType],
+        for testInstance: ItemType,
+        withK k: Int,
+        customDistance distance: customDistance) -> [ItemType]
     {
         var distances = [InstanceAndDistance]()
         
@@ -32,13 +42,15 @@ class KNN
             .map({ $0.instance })
     }
     
-    private class func getResponse(neighbors: [KNNInstance]) -> KNNInstance
+    private class func getResponse(
+        neighbors: [ItemType],
+        labelAction getLabel: getLabelActionType) -> ItemType
     {
         return neighbors
-            .reduce([String: (Int, KNNInstance)](), { (result, instance) in
+            .reduce([LabelType: (Int, ItemType)](), { (result, instance) in
                 var newResult = result
-                let newVote : Int = (result[instance.label]?.0 ?? 0) + 1
-                newResult[instance.label] = (newVote, instance)
+                let newVote : Int = (result[getLabel(instance)]?.0 ?? 0) + 1
+                newResult[getLabel(instance)] = (newVote, instance)
                 return newResult
             })
             .map { (element) in
@@ -50,13 +62,13 @@ class KNN
             .1
     }
     
-    private class func getAccuracy(testSet: [KNNInstance], predictions: [KNNInstance]) -> Double
-    {
-        var correct = 0.0
-        for (index, instance) in testSet.enumerated()
-        {
-            correct += (instance.label == predictions[index].label) ? 1 : 0
-        }
-        return ( correct / Double(testSet.count) ) * 100.0
-    }
+//    private class func getAccuracy(testSet: [ItemType], predictions: [ItemType]) -> Double
+//    {
+//        var correct = 0.0
+//        for (index, instance) in testSet.enumerated()
+//        {
+//            correct += (instance.label == predictions[index].label) ? 1 : 0
+//        }
+//        return ( correct / Double(testSet.count) ) * 100.0
+//    }
 }

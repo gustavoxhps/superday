@@ -3,6 +3,8 @@ import CoreLocation
 
 class DefaultSmartGuessService : SmartGuessService
 {
+    typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category)
+    
     //MARK: Fields
     private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
     private let timeThreshold : TimeInterval = 5*60*60 //5h
@@ -82,7 +84,18 @@ class DefaultSmartGuessService : SmartGuessService
         
         guard bestMatches.count > 0 else { return nil }
         
-        guard let bestMatch = KNN.prediction(for: location, usingK: kNeighbors, with: bestMatches, customDistance: self.distance) as? SmartGuess else { return nil }
+        let knnInstances = bestMatches.map({ (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) })
+        
+        guard let bestKnnMatch = KNN<KNNInstance, Category>.prediction(
+            for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
+            usingK: kNeighbors,
+            with: knnInstances,
+            customDistance: self.distance,
+            labelAction: { $0.category })
+        else { return nil }
+        
+        guard let bestMatch = bestMatches.filter({ $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location }).first
+        else { return nil }
         
         //Every time a dictionary entry gets used in a guess, it gets refreshed.
         //Entries not refresh in N days get purged
@@ -129,20 +142,12 @@ class DefaultSmartGuessService : SmartGuessService
     private func distance(instance1: KNNInstance, instance2: KNNInstance) -> Double
     {
         var accumulator = 0.0
-        
-        for (key, value) in instance1.attributes
-        {
-            switch (key) {
-            case .location:
-                let locations = (value as! CLLocation, instance2.attributes[key] as! CLLocation)
-                let locationDifference = locations.0.distance(from: locations.1) / self.distanceThreshold
-                accumulator += pow(locationDifference, 2)
-            case .timestamp:
-                let timestamps = (value as! Date, instance2.attributes[key] as! Date)
-                let timeDifference = timestamps.0.timeIntervalBasedOnWeekDaySince(timestamps.1) / self.timeThreshold
-                accumulator += pow(timeDifference, 2)
-            }
-        }
+
+        let locationDifference = instance1.location.distance(from: instance2.location) / self.distanceThreshold
+        accumulator += pow(locationDifference, 2)
+
+        let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / self.timeThreshold
+        accumulator += pow(timeDifference, 2)
 
         return sqrt(accumulator)
     }

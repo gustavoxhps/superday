@@ -7,15 +7,3 @@ extension CLLocation
         return self.horizontalAccuracy < other.horizontalAccuracy
     }
 }
-
-extension CLLocation : KNNInstance
-{
-    var attributes : [KNNAttributeType: AnyObject]
-    {
-        return [.location: self, .timestamp: self.timestamp as AnyObject]
-    }
-    var label : String
-    {
-        return ""
-    }
-}
