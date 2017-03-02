@@ -16,7 +16,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     private let disposeBag = DisposeBag()
     private var viewModel : MainViewModel!
     private var viewModelLocator : ViewModelLocator!
-    private var gestureRecognizer : UIGestureRecognizer!
     
     private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
     private var topBarViewController : TopBarViewController { return self.childViewControllers.firstOfType() }
@@ -113,8 +112,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
         
-
-        self.editView.addGestureRecognizer(self.gestureRecognizer)
     }
     
     // MARK: Methods
