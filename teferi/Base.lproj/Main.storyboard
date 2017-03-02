@@ -261,27 +261,24 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RjY-fi-acF">
-                                <rect key="frame" x="335" y="12.5" width="24" height="24"/>
+                                <rect key="frame" x="331" y="8.5" width="32" height="32"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="24" id="2AF-WV-AC5"/>
-                                    <constraint firstAttribute="width" constant="24" id="nnX-bK-v97"/>
+                                    <constraint firstAttribute="height" constant="32" id="2AF-WV-AC5"/>
+                                    <constraint firstAttribute="width" constant="32" id="nnX-bK-v97"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="11"/>
-                                <inset key="contentEdgeInsets" minX="3" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <inset key="titleEdgeInsets" minX="-21" minY="1" maxX="0.0" maxY="0.0"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="-1" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="25" image="icCalendar">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
+                                <inset key="contentEdgeInsets" minX="7" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <inset key="titleEdgeInsets" minX="-25" minY="2" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="25" image="icCalendar"/>
                                 <connections>
                                     <action selector="onCalendarTouchUpInside" destination="BYZ-38-t0r" eventType="touchUpInside" id="789-Jk-6Rh"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcf-26-zcj">
-                                <rect key="frame" x="299" y="12" width="24" height="24"/>
+                                <rect key="frame" x="289" y="8" width="32" height="32"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="24" id="qfj-7k-Srh"/>
-                                    <constraint firstAttribute="width" constant="24" id="sZT-6M-WCB"/>
+                                    <constraint firstAttribute="height" constant="32" id="qfj-7k-Srh"/>
+                                    <constraint firstAttribute="width" constant="32" id="sZT-6M-WCB"/>
                                 </constraints>
                                 <state key="normal" image="icFeedback"/>
                                 <connections>
@@ -298,8 +295,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="9qK-kq-YXq" firstAttribute="centerY" secondItem="iHQ-6M-pJq" secondAttribute="centerY" id="A1V-TW-uUG"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="RjY-fi-acF" secondAttribute="trailing" id="BVu-7K-UWk"/>
-                            <constraint firstItem="RjY-fi-acF" firstAttribute="leading" secondItem="vcf-26-zcj" secondAttribute="trailing" constant="12" id="I0r-OJ-iyx"/>
+                            <constraint firstAttribute="trailing" secondItem="RjY-fi-acF" secondAttribute="trailing" constant="12" id="BVu-7K-UWk"/>
+                            <constraint firstItem="RjY-fi-acF" firstAttribute="leading" secondItem="vcf-26-zcj" secondAttribute="trailing" constant="10" id="I0r-OJ-iyx"/>
                             <constraint firstItem="wp3-Hl-EJp" firstAttribute="centerY" secondItem="9qK-kq-YXq" secondAttribute="centerY" id="L7S-fu-30C"/>
                             <constraint firstItem="wp3-Hl-EJp" firstAttribute="leading" secondItem="9qK-kq-YXq" secondAttribute="trailing" constant="18" id="SqZ-bh-l9W"/>
                             <constraint firstItem="9qK-kq-YXq" firstAttribute="leading" secondItem="iHQ-6M-pJq" secondAttribute="leadingMargin" constant="4" id="bgw-bp-iee"/>
