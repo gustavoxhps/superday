@@ -16,9 +16,16 @@
 
 
 //Categories
-"commute" = "commute";
-"food" = "food";
-"friends" = "friends";
-"work" = "work";
-"leisure" = "leisure";
-"unknown" = "unknown";
+"Commute" = "Commute";
+"Work" = "Work";
+"Food" = "Food";
+"Leisure" = "Leisure";
+"Family" = "Family";
+"Shopping" = "Shopping";
+"Friends" = "Friends";
+"Hobby" = "Hobby";
+"Household" = "Household";
+"Fitness" = "Fitness";
+"Kids" = "Kids";
+"School" = "School";
+"Unknown" = "Unknown";

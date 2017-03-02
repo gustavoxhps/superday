@@ -6,6 +6,9 @@ import Nimble
 
 class SmartGuessServiceTests : XCTestCase
 {
+    private typealias TestData = (distanceFromTarget: Double, category: teferi.Category)
+    private typealias LocationAndCategory = (location: CLLocation, category: teferi.Category)
+    
     private var timeService : MockTimeService!
     private var loggingService : MockLoggingService!
     private var settingsService : MockSettingsService!
@@ -65,6 +68,18 @@ class SmartGuessServiceTests : XCTestCase
     
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAway()
     {
+        let targetLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
+        
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 08, category: .leisure),
+            (distanceFromTarget: 50, category: .work),
+            (distanceFromTarget: 53, category: .leisure),
+            (distanceFromTarget: 54, category: .work),
+            (distanceFromTarget: 59, category: .work),
+            (distanceFromTarget: 66, category: .work)
+        ]
+        
         self.persistencyService.smartGuesses =
             [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
                ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
@@ -84,6 +99,17 @@ class SmartGuessServiceTests : XCTestCase
     
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAwayEvenWithoutExtraGuessesHelpingTheWeight()
     {
+        let targetLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
+        
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 08, category: .leisure),
+            (distanceFromTarget: 50, category: .work),
+            (distanceFromTarget: 54, category: .work),
+            (distanceFromTarget: 59, category: .work),
+            (distanceFromTarget: 66, category: .work)
+        ]
+        
         self.persistencyService.smartGuesses =
             [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
                ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
@@ -102,6 +128,17 @@ class SmartGuessServiceTests : XCTestCase
     
     func testTheAmountOfGuessesInTheSameCategoryShouldMatterWhenComparingSimilarlyDistantGuessesEvenIfTheOutnumberedGuessIsCloser()
     {
+        let targetLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
+        
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 50, category: .work),
+            (distanceFromTarget: 54, category: .work),
+            (distanceFromTarget: 59, category: .work),
+            (distanceFromTarget: 53, category: .leisure),
+            (distanceFromTarget: 66, category: .work)
+        ]
+        
         self.persistencyService.smartGuesses =
             [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
                ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),
@@ -120,6 +157,18 @@ class SmartGuessServiceTests : XCTestCase
     
     func testTheAmountOfGuessesInTheSameCategoryShouldMatterWhenComparingSimilarlyDistantGuesses()
     {
+        let targetLocation = CLLocation(latitude: 41.9757219072951, longitude: -71.0225522245947)
+        
+        let testInput : [TestData] =
+        [
+            (distanceFromTarget: 41, category: .work),
+            (distanceFromTarget: 45, category: .work),
+            (distanceFromTarget: 46, category: .work),
+            (distanceFromTarget: 47, category: .leisure),
+            (distanceFromTarget: 53, category: .leisure),
+            (distanceFromTarget: 56, category: .work)
+        ]
+        
         self.persistencyService.smartGuesses =
             [  ( 41.9752219072946, -71.0224522245947, teferi.Category.work, date ),
                ( 41.9753319073047, -71.0223522246947, teferi.Category.work, date ),

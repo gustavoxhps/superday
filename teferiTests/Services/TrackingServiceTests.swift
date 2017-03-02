@@ -6,19 +6,20 @@ import Nimble
 class TrackingServiceTests : XCTestCase
 {
     private let baseCoordinates = CLLocationCoordinate2D(latitude: 37.628060, longitude: -116.848463)
-    private let metersToLatitudeFactor = 1.0 / 111_000
     private let defaultMovementSpeed = 100.0 // (meters/minute)
     
     private var midnight : Date!
     private var noon : Date!
     
     private var timeService : MockTimeService!
-    private var loggingService : LoggingService!
-    private var settingsService : SettingsService!
-    private var trackingService : TrackingService!
+    private var loggingService : MockLoggingService!
+    private var settingsService : MockSettingsService!
+    private var locationService : MockLocationService!
     private var timeSlotService : MockTimeSlotService!
     private var smartGuessService : MockSmartGuessService!
     private var notificationService : MockNotificationService!
+    
+    private var trackingService : TrackingService!
     
     override func setUp()
     {
@@ -28,9 +29,11 @@ class TrackingServiceTests : XCTestCase
         self.timeService = MockTimeService()
         self.loggingService = MockLoggingService()
         self.settingsService = MockSettingsService()
+        self.locationService = MockLocationService()
         self.smartGuessService = MockSmartGuessService()
         self.notificationService = MockNotificationService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
         
         self.trackingService = DefaultTrackingService(timeService: self.timeService,
                                                       loggingService: self.loggingService,
@@ -396,9 +399,10 @@ class TrackingServiceTests : XCTestCase
     {
         let date = self.getDate(minutesPastNoon: -minutesBeforeNoon)
         
-        let timeSlot = TimeSlot(withStartTime: date, categoryWasSetByUser: wasSetByUser)
-        timeSlot.category = slotCategory
-        self.timeSlotService.add(timeSlot: timeSlot)
+        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: date,
+                                                        category: slotCategory,
+                                                        categoryWasSetByUser: wasSetByUser,
+                                                        tryUsingLatestLocation: false)!
         
         self.settingsService.setLastLocation(self.getLocation(
             withTimestamp: date, metersFromOrigin: metersFromOrigin, horizontalAccuracy: horizontalAccuracy))
@@ -438,9 +442,8 @@ class TrackingServiceTests : XCTestCase
     
     func getLocation(withTimestamp date: Date, metersFromOrigin distance: Double, horizontalAccuracy: Double = 20) -> CLLocation
     {
-        let latitudeOffset = distance * self.metersToLatitudeFactor
-        let coordinates = CLLocationCoordinate2D(latitude: self.baseCoordinates.latitude + latitudeOffset,
-                                                 longitude: self.baseCoordinates.longitude)
+        let coordinates = self.baseCoordinates.offset(.north, meters: distance)
+        
         return CLLocation(coordinate: coordinates,
                           altitude: 0,
                           horizontalAccuracy: horizontalAccuracy,

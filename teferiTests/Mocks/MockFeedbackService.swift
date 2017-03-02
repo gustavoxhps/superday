@@ -8,7 +8,7 @@ class MockFeedbackService: FeedbackService
         return nil
     }
     
-    func composeFeedback(completed: @escaping () -> ())
+    func composeFeedback()
     {
         
     }

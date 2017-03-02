@@ -66,10 +66,7 @@ class TopBarViewController : UIViewController
     // MARK: Calendar Actions
     private func onFeedbackButtonClick()
     {
-        self.viewModel.composeFeedback
-        {
-            self.pagerViewController.feedbackUIClosing = true
-        }
+        self.viewModel.composeFeedback()
     }
     
     private func onDateChanged(date: Date)

@@ -88,6 +88,9 @@ class PagerViewModel
             case .needsRefreshing:
                 self.settingsService.setLastInactiveDate(nil)
                 return true
+            
+            case .activeFromNotification:
+                return true
         }
         
         return false

@@ -40,11 +40,8 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
         return self
     }
     
-    func composeFeedback(completed: @escaping () -> ())
+    func composeFeedback()
     {
-        //Assign the completion handler when the UI is dismissed
-        self.completionHandler = completed
-        
         //Check if email is set up in iOS Mail app
         guard MFMailComposeViewController.canSendMail() else
         {

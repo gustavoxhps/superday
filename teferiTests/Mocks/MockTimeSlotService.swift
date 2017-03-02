@@ -1,21 +1,30 @@
 import Foundation
 import RxSwift
+import CoreLocation
 @testable import teferi
 
 class MockTimeSlotService : TimeSlotService
 {
     //MARK: Fields
     private let timeService : TimeService
-    private let timeSlotCreatedVariable = Variable(TimeSlot(withStartTime: Date(), categoryWasSetByUser: false))
-    private let timeSlotUpdatedVariable = Variable(TimeSlot(withStartTime: Date(), categoryWasSetByUser: false))
+    private let locationService : LocationService
+    
+    private let timeSlotCreatedVariable = Variable(TimeSlot(withStartTime: Date(),
+                                                            category: .unknown,
+                                                            categoryWasSetByUser: false))
+    
+    private let timeSlotUpdatedVariable = Variable(TimeSlot(withStartTime: Date(),
+                                                            category: .unknown,
+                                                            categoryWasSetByUser: false))
     
     //MARK: Properties
     private(set) var timeSlots = [TimeSlot]()
     private(set) var getLastTimeSlotWasCalled = false
     
-    init(timeService: TimeService)
+    init(timeService: TimeService, locationService: LocationService)
     {
         self.timeService = timeService
+        self.locationService = locationService
         
         self._timeSlotCreatedObservable = timeSlotCreatedVariable.asObservable().skip(1)
         self.timeSlotUpdatedObservable = timeSlotUpdatedVariable.asObservable().skip(1)
@@ -67,7 +76,35 @@ class MockTimeSlotService : TimeSlotService
         return self.timeSlots.filter { t in t.startTime > startDate && t.startTime < endDate }
     }
     
-    @discardableResult func add(timeSlot: TimeSlot)
+    func getTimeSlots(sinceDaysAgo days: Int) -> [TimeSlot]
+    {
+        let today = self.timeService.now
+        
+        let startDate = today.add(days: -days).ignoreTimeComponents()
+        let endDate = today.tomorrow.ignoreTimeComponents()
+        
+        return self.timeSlots.filter { t in t.startTime > startDate && t.startTime < endDate }
+    }
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: teferi.Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
+    {
+        let location : CLLocation? = tryUsingLatestLocation ? self.locationService.getLastKnownLocation() : nil
+        return self.addTimeSlot(withStartTime: startTime, category: category, categoryWasSetByUser: categoryWasSetByUser, location:  location)
+    }
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: teferi.Category, categoryWasSetByUser: Bool, location: CLLocation?) -> TimeSlot?
+    {
+        let timeSlot = TimeSlot(withStartTime: startTime, category: category, categoryWasSetByUser: categoryWasSetByUser, location: location)
+        return self.tryAdd(timeSlot: timeSlot)
+    }
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    {
+        let timeSlot = TimeSlot(withStartTime: startTime, smartGuess: smartGuess, location: location)
+        return self.tryAdd(timeSlot: timeSlot)
+    }
+    
+    private func tryAdd(timeSlot: TimeSlot) -> TimeSlot
     {
         if let lastTimeSlot = timeSlots.last
         {
@@ -76,6 +113,8 @@ class MockTimeSlotService : TimeSlotService
         
         self.timeSlots.append(timeSlot)
         self.timeSlotCreatedVariable.value = timeSlot
+        
+        return timeSlot
     }
     
     @discardableResult func update(timeSlot: TimeSlot, withCategory category: teferi.Category, setByUser: Bool)

@@ -1,11 +1,11 @@
 import UIKit
 
-class Color
+class Colors
 {
-    static let white = rgb(255, 255, 255)
     static let green = rgb(40, 201, 128)
     static let purple = rgb(186, 94, 255)
     static let yellow = rgb(255, 195, 27)
+ 
     static let darkGray = rgb(94, 91, 91)
     static let offBlack = rgb(4, 4, 6)
     static let lightBlue = rgb(99, 213, 238)

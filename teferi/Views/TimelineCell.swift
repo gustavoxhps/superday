@@ -18,12 +18,13 @@ class TimelineCell : UITableViewCell
 
     @IBOutlet private weak var lineView : UIView!
     @IBOutlet private weak var slotTime : UILabel!
-    @IBOutlet weak var categoryIcon : UIImageView!
     @IBOutlet private weak var elapsedTime : UILabel!
     @IBOutlet private weak var indicatorDot : UIView!
     @IBOutlet private weak var categoryButton : UIButton!
     @IBOutlet private weak var slotDescription : UILabel!
     @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
+    @IBOutlet weak var categoryCircle: UIView!
+    @IBOutlet private weak var categoryIcon: UIImageView!
     private var lineFadeView : AutoResizingLayerView?
     
     //MARK: Properties
@@ -33,7 +34,7 @@ class TimelineCell : UITableViewCell
         self.isSubscribedToClickObservable = true
         
         return self.categoryButton.rx.tap
-            .map { return (self.categoryIcon.convert(self.categoryIcon.center, to: nil), self.currentIndex) }
+            .map { return (self.categoryCircle.convert(self.categoryCircle.center, to: nil), self.currentIndex) }
             .asObservable()
     }()
     
@@ -70,9 +71,11 @@ class TimelineCell : UITableViewCell
     /// Updates the icon that indicates the slot's category
     private func layoutCategoryIcon(withAsset asset: Asset, color: UIColor)
     {
-        self.categoryIcon.backgroundColor = color
-        self.categoryIcon.layer.cornerRadius = 16
-        self.categoryIcon.image = UIImage(asset: asset)
+        self.categoryCircle.backgroundColor = color
+        let image = UIImage(asset: asset)!
+        let icon = self.categoryIcon!
+        icon.image = image
+        icon.contentMode = .scaleAspectFit
     }
     
     /// Updates the label that displays the description and starting time of the slot
@@ -80,7 +83,7 @@ class TimelineCell : UITableViewCell
     {
         let timeSlot = timelineItem.timeSlot
         let shouldShowCategory = !timelineItem.shouldDisplayCategoryName || timeSlot.category == .unknown
-        let categoryText = shouldShowCategory ? "" : timeSlot.category.name
+        let categoryText = shouldShowCategory ? "" : timeSlot.category.description
         self.slotDescription.text = categoryText
         self.timeSlotDistanceConstraint.constant = shouldShowCategory ? 0 : 6
     }

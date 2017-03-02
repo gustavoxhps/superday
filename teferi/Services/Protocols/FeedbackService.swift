@@ -13,5 +13,5 @@ protocol FeedbackService
      
      - Parameter completed: Called when feedback UI is dismissed
      */
-    func composeFeedback(completed: @escaping () -> ())
+    func composeFeedback()
 }

@@ -8,16 +8,44 @@ class PostiOSTenNotificationService : NotificationService
     //MARK: Fields
     private let timeService : TimeService
     private let loggingService : LoggingService
+    private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
+    
+    private var appIsBeingUsedForOverAWeek : Bool
+    {
+        let daysSinceInstallDate : Int
+        
+        if let installDate = settingsService.installDate
+        {
+            daysSinceInstallDate = installDate.differenceInDays(toDate: timeService.now)
+        }
+        else
+        {
+            daysSinceInstallDate = 0
+        }
+        
+        return daysSinceInstallDate >= 7
+    }
+    
+    let formatter : DateFormatter =
+    {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter
+    }()
     
     private var actionSubsribers = [(Category) -> ()]()
     private let notificationCenter = UNUserNotificationCenter.current()
     
     //MARK: Initializers
-    init(timeService: TimeService, loggingService: LoggingService, timeSlotService : TimeSlotService)
+    init(timeService: TimeService,
+         loggingService: LoggingService,
+         settingsService: SettingsService,
+         timeSlotService: TimeSlotService)
     {
         self.timeService = timeService
         self.loggingService = loggingService
+        self.settingsService = settingsService
         self.timeSlotService = timeSlotService
     }
     
@@ -35,11 +63,14 @@ class PostiOSTenNotificationService : NotificationService
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = message
-        content.categoryIdentifier = Constants.notificationTimeSlotCategorySelectionIdentifier
         content.sound = UNNotificationSound(named: UILocalNotificationDefaultSoundName)
         
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
+        //We shouldn't try guessing which categories the user will pick before we have enough data
+        guard self.appIsBeingUsedForOverAWeek else
+        {
+            self.finishScheduling(date, content)
+            return
+        }
         
         let numberOfSlotsForNotification : Int = 3
         
@@ -48,19 +79,7 @@ class PostiOSTenNotificationService : NotificationService
                 .getTimeSlots(forDay: self.timeService.now)
                 .suffix(numberOfSlotsForNotification)
         
-        var latestTimeSlotsForNotification = latestTimeSlots.map { (timeSlot) -> [String: String] in
-            
-            var timeSlotDictionary = [String: String]()
-            
-            timeSlotDictionary["color"] = timeSlot.category.color.hexString
-            
-            if timeSlot.category != .unknown {
-                timeSlotDictionary["category"] = timeSlot.category.name
-            }
-            
-            timeSlotDictionary["date"] = formatter.string(from: timeSlot.startTime)
-            return timeSlotDictionary
-        }
+        var latestTimeSlotsForNotification = latestTimeSlots.map(toDictionary)
         
         if let possibleFutureSlotStart = possibleFutureSlotStart
         {
@@ -72,20 +91,43 @@ class PostiOSTenNotificationService : NotificationService
             latestTimeSlotsForNotification.append( ["date": formatter.string(from: possibleFutureSlotStart)] )
         }
         
+        content.categoryIdentifier = Constants.notificationCategoryId
         content.userInfo = ["timeSlots": latestTimeSlotsForNotification]
         
+        self.finishScheduling(date, content)
+    }
+    
+    private func toDictionary(_ timeSlot: TimeSlot) -> [String: String]
+    {
+        var timeSlotDictionary = [String: String]()
+    
+        timeSlotDictionary["color"] = timeSlot.category.color.hexString
+        timeSlotDictionary["date"] = formatter.string(from: timeSlot.startTime)
+    
+        if timeSlot.category != .unknown
+        {
+            timeSlotDictionary["category"] = timeSlot.category.description
+        }
+    
+        return timeSlotDictionary
+    }
+    
+    private func finishScheduling(_ date: Date, _ content: UNMutableNotificationContent)
+    {
         let fireTime = date.timeIntervalSinceNow
-        
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
         
         let identifier = String(date.timeIntervalSince1970)
-        
         let request  = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
-        notificationCenter.add(request) { (error) in
+        self.notificationCenter.add(request) { (error) in
             if let error = error
             {
                 self.loggingService.log(withLogLevel: .error, message: "Tried to schedule notifications, but could't. Got error: \(error)")
+            }
+            else
+            {
+                self.setUserNotificationActions()
             }
         }
     }
@@ -108,30 +150,56 @@ class PostiOSTenNotificationService : NotificationService
         self.actionSubsribers.append(action)
     }
     
-    // MARK: - User Notification Action
     func setUserNotificationActions()
     {
-        let food = UNNotificationAction(
-            identifier: Category.food.rawValue,
-            title: Category.food.name)
+        guard self.appIsBeingUsedForOverAWeek else { return }
+
+        let desiredNumberOfCategories = 4
+        var mostUsedCategories =
+            self.timeSlotService
+                .getTimeSlots(sinceDaysAgo: 2)
+                .groupBy(category)
+                .sorted(by: count)
+                .flatMap(intoCategory)
+                .prefix(4)
         
-        let friends = UNNotificationAction(
-            identifier: Category.friends.rawValue,
-            title: Category.friends.name)
+        if mostUsedCategories.count != desiredNumberOfCategories
+        {
+            let defaultCategories : [ Category ] = [ .work, .food, .leisure, .friends ].filter { !mostUsedCategories.contains($0) }
+            let missingCategoryCount = desiredNumberOfCategories - mostUsedCategories.count
+            
+            mostUsedCategories = mostUsedCategories + defaultCategories.prefix(missingCategoryCount)
+        }
         
-        let work = UNNotificationAction(
-            identifier: Category.work.rawValue,
-            title: Category.work.name)
+        let notificationCategory = UNNotificationCategory(identifier: Constants.notificationCategoryId,
+                                                          actions: mostUsedCategories.map(toNotificationAction),
+                                                          intentIdentifiers: [])
+   
+        notificationCenter.setNotificationCategories([notificationCategory])
+    }
+    
+    private func category(_ timeSlot: TimeSlot) -> Category
+    {
+        return timeSlot.category
+    }
+    
+    private func count(_ timeSlots: ([TimeSlot], [TimeSlot])) -> Bool
+    {
+        return timeSlots.0.count > timeSlots.1.count
+    }
+    
+    private func intoCategory(_ timeSlots: [TimeSlot]) -> Category?
+    {
+        guard let category = timeSlots.first?.category else { return nil }
         
-        let leisure = UNNotificationAction(
-            identifier: Category.leisure.rawValue,
-            title: Category.leisure.name)
+        guard category != .unknown, category != .commute else { return nil }
         
-        let category = UNNotificationCategory(
-            identifier: Constants.notificationTimeSlotCategorySelectionIdentifier,
-            actions: [food, friends, work, leisure],
-            intentIdentifiers: [])
-        
-        notificationCenter.setNotificationCategories([category])
+        return category
+    }
+    
+    private func toNotificationAction(from category: Category) -> UNNotificationAction
+    {
+        return UNNotificationAction(identifier: category.rawValue,
+                                    title: category.description)
     }
 }

@@ -58,5 +58,5 @@ class TopBarViewModel
         return dayOfMonthFormatter.string(from: currentlySelectedDate)
     }
     
-    func composeFeedback(_ completed: @escaping () -> ()) { self.feedbackService.composeFeedback(completed: completed) }
+    func composeFeedback() { self.feedbackService.composeFeedback() }
 }

@@ -32,10 +32,11 @@ class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
                                          lngKey: self.locationLongitudeKey)
         
         let timeSlot = TimeSlot(withStartTime: startTime,
-                                endTime: endTime,
                                 category: category,
-                                location: location,
-                                categoryWasSetByUser: categoryWasSetByUser)
+                                categoryWasSetByUser: categoryWasSetByUser,
+                                location: location)
+        timeSlot.endTime = endTime
+        
         return timeSlot
     }
     

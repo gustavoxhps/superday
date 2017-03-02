@@ -9,9 +9,6 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     private var viewModelLocator : ViewModelLocator!
     private var currentDateViewController : TimelineViewController!
     
-    // MARK: Properties
-    var feedbackUIClosing : Bool = false
-    
     // MARK: Initializers
     override init(transitionStyle style: UIPageViewControllerTransitionStyle, navigationOrientation: UIPageViewControllerNavigationOrientation, options: [String : Any]?)
     {
@@ -48,13 +45,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     override func viewWillAppear(_ animated: Bool)
     {
-        //TODO: Figure this out
-        if !self.feedbackUIClosing
-        {
-            self.setCurrentViewController(forDate: self.viewModel.currentDate, animated: false)
-        }
-        
-        self.feedbackUIClosing = false
+        self.setCurrentViewController(forDate: self.viewModel.currentlySelectedDate, animated: false)
     }
     
     private func createBindings()
