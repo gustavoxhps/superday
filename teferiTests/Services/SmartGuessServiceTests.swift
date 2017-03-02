@@ -44,12 +44,12 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
         [
-            (distanceFromTarget: 08, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
             (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
-            (distanceFromTarget: 53, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
-            (distanceFromTarget: 54, category: .leisure, date: date.add(days: -4)),
-            (distanceFromTarget: 59, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
-            (distanceFromTarget: 66, category: .leisure, date: date.add(days: -6).addingTimeInterval(19400))
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
+            (distanceFromTarget: 50, category: .leisure, date: date.add(days: -4)),
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
+            (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
         ]
         
         self.persistencyService.smartGuesses =
@@ -59,10 +59,10 @@ class SmartGuessServiceTests : XCTestCase
         
         let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
         
-        expect(smartGuess).notTo(beNil())
+        expect(smartGuess?.category).to(equal(teferi.Category.leisure))
     }
     
-    func testNoGuessesAreReturnedWithTimestampsFurtherThanThresholdFromLocation()
+    func testGuessesAreNotReturnedWithTimestampsOutsideThresholdFromLocation()
     {
         let targetLocation = CLLocation(
             coordinate: CLLocationCoordinate2D(
@@ -71,13 +71,16 @@ class SmartGuessServiceTests : XCTestCase
             altitude: 0,
             horizontalAccuracy: 0,
             verticalAccuracy: 0,
-            timestamp: date.add(days: -5))
+            timestamp: date.add(days: -11))
         
         let testInput : [TestData] =
-        [
-            (distanceFromTarget: 08, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
-            (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
-            (distanceFromTarget: 53, category: .work, date: date.add(days: -3).addingTimeInterval(19400))
+            [
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
+                (distanceFromTarget: 50, category: .leisure, date: date.add(days: -5)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
         ]
         
         self.persistencyService.smartGuesses =
@@ -87,7 +90,7 @@ class SmartGuessServiceTests : XCTestCase
         
         let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
         
-        expect(smartGuess).to(beNil())
+        expect(smartGuess?.category).to(beNil())
     }
     
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAway()
@@ -188,7 +191,7 @@ class SmartGuessServiceTests : XCTestCase
     {
         return { (testData: TestData) in
             
-            return (baseLocation.offset(.east, meters: testData.distanceFromTarget), testData.category)
+            return (baseLocation.offset(.east, meters: testData.distanceFromTarget, timestamp: testData.date), testData.category)
         }
     }
     
