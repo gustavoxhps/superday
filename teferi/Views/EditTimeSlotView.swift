@@ -200,7 +200,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         viewHandler?.cleanAll()
         viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))
         
-        
         currentCategoryBackgroundView?.removeFromSuperview()
         currentCategoryBackgroundView = UIView()
         currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
@@ -303,6 +302,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         for cell in cellsToAnimate
         {
+            cell.layer.removeAllAnimations()
             animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
         }
         
@@ -336,9 +336,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper
                 cell.isHidden = false
                 
                 let changesToAnimate = {
-                        cell.transform = presenting ?
-                            .identity :
-                            scaleTransform
+                    cell.layer.removeAllAnimations()
+                    cell.transform = presenting ?
+                        .identity :
+                        scaleTransform
                 }
                 
                 if presenting
