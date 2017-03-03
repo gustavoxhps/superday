@@ -49,7 +49,7 @@ extension Date
     
     func ignoreDateComponents() -> Date
     {
-        let units : NSCalendar.Unit = [ .hour, .minute, .second];
+        let units : NSCalendar.Unit = [ .hour, .minute, .second, .nanosecond];
         let calendar = Calendar.current;
         return calendar.date(from: (calendar as NSCalendar).components(units, from: self))!
     }
@@ -98,14 +98,13 @@ extension Date
         return components.day!
     }
     
-    func to(sameDateAs date: Date) -> Date
+    func convert(calendarUnits: NSCalendar.Unit, sameAs date: Date) -> Date
     {
-        let dateUnits : NSCalendar.Unit = [ .year, .month, .day]
         let currentUnits : NSCalendar.Unit = [ .year, .month, .day, .hour, .minute, .second, .nanosecond]
         let calendar = Calendar.current
         
         var currentComponents = (calendar as NSCalendar).components(currentUnits, from: self)
-        let newComponents = (calendar as NSCalendar).components(dateUnits, from: date)
+        let newComponents = (calendar as NSCalendar).components(calendarUnits, from: date)
         
         currentComponents.year = newComponents.year
         currentComponents.month = newComponents.month
@@ -117,6 +116,6 @@ extension Date
     func timeIntervalBasedOnWeekDaySince(_ date: Date) -> TimeInterval
     {
         let dayDifference = self.dayOfWeek - date.dayOfWeek
-        return self.timeIntervalSince(date.to(sameDateAs: self).add(days: -dayDifference))
+        return self.timeIntervalSince(date.convert(calendarUnits: [ .year, .month, .day], sameAs: self).add(days: -dayDifference))
     }
 }
