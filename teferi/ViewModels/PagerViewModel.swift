@@ -50,7 +50,7 @@ class PagerViewModel
     private var selectedDate : Date
     var currentlySelectedDate : Date
     {
-        get { return self.selectedDate }
+        get { return self.selectedDate.ignoreTimeComponents() }
         set(value)
         {
             self.selectedDate = value
@@ -98,7 +98,7 @@ class PagerViewModel
     
     private func toDateChange(_ date: Date) -> DateChange?
     {
-        if date != self.currentlySelectedDate
+        if date.ignoreTimeComponents() != self.currentlySelectedDate
         {
             let dateChange = DateChange(newDate: date, oldDate: self.selectedDate)
             self.selectedDate = date

@@ -1,12 +1,15 @@
 import XCTest
 import Nimble
+import RxSwift
 @testable import teferi
 
 class PagerViewModelTests : XCTestCase
 {
     //MARK: Fields
     private var viewModel : PagerViewModel!
-    private var timeService : TimeService!
+    
+    private var disposable : Disposable? = nil
+    private var timeService : MockTimeService!
     private var appStateService : AppStateService!
     private var settingsService : SettingsService!
     private var editStateService : EditStateService!
@@ -27,11 +30,37 @@ class PagerViewModelTests : XCTestCase
                                         selectedDateService: self.selectedDateService)
     }
     
+    override func tearDown()
+    {
+        disposable?.dispose()
+        disposable = nil
+    }
+    
     func testTheViewModelCanNotAllowScrollsAfterTheCurrentDate()
     {
         let tomorrow = Date().tomorrow
         
         expect(self.viewModel.canScroll(toDate: tomorrow)).to(beFalse())
+    }
+    
+    func testTheCurrentDateObservableDoesNotPumpEventsForSameDayDates()
+    {
+        let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        self.timeService.mockDate = noon
+        
+        self.viewModel = PagerViewModel(timeService: self.timeService,
+                                        appStateService: self.appStateService,
+                                        settingsService: self.settingsService,
+                                        editStateService: self.editStateService,
+                                        selectedDateService: self.selectedDateService)
+        
+        var value = false
+        self.disposable = self.viewModel.dateObservable.subscribe(onNext: { _ in value = true })
+        
+        let otherDate = noon.addingTimeInterval(60)
+        viewModel.currentlySelectedDate = otherDate
+        
+        expect(value).to(beFalse())
     }
     
     func testTheViewModelCanNotAllowScrollsToDatesBeforeTheAppInstall()
