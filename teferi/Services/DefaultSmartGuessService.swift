@@ -8,7 +8,7 @@ class DefaultSmartGuessService : SmartGuessService
     //MARK: Fields
     private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
     private let timeThreshold : TimeInterval = 5*60*60 //5h
-    private let kNeighbors = 1
+    private let kNeighbors = 3
     private let smartGuessErrorThreshold = 3
     private let smartGuessIdKey = "smartGuessId"
     
@@ -86,12 +86,16 @@ class DefaultSmartGuessService : SmartGuessService
         
         let knnInstances = bestMatches.map({ (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) })
         
-        guard let bestKnnMatch = KNN<KNNInstance, Category>.prediction(
-            for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
-            usingK: kNeighbors,
-            with: knnInstances,
-            customDistance: self.distance,
-            labelAction: { $0.category })
+        print(knnInstances)
+        
+        guard let bestKnnMatch = KNN<KNNInstance, Category>
+            .prediction(
+                for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
+                usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
+                with: knnInstances,
+                decisionType: .minAvarageDistance,
+                customDistance: self.distance,
+                labelAction: { $0.category })
         else { return nil }
         
         guard let bestMatch = bestMatches.filter({ $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location }).first
