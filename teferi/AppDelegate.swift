@@ -89,6 +89,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.logAppStartup(isInBackground)
         self.initializeTrackingService()
         
+        self.appStateService.currentAppState = isInBackground ? .inactive : .active
+        
         //Faster startup when the app wakes up for location updates
         if isInBackground
         {

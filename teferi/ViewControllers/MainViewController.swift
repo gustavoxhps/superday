@@ -16,7 +16,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     private let disposeBag = DisposeBag()
     private var viewModel : MainViewModel!
     private var viewModelLocator : ViewModelLocator!
-    private var gestureRecognizer : UIGestureRecognizer!
     
     private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
     private var topBarViewController : TopBarViewController { return self.childViewControllers.firstOfType() }
@@ -65,7 +64,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         fadeView.isUserInteractionEnabled = false
-        self.view.insertSubview(fadeView, aboveSubview: self.addButton)
+        self.view.insertSubview(fadeView, belowSubview: self.addButton)
         fadeView.snp.makeConstraints { make in
             make.bottom.left.right.equalTo(self.view)
             make.height.equalTo(100)
@@ -113,12 +112,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
         
-        //Add button must be added like this due to .xib/.storyboard restrictions
-        self.view.insertSubview(self.addButton, belowSubview: self.editView)
-        self.addButton.snp.makeConstraints { make in
-            make.height.equalTo(320)
-            make.left.right.bottom.equalTo(self.view)
-        }
     }
     
     // MARK: Methods
