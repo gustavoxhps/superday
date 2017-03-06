@@ -430,9 +430,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     }
     
     // MARK: - for hacky onboarding animations
-    func getIcon(forCategory category: Category) -> ViewType?
+    func getIcon(forCategory category: Category) -> UIImageView?
     {
-        return viewHandler.visibleCells.first
+        let color = category.color
+        guard let cell = viewHandler.visibleCells.first(where: { (b) in b.backgroundColor == color }) else { return nil }
+        return UIImageView(frame: cell.frame)
     }
     
     // MARK: - Math functions
