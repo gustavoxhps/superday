@@ -1,14 +1,16 @@
 import UIKit
+import RxSwift
 
 class EditTimeSlotView : UIView, TrigonometryHelper
 {
     typealias ViewType = UIButton
     typealias DismissType = (() -> ())
+    typealias TimeSlotEdit = (TimeSlot, Category)
     
-    //MARK: Properties
-    private var onEditEnded : ((TimeSlot, Category) -> Void)!
+    // MARK: Fields
     private var timeSlot : TimeSlot!
     private var selectedItem : Category?
+    private let editEndedSubject = PublishSubject<TimeSlotEdit>()
     
     private var currentCategoryBackgroundView : UIView? = nil
     private var currentCategoryImageView : UIImageView? = nil
@@ -24,8 +26,12 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     private var pageWidth : CGFloat { return cellSize.width + cellSpacing }
     private let animationDuration = TimeInterval(0.225)
     
-    
+    // MARK: Properties
     var dismissAction : DismissType?
+    private(set) lazy var editEndedObservable : Observable<TimeSlotEdit> =
+    {
+        return self.editEndedSubject.asObservable()
+    }()
     
     // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
@@ -46,12 +52,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     }
     
     //MARK: Initializers
-    init(editEndedCallback: @escaping (TimeSlot, Category) -> Void)
+    init()
     {
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
         self.alpha = 0
-        self.onEditEnded = editEndedCallback
         self.backgroundColor = Color.white.withAlphaComponent(0)
         
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
@@ -71,7 +76,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     @objc private func didSelectCell(_ sender: ViewType)
     {
         selectedItem = viewHandler.items[sender.tag]
-        onEditEnded(timeSlot, selectedItem!)
+        editEndedSubject.onNext((timeSlot, selectedItem!))
     }
     
     // MARK: - Tap gesture logic
