@@ -86,8 +86,6 @@ class DefaultSmartGuessService : SmartGuessService
         
         let knnInstances = bestMatches.map({ (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) })
         
-        print(knnInstances)
-        
         guard let bestKnnMatch = KNN<KNNInstance, Category>
             .prediction(
                 for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
