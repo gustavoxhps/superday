@@ -15,6 +15,8 @@ class Colors
     static let lightGray = rgb(206, 205, 205, 0.23)
     static let offBlackTransparent = rgb(4, 4, 6, 0.5)
     
+    static let calendarNoData = rgb(206, 205, 205, 0.5)
+    
     private static let logoTrancparency = CGFloat(0.64)
     static let transparentPurple = purple.withAlphaComponent(logoTrancparency)
     static let transparentYellow = yellow.withAlphaComponent(logoTrancparency)
