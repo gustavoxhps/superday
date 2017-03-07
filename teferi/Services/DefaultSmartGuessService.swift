@@ -98,7 +98,7 @@ class DefaultSmartGuessService : SmartGuessService
                 labelAction: { $0.category })
         else { return nil }
         
-        guard let bestMatch = bestMatches.filter({ $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location }).first
+        guard let bestMatch = bestMatches.first(where: { $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location })
         else { return nil }
         
         //Every time a dictionary entry gets used in a guess, it gets refreshed.
