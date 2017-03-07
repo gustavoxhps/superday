@@ -86,6 +86,8 @@ class DefaultSmartGuessService : SmartGuessService
         
         let knnInstances = bestMatches.map({ (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) })
         
+        let startTimeForKNN = Date()
+        
         guard let bestKnnMatch = KNN<KNNInstance, Category>
             .prediction(
                 for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
@@ -95,6 +97,8 @@ class DefaultSmartGuessService : SmartGuessService
                 customDistance: self.distance,
                 labelAction: { $0.category })
         else { return nil }
+        
+        self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
         guard let bestMatch = bestMatches.first(where: { $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location })
         else { return nil }
