@@ -77,11 +77,6 @@ extension Date
     
     var dayOfWeek : Int { return Calendar.current.component(.weekday, from: self) - 1 }
     
-    func dayOfWeekAdding(days daysToAdd: Int) -> Int
-    {
-        return self.add(days: daysToAdd).dayOfWeek
-    }
-    
     var day : Int { return Calendar.current.component(.day, from: self) }
     
     var month : Int { return Calendar.current.component(.month, from: self) }
