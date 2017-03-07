@@ -5,7 +5,7 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
     case maxVote
     case minAvarageDistance
     
-    private typealias CountAndInstance = (count: Int, distanceSum: Double, instance: ItemType)
+    private typealias InstanceAndParameters = (count: Int, distanceSum: Double, instance: ItemType)
     
     func chooseInstance(from neighbors: [(instance: ItemType, distance: Double)], with labelAction: (ItemType) -> LabelType) -> ItemType
     {
@@ -25,15 +25,25 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
         }
     }
     
-    private func groupedByLabel(items: [(instance: ItemType, distance: Double)], labelAction getLabel: (ItemType) -> LabelType) -> [LabelType: CountAndInstance]
+    private func groupedByLabel(items: [(instance: ItemType, distance: Double)], labelAction getLabel: (ItemType) -> LabelType) -> [LabelType: InstanceAndParameters]
     {
-        return items
-            .reduce([LabelType: CountAndInstance](), { (result, item) in
-                var newResult = result
-                let newCount : Int = (result[getLabel(item.instance)]?.count ?? 0) + 1
-                let newDistanceSum : Double = (result[getLabel(item.instance)]?.distanceSum ?? 0.0) + item.distance
-                newResult[getLabel(item.instance)] = (count: newCount, distanceSum: newDistanceSum, instance: result[getLabel(item.instance)]?.instance ?? item.instance)
-                return newResult
+        let groupedItemsByLabel = items.groupBy { (instance, _) -> LabelType in
+            return getLabel(instance)
+        }
+        
+        var dictToReturn = [LabelType: InstanceAndParameters]()
+        
+        groupedItemsByLabel.forEach { (itemsWithSameLabel) in
+            
+            let countAndDistanceSum = itemsWithSameLabel.reduce((count: 0, distanceSum: 0.0), { (result, element) in
+                return (distanceSum: result.distanceSum + element.distance, count: result.count + 1)
             })
+            
+            let firstInstance = itemsWithSameLabel.first!.instance
+            
+            dictToReturn[getLabel(firstInstance)] = (count: countAndDistanceSum.count, distanceSum: countAndDistanceSum.distanceSum, instance: firstInstance)
+        }
+        
+        return dictToReturn
     }
 }
