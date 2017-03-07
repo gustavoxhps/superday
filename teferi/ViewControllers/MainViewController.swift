@@ -49,7 +49,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
                                          calendarViewController: self.calendarViewController)
         
         //Edit View
-        self.editView = EditTimeSlotView(editEndedCallback: self.viewModel.updateTimeSlot)
+        self.editView = EditTimeSlotView()
         self.view.insertSubview(self.editView, belowSubview: self.calendarViewController.view.superview!)
         self.editView.constrainEdges(to: self.view)
         
@@ -105,6 +105,11 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.addButton
             .categoryObservable
             .subscribe(onNext: self.viewModel.addNewSlot)
+            .addDisposableTo(self.disposeBag)
+        
+        self.editView
+            .editEndedObservable
+            .subscribe(onNext: self.viewModel.updateTimeSlot)
             .addDisposableTo(self.disposeBag)
         
         self.viewModel
