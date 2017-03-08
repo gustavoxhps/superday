@@ -438,8 +438,8 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     func getIcon(forCategory category: Category) -> UIImageView?
     {
         let color = category.color
-        let cell = viewHandler.visibleCells.first(where: { (b) in b.backgroundColor == color })
-        return UIImageView(frame: cell!.frame)
+        guard let cell = viewHandler.visibleCells.first(where: { (b) in b.backgroundColor == color }) else { return nil }
+        return UIImageView(frame: cell.frame)
     }
     
     // MARK: - Math functions

@@ -22,9 +22,12 @@ class AddTimeSlotView : UIView
         set(value) { self.isAddingVariable.value = value }
     }
     
-    lazy var categoryObservable : Observable<Category> =
+    private(set) lazy var categoryObservable : Observable<Category> =
     {
-        return self.selectedCategory.asObservable()
+        return self
+            .selectedCategory
+            .asObservable()
+            .skip(1)
     }()
     
     //MARK: Lifecycle methods

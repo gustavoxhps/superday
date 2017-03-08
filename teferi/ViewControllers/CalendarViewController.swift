@@ -11,10 +11,11 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     @IBOutlet weak private var leftButton : UIButton!
     @IBOutlet weak private var rightButton : UIButton!
     @IBOutlet weak private var dayOfWeekLabels : UIStackView!
+    @IBOutlet weak private var calendarBackgroundView : UIView!
     @IBOutlet weak private var calendarView : JTAppleCalendarView!
     @IBOutlet weak private var calendarHeightConstraint : NSLayoutConstraint!
     
-    private lazy var viewsToAnimate : [ UIView ] =
+    private lazy var viewsToAnimate : [UIView] =
     {
         [
             self.calendarView,
@@ -199,9 +200,11 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
     {
         if let view = touch.view,
-            view.isDescendant(of: self.calendarView) ||
             view.isDescendant(of: self.leftButton) ||
-            view.isDescendant(of: self.rightButton)
+            view.isDescendant(of: self.rightButton) ||
+            view.isDescendant(of: self.calendarView) ||
+            view.isDescendant(of: self.dayOfWeekLabels) ||
+            view.isDescendant(of: self.calendarBackgroundView)
         {
             return false
         }
