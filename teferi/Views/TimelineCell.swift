@@ -18,8 +18,8 @@ class TimelineCell : UITableViewCell
 
     @IBOutlet private weak var lineView : UIView!
     @IBOutlet private weak var slotTime : UILabel!
+    @IBOutlet private var indicatorDots : [UIView]!
     @IBOutlet private weak var elapsedTime : UILabel!
-    @IBOutlet private weak var indicatorDot : UIView!
     @IBOutlet private weak var categoryButton : UIButton!
     @IBOutlet private weak var slotDescription : UILabel!
     @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
@@ -142,9 +142,11 @@ class TimelineCell : UITableViewCell
         
         self.lineView.layoutIfNeeded()
         
-        self.indicatorDot.backgroundColor = color
-        self.indicatorDot.isHidden = !isRunning
-        self.indicatorDot.layoutIfNeeded()
+        self.indicatorDots.forEach { dot in
+            dot.backgroundColor = color
+            dot.isHidden = !isRunning
+            dot.layoutIfNeeded()
+        }
     }
     
     private func ensureLineFadeExists()

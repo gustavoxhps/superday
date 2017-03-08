@@ -60,7 +60,7 @@
                     </userDefinedRuntimeAttributes>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icCommuteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="hvt-Yn-Mch" userLabel="Category Icon">
-                    <rect key="frame" x="24.5" y="16.5" width="15" height="15"/>
+                    <rect key="frame" x="25" y="17" width="15" height="15"/>
                     <accessibility key="accessibilityConfiguration">
                         <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                     </accessibility>
@@ -75,6 +75,19 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="4" id="HI2-cA-qNP"/>
                         <constraint firstAttribute="height" constant="4" id="xaS-LH-YFU"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b8e-1M-wfP" userLabel="Running Indicator Dot">
+                    <rect key="frame" x="66" y="77" width="4" height="4"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="4" id="SRx-nR-RMt"/>
+                        <constraint firstAttribute="height" constant="4" id="pAg-Rc-QNT"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -105,15 +118,32 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nvo-Lf-5RD" userLabel="Running Indicator Dot">
+                    <rect key="frame" x="66" y="69" width="4" height="4"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="4" id="lZV-xi-z96"/>
+                        <constraint firstAttribute="width" constant="4" id="yqt-uJ-7qF"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="Nvo-Lf-5RD" firstAttribute="top" secondItem="8o1-Rs-sBZ" secondAttribute="bottom" constant="4" id="1dO-EF-CjJ"/>
+                <constraint firstItem="Nvo-Lf-5RD" firstAttribute="centerX" secondItem="8o1-Rs-sBZ" secondAttribute="centerX" id="2KT-Md-CQ2"/>
                 <constraint firstItem="I6B-z7-bFn" firstAttribute="centerY" secondItem="2dA-qd-byA" secondAttribute="centerY" id="3xu-Rx-16V"/>
                 <constraint firstItem="2dA-qd-byA" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="53W-4Y-JjP"/>
                 <constraint firstItem="lWX-Wq-cy4" firstAttribute="leading" secondItem="2Oj-R3-3Vm" secondAttribute="trailing" constant="8" id="DiF-dD-Wuc"/>
                 <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="EOh-hF-EWE"/>
+                <constraint firstItem="b8e-1M-wfP" firstAttribute="centerX" secondItem="Nvo-Lf-5RD" secondAttribute="centerX" id="Hpv-Yd-J7P"/>
                 <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="LNB-k5-pGJ"/>
                 <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="2dA-qd-byA" secondAttribute="bottom" constant="6" id="NBP-uS-Hr4"/>
+                <constraint firstItem="b8e-1M-wfP" firstAttribute="top" secondItem="Nvo-Lf-5RD" secondAttribute="bottom" constant="4" id="QZx-3c-EC0"/>
                 <constraint firstItem="3XR-CB-WIl" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="RCj-0L-0Fi"/>
                 <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="2dA-qd-byA" secondAttribute="bottom" constant="8" id="Sjc-hs-xMO"/>
                 <constraint firstItem="2dA-qd-byA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="64" id="Twh-jI-9us"/>
@@ -125,8 +155,8 @@
                 <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="Zhv-yT-HBa"/>
                 <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="I6B-z7-bFn" secondAttribute="bottom" constant="6" id="bYh-XQ-SPG"/>
                 <constraint firstItem="2Oj-R3-3Vm" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="fNn-m3-CiX"/>
+                <constraint firstItem="8o1-Rs-sBZ" firstAttribute="top" secondItem="2Oj-R3-3Vm" secondAttribute="bottom" constant="4" id="hg8-of-dyE"/>
                 <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerX" secondItem="LmH-eW-Lnz" secondAttribute="centerX" id="hhh-VN-Zbc"/>
-                <constraint firstItem="8o1-Rs-sBZ" firstAttribute="top" secondItem="2Oj-R3-3Vm" secondAttribute="bottom" constant="4" id="l6N-I7-sew"/>
                 <constraint firstItem="LmH-eW-Lnz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="qtk-cj-O7D"/>
                 <constraint firstItem="2Oj-R3-3Vm" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="93" id="stt-O3-5bP"/>
                 <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="t6i-W9-Dg3"/>
@@ -150,11 +180,13 @@
                 <outlet property="categoryCircle" destination="LmH-eW-Lnz" id="7bk-ey-qKG"/>
                 <outlet property="categoryIcon" destination="hvt-Yn-Mch" id="Qid-wR-D65"/>
                 <outlet property="elapsedTime" destination="lWX-Wq-cy4" id="1Z9-0E-U6W"/>
-                <outlet property="indicatorDot" destination="8o1-Rs-sBZ" id="uGa-mE-tfh"/>
                 <outlet property="lineView" destination="2Oj-R3-3Vm" id="kYE-eO-Upc"/>
                 <outlet property="slotDescription" destination="2dA-qd-byA" id="LH0-9M-jTv"/>
                 <outlet property="slotTime" destination="I6B-z7-bFn" id="mEk-dd-w5G"/>
                 <outlet property="timeSlotDistanceConstraint" destination="U6l-FP-Gdh" id="IMR-Co-dlJ"/>
+                <outletCollection property="indicatorDots" destination="8o1-Rs-sBZ" id="bk3-qf-5tR"/>
+                <outletCollection property="indicatorDots" destination="Nvo-Lf-5RD" id="RYD-xt-RqB"/>
+                <outletCollection property="indicatorDots" destination="b8e-1M-wfP" id="Dz3-yo-Q94"/>
             </connections>
             <point key="canvasLocation" x="205.5" y="267.5"/>
         </view>
