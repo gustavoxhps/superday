@@ -1,24 +1,33 @@
 import CoreData
 import RxSwift
 import Foundation
+import CoreLocation
 
 class DefaultTimeSlotService : TimeSlotService
 {
     // MARK: Fields
     private let timeService : TimeService
     private let loggingService : LoggingService
+    private let locationService : LocationService
     private let persistencyService : BasePersistencyService<TimeSlot>
     
-    private let timeSlotCreatedVariable = Variable(TimeSlot(withStartTime: Date(), categoryWasSetByUser: false))
-    private let timeSlotUpdatedVariable = Variable(TimeSlot(withStartTime: Date(), categoryWasSetByUser: false))
+    private let timeSlotCreatedVariable = Variable(TimeSlot(withStartTime: Date(),
+                                                            category: .unknown,
+                                                            categoryWasSetByUser: false))
+    
+    private let timeSlotUpdatedVariable = Variable(TimeSlot(withStartTime: Date(),
+                                                            category: .unknown,
+                                                            categoryWasSetByUser: false))
     
     // MARK: Properties
     init(timeService: TimeService,
          loggingService: LoggingService,
+         locationService: LocationService,
          persistencyService: BasePersistencyService<TimeSlot>)
     {
         self.timeService = timeService
         self.loggingService = loggingService
+        self.locationService = locationService
         self.persistencyService = persistencyService
 
         self.timeSlotCreatedObservable = timeSlotCreatedVariable.asObservable().skip(1)
@@ -30,24 +39,67 @@ class DefaultTimeSlotService : TimeSlotService
     let timeSlotUpdatedObservable : Observable<TimeSlot>
 
     // MARK: Methods
-    func add(timeSlot: TimeSlot)
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
+    {
+        let location : CLLocation? = tryUsingLatestLocation ? self.locationService.getLastKnownLocation() : nil
+        
+        return self.addTimeSlot(withStartTime: startTime,
+                                category: category,
+                                categoryWasSetByUser: categoryWasSetByUser,
+                                location: location)
+    }
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, location: CLLocation?) -> TimeSlot?
+    {
+        let timeSlot = TimeSlot(withStartTime: startTime,
+                                category: category, 
+                                categoryWasSetByUser: categoryWasSetByUser,
+                                location: location)
+        
+        return self.tryAdd(timeSlot: timeSlot)
+    }
+    
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    {
+        let timeSlot = TimeSlot(withStartTime: startTime,
+                                smartGuess: smartGuess,
+                                location: location)
+        
+        return self.tryAdd(timeSlot: timeSlot)
+    }
+    
+    private func tryAdd(timeSlot: TimeSlot) -> TimeSlot?
     {
         //The previous TimeSlot needs to be finished before a new one can start
         guard self.endPreviousTimeSlot(atDate: timeSlot.startTime) && self.persistencyService.create(timeSlot) else
         {
             self.loggingService.log(withLogLevel: .error, message: "Failed to create new TimeSlot")
-            return
+            return nil
         }
         
         self.loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
         
         self.timeSlotCreatedVariable.value = timeSlot
+        
+        return timeSlot
     }
     
     func getTimeSlots(forDay day: Date) -> [TimeSlot]
     {
         let startTime = day.ignoreTimeComponents() as NSDate
         let endTime = day.tomorrow.ignoreTimeComponents() as NSDate
+        let predicate = Predicate(parameter: "startTime", rangesFromDate: startTime, toDate: endTime)
+        
+        let timeSlots = self.persistencyService.get(withPredicate: predicate)
+        return timeSlots
+    }
+    
+    func getTimeSlots(sinceDaysAgo days: Int) -> [TimeSlot]
+    {
+        let today = self.timeService.now.ignoreTimeComponents()
+        
+        let startTime = today.add(days: -days).ignoreTimeComponents() as NSDate
+        let endTime = today.tomorrow.ignoreTimeComponents() as NSDate
         let predicate = Predicate(parameter: "startTime", rangesFromDate: startTime, toDate: endTime)
         
         let timeSlots = self.persistencyService.get(withPredicate: predicate)

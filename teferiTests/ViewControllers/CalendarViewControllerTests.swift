@@ -17,8 +17,7 @@ class CalendarViewControllerTests : XCTestCase
         self.viewModelLocator = MockLocator()
         self.viewModel = self.viewModelLocator.getCalendarViewModel()
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        self.calendarViewController = storyboard.instantiateViewController(withIdentifier: "Calendar") as! CalendarViewController
+        self.calendarViewController = StoryboardScene.Main.instantiateCalendar()
         self.calendarViewController.inject(viewModel: self.viewModel)
         self.calendarViewController.loadViewIfNeeded()
     }

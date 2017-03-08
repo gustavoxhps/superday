@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,6 +17,12 @@
             <rect key="frame" x="0.0" y="0.0" width="180" height="41"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="81d-Pv-Pu1">
+                    <rect key="frame" x="69.5" y="0.0" width="41" height="41"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="81d-Pv-Pu1" secondAttribute="height" id="ZrN-IV-BCP"/>
+                    </constraints>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrd-hp-oST" customClass="CalendarDailyActivityView" customModule="teferi" customModuleProvider="target">
                     <rect key="frame" x="9.5" y="23" width="161" height="8"/>
                     <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -34,16 +41,21 @@
                 <constraint firstItem="myT-8t-in7" firstAttribute="top" secondItem="qlZ-aM-Tp1" secondAttribute="top" constant="6" id="8Ch-9e-nvq"/>
                 <constraint firstAttribute="trailing" secondItem="myT-8t-in7" secondAttribute="trailing" id="9N8-NO-SCS"/>
                 <constraint firstAttribute="bottom" secondItem="wrd-hp-oST" secondAttribute="bottom" constant="10" id="Dfz-mC-hxl"/>
+                <constraint firstItem="81d-Pv-Pu1" firstAttribute="width" relation="lessThanOrEqual" secondItem="qlZ-aM-Tp1" secondAttribute="width" priority="750" id="N4v-ts-AU5"/>
                 <constraint firstAttribute="trailing" secondItem="wrd-hp-oST" secondAttribute="trailing" constant="9.5" id="P49-JQ-L3X"/>
+                <constraint firstItem="81d-Pv-Pu1" firstAttribute="centerY" secondItem="qlZ-aM-Tp1" secondAttribute="centerY" id="UAZ-c7-Dbv"/>
                 <constraint firstItem="myT-8t-in7" firstAttribute="leading" secondItem="qlZ-aM-Tp1" secondAttribute="leading" id="ZKJ-nc-Tbm"/>
+                <constraint firstItem="81d-Pv-Pu1" firstAttribute="height" secondItem="qlZ-aM-Tp1" secondAttribute="height" priority="250" id="bHh-PE-xqQ"/>
                 <constraint firstItem="wrd-hp-oST" firstAttribute="leading" secondItem="qlZ-aM-Tp1" secondAttribute="leading" constant="9.5" id="icd-Ik-YsW"/>
+                <constraint firstItem="81d-Pv-Pu1" firstAttribute="centerX" secondItem="qlZ-aM-Tp1" secondAttribute="centerX" id="pNb-U0-Qj4"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="activityView" destination="wrd-hp-oST" id="vjw-nn-VW2"/>
+                <outlet property="backgroundView" destination="81d-Pv-Pu1" id="ySD-Lx-OVO"/>
                 <outlet property="dateLabel" destination="myT-8t-in7" id="5zP-0m-6x1"/>
             </connections>
-            <point key="canvasLocation" x="-192" y="-331.5"/>
+            <point key="canvasLocation" x="-341" y="-329"/>
         </view>
     </objects>
 </document>

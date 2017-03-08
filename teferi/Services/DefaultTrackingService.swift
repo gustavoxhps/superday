@@ -8,8 +8,8 @@ class DefaultTrackingService : TrackingService
 {
     // MARK: Fields
     private let significantDistanceThreshold = 100.0
-    private let notificationBody = "NotificationBody".translate()
-    private let notificationTitle = "NotificationTitle".translate()
+    private let notificationBody = L10n.notificationBody
+    private let notificationTitle = L10n.notificationTitle
     private let commuteDetectionLimit = TimeInterval(25 * 60)
     
     private let timeService : TimeService
@@ -171,20 +171,21 @@ class DefaultTrackingService : TrackingService
     
     private func startCommute(fromLocation location: CLLocation)
     {
-        let timeSlot = TimeSlot(withStartTime: location.timestamp, category: .commute, location: location, categoryWasSetByUser: false);
-        
-        self.timeSlotService.add(timeSlot: timeSlot)
+        self.timeSlotService.addTimeSlot(withStartTime: location.timestamp, category: .commute, categoryWasSetByUser: false, location: location)
     }
     
     @discardableResult private func persistTimeSlot(withLocation location: CLLocation) -> Category
     {
         let smartGuess = self.smartGuessService.get(forLocation: location)
         
-        let timeSlot = smartGuess == nil ?
-            TimeSlot(withStartTime: location.timestamp, category: .unknown, location: location, categoryWasSetByUser: false) :
-            TimeSlot(withStartTime: location.timestamp, smartGuess: smartGuess!, location: location)
-        
-        self.timeSlotService.add(timeSlot: timeSlot)
+        if let smartGuess = smartGuess
+        {
+            self.timeSlotService.addTimeSlot(withStartTime: location.timestamp, smartGuess: smartGuess, location: location)
+        }
+        else
+        {
+            self.timeSlotService.addTimeSlot(withStartTime: location.timestamp, category: .unknown, categoryWasSetByUser: false, location: location)
+        }
         
         return smartGuess?.category ?? .unknown
     }

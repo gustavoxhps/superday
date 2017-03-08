@@ -13,31 +13,25 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     private let animationDuration = 0.08
     
     private var isFirstUse = false
+    private let disposeBag = DisposeBag()
     private var viewModel : MainViewModel!
     private var viewModelLocator : ViewModelLocator!
-    private let disposeBag : DisposeBag = DisposeBag()
-    private var gestureRecognizer : UIGestureRecognizer!
     
     private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
-    
+    private var topBarViewController : TopBarViewController { return self.childViewControllers.firstOfType() }
     private var calendarViewController : CalendarViewController { return self.childViewControllers.firstOfType() }
+    private var permissionViewController : PermissionViewController { return self.childViewControllers.firstOfType() }
     
     //Dependencies
     private var editView : EditTimeSlotView!
     private var addButton : AddTimeSlotView!
-    private var permissionView : PermissionView?
     private var launchAnim : LaunchAnimationView!
-    
-    @IBOutlet private weak var icon : UIImageView!
-    @IBOutlet private weak var titleLabel : UILabel!
-    @IBOutlet private weak var calendarButton : UIButton!
-    @IBOutlet private weak var contactButton: UIButton!
     
     func inject(viewModelLocator: ViewModelLocator, isFirstUse: Bool) -> MainViewController
     {
         self.isFirstUse = isFirstUse
         self.viewModelLocator = viewModelLocator
-        self.viewModel = viewModelLocator.getMainViewModel(forViewController: self)
+        self.viewModel = viewModelLocator.getMainViewModel()
         return self
     }
     
@@ -47,8 +41,12 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         super.viewDidLoad()
         
         //Injecting child ViewController's dependencies
-        self.pagerViewController.inject(viewModelLocator: viewModelLocator)
-        self.calendarViewController.inject(viewModel: viewModelLocator.getCalendarViewModel())
+        self.pagerViewController.inject(viewModelLocator: self.viewModelLocator)
+        self.calendarViewController.inject(viewModel: self.viewModelLocator.getCalendarViewModel())
+        self.permissionViewController.inject(viewModel: self.viewModelLocator.getPermissionViewModel())
+        self.topBarViewController.inject(viewModel: self.viewModelLocator.getTopBarViewModel(forViewController: self),
+                                         pagerViewController: self.pagerViewController,
+                                         calendarViewController: self.calendarViewController)
         
         //Edit View
         self.editView = EditTimeSlotView(editEndedCallback: self.viewModel.updateTimeSlot)
@@ -58,17 +56,15 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         //Add button
         self.addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
         self.view.insertSubview(self.addButton, belowSubview: self.editView)
-        self.addButton.snp.makeConstraints { make in
-            make.height.equalTo(320)
-            make.left.right.bottom.equalTo(self.view)
-        }
+        self.addButton.constrainEdges(to: self.view)
         
         //Add fade overlay at bottom of timeline
         let bottomFadeOverlay = self.fadeOverlay(startColor: Color.white,
                                                  endColor: Color.white.withAlphaComponent(0.0))
+        
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         fadeView.isUserInteractionEnabled = false
-        self.view.insertSubview(fadeView, aboveSubview: self.addButton)
+        self.view.insertSubview(fadeView, belowSubview: self.addButton)
         fadeView.snp.makeConstraints { make in
             make.bottom.left.right.equalTo(self.view)
             make.height.equalTo(100)
@@ -88,13 +84,11 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         super.viewWillAppear(animated)
         
         self.startLaunchAnimation()
-        
-        self.calendarButton.setTitle(viewModel.calendarDay, for: .normal)
     }
     
      private func createBindings()
      {
-        self.gestureRecognizer = ClosureGestureRecognizer(withClosure: { self.viewModel.notifyEditingEnded() })
+        editView.dismissAction = { self.viewModel.notifyEditingEnded() }
         
         //Edit state
         self.viewModel
@@ -113,47 +107,11 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .subscribe(onNext: self.viewModel.addNewSlot)
             .addDisposableTo(self.disposeBag)
         
-        //Date updates for title label
         self.viewModel
             .dateObservable
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
         
-        self.viewModel
-            .overlayStateObservable
-            .subscribe(onNext: self.onOverlayStateChanged)
-            .addDisposableTo(self.disposeBag)
-        
-        self.editView.addGestureRecognizer(self.gestureRecognizer)
-        
-        //Add button must be added like this due to .xib/.storyboard restrictions
-        self.view.insertSubview(self.addButton, belowSubview: self.editView)
-        self.addButton.snp.makeConstraints { make in
-            make.height.equalTo(320)
-            make.left.right.bottom.equalTo(self.view)
-        }
-    }
-    
-    // MARK: Actions
-    @IBAction func onCalendarTouchUpInside()
-    {
-        if self.calendarViewController.isVisible
-        {
-            self.calendarViewController.hide()
-        }
-        else
-        {
-            self.calendarViewController.show()
-        }
-    }
-    
-    // MARK: Calendar Actions
-    @IBAction func onContactTouchUpInside()
-    {
-        self.viewModel.composeFeedback
-        {
-            self.pagerViewController.feedbackUIClosing = true
-        }
     }
     
     // MARK: Methods
@@ -171,40 +129,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         }
     }
     
-    private func onOverlayStateChanged(shouldShow: Bool)
-    {
-        if shouldShow
-        {
-            guard permissionView == nil else { return }
-            
-            let isFirstTimeUser = !self.viewModel.canIgnoreLocationPermission
-            let view = Bundle.main.loadNibNamed("PermissionView", owner: self, options: nil)!.first as! PermissionView!
-            
-            self.permissionView = view!.inject(self.view.frame, { self.viewModel.setLastAskedForLocationPermission() }, isFirstTimeUser: isFirstTimeUser)
-            
-            if self.launchAnim != nil
-            {
-                self.view.insertSubview(self.permissionView!, belowSubview: self.launchAnim)
-            }
-            else
-            {
-                self.view.addSubview(self.permissionView!)
-            }
-        }
-        else
-        {
-            guard let view = permissionView else { return }
-            
-            view.fadeView()
-            self.permissionView = nil
-            self.viewModel.setAllowedLocationPermission()
-        }
-    }
-    
     private func onDateChanged(date: Date)
     {
-        self.titleLabel.text = viewModel.title
-        
         let today = self.viewModel.currentDate
         let isToday = today.ignoreTimeComponents() == date.ignoreTimeComponents()
         let alpha = CGFloat(isToday ? 1 : 0)

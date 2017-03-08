@@ -5,14 +5,16 @@ class CalendarCell : JTAppleDayCellView
 {
     @IBOutlet weak var dateLabel : UILabel!
     @IBOutlet weak var activityView : CalendarDailyActivityView!
+    @IBOutlet weak var backgroundView: UIView!
     
     private let fontSize = CGFloat(14.0)
     
     func reset(allowScrollingToDate: Bool)
     {
         self.clipsToBounds = true
-        self.layer.cornerRadius = 0
         self.backgroundColor = UIColor.clear
+        self.backgroundView.layer.cornerRadius = 0
+        self.backgroundView.backgroundColor = UIColor.clear
         self.isUserInteractionEnabled = allowScrollingToDate
         
         self.dateLabel.text = ""
@@ -35,9 +37,9 @@ class CalendarCell : JTAppleDayCellView
         if isSelected
         {
             self.clipsToBounds = true
-            self.layer.cornerRadius = 14
-            self.backgroundColor = Color.lightGray
-            self.dateLabel.font = UIFont.boldSystemFont(ofSize: fontSize)
+            self.backgroundView.layer.cornerRadius = 14
+            self.backgroundView.backgroundColor = Color.lightGray
+            self.dateLabel.font = UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightMedium)
         }
     }
 }

@@ -129,9 +129,10 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
     
     private func page(_ id: String) -> OnboardingPage
     {
-        let page = UIStoryboard(name: "Onboarding", bundle: nil)
-            .instantiateViewController(withIdentifier: "OnboardingScreen\(id)")
-            as! OnboardingPage
+        let page = StoryboardScene
+                    .Onboarding
+                    .storyboard()
+                    .instantiateViewController(withIdentifier: "OnboardingScreen\(id)") as! OnboardingPage
         
         page.inject(self.timeService,
                     self.timeSlotService,

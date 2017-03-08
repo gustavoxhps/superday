@@ -41,7 +41,7 @@ class PreiOSTenNotificationService : NotificationService
         notification.fireDate = date
         notification.alertTitle = title
         notification.alertBody = message
-        notification.alertAction = "AppName".translate()
+        notification.alertAction = L10n.appName
         notification.soundName = UILocalNotificationDefaultSoundName
         
         UIApplication.shared.scheduleLocalNotification(notification)

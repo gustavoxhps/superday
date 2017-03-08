@@ -8,8 +8,9 @@ class TimelineCellTests : XCTestCase
     // MARK: Fields
     private var timeSlot : TimeSlot!
     private var timelineItem : TimelineItem!
-
+    
     private var timeService : MockTimeService!
+    private var locationService : MockLocationService!
     private var timeSlotService : MockTimeSlotService!
     
     private var view : TimelineCell!
@@ -48,9 +49,14 @@ class TimelineCellTests : XCTestCase
     override func setUp()
     {
         self.timeService = MockTimeService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.locationService = MockLocationService()
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
         
-        self.timeSlot = TimeSlot(withStartTime: self.timeService.now, category: .work, categoryWasSetByUser: false)
+        self.timeSlot = TimeSlot(withStartTime: self.timeService.now,
+                                 category: .work,
+                                 categoryWasSetByUser: false)
+        
         let duration = self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
         self.timelineItem = TimelineItem(timeSlot: self.timeSlot,
                                          durations: [ duration ],
@@ -73,7 +79,7 @@ class TimelineCellTests : XCTestCase
     
     func testTheDescriptionChangesAccordingToTheBoundTimeSlot()
     {
-        expect(self.slotDescription.text).to(equal(self.timelineItem.timeSlot.category.rawValue.capitalized))
+        expect(self.slotDescription.text).to(equal(self.timelineItem.timeSlot.category.description))
     }
     
     func testTheTimeChangesAccordingToTheBoundTimeSlot()
@@ -208,6 +214,8 @@ class TimelineCellTests : XCTestCase
     
     private func createTimeSlot(withStartTime time: Date) -> TimeSlot
     {
-        return TimeSlot(withStartTime: time, categoryWasSetByUser: false)
+        return TimeSlot(withStartTime: time,
+                        category: .unknown,
+                        categoryWasSetByUser: false)
     }
 }

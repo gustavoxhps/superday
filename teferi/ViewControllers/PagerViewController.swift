@@ -9,9 +9,6 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     private var viewModelLocator : ViewModelLocator!
     private var currentDateViewController : TimelineViewController!
     
-    // MARK: Properties
-    var feedbackUIClosing : Bool = false
-    
     // MARK: Initializers
     override init(transitionStyle style: UIPageViewControllerTransitionStyle, navigationOrientation: UIPageViewControllerNavigationOrientation, options: [String : Any]?)
     {
@@ -48,13 +45,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     override func viewWillAppear(_ animated: Bool)
     {
-        //TODO: Figure this out
-        if !self.feedbackUIClosing
-        {
-            self.setCurrentViewController(forDate: self.viewModel.currentDate, animated: false)
-        }
-        
-        self.feedbackUIClosing = false
+        self.setCurrentViewController(forDate: self.viewModel.currentlySelectedDate, animated: false)
     }
     
     private func createBindings()
@@ -91,9 +82,12 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     private func onDateChanged(_ dateChange: DateChange)
     {
-        self.setCurrentViewController(forDate: dateChange.newDate,
-                                      animated: true,
-                                      moveBackwards: dateChange.newDate < dateChange.oldDate)
+        DispatchQueue.main.async
+        {
+            self.setCurrentViewController(forDate: dateChange.newDate,
+                                          animated: true,
+                                          moveBackwards: dateChange.newDate < dateChange.oldDate)
+        }
     }
     
     private func initCurrentDateViewController()
@@ -110,8 +104,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     private func setCurrentViewController(forDate date: Date, animated: Bool, moveBackwards: Bool = false)
     {
-        let viewControllers =
-            [ TimelineViewController(viewModel: self.viewModelLocator.getTimelineViewModel(forDate: date)) ]
+        let viewControllers = [ TimelineViewController(viewModel: self.viewModelLocator.getTimelineViewModel(forDate: date)) ]
         
         self.setViewControllers(viewControllers, direction: moveBackwards ? .reverse : .forward, animated: animated, completion: nil)
     }
@@ -120,7 +113,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
         guard completed else { return }
-        
+
         let timelineController = self.viewControllers!.first as! TimelineViewController
         
         if timelineController.date.ignoreTimeComponents() == self.viewModel.currentDate.ignoreTimeComponents()

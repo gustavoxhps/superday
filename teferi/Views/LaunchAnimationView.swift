@@ -20,9 +20,9 @@ class LaunchAnimationView : UIView
         self.background.backgroundColor = Color.white.cgColor
         self.layer.addSublayer(background)
         
-        let colors = [Color.green, Color.purple, Color.transparentPurple,
-                      Color.transparentGreen, Color.yellow, Color.purple,
-                      Color.green, Color.transparentYellow, Color.yellow]
+        let colors = [Colors.green, Colors.purple, Colors.transparentPurple,
+                      Colors.transparentGreen, Colors.yellow, Colors.purple,
+                      Colors.green, Colors.transparentYellow, Colors.yellow]
         
         let dotSize = CGFloat(20)
         let dotMargin = CGFloat(8.0)

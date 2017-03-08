@@ -8,7 +8,10 @@ class DefaultAppStateService : AppStateService
     //MARK: Initializers
     init()
     {
-        self.appStateObservable = self.appStateVariable.asObservable()
+        self.appStateObservable =
+            self.appStateVariable
+                .asObservable()
+                .distinctUntilChanged()
     }
     
     //MARK: Properties
@@ -17,11 +20,6 @@ class DefaultAppStateService : AppStateService
     var currentAppState : AppState
     {
         get { return self.appStateVariable.value }
-        set(value)
-        {
-            guard value != self.currentAppState else { return }
-            
-            self.appStateVariable.value = value
-        }
+        set(value) { self.appStateVariable.value = value }
     }
 }

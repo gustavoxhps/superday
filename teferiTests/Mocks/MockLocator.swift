@@ -17,18 +17,15 @@ class MockLocator : ViewModelLocator
     
     init()
     {
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService)
+        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
+                                                   locationService: self.locationService)
     }
-    
-    func getMainViewModel(forViewController viewController: UIViewController) -> MainViewModel
+
+    func getMainViewModel() -> MainViewModel
     {
         return MainViewModel(timeService: self.timeService,
                              metricsService: self.metricsService,
-                             appStateService: self.appStateService,
-                             feedbackService: self.feedbackService,
-                             settingsService: self.settingsService,
                              timeSlotService: self.timeSlotService,
-                             locationService: self.locationService,
                              editStateService: self.editStateService,
                              smartGuessService: self.smartGuessService,
                              selectedDateService: self.selectedDateService)
@@ -47,10 +44,18 @@ class MockLocator : ViewModelLocator
     {
         return TimelineViewModel(date: date,
                                  timeService: self.timeService,
-                                 metricsService: self.metricsService,
                                  appStateService: self.appStateService,
                                  timeSlotService: self.timeSlotService,
                                  editStateService: self.editStateService)
+    }
+    
+    func getPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = PermissionViewModel(timeService: self.timeService,
+                                            appStateService: self.appStateService,
+                                            settingsService: self.settingsService)
+        
+        return viewModel
     }
     
     func getCalendarViewModel() -> CalendarViewModel
@@ -59,5 +64,12 @@ class MockLocator : ViewModelLocator
                                  settingsService: self.settingsService,
                                  timeSlotService: self.timeSlotService,
                                  selectedDateService: self.selectedDateService)
+    }
+    
+    func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
+    {
+        return TopBarViewModel(timeService: self.timeService,
+                               feedbackService: self.feedbackService,
+                               selectedDateService: self.selectedDateService)
     }
 }

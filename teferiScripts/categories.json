@@ -1,0 +1,15 @@
+{
+  "commute"   : "#63d5ee",
+  "work"      : "#ffc31b",
+  "food"      : "#ff6453",
+  "leisure"   : "#ba5eff",
+  "family"    : "#28c980",
+  "shopping"  : "#dc8fff",
+  "friends"   : "#86ddc1",
+  "hobby"     : "#7045ff",
+  "household" : "#9e579d",
+  "fitness"   : "#5896ff",
+  "kids"      : "#00bb9a",
+  "school"    : "#fe8d03",
+  "unknown"   : "#cecdcd"
+} 

@@ -8,6 +8,7 @@ PODS:
     - RxSwift (~> 3.0)
   - RxSwift (3.0.0)
   - SnapKit (3.0.2)
+  - SwiftGen (4.1.0)
   - SwiftyBeaver (1.1.1)
 
 DEPENDENCIES:
@@ -18,6 +19,7 @@ DEPENDENCIES:
   - RxCocoa (~> 3.0.0)
   - RxSwift (~> 3.0.0)
   - SnapKit (~> 3.0)
+  - SwiftGen
   - SwiftyBeaver
 
 SPEC CHECKSUMS:
@@ -28,8 +30,9 @@ SPEC CHECKSUMS:
   RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
   RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
+  SwiftGen: d29fd8b7aa52092411d415fb09d0abd3d79ea1a5
   SwiftyBeaver: 2b68694df862381235e32bcfc4ec991e26bf131d
 
-PODFILE CHECKSUM: 39881ce26a9f897d08bf7674bd86d2b1dc94f121
+PODFILE CHECKSUM: 9754ebbe3f058c1f5f545b68a582938a8ad4446f
 
 COCOAPODS: 1.1.1

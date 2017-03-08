@@ -12,6 +12,7 @@ target 'teferi' do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'JTAppleCalendar', '6.0.2'
+    pod 'SwiftGen'
   target 'teferiTests' do
     inherit! :search_paths
     pod 'Nimble', '~> 5.0.0'

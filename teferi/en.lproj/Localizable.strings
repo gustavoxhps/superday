@@ -13,3 +13,19 @@
 
 "NotificationBody" = "What are you doing right now?";
 "NotificationTitle" = "Howdy!";
+
+
+//Categories
+"Commute" = "Commute";
+"Work" = "Work";
+"Food" = "Food";
+"Leisure" = "Leisure";
+"Family" = "Family";
+"Shopping" = "Shopping";
+"Friends" = "Friends";
+"Hobby" = "Hobby";
+"Household" = "Household";
+"Fitness" = "Fitness";
+"Kids" = "Kids";
+"School" = "School";
+"Unknown" = "Unknown";

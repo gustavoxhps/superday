@@ -4,12 +4,12 @@ import CoreLocation
 class MockSmartGuessService : SmartGuessService
 {
     //MARK: Properties
-    private var id = 0
-    private var smartGuesses = [SmartGuess]()
+    private var id = 0    
     
     var addShouldWork = true
     var smartGuessToReturn : SmartGuess? = nil
     var locationsAskedFor = [CLLocation]()
+    var smartGuesses = [SmartGuess]()
     
     func get(forLocation location: CLLocation) -> SmartGuess?
     {

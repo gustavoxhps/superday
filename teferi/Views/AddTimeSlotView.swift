@@ -7,15 +7,13 @@ class AddTimeSlotView : UIView
 {
     //MARK: Fields
     private let isAddingVariable = Variable(false)
+    private let selectedCategory = Variable(Category.unknown)
     private var disposeBag : DisposeBag? = DisposeBag()
     
     @IBOutlet private weak var blur : UIView!
     @IBOutlet private weak var addButton : UIButton!
-    @IBOutlet private weak var foodButton : UIButton!
-    @IBOutlet private weak var workButton : UIButton!
-    @IBOutlet private weak var leisureButton : UIButton!
-    @IBOutlet private weak var friendsButton : UIButton!
-    @IBOutlet private weak var commuteButton : UIButton!
+    private var wheel : Wheel<Category>!
+    private let gradientLayer = CAGradientLayer()
 
     //MARK: Properties
     var isAdding : Bool
@@ -24,24 +22,12 @@ class AddTimeSlotView : UIView
         set(value) { self.isAddingVariable.value = value }
     }
     
-    private lazy var buttons : [Category:UIButton] =
+    private(set) lazy var categoryObservable : Observable<Category> =
     {
-        return [
-            .food : self.foodButton,
-            .work : self.workButton,
-            .leisure : self.leisureButton,
-            .friends : self.friendsButton,
-            .commute : self.commuteButton
-        ]
-    }()
-    
-    lazy var categoryObservable : Observable<Category> =
-    {
-        let taps = self.buttons.map
-        { (category, button) in
-            button.rx.tap.map { _ in return category }
-        }
-        return Observable.from(taps).merge()
+        return self
+            .selectedCategory
+            .asObservable()
+            .skip(1)
     }()
     
     //MARK: Lifecycle methods
@@ -53,22 +39,26 @@ class AddTimeSlotView : UIView
         
         let cornerRadius = CGFloat(25)
         
-        self.buttons.values.forEach
-        { (button) in
-            button.layer.cornerRadius = cornerRadius
-            button.alpha = 0
-            button.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-            button.isHidden = true
-        }
         self.addButton.layer.cornerRadius = cornerRadius
         
+        wheel = Wheel(frame: self.bounds,
+                      cellSize: CGSize(width: 50.0, height: 50.0),
+                      centerPoint: self.addButton.center,
+                      radius: 144,
+                      startAngle: CGFloat.pi / 4,
+                      endAngle: CGFloat.pi * 5 / 4,
+                      angleBetweenCells: 0.45,
+                      items: Category.all.filter({ $0 != .unknown }),
+                      attributeSelector: self.toAttributes,
+                      dismissAction: wheelDismissAction)
+
+        wheel.addTarget(self, action: #selector(AddTimeSlotView.wheelChangedValue), for: .valueChanged)
+        
         //Adds some blur to the background of the buttons
-        self.blur.frame = bounds;
-        let layer = CAGradientLayer()
-        layer.frame = self.blur.bounds
-        layer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
-        layer.locations = [0.0, 1.0]
-        self.blur.layer.addSublayer(layer)
+        gradientLayer.frame = self.blur.bounds
+        gradientLayer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+        self.blur.layer.addSublayer(gradientLayer)
         self.blur.alpha = 0
         
         //Bindings
@@ -79,6 +69,13 @@ class AddTimeSlotView : UIView
         self.addButton.rx.tap
             .subscribe(onNext: onAddButtonTapped)
             .addDisposableTo(disposeBag!)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        wheel.frame = bounds
+        gradientLayer.frame = blur.bounds
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
@@ -95,99 +92,74 @@ class AddTimeSlotView : UIView
     }
     
     //MARK: Methods
+    func wheelDismissAction(wheel: Wheel<Category>)
+    {
+        close()
+    }
+    
     func close()
     {
         guard self.isAdding == true else { return }
         
         self.isAdding = false
-        self.animateButtons(isAdding: false)
+        self.animateAddButton(isAdding: false)
+        
+        wheel.hide()
+    }
+    
+    func wheelChangedValue()
+    {
+        selectedCategory.value = wheel.selectedItem!
     }
     
     private func onNewCategory(category: Category)
     {
         self.isAdding = false
-        self.animateButtons(isAdding: false, category: category)
+        self.animateAddButton(isAdding: false)
+        
+        wheel.hide()
     }
     
     private func onAddButtonTapped()
     {
         self.isAdding = !self.isAdding
-        self.animateButtons(isAdding: self.isAdding)
-    }
-    
-    private func animateButtons(isAdding: Bool, category: Category = .unknown)
-    {
-        let scale = CGFloat(isAdding ? 1 : 0.01)
-        let alpha = CGFloat(isAdding ? 1.0 : 0.0)
-        let degrees = isAdding ? 45.0 : 0.0
-        let addButtonAlpha = CGFloat(isAdding ? 0.31 : 1.0)
-        let options = isAdding ? UIViewAnimationOptions.curveEaseOut : UIViewAnimationOptions.curveEaseIn
+        self.animateAddButton(isAdding: self.isAdding)
         
-        let categoryButtons : [UIButton]
-        let delay : TimeInterval
-        
-        if category == .unknown
+        if isAdding
         {
-            categoryButtons = self.buttons.map { $0.1 }
-            delay = 0
+            wheel.show(below: addButton)
         }
         else
         {
-            let button = self.buttons[category]!
-            categoryButtons = self.buttons.values.filter { (b) in b != button }
-            delay = 0.4 * 0.3
-            self.animateCategoryButton(button)
+            wheel.hide()
         }
-        
-        categoryButtons.forEach { (button) in button.isHidden = false }
+    }
+    
+    private func animateAddButton(isAdding: Bool)
+    {
+        let alpha = CGFloat(isAdding ? 1.0 : 0.0)
+        let degrees = isAdding ? 45.0 : 0.0
+        let options = isAdding ? UIViewAnimationOptions.curveEaseOut : UIViewAnimationOptions.curveEaseIn
+
+        let delay : TimeInterval = 0
         
         UIView.animate(withDuration: 0.2, delay: delay,
             options: options,
             animations:
             {
-                //Category buttons
-                let transform = CGAffineTransform(scaleX: scale, y: scale)
-                categoryButtons.forEach { (button) in
-                    button.transform = transform
-                    button.alpha = alpha
-                }
-                
                 //Add button
-                self.addButton.alpha = addButtonAlpha
                 self.addButton.transform = CGAffineTransform(rotationAngle: CGFloat(degrees * (Double.pi / 180.0)));
             },
-            completion:
-            { (_) in
-                if !isAdding
-                {
-                    categoryButtons.forEach { (button) in button.isHidden = true }
-                }
-            })
-        
+            completion: nil)
+
         UIView.animate(withDuration: 0.25)
         {
             self.blur.alpha = alpha
         }
     }
     
-    private func animateCategoryButton(_ button: UIButton)
+    private func toAttributes(category: Category) -> (UIImage, UIColor)
     {
-        UIView.animateKeyframes(withDuration: 0.4, delay: 0, options: .calculationModeCubic,
-            animations:
-            {
-                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.4)
-                {
-                    button.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
-                }
-                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.6)
-                {
-                    button.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                    button.alpha = 0
-                }
-            },
-            completion:
-            { (_) in
-                button.isHidden = true
-            })
+        return (category.icon.image, category.color)
     }
 }

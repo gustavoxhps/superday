@@ -10,7 +10,7 @@ This is meant to help new contributors submit changes to the project.
 
 Requirements:
 
-- [XCode](https://developer.apple.com/download/)
+- [Xcode](https://itunes.apple.com/us/app/xcode/id497799835)
 - [CocoaPods](https://guides.cocoapods.org/using/getting-started.html#installation)
 
 Downloading and starting development for Superday is supersimple™:
@@ -94,4 +94,4 @@ Consider selecting the appropriate emoji for each of your commits (based on [Ato
 
 ### Branching and releasing
 
-Superday uses an adapted version of GitFlow [by Vincent Driessen](http://nvie.com/posts/a-successful-git-branching-model/ "Original Blog post 'A successful Git branching model' by Vincent Driessen") called SuperFlow which is documented in [this document](https://github.com/toggl/superday/blob/develop/docs/superflow.md "SuperFlow: Superday's branching work flow").
+Superday uses an adapted version of GitFlow [by Vincent Driessen](http://nvie.com/posts/a-successful-git-branching-model/ "Original Blog post 'A successful Git branching model' by Vincent Driessen") called SuperFlow which is documented in [this document](https://github.com/toggl/superday/blob/develop/docs/SuperFlow.md "SuperFlow: Superday's branching work flow").

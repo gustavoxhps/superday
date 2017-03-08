@@ -16,7 +16,7 @@ class CalendarDailyActivityView : UIView
     {
         self.reset()
         
-        guard let activities = dailyActivity else
+        guard let activities = dailyActivity, activities.count > 0 else
         {
             self.backgroundColor = Color.lightGray
             return

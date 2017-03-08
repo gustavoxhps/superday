@@ -12,12 +12,12 @@ class OnboardingPageViewControllerTests : XCTestCase
     {
         super.setUp()
         
-        let storyboard = UIStoryboard(name: "Onboarding", bundle: nil)
-        let controller = storyboard.instantiateViewController(withIdentifier: "OnboardingPager") as! OnboardingPageViewController
+        let controller = StoryboardScene.Onboarding.instantiateOnboardingPager()
         
         self.notificationService = MockNotificationService()
         self.onBoardingPageViewController = controller.inject(MockTimeService(),
-                                                              MockTimeSlotService(timeService: MockTimeService()),
+                                                              MockTimeSlotService(timeService: MockTimeService(),
+                                                                                  locationService: MockLocationService()),
                                                               MockSettingsService(),
                                                               DefaultAppStateService(),
                                                               MainViewController(),

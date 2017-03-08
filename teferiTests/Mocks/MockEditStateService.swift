@@ -5,7 +5,9 @@ class MockEditStateService : EditStateService
 {
     //MARK: Fields
     private let isEditingVariable = Variable(false)
-    private let beganEditingVariable = Variable((CGPoint(), TimeSlot(withStartTime: Date(), categoryWasSetByUser: false)))
+    private let beganEditingVariable = Variable((CGPoint(), TimeSlot(withStartTime: Date(),
+                                                                     category: .unknown,
+                                                                     categoryWasSetByUser: false)))
     
     //MARK: Initializers
     init()
