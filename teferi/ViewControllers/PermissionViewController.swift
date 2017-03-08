@@ -67,7 +67,7 @@ class PermissionViewController : UIViewController
         self.viewModel.isVisible = true
         self.view.isUserInteractionEnabled = true
         self.view.superview!.isUserInteractionEnabled = true
-        self.view.backgroundColor = Color.white.withAlphaComponent(0.8)
+        self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         
         UIView.animate(withDuration: Constants.editAnimationDuration,
                        animations: { self.view.alpha = 1 })
@@ -79,7 +79,7 @@ class PermissionViewController : UIViewController
                        animations: { self.view.alpha = 0 })
         
         self.viewModel.isVisible = false
-        self.view.backgroundColor = Color.clear
+        self.view.backgroundColor = UIColor.clear
         self.view.isUserInteractionEnabled = false
         self.view.superview!.isUserInteractionEnabled = false
     }

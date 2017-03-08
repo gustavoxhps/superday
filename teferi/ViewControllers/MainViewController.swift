@@ -59,8 +59,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.addButton.constrainEdges(to: self.view)
         
         //Add fade overlay at bottom of timeline
-        let bottomFadeOverlay = self.fadeOverlay(startColor: Color.white,
-                                                 endColor: Color.white.withAlphaComponent(0.0))
+        let bottomFadeOverlay = self.fadeOverlay(startColor: UIColor.white,
+                                                 endColor: UIColor.white.withAlphaComponent(0.0))
         
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         fadeView.isUserInteractionEnabled = false

@@ -53,7 +53,7 @@ class AddTimeSlotView : UIView
         
         //Adds some blur to the background of the buttons
         gradientLayer.frame = self.blur.bounds
-        gradientLayer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
+        gradientLayer.colors = [ UIColor.white.withAlphaComponent(0).cgColor, UIColor.white.cgColor]
         gradientLayer.locations = [0.0, 1.0]
         self.blur.layer.addSublayer(gradientLayer)
         self.blur.alpha = 0

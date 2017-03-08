@@ -57,7 +57,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
         self.alpha = 0
-        self.backgroundColor = Color.white.withAlphaComponent(0)
+        self.backgroundColor = UIColor.white.withAlphaComponent(0)
         
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
         panGesture.delaysTouchesBegan = false
@@ -220,7 +220,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
         
         self.animate({ 
-            self.backgroundColor = Color.white.withAlphaComponent(0.6)
+            self.backgroundColor = UIColor.white.withAlphaComponent(0.6)
         }, duration: Constants.editAnimationDuration * 3)
         
         animate({ 
@@ -297,7 +297,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         }
         
         animate({ 
-            self.backgroundColor = Color.white.withAlphaComponent(0)
+            self.backgroundColor = UIColor.white.withAlphaComponent(0)
         }, duration: animationDuration, options: [.curveLinear])
         
         var animationSequence = DelayedSequence.start()

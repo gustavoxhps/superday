@@ -190,7 +190,7 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
                                                attributes: [ NSForegroundColorAttributeName: UIColor.black, NSFontAttributeName: UIFont.systemFont(ofSize: 14) ])
         
         result.append(NSAttributedString(string: String(date.year),
-                                         attributes: [ NSForegroundColorAttributeName: Colors.offBlackTransparent, NSFontAttributeName: UIFont.systemFont(ofSize: 14) ]))
+                                         attributes: [ NSForegroundColorAttributeName: Style.Color.offBlackTransparent, NSFontAttributeName: UIFont.systemFont(ofSize: 14) ]))
         
         return result
     }
