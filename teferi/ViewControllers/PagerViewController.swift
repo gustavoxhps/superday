@@ -40,7 +40,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
         
         self.delegate = self
         self.dataSource = self
-        self.view.backgroundColor = Color.white
+        self.view.backgroundColor = UIColor.white
     }
     
     override func viewWillAppear(_ animated: Bool)

@@ -194,7 +194,7 @@ class TimelineViewController : UITableViewController
         let minutes = (interval / 60) % 60
         let height = baseCellHeight
             + Constants.minLineSize * (1 + (minutes / 15) + (hours * 4))
-            + (isRunning ? 8 : 0)
+            + (isRunning ? 24 : 0)
         
         return CGFloat(height)
     }

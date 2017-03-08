@@ -29,16 +29,20 @@ class CalendarCell : JTAppleDayCellView
         self.reset(allowScrollingToDate: allowsScrollingToDate)
         
         self.dateLabel.text = String(date.day)
+        self.dateLabel.textColor = UIColor.black
         
         self.activityView.update(dailyActivity: dailyActivity)
         
-        self.dateLabel.textColor = UIColor.black
+        self.backgroundView.alpha = 1.0
+        self.backgroundView.backgroundColor = UIColor.clear
         
         if isSelected
         {
             self.clipsToBounds = true
+            self.backgroundView.alpha = 0.24
             self.backgroundView.layer.cornerRadius = 14
-            self.backgroundView.backgroundColor = Color.lightGray
+            self.backgroundView.backgroundColor = Style.Color.gray
+
             self.dateLabel.font = UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightMedium)
         }
     }
