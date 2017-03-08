@@ -96,7 +96,11 @@ class DefaultSmartGuessService : SmartGuessService
                 decisionType: .minAvarageDistance,
                 customDistance: self.distance,
                 labelAction: { $0.category })
-        else { return nil }
+        else
+        {
+            self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+            return nil
+        }
         
         self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
