@@ -13,9 +13,9 @@ class PagerViewModelTests : XCTestCase
     
     private var disposable : Disposable!
     private var timeService : MockTimeService!
-    private var appStateService : MockAppStateService!
     private var settingsService : MockSettingsService!
     private var editStateService : MockEditStateService!
+    private var appLifecycleService : MockAppLifecycleService!
     private var selectedDateService : MockSelectedDateService!
     
     override func setUp()
@@ -24,17 +24,17 @@ class PagerViewModelTests : XCTestCase
         
         self.disposeBag = DisposeBag()
         self.timeService = MockTimeService()
-        self.appStateService = MockAppStateService()
         self.settingsService = MockSettingsService()
         self.editStateService = MockEditStateService()
         self.selectedDateService = MockSelectedDateService()
+        self.appLifecycleService = MockAppLifecycleService()
         
         self.timeService.mockDate = self.noon
         
         self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        appStateService: self.appStateService,
                                         settingsService: self.settingsService,
                                         editStateService: self.editStateService,
+                                        appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
         
         self.viewModel.refreshObservable.subscribe().addDisposableTo(disposeBag)
@@ -59,9 +59,9 @@ class PagerViewModelTests : XCTestCase
         self.timeService.mockDate = noon
         
         self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        appStateService: self.appStateService,
                                         settingsService: self.settingsService,
                                         editStateService: self.editStateService,
+                                        appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
         
         var value = false
@@ -99,7 +99,7 @@ class PagerViewModelTests : XCTestCase
         self.timeService.mockDate = expectedDate
         
         self.settingsService.lastInactiveDate = nil
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
         
         expect(self.settingsService.lastInactiveDate).to(equal(expectedDate))
     }
@@ -107,7 +107,7 @@ class PagerViewModelTests : XCTestCase
     func testWhenTheAppBecomesActiveAndNeedsRefreshingTheLastInactiveDateIsErased()
     {
         self.settingsService.lastInactiveDate = Date()
-        self.appStateService.currentAppState = .needsRefreshing
+        self.appLifecycleService.publish(.invalidatedUiState)
         
         expect(self.settingsService.lastInactiveDate).to(beNil())
     }
@@ -117,32 +117,32 @@ class PagerViewModelTests : XCTestCase
         var refreshEventHappened = false
         _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
         
-        self.appStateService.currentAppState = .needsRefreshing
+        self.appLifecycleService.publish(.invalidatedUiState)
         
         expect(refreshEventHappened).to(beTrue())
     }
     
     func testWhenTheAppBecomesActiveWithNoPriorInactiveDateNoEventShouldBePumped()
     {
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
         self.settingsService.lastInactiveDate = nil
         
         var refreshEventHappened = false
         _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
         
-        self.appStateService.currentAppState = .active
+        self.appLifecycleService.publish(.movedToForeground)
         
         expect(refreshEventHappened).to(beFalse())
     }
     
     func testWhenTheAppBecomesActiveInTheSameDateNoEventShouldBePumped()
     {
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
         
         var refreshEventHappened = false
         _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
         
-        self.appStateService.currentAppState = .active
+        self.appLifecycleService.publish(.movedToForeground)
         
         expect(refreshEventHappened).to(beFalse())
     }
@@ -155,23 +155,23 @@ class PagerViewModelTests : XCTestCase
         let tomorrow = self.timeService.now.tomorrow
         
         self.timeService.mockDate = today
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
         
         var refreshEventHappened = false
         _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
         
         self.timeService.mockDate = tomorrow
-        self.appStateService.currentAppState = .active
-        
-        expect(refreshEventHappened).to(beTrue())
+        self.appLifecycleService.publish(.movedToForeground)
+
+        expect(refreshEventHappened).toEventually(beTrue())
     }
-    
+
     func testWhenTheAppBecomesActiveAndAnEventIsPumpedTheLastInactiveDateIsSetToNil()
     {
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
         self.settingsService.lastInactiveDate = self.timeService.now
         self.timeService.mockDate = self.timeService.now.tomorrow
-        self.appStateService.currentAppState = .active
+        self.appLifecycleService.publish(.movedToForeground)
         
         expect(self.settingsService.lastInactiveDate).to(beNil())
     }

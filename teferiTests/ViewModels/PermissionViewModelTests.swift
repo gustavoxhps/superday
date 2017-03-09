@@ -9,18 +9,18 @@ class PermissionViewModelTests : XCTestCase
     private var disposable : Disposable? = nil
     
     private var timeService : MockTimeService!
-    private var appStateService : MockAppStateService!
     private var settingsService : MockSettingsService!
+    private var appLifecycleService : MockAppLifecycleService!
     
     override func setUp()
     {
         self.timeService = MockTimeService()
-        self.appStateService = MockAppStateService()
         self.settingsService = MockSettingsService()
+        self.appLifecycleService = MockAppLifecycleService()
         
         self.viewModel = PermissionViewModel(timeService: self.timeService,
-                                             appStateService: self.appStateService,
-                                             settingsService: self.settingsService)
+                                             settingsService: self.settingsService,
+                                             appLifecycleService: self.appLifecycleService)
     }
     
     override func tearDown()
@@ -50,6 +50,8 @@ class PermissionViewModelTests : XCTestCase
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
+        self.appLifecycleService.publish(.movedToForeground)
+        
         expect(wouldShow).to(beTrue())
     }
     
@@ -62,6 +64,8 @@ class PermissionViewModelTests : XCTestCase
         self.disposable = self.viewModel
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
+        
+        self.appLifecycleService.publish(.movedToForeground)
         
         expect(wouldShow).to(beTrue())
     }

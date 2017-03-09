@@ -20,35 +20,35 @@ class DefaultViewModelLocator : ViewModelLocator
 {
     private let timeService : TimeService
     private let metricsService : MetricsService
-    private let appStateService : AppStateService
     private let feedbackService : FeedbackService
     private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
-    private let selectedDateService: SelectedDateService
+    private let appLifecycleService : AppLifecycleService
+    private let selectedDateService : SelectedDateService
 
     init(timeService: TimeService,
          metricsService: MetricsService,
-         appStateService: AppStateService,
          feedbackService: FeedbackService,
          locationService: LocationService,
          settingsService: SettingsService,
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
          smartGuessService: SmartGuessService,
+         appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
-        self.appStateService = appStateService
         self.feedbackService = feedbackService
         self.locationService = locationService
         self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
         self.smartGuessService = smartGuessService
+        self.appLifecycleService = appLifecycleService
         self.selectedDateService = selectedDateService
     }
     
@@ -66,9 +66,9 @@ class DefaultViewModelLocator : ViewModelLocator
     func getPagerViewModel() -> PagerViewModel
     {
         let viewModel = PagerViewModel(timeService: self.timeService,
-                                       appStateService: self.appStateService,
                                        settingsService: self.settingsService,
                                        editStateService: self.editStateService,
+                                       appLifecycleService: self.appLifecycleService,
                                        selectedDateService: self.selectedDateService)
         return viewModel
     }
@@ -77,17 +77,17 @@ class DefaultViewModelLocator : ViewModelLocator
     {
         let viewModel = TimelineViewModel(date: date,
                                           timeService: self.timeService,
-                                          appStateService: self.appStateService,
                                           timeSlotService: self.timeSlotService,
-                                          editStateService: self.editStateService)
+                                          editStateService: self.editStateService,
+                                          appLifecycleService: self.appLifecycleService)
         return viewModel
     }
     
     func getPermissionViewModel() -> PermissionViewModel
     {
         let viewModel = PermissionViewModel(timeService: self.timeService,
-                                            appStateService: self.appStateService,
-                                            settingsService: self.settingsService)
+                                            settingsService: self.settingsService,
+                                            appLifecycleService: self.appLifecycleService)
         
         return viewModel
     }

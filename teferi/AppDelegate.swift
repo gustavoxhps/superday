@@ -16,7 +16,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let loggingService : LoggingService
-    private var appStateService : AppStateService
     private let feedbackService : FeedbackService
     private let locationService : LocationService
     private let settingsService : SettingsService
@@ -24,6 +23,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let trackingService : TrackingService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
+    private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
     
@@ -35,9 +35,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     {
         self.timeService = DefaultTimeService()
         self.metricsService = FabricMetricsService()
-        self.appStateService = DefaultAppStateService()
         self.settingsService = DefaultSettingsService()
         self.loggingService = SwiftyBeaverLoggingService()
+        self.appLifecycleService = DefaultAppLifecycleService()
         self.editStateService = DefaultEditStateService(timeService: self.timeService)
         self.locationService = DefaultLocationService(loggingService: self.loggingService)
         self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
@@ -88,7 +88,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.logAppStartup(isInBackground)
         self.initializeTrackingService()
         
-        self.appStateService.currentAppState = isInBackground ? .inactive : .active
+        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -120,9 +120,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             .subscribe(onNext: self.trackingService.onLocation)
             .addDisposableTo(disposeBag)
         
-        self.appStateService
-            .appStateObservable
-            .subscribe(onNext: self.trackingService.onAppState)
+        self.appLifecycleService
+            .lifecycleEventObservable
+            .subscribe(onNext: self.trackingService.onLifecycleEvent)
             .addDisposableTo(disposeBag)
     }
     
@@ -136,13 +136,13 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         let viewModelLocator = DefaultViewModelLocator(timeService: self.timeService,
                                                        metricsService: self.metricsService,
-                                                       appStateService: self.appStateService,
                                                        feedbackService: self.feedbackService,
                                                        locationService: self.locationService,
                                                        settingsService: self.settingsService,
                                                        timeSlotService: self.timeSlotService,
                                                        editStateService: self.editStateService,
                                                        smartGuessService : self.smartGuessService,
+                                                       appLifecycleService: self.appLifecycleService,
                                                        selectedDateService: self.selectedDateService)
         
         let isFirstUse = self.settingsService.installDate == nil
@@ -159,7 +159,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                 onboardController.inject(self.timeService,
                                          self.timeSlotService,
                                          self.settingsService,
-                                         self.appStateService,
+                                         self.appLifecycleService,
                                          mainViewController,
                                          notificationService)
         }
@@ -171,7 +171,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func applicationWillResignActive(_ application: UIApplication)
     {
-        self.appStateService.currentAppState = .inactive
+        self.appLifecycleService.publish(.movedToBackground)
     }
 
     func applicationDidEnterBackground(_ application: UIApplication)
@@ -181,20 +181,20 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
     func applicationDidBecomeActive(_ application: UIApplication)
     {
-        self.appStateService.currentAppState = .active
+        self.appLifecycleService.publish(.movedToForeground)
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications()
         
         if self.invalidateOnWakeup
         {
             self.invalidateOnWakeup = false
-            self.appStateService.currentAppState = .needsRefreshing
+            self.appLifecycleService.publish(.invalidatedUiState)
         }
         
         if self.showEditViewOnWakeup
         {
             self.showEditViewOnWakeup = false
-            self.appStateService.currentAppState = .activeFromNotification
+            self.appLifecycleService.publish(.receivedNotification)
         }
     }
     

@@ -57,7 +57,7 @@ class PagerViewControllerTests : XCTestCase
     func testWhenTheAppGetsInactiveTheLastInactiveDateGetsSet()
     {
         self.locator.settingsService.setLastInactiveDate(nil)
-        self.locator.appStateService.currentAppState = .inactive
+        self.locator.appLifecycleService.publish(.movedToBackground)
         
         expect(self.locator.settingsService.lastInactiveDate).toNot(beNil())
     }
@@ -68,7 +68,7 @@ class PagerViewControllerTests : XCTestCase
         
         let date = Date().add(days: -2)
         self.locator.settingsService.setLastInactiveDate(date)
-        self.locator.appStateService.currentAppState = .active
+        self.locator.appLifecycleService.publish(.movedToForeground)
         
         expect(self.pagerViewController.viewControllers!.first).to(beAnInstanceOf(TimelineViewController.self))
     }
@@ -77,7 +77,7 @@ class PagerViewControllerTests : XCTestCase
     {
         let date = Date().add(days: -2)
         self.locator.settingsService.setLastInactiveDate(date)
-        self.locator.appStateService.currentAppState = .active
+        self.locator.appLifecycleService.publish(.movedToForeground)
         
         expect(self.locator.settingsService.lastInactiveDate).to(beNil())
     }

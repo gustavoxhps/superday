@@ -9,7 +9,7 @@ class OnboardingPage : UIViewController
     private(set) var timeService : TimeService!
     private(set) var timeSlotService : TimeSlotService!
     private(set) var settingsService : SettingsService!
-    private(set) var appStateService : AppStateService!
+    private(set) var appLifecycleService : AppLifecycleService!
     private(set) var notificationService : NotificationService!
     
     var allowPagingSwipe : Bool { return self.nextButtonText != nil }
@@ -36,14 +36,14 @@ class OnboardingPage : UIViewController
     func inject(_ timeService: TimeService,
                 _ timeSlotService: TimeSlotService,
                 _ settingsService: SettingsService,
-                _ appStateService: AppStateService,
+                _ appLifecycleService: AppLifecycleService,
                 _ notificationService: NotificationService,
                 _ onboardingPageViewController: OnboardingPageViewController)
     {
         self.timeService = timeService
         self.timeSlotService = timeSlotService
-        self.appStateService = appStateService
         self.settingsService = settingsService
+        self.appLifecycleService = appLifecycleService
         self.notificationService = notificationService
         self.onboardingPageViewController = onboardingPageViewController
     }

@@ -11,25 +11,25 @@ class MainViewModelTests : XCTestCase
     
     private var timeService : MockTimeService!
     private var metricsService : MockMetricsService!
-    private var appStateService : MockAppStateService!
     private var feedbackService : MockFeedbackService!
     private var locationService : MockLocationService!
     private var settingsService : MockSettingsService!
     private var timeSlotService : MockTimeSlotService!
     private var editStateService : MockEditStateService!
     private var smartGuessService : MockSmartGuessService!
+    private var appLifecycleService : MockAppLifecycleService!
     private var selectedDateService : MockSelectedDateService!
     
     override func setUp()
     {
         self.timeService = MockTimeService()
         self.metricsService = MockMetricsService()
-        self.appStateService = MockAppStateService()
         self.locationService = MockLocationService()
         self.settingsService = MockSettingsService()
         self.feedbackService = MockFeedbackService()
         self.editStateService = MockEditStateService()
         self.smartGuessService = MockSmartGuessService()
+        self.appLifecycleService = MockAppLifecycleService()
         self.selectedDateService = MockSelectedDateService()
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
                                                    locationService: self.locationService)
