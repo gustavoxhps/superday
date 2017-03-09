@@ -4,6 +4,7 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
 {
     case maxVote
     case maxAvarageScore
+    case maxScoreSum
     
     private typealias InstanceAndParameters = (count: Int, scoreSum: Double, instance: ItemType)
     
@@ -19,6 +20,12 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
         case .maxAvarageScore:
             return groupedByLabel(items: neighbors, labelAction: labelAction)
                 .sorted(by: { $0.value.scoreSum / Double($0.value.count) > Double($1.value.scoreSum) / Double($1.value.count) })
+                .first!
+                .value
+                .instance
+        case .maxScoreSum:
+            return groupedByLabel(items: neighbors, labelAction: labelAction)
+                .sorted(by: { $0.value.scoreSum > Double($1.value.scoreSum) })
                 .first!
                 .value
                 .instance
