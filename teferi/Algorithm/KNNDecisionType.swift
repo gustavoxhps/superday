@@ -43,7 +43,7 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
         groupedItemsByLabel.forEach { (itemsWithSameLabel) in
             
             let countAndDistanceSum = itemsWithSameLabel.reduce((count: 0, scoreSum: 0.0), { (result, element) in
-                return (scoreSum: result.scoreSum + (1 - element.distance), count: result.count + 1)
+                return (count: result.count + 1, scoreSum: result.scoreSum + (1 - element.distance))
             })
             
             let firstInstance = itemsWithSameLabel.first!.instance
