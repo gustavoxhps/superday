@@ -20,6 +20,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     private var mainY : CGFloat!
     private var leftBoundryX : CGFloat!
     private var rightBoundryX : CGFloat!
+    private var categoryProvider : CategoryProvider!
     
     private let cellSize : CGSize = CGSize(width: 40.0, height: 40.0)
     private let cellSpacing : CGFloat = 10.0
@@ -52,11 +53,12 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     }
     
     //MARK: Initializers
-    init()
+    init(categoryProvider: CategoryProvider)
     {
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
         self.alpha = 0
+        self.categoryProvider = categoryProvider
         self.backgroundColor = UIColor.white.withAlphaComponent(0)
         
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
@@ -200,7 +202,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         
         self.alpha = 1.0
         
-        let items = Category.all.filter { $0 != .unknown && $0 != timeSlot.category }
+        let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
         
         viewHandler?.cleanAll()
         viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))

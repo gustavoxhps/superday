@@ -49,7 +49,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
                                          calendarViewController: self.calendarViewController)
         
         //Edit View
-        self.editView = EditTimeSlotView()
+        self.editView = EditTimeSlotView(categoryProvider: DefaultCategoryProvider())
         self.view.insertSubview(self.editView, belowSubview: self.calendarViewController.view.superview!)
         self.editView.constrainEdges(to: self.view)
         

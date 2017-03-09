@@ -42,7 +42,8 @@ class OnboardingPage2 : OnboardingPage
         self.initAnimatedTitleText(self.textView)
         self.timelineCells = self.initAnimatingTimeline(with: self.timeSlots, in: self.timelineView)
         
-        self.editView = EditTimeSlotView()
+        self.editView = EditTimeSlotView(categoryProvider: OnboardingCategoryProvider(withFirstCategory: self.editTo))
+
         self.editView.isUserInteractionEnabled = false
         self.timelineView.addSubview(self.editView)
         self.editView.constrainEdges(to: self.timelineView)
