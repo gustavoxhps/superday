@@ -859,6 +859,16 @@
 			name = Algorithm;
 			sourceTree = "<group>";
 		};
+        BEA7835F1E6DB48F00D44603 /* Providers */ = {
+            isa = PBXGroup;
+            children = (
+                BEA783601E6DB4A400D44603 /* CategoryProvider.swift */,
+                BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */,
+                BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */,
+            );
+            name = Providers;
+            sourceTree = "<group>";
+        };
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
