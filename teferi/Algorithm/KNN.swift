@@ -31,7 +31,7 @@ class KNN<ItemType, LabelType> where LabelType: Hashable
         withK k: Int,
         customDistance distance: @escaping CustomDistance) -> [InstanceAndDistance]
     {
-        let distances = dataSet.map({ (instance: $0, distance: distance(testInstance, $0)) })
+        let distances = dataSet.map { (instance: $0, distance: distance(testInstance, $0)) }
         let topKNeighbors = distances
             .sorted(by: { $0.distance < $1.distance } )
             .prefix(k)

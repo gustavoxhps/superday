@@ -13,7 +13,7 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
         switch self {
         case .maxVote:
             return groupedByLabel(items: neighbors, labelAction: labelAction)
-                .sorted(by: { $0.value.0 > $1.value.0 })
+                .sorted(by: { $0.value.count > $1.value.count })
                 .first!
                 .value
                 .instance

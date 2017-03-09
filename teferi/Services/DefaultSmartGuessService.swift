@@ -84,7 +84,7 @@ class DefaultSmartGuessService : SmartGuessService
         
         guard bestMatches.count > 0 else { return nil }
         
-        let knnInstances = bestMatches.map({ (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) })
+        let knnInstances = bestMatches.map { (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) }
         
         let startTimeForKNN = Date()
         
