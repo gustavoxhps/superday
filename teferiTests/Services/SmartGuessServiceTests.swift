@@ -93,6 +93,29 @@ class SmartGuessServiceTests : XCTestCase
         expect(smartGuess?.category).to(beNil())
     }
     
+    func testMultipleFarAwayGuessesCanOutweighSingleCloseGuess()
+    {
+        let targetLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
+        
+        let testInput : [TestData] =
+            [
+                (distanceFromTarget: 08, category: .leisure, date: date),
+                (distanceFromTarget: 50, category: .work, date: date),
+                (distanceFromTarget: 54, category: .work, date: date),
+                (distanceFromTarget: 59, category: .work, date: date),
+                (distanceFromTarget: 66, category: .work, date: date)
+        ]
+        
+        self.persistencyService.smartGuesses =
+            testInput
+                .map(toLocation(offsetFrom: targetLocation))
+                .map(toSmartGuess)
+        
+        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        
+        expect(smartGuess.category).to(equal(teferi.Category.work))
+    }
+    
     func testGuessesVeryCloseToTheLocationShouldOutweighMultipleGuessesSlightlyFurtherAway()
     {
         let targetLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
