@@ -93,7 +93,7 @@ class DefaultSmartGuessService : SmartGuessService
                 for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
                 usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
                 with: knnInstances,
-                decisionType: .minAvarageDistance,
+                decisionType: .maxAvarageScore,
                 customDistance: self.distance,
                 labelAction: { $0.category })
         else
