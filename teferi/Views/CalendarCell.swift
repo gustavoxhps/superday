@@ -41,7 +41,8 @@ class CalendarCell : JTAppleDayCellView
             self.clipsToBounds = true
             self.backgroundView.alpha = 0.24
             self.backgroundView.layer.cornerRadius = 14
-            self.backgroundView.backgroundColor = Color.gray
+            self.backgroundView.backgroundColor = Style.Color.gray
+
             self.dateLabel.font = UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightMedium)
         }
     }

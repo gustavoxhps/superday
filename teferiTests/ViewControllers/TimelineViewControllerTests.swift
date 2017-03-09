@@ -40,9 +40,12 @@ class TimelineViewControllerTests : XCTestCase
         self.locator.editStateService.notifyEditingBegan(point: CGPoint(),
                                                          timeSlot: TimeSlot(withStartTime: Date(), category: .unknown, categoryWasSetByUser: false));
         
-        let scrollView = self.timelineViewController.tableView!
-        
-        expect(scrollView.isScrollEnabled).to(beFalse())
+        DispatchQueue.main.async
+        {
+            let scrollView = self.timelineViewController.tableView!
+            
+            expect(scrollView.isScrollEnabled).to(beFalse())
+        }
     }
     
     func testScrollingIsEnabledWhenExitingEditMode()
@@ -59,7 +62,7 @@ class TimelineViewControllerTests : XCTestCase
     {   
         let indexPath = IndexPath(row: self.viewModel.timelineItems.count - 1, section: 0)
         let cell = self.timelineViewController.tableView(self.timelineViewController.tableView, cellForRowAt: indexPath) as! TimelineCell
-        let elapsedTimeLabel = cell.subviews[5] as! UILabel
+        let elapsedTimeLabel = cell.subviews.flatMap { $0 as? UILabel }.last!
         let beforeElapsedTimeText = elapsedTimeLabel.text
         
         self.locator.timeService.mockDate = self.noon

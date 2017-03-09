@@ -18,8 +18,8 @@ class TimelineCell : UITableViewCell
 
     @IBOutlet private weak var lineView : UIView!
     @IBOutlet private weak var slotTime : UILabel!
+    @IBOutlet private var indicatorDots : [UIView]!
     @IBOutlet private weak var elapsedTime : UILabel!
-    @IBOutlet private weak var indicatorDot : UIView!
     @IBOutlet private weak var categoryButton : UIButton!
     @IBOutlet private weak var slotDescription : UILabel!
     @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
@@ -142,17 +142,19 @@ class TimelineCell : UITableViewCell
         
         self.lineView.layoutIfNeeded()
         
-        self.indicatorDot.backgroundColor = color
-        self.indicatorDot.isHidden = !isRunning
-        self.indicatorDot.layoutIfNeeded()
+        self.indicatorDots.forEach { dot in
+            dot.backgroundColor = color
+            dot.isHidden = !isRunning
+            dot.layoutIfNeeded()
+        }
     }
     
     private func ensureLineFadeExists()
     {
         guard self.lineFadeView == nil else { return }
         
-        let bottomFadeStartColor = Color.white.withAlphaComponent(1.0)
-        let bottomFadeEndColor = Color.white.withAlphaComponent(0.0)
+        let bottomFadeStartColor = UIColor.white.withAlphaComponent(1.0)
+        let bottomFadeEndColor = UIColor.white.withAlphaComponent(0.0)
         let bottomFadeOverlay = self.fadeOverlay(startColor: bottomFadeStartColor, endColor: bottomFadeEndColor)
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         self.lineView.addSubview(fadeView)

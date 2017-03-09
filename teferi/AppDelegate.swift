@@ -11,7 +11,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private var invalidateOnWakeup = false
     private var showEditViewOnWakeup = false
     private let disposeBag = DisposeBag()
-    private let notificationAuthorizationVariable = Variable(false)
+    private let notificationAuthorizedSubject = PublishSubject<Void>()
     
     private let timeService : TimeService
     private let metricsService : MetricsService
@@ -68,8 +68,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         }
         else
         {
-            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService,
-                                                                    self.notificationAuthorizationVariable.asObservable())
+            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
         }
         
         self.trackingService =
@@ -88,6 +87,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.logAppStartup(isInBackground)
         self.initializeTrackingService()
+        
+        self.appStateService.currentAppState = isInBackground ? .inactive : .active
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -199,7 +200,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
     {
-        self.notificationAuthorizationVariable.value = true
+        self.notificationAuthorizedSubject.on(.next(()))
     }
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)

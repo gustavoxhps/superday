@@ -42,7 +42,8 @@ class OnboardingPage2 : OnboardingPage
         self.initAnimatedTitleText(self.textView)
         self.timelineCells = self.initAnimatingTimeline(with: self.timeSlots, in: self.timelineView)
         
-        self.editView = EditTimeSlotView()
+        self.editView = EditTimeSlotView(categoryProvider: OnboardingCategoryProvider(withFirstCategory: self.editTo))
+
         self.editView.isUserInteractionEnabled = false
         self.timelineView.addSubview(self.editView)
         self.editView.constrainEdges(to: self.timelineView)
@@ -120,23 +121,25 @@ class OnboardingPage2 : OnboardingPage
     
     private func moveCursorToCell(delay : TimeInterval)
     {
-        moveCursor(to: { self.timelineCells[self.editIndex].categoryCircle! },
-                   offset: CGPoint(x: 5, y: 5), delay: delay)
+        moveCursor(to: {
+            let view = self.timelineCells[self.editIndex].categoryCircle!
+            return view.convert(view.center, to: self.editView)
+        }, offset: CGPoint(x: -16, y: -8), delay: delay)
     }
     
     private func moveCursorToCategory(delay: TimeInterval)
     {
-        moveCursor(to: { self.editView.getIcon(forCategory: self.editTo)! },
-                   offset: CGPoint(x: 0, y: 5), delay: delay)
+        moveCursor(to: {
+            let view = self.editView.getIcon(forCategory: self.editTo)!
+            return view.convert(view.center, to: nil)
+        }, offset: CGPoint(x: 0, y: 0), delay: delay)
     }
     
-    private func moveCursor(to getView: @escaping () -> UIView, offset: CGPoint, delay: TimeInterval)
+    private func moveCursor(to getPoint: @escaping () -> CGPoint, offset: CGPoint, delay: TimeInterval)
     {
         UIView.scheduleAnimation(withDelay: delay, duration: 0.45, options: .curveEaseInOut)
         {
-            let view = getView()
-            let size = view.frame.size
-            let point = view.convert(CGPoint(x: size.width / 2, y: size.height / 2), to: self.timelineView)
+            let point = getPoint()
             self.setCursorPosition(toX: point.x + offset.x, y: point.y + offset.y)
         }
     }

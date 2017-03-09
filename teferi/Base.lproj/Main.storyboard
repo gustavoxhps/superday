@@ -224,6 +224,7 @@
                         </connections>
                     </view>
                     <connections>
+                        <outlet property="calendarBackgroundView" destination="tx9-mT-IJt" id="RaX-wn-4dL"/>
                         <outlet property="calendarHeightConstraint" destination="fsZ-Gh-krj" id="BRe-cq-AHJ"/>
                         <outlet property="calendarView" destination="P1q-Pj-kdM" id="pJ2-x8-kri"/>
                         <outlet property="dayOfWeekLabels" destination="Ik7-d5-Fp7" id="MCX-hh-XH3"/>

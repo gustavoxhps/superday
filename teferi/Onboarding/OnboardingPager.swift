@@ -18,7 +18,7 @@ class OnboardingPager: UIView
         {
             let dot = UIView()
             dot.layer.cornerRadius = 3
-            dot.backgroundColor = Color.green
+            dot.backgroundColor = Style.Color.green
             
             self.pageIndicatorContainer.addSubview(dot)
             

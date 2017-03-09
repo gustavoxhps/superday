@@ -123,7 +123,6 @@
 		512A9B411DD46E3B00B73F01 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24564F611D83265900D9A8AE /* UIColorExtensions.swift */; };
 		513535D31DA26E3B00A365A9 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 513535D11DA26E3B00A365A9 /* Onboarding.storyboard */; };
 		513535D61DA2756C00A365A9 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513535D51DA2756C00A365A9 /* OnboardingPageViewController.swift */; };
-		51899C3B1DED954A00633D82 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51899C3A1DED954A00633D82 /* Color.swift */; };
 		51BED8F71DD26FA800455EF6 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BED8F61DD26FA800455EF6 /* UserNotifications.framework */; };
 		51BED8F91DD26FA800455EF6 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BED8F81DD26FA800455EF6 /* UserNotificationsUI.framework */; };
 		51BED8FF1DD26FA800455EF6 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51BED8FD1DD26FA800455EF6 /* MainInterface.storyboard */; };
@@ -150,6 +149,10 @@
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
+		BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783601E6DB4A400D44603 /* CategoryProvider.swift */; };
+		BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */; };
+		BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */; };
+		BEC84F311E708D4B0096275C /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC84F301E708D4B0096275C /* Style.swift */; };
 		BEDE5B3A1E4A3F260082FFC3 /* PermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */; };
 		BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */; };
 		BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */; };
@@ -321,7 +324,6 @@
 		43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		513535D21DA26E3B00A365A9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
 		513535D51DA2756C00A365A9 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnboardingPageViewController.swift; path = Onboarding/OnboardingPageViewController.swift; sourceTree = "<group>"; };
-		51899C3A1DED954A00633D82 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Color.swift; path = Styles/Color.swift; sourceTree = "<group>"; };
 		51BED8F51DD26FA800455EF6 /* teferiNotifications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = teferiNotifications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BED8F61DD26FA800455EF6 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		51BED8F81DD26FA800455EF6 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -349,6 +351,10 @@
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
 		BEA024331E41137D0061FE53 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Generated/Category.swift; sourceTree = "<group>"; };
+		BEA783601E6DB4A400D44603 /* CategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryProvider.swift; sourceTree = "<group>"; };
+		BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCategoryProvider.swift; sourceTree = "<group>"; };
+		BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCategoryProvider.swift; sourceTree = "<group>"; };
+		BEC84F301E708D4B0096275C /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Styles/Style.swift; sourceTree = "<group>"; };
 		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
 		BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelTests.swift; path = ViewModels/PermissionViewModelTests.swift; sourceTree = "<group>"; };
@@ -421,9 +427,9 @@
 			children = (
 				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
-				51899C391DED953000633D82 /* Styles */,
 				24CD8A461D7A13560017C53E /* Extensions */,
 				2421F8C11D9BAC4A00AF8857 /* Helpers */,
+				BEA7835F1E6DB48F00D44603 /* Providers */,
 				24BA51A91D74D79C00042CDF /* Models */,
 				24BA51A51D74D69C00042CDF /* Services */,
 				24D99F681D74B92C00E68163 /* Storyboards */,
@@ -432,6 +438,7 @@
 				24D99F691D74B93C00E68163 /* Views */,
 				240AC7171D748C8800F21F4F /* AppDelegate.swift */,
 				24526A741D92D98800DA3FA0 /* Constants.swift */,
+				BEC84F301E708D4B0096275C /* Style.swift */,
 				6AC29DA61E4269FB000A99EF /* ViewModelLocator.swift */,
 				240AC7211D748C8800F21F4F /* Assets.xcassets */,
 				240AC7261D748C8800F21F4F /* Info.plist */,
@@ -812,14 +819,6 @@
 			name = Onboarding;
 			sourceTree = "<group>";
 		};
-		51899C391DED953000633D82 /* Styles */ = {
-			isa = PBXGroup;
-			children = (
-				51899C3A1DED954A00633D82 /* Color.swift */,
-			);
-			name = Styles;
-			sourceTree = "<group>";
-		};
 		51BED8FA1DD26FA800455EF6 /* teferiNotifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -1177,7 +1176,7 @@
 				24DE23F51E1BB33B0089B49E /* Activity.swift in Sources */,
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
-				51899C3B1DED954A00633D82 /* Color.swift in Sources */,
+				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
 				246531701DA7B4150066DFE0 /* NotificationService.swift in Sources */,
 				24B03B5D1D9E4DA300452D16 /* DefaultSettingsService.swift in Sources */,
@@ -1196,6 +1195,7 @@
 				24EB96831DE709790040C211 /* DelayedSequence.swift in Sources */,
 				24C72AAA1D90731C00DABAC3 /* LoggingService.swift in Sources */,
 				24DE23FE1E1BB38C0089B49E /* TimeService.swift in Sources */,
+				BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */,
 				24DE24011E1BB3A40089B49E /* DefaultSelectedDateService.swift in Sources */,
 				24564F601D8325CC00D9A8AE /* TimeSlot.swift in Sources */,
 				24D18E301DF06B9E0046B202 /* SmartGuessModelAdapter.swift in Sources */,
@@ -1243,6 +1243,8 @@
 				2482CAFD1DB12F9F00E892C1 /* OnboardingPage3.swift in Sources */,
 				BEA024321E4106980061FE53 /* Colors.swift in Sources */,
 				24EB967D1DE708570040C211 /* AppState.swift in Sources */,
+				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
+				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,
 				24D213AB1DB8CA4600E429CA /* AppStateService.swift in Sources */,
 				243E37AE1DC8FABC0074032D /* PostiOSTenNotificationService.swift in Sources */,

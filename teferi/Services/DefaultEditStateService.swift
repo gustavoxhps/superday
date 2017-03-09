@@ -3,19 +3,14 @@ import RxSwift
 class DefaultEditStateService : EditStateService
 {
     //MARK: Fields
-    private let isEditingVariable = Variable(false)
-    private let beganEditingVariable : Variable<(CGPoint, TimeSlot)>
+    private let isEditingSubject = PublishSubject<Bool>()
+    private let beganEditingSubject = PublishSubject<(CGPoint, TimeSlot)>()
     
     //MARK: Initializers
     init(timeService: TimeService)
     {
-        self.isEditingObservable = self.isEditingVariable.asObservable()
-        self.beganEditingVariable = Variable((CGPoint(),
-                                              TimeSlot(withStartTime: timeService.now,
-                                                       category: .unknown,
-                                                       categoryWasSetByUser: false)))
-        
-        self.beganEditingObservable = self.beganEditingVariable.asObservable()
+        self.isEditingObservable = self.isEditingSubject.asObservable()
+        self.beganEditingObservable = self.beganEditingSubject.asObservable()
     }
     
     //MARK: EditStateService implementation
@@ -24,12 +19,12 @@ class DefaultEditStateService : EditStateService
     
     func notifyEditingBegan(point: CGPoint, timeSlot: TimeSlot)
     {
-        self.isEditingVariable.value = true
-        self.beganEditingVariable.value = (point, timeSlot)
+        self.isEditingSubject.on(.next(true))
+        self.beganEditingSubject.on(.next((point, timeSlot)))
     }
     
     func notifyEditingEnded()
     {
-        self.isEditingVariable.value = false
+        self.isEditingSubject.on(.next(false))
     }
 }

@@ -18,7 +18,7 @@ class CalendarDailyActivityView : UIView
         
         guard let activities = dailyActivity, activities.count > 0 else
         {
-            self.backgroundColor = Colors.calendarNoData
+            self.backgroundColor = Style.Color.calendarNoData
             return
         }
         

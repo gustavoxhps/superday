@@ -7,13 +7,13 @@ class PreiOSTenNotificationService : NotificationService
     //MARK: Fields
     private let loggingService : LoggingService
     private var notificationSubscription : Disposable?
-    private let notificationAuthorizationObservable : Observable<Bool>
+    private let notificationAuthorizedObservable : Observable<Void>
     
     //MARK: Initializers
-    init(loggingService: LoggingService, _ notificationAuthorizationObservable: Observable<Bool>)
+    init(loggingService: LoggingService, _ notificationAuthorizedObservable: Observable<Void>)
     {
         self.loggingService = loggingService
-        self.notificationAuthorizationObservable = notificationAuthorizationObservable
+        self.notificationAuthorizedObservable = notificationAuthorizedObservable
     }
     
     //MARK: NotificationService implementation
@@ -22,13 +22,8 @@ class PreiOSTenNotificationService : NotificationService
         let notificationSettings = UIUserNotificationSettings(types: [ .alert, .sound, .badge ], categories: nil)
         
         self.notificationSubscription =
-            self.notificationAuthorizationObservable
-                .subscribe(onNext: { wasSet in
-                    
-                    guard wasSet else { return }
-                    
-                    completed()
-                })
+            self.notificationAuthorizedObservable
+                .subscribe(onNext: completed)
         
         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
     }
