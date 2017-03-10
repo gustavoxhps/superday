@@ -53,14 +53,14 @@ extension CLLocationCoordinate2D
 
 extension CLLocation
 {
-    func offset(_ direction: Direction, meters: Double) -> CLLocation
+    func offset(_ direction: Direction, meters: Double, timestamp: Date? = nil) -> CLLocation
     {
         let newCoordinate = self.coordinate.offset(direction, meters: meters)
         let newLocation = CLLocation(coordinate: newCoordinate,
                                      altitude: self.altitude,
                                      horizontalAccuracy: self.horizontalAccuracy,
                                      verticalAccuracy: self.verticalAccuracy,
-                                     timestamp: self.timestamp)
+                                     timestamp: timestamp ?? self.timestamp)
         return newLocation
     }
 }

@@ -143,6 +143,8 @@
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
 		AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* WheelControl.swift */; };
+		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
+		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
@@ -342,6 +344,8 @@
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrigonometryHelper.swift; path = Helpers/TrigonometryHelper.swift; sourceTree = "<group>"; };
 		AC0A632B1E548FE800D56433 /* WheelControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelControl.swift; path = Views/WheelControl.swift; sourceTree = "<group>"; };
+		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
+		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -421,6 +425,7 @@
 		240AC7161D748C8800F21F4F /* teferi */ = {
 			isa = PBXGroup;
 			children = (
+				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
 				24CD8A461D7A13560017C53E /* Extensions */,
 				2421F8C11D9BAC4A00AF8857 /* Helpers */,
@@ -845,16 +850,25 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		BEA7835F1E6DB48F00D44603 /* Providers */ = {
+		AC1E70EF1E3F4C120090D474 /* Algorithm */ = {
 			isa = PBXGroup;
 			children = (
-				BEA783601E6DB4A400D44603 /* CategoryProvider.swift */,
-				BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */,
-				BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */,
+				AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */,
+				AC1E70F01E3F4C490090D474 /* KNN.swift */,
 			);
-			name = Providers;
+			name = Algorithm;
 			sourceTree = "<group>";
 		};
+        BEA7835F1E6DB48F00D44603 /* Providers */ = {
+            isa = PBXGroup;
+            children = (
+                BEA783601E6DB4A400D44603 /* CategoryProvider.swift */,
+                BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */,
+                BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */,
+            );
+            name = Providers;
+            sourceTree = "<group>";
+        };
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1205,6 +1219,7 @@
 				2421F8C31D9BACB500AF8857 /* ClosureGestureRecognizer.swift in Sources */,
 				24DE23EE1E1BB3180089B49E /* CalendarDailyActivityView.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
+				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,
 				2482CAFC1DB12F9F00E892C1 /* OnboardingPage2.swift in Sources */,
 				24564F521D8320FC00D9A8AE /* TimelineViewController.swift in Sources */,
@@ -1230,6 +1245,7 @@
 				24526A7C1D92D9BB00DA3FA0 /* CustomEvent.swift in Sources */,
 				24DE23F61E1BB33B0089B49E /* DateChange.swift in Sources */,
 				24DE24021E1BB3A40089B49E /* DefaultTimeService.swift in Sources */,
+				AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */,
 				24D18E221DEF69030046B202 /* SmartGuessService.swift in Sources */,
 				24B03B591D9E4C3E00452D16 /* PagerViewModel.swift in Sources */,
 				242FE7D61DE7689A00EAEEE3 /* AutoResizingLayerView.swift in Sources */,
