@@ -9,21 +9,21 @@ class TimelineViewModel
     private let disposeBag = DisposeBag()
     
     private let timeService : TimeService
-    private let appStateService : AppStateService
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
+    private let appLifecycleService : AppLifecycleService
     
     //MARK: Initializers
     init(date: Date,
          timeService: TimeService,
-         appStateService: AppStateService,
          timeSlotService: TimeSlotService,
-         editStateService: EditStateService)
+         editStateService: EditStateService,
+         appLifecycleService: AppLifecycleService)
     {
         self.timeService = timeService
-        self.appStateService = appStateService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
+        self.appLifecycleService = appLifecycleService
         
         self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
         self.date = date.ignoreTimeComponents()
@@ -70,9 +70,9 @@ class TimelineViewModel
         let stateObservable =
             self.isCurrentDay ?
                 Observable.empty() :
-                self.appStateService
-                    .appStateObservable
-                    .filter(self.appIsActive)
+                self.appLifecycleService
+                    .lifecycleEventObservable
+                    .filter(self.movedToForeground)
                     .map(self.refreshTimeSlotsFromService)
         
         return Observable.of(stateObservable, updateObservable).merge()
@@ -83,9 +83,9 @@ class TimelineViewModel
         guard self.isCurrentDay else { return Observable<Int>.empty() }
         
         let observable =
-            self.appStateService
-                .appStateObservable
-                .filter(self.appWasOpenedViaNotification)
+            self.appLifecycleService
+                .lifecycleEventObservable
+                .filter(self.receivedNotification)
                 .map { _ in return self.timelineItems.count - 1 }
                 .distinctUntilChanged()
         
@@ -115,9 +115,9 @@ class TimelineViewModel
         return self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
     }
 
-    private func appWasOpenedViaNotification(_ appState: AppState) -> Bool { return appState == .activeFromNotification }
+    private func receivedNotification(_ event: LifecycleEvent) -> Bool { return event == .receivedNotification }
 
-    private func appIsActive(_ appState: AppState) -> Bool { return appState == .active }
+    private func movedToForeground(_ event: LifecycleEvent) -> Bool { return event == .movedToForeground }
 
     private func timeSlotBelongsToThisDate(_ timeSlot: TimeSlot) -> Bool { return timeSlot.startTime.ignoreTimeComponents() == self.date }
     

@@ -42,7 +42,7 @@ class TrackingServiceTests : XCTestCase
                                                       smartGuessService: self.smartGuessService,
                                                       notificationService: self.notificationService)
         
-        self.trackingService.onAppState(.inactive)
+        self.trackingService.onLifecycleEvent(.movedToBackground)
     }
     
     func testTheTestHelpersCalculateLocationDifferencesCorrectly()
@@ -75,7 +75,7 @@ class TrackingServiceTests : XCTestCase
     
     func testTheAlgorithmWillIgnoreLocationsWhileOnForeground()
     {
-        self.trackingService.onAppState(.active)
+        self.trackingService.onLifecycleEvent(.movedToForeground)
         
         [10, 20, 30, 40]
             .map(self.getDate)
@@ -289,7 +289,7 @@ class TrackingServiceTests : XCTestCase
         self.trackingService.onLocation(location)
         
         self.timeService.mockDate = self.getDate(minutesPastNoon: 30)
-        self.trackingService.onAppState(.active)
+        self.trackingService.onLifecycleEvent(.movedToForeground)
         
         expect(timeSlot.endTime).to(equal(self.noon))
         expect(self.timeSlotService.timeSlots.count).to(equal(2))
@@ -303,7 +303,7 @@ class TrackingServiceTests : XCTestCase
         self.trackingService.onLocation(location)
         
         self.timeService.mockDate = self.getDate(minutesPastNoon: 15)
-        self.trackingService.onAppState(.active)
+        self.trackingService.onLifecycleEvent(.movedToForeground)
         
         expect(self.timeSlotService.timeSlots.count).to(equal(1))
         expect(timeSlot.category).to(equal(Category.commute))
@@ -315,7 +315,7 @@ class TrackingServiceTests : XCTestCase
             minutesBeforeNoon: 0, slotCategory: .commute, wasSetByUser: true)
         
         self.timeService.mockDate = self.getDate(minutesPastNoon: 30)
-        self.trackingService.onAppState(.active)
+        self.trackingService.onLifecycleEvent(.movedToForeground)
         
         expect(self.timeSlotService.timeSlots.count).to(equal(1))
         expect(timeSlot.category).to(equal(Category.commute))
@@ -327,7 +327,7 @@ class TrackingServiceTests : XCTestCase
             minutesBeforeNoon: 0, slotCategory: .food, wasSetByUser: true)
         
         self.timeService.mockDate = self.getDate(minutesPastNoon: 30)
-        self.trackingService.onAppState(.active)
+        self.trackingService.onLifecycleEvent(.movedToForeground)
         
         expect(self.timeSlotService.timeSlots.count).to(equal(1))
         expect(timeSlot.category).to(equal(Category.food))

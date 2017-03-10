@@ -19,7 +19,7 @@ class OnboardingPageViewControllerTests : XCTestCase
                                                               MockTimeSlotService(timeService: MockTimeService(),
                                                                                   locationService: MockLocationService()),
                                                               MockSettingsService(),
-                                                              DefaultAppStateService(),
+                                                              MockAppLifecycleService(),
                                                               MainViewController(),
                                                               self.notificationService)
         

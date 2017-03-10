@@ -5,18 +5,18 @@ class PagerViewModel
 {
     //MARK: Fields
     private let timeService : TimeService
-    private let appStateService : AppStateService
     private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
     private var selectedDateService : SelectedDateService
     
     init(timeService: TimeService,
-         appStateService: AppStateService,
          settingsService: SettingsService,
          editStateService: EditStateService,
+         appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService)
     {
         self.timeService = timeService
-        self.appStateService = appStateService
+        self.appLifecycleService = appLifecycleService
         self.settingsService = settingsService
         self.selectedDateService = selectedDateService
         
@@ -41,8 +41,8 @@ class PagerViewModel
     
     private(set) lazy var refreshObservable : Observable<Void> =
     {
-        return self.appStateService
-            .appStateObservable
+        return self.appLifecycleService
+            .lifecycleEventObservable
             .filter(self.shouldRefreshView)
             .map { _ in () }
     }()
@@ -68,11 +68,11 @@ class PagerViewModel
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
     }
     
-    private func shouldRefreshView(onAppState appState: AppState) -> Bool
+    private func shouldRefreshView(onLifecycleEvent event: LifecycleEvent) -> Bool
     {
-        switch appState
+        switch event
         {
-            case .active:
+            case .movedToForeground:
                 let today = self.timeService.now.ignoreTimeComponents()
                 
                 guard let inactiveDate = self.settingsService.lastInactiveDate,
@@ -81,15 +81,15 @@ class PagerViewModel
                 self.settingsService.setLastInactiveDate(nil)
                 return true
             
-            case .inactive:
+            case .movedToBackground:
                 self.settingsService.setLastInactiveDate(self.timeService.now)
                 break
             
-            case .needsRefreshing:
+            case .invalidatedUiState:
                 self.settingsService.setLastInactiveDate(nil)
                 return true
             
-            case .activeFromNotification:
+            case .receivedNotification:
                 return true
         }
         

@@ -12,7 +12,7 @@ protocol TrackingService
     /**
      Called when the app's state changes.
      
-     - Parameter appState: the current app state.
+     - Parameter event: the lifecycle event received.
      */
-    func onAppState(_ appState: AppState)
+    func onLifecycleEvent(_ event: LifecycleEvent)
 }

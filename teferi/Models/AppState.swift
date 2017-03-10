@@ -1,7 +1,7 @@
-enum AppState
+enum LifecycleEvent
 {
-    case active
-    case inactive
-    case needsRefreshing
-    case activeFromNotification
+    case movedToForeground
+    case movedToBackground
+    case invalidatedUiState
+    case receivedNotification
 }

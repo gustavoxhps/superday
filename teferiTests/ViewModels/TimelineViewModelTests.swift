@@ -11,26 +11,26 @@ class TimelineViewModelTests : XCTestCase
     
     private var timeService : MockTimeService!
     private var metricsService : MockMetricsService!
-    private var appStateService : MockAppStateService!
     private var locationService : MockLocationService!
     private var timeSlotService : MockTimeSlotService!
     private var editStateService : MockEditStateService!
+    private var appLifecycleService : MockAppLifecycleService!
     
     override func setUp()
     {
         self.disposeBag = DisposeBag()
         self.timeService = MockTimeService()
         self.metricsService = MockMetricsService()
-        self.appStateService = MockAppStateService()
         self.locationService = MockLocationService()
         self.editStateService = MockEditStateService()
+        self.appLifecycleService = MockAppLifecycleService()
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
                                                    locationService: self.locationService)
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
-                                           appStateService: self.appStateService,
                                            timeSlotService: self.timeSlotService,
-                                           editStateService: self.editStateService)
+                                           editStateService: self.editStateService,
+                                           appLifecycleService: self.appLifecycleService)
     }
     
     override func tearDown()
@@ -44,9 +44,9 @@ class TimelineViewModelTests : XCTestCase
                                                          locationService: self.locationService)
         _ = TimelineViewModel(date: Date().yesterday,
                               timeService: self.timeService,
-                              appStateService: self.appStateService,
                               timeSlotService: newMockTimeSlotService,
-                              editStateService: self.editStateService)
+                              editStateService: self.editStateService,
+                              appLifecycleService: self.appLifecycleService)
         
         expect(newMockTimeSlotService.didSubscribe).to(beFalse())
     }
@@ -115,9 +115,9 @@ class TimelineViewModelTests : XCTestCase
         
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
-                                           appStateService: self.appStateService,
                                            timeSlotService: self.timeSlotService,
-                                           editStateService: self.editStateService)
+                                           editStateService: self.editStateService,
+                                           appLifecycleService: self.appLifecycleService)
         
         [ true, true, true, false ]
             .enumerated()

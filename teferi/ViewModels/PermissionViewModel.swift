@@ -10,17 +10,17 @@ class PermissionViewModel
     private let disabledDescriptionFirstUse = L10n.locationDisabledDescriptionFirstUse
     
     private let timeService : TimeService
-    private let appStateService : AppStateService
     private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
     
     // MARK: Initializers
     init(timeService: TimeService,
-         appStateService : AppStateService,
-         settingsService: SettingsService)
+         settingsService: SettingsService,
+         appLifecycleService : AppLifecycleService)
     {
         self.timeService = timeService
-        self.appStateService = appStateService
         self.settingsService = settingsService
+        self.appLifecycleService = appLifecycleService
     }
     
     // MARK: Properties
@@ -53,9 +53,9 @@ class PermissionViewModel
     
     private lazy var overlayStateObservable : Observable<Bool> =
     {
-        return self.appStateService
-                   .appStateObservable
-                   .filter(self.appIsActive)
+        return self.appLifecycleService
+                   .lifecycleEventObservable
+                   .filter(self.movedToForeground)
                    .map(self.toOverlayState)
                    .distinctUntilChanged { $0 != self.isVisible }
     }()
@@ -76,12 +76,12 @@ class PermissionViewModel
     
     func setLastAskedForLocationPermission() { self.settingsService.setLastAskedForLocationPermission(self.timeService.now) }
     
-    private func appIsActive(_ appState: AppState) -> Bool
+    private func movedToForeground(_ event: LifecycleEvent) -> Bool
     {
-        return appState == .active
+        return event == .movedToForeground
     }
     
-    private func toOverlayState(_ ignore: AppState) -> Bool
+    private func toOverlayState(_ ignore: LifecycleEvent) -> Bool
     {
         if self.settingsService.hasLocationPermission { return false }
         

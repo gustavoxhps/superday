@@ -159,14 +159,14 @@ class DefaultTrackingService : TrackingService
         return now.timeIntervalSince(then) < self.commuteDetectionLimit
     }
     
-    func onAppState(_ appState: AppState)
+    func onLifecycleEvent(_ event: LifecycleEvent)
     {
-        if appState == .active
+        if event == .movedToForeground
         {
             self.onAppActivates(at: self.timeService.now)
         }
         
-        self.isOnBackground = appState == .inactive
+        self.isOnBackground = event == .movedToBackground
     }
     
     private func startCommute(fromLocation location: CLLocation)
