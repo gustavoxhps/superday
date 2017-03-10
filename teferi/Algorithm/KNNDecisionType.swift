@@ -46,9 +46,12 @@ enum KNNDecisionType<ItemType, LabelType> where LabelType: Hashable
                 return (count: result.count + 1, scoreSum: result.scoreSum + (1 - element.distance))
             })
             
-            let firstInstance = itemsWithSameLabel.first!.instance
+            let instanceToUse = itemsWithSameLabel
+                .sorted(by: { $0.0.distance < $0.1.distance })
+                .first!
+                .instance
             
-            dictToReturn[getLabel(firstInstance)] = (count: countAndDistanceSum.count, scoreSum: countAndDistanceSum.scoreSum, instance: firstInstance)
+            dictToReturn[getLabel(instanceToUse)] = (count: countAndDistanceSum.count, scoreSum: countAndDistanceSum.scoreSum, instance: instanceToUse)
         }
         
         return dictToReturn
