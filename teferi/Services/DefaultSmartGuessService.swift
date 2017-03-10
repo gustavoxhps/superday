@@ -3,7 +3,7 @@ import CoreLocation
 
 class DefaultSmartGuessService : SmartGuessService
 {
-    typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category)
+    typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category, smartGuess: SmartGuess?)
     
     //MARK: Fields
     private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
@@ -84,13 +84,13 @@ class DefaultSmartGuessService : SmartGuessService
         
         guard bestMatches.count > 0 else { return nil }
         
-        let knnInstances = bestMatches.map { (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category) }
+        let knnInstances = bestMatches.map { (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category, smartGuess: Optional($0)) }
         
         let startTimeForKNN = Date()
         
         guard let bestKnnMatch = KNN<KNNInstance, Category>
             .prediction(
-                for: (location: location, timeStamp: location.timestamp, category: Category.unknown),
+                for: (location: location, timeStamp: location.timestamp, category: Category.unknown, smartGuess: nil),
                 usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
                 with: knnInstances,
                 decisionType: .maxScoreSum,
@@ -104,7 +104,7 @@ class DefaultSmartGuessService : SmartGuessService
         
         self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
-        guard let bestMatch = bestMatches.first(where: { $0.category == bestKnnMatch.category && $0.location == bestKnnMatch.location })
+        guard let bestMatch = bestKnnMatch.smartGuess
         else { return nil }
         
         //Every time a dictionary entry gets used in a guess, it gets refreshed.
