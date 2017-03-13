@@ -47,14 +47,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
         self.feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
         
-        let timeSlotPersistencyService = CoreDataPersistencyService<TimeSlot>(loggingService: self.loggingService,
-                                                                              modelAdapter: TimeSlotModelAdapter())
         
-        let smartGuessPersistencyService = CoreDataPersistencyService<SmartGuess>(loggingService: self.loggingService,
-                                                                                  modelAdapter: SmartGuessModelAdapter())
-        
-        let locationPersistencyService = CoreDataPersistencyService<CLLocation>(loggingService: self.loggingService,
-                                                                                modelAdapter: CLLocationModelAdapter())
+        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: TimeSlotModelAdapter())
+        let locationPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: LocationModelAdapter())
+        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: SmartGuessModelAdapter())
+        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: HealthSampleModelAdapter())
         
         self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
                                                           loggingService: self.loggingService,
@@ -79,7 +76,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         }
         
         let trackEventServicePersistency = TrackEventPersistencyService(loggingService: self.loggingService,
-                                                                        locationPersistencyService: locationPersistencyService)
+                                                                        locationPersistencyService: locationPersistencyService,
+                                                                        healthSamplePersistencyService: healthSamplePersistencyService)
         
         self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
                                                           persistencyService: trackEventServicePersistency,
@@ -92,6 +90,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                    timeSlotService: self.timeSlotService,
                                    smartGuessService: self.smartGuessService,
                                    notificationService: self.notificationService)
+    }
+    
+    private static func getPersistencyService<T>(forAdapter adapter: CoreDataModelAdapter<T>, _ loggingService: LoggingService) -> BasePersistencyService<T>
+    {
+        return CoreDataPersistencyService<T>(loggingService: loggingService, modelAdapter: adapter)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -151,7 +154,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         switch event
         {
             case .newLocation(let location):
-                return location
+                return CLLocation(fromLocation: location)
+            default:
+                return nil
         }
     }
     

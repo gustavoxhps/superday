@@ -1,20 +1,17 @@
 import Foundation
 import HealthKit
+import RxSwift
 
-class DefaultHealthKitService : HealthKitService
+class DefaultHealthKitService : HealthKitService, EventSource
 {
+    private let commuteSpeed = 0.3
     private let loggingService : LoggingService
     private let settingsService : SettingsService
-    private let commuteSpeed = 0.3
+    private let sampleSubject = PublishSubject<HealthSample>()
     
     private let healthStore: HKHealthStore? =
     {
-        if HKHealthStore.isHealthDataAvailable()
-        {
-            return HKHealthStore()
-        } else {
-            return nil
-        }
+        return HKHealthStore.isHealthDataAvailable() ? HKHealthStore() : nil
     }()
     
     private let typeIdentifiers : [String] = [HKCategoryTypeIdentifier.sleepAnalysis.rawValue,
@@ -28,7 +25,6 @@ class DefaultHealthKitService : HealthKitService
     
     private let dateTimeFormatter = DateFormatter()
     
-    
     // MARK: - Init
     init(settingsService: SettingsService, loggingService: LoggingService)
     {
@@ -40,10 +36,17 @@ class DefaultHealthKitService : HealthKitService
         self.dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     }
     
+    private(set) lazy var eventObservable : Observable<TrackEvent> =
+    {
+        return self.sampleSubject.asObservable().map(TrackEvent.toTrackEvent)
+    }()
+    
     // MARK: - New Sample Handler
     private func handle(samples: [HKSample]?)
     {
         guard let samples = samples, !samples.isEmpty else { return }
+        
+        samples.flatMap(HealthSample.init(fromHKSample:)).forEach(self.sampleSubject.onNext)
         
         let identifier = samples.first!.sampleType.identifier
         
