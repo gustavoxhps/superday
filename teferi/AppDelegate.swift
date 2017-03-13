@@ -51,6 +51,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let smartGuessPersistencyService = CoreDataPersistencyService<SmartGuess>(loggingService: self.loggingService,
                                                                                   modelAdapter: SmartGuessModelAdapter())
         
+        let locationPersistencyService = CoreDataPersistencyService<CLLocation>(loggingService: self.loggingService,
+                                                                                modelAdapter: CLLocationModelAdapter())
+        
         self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
                                                           loggingService: self.loggingService,
                                                           settingsService: self.settingsService,
@@ -72,6 +75,13 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         {
             self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
         }
+        
+        let trackEventServicePersistency = TrackEventPersistencyService(loggingService: self.loggingService,
+                                                                        locationPersistencyService: locationPersistencyService)
+        
+        self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
+                                                          persistencyService: trackEventServicePersistency,
+                                                          withEventSources: locationService)
         
         self.trackingService =
             DefaultTrackingService(timeService: self.timeService,
