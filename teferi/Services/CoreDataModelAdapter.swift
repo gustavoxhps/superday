@@ -14,6 +14,11 @@ class CoreDataModelAdapter<T>
         fatalError("Not implemented")
     }
     
+    func getEntityName() -> String
+    {
+        return entityName
+    }
+    
     var sortDescriptors : [NSSortDescriptor]!
     
     func getLocation(_ managedObject: NSManagedObject, timeKey: String, latKey: String, lngKey: String) -> CLLocation?
@@ -32,4 +37,19 @@ class CoreDataModelAdapter<T>
         
         return location
     }
+    
+    private lazy var entityName : String =
+    {
+        let fullName = String(describing: T.self)
+        let range = fullName.range(of: ".", options: .backwards)
+        
+        if let range = range
+        {
+            return fullName.substring(from: range.upperBound)
+        }
+        else
+        {
+            return fullName
+        }
+    }()
 }

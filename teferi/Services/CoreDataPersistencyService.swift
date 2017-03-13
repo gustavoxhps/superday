@@ -5,14 +5,17 @@ import UIKit
 class CoreDataPersistencyService<T> : BasePersistencyService<T>
 {
     //MARK: Fields
-    let loggingService : LoggingService
-    let modelAdapter : CoreDataModelAdapter<T>
+    private let loggingService : LoggingService
+    private let modelAdapter : CoreDataModelAdapter<T>
+    private let entityName : String
     
     //MARK: Initializers
     init(loggingService: LoggingService, modelAdapter: CoreDataModelAdapter<T>)
     {
         self.modelAdapter = modelAdapter
         self.loggingService = loggingService
+        
+        self.entityName = modelAdapter.getEntityName()
     }
     
     //MARK: PersistencyService implementation
@@ -161,18 +164,4 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             return nil
         }
     }
-    
-    private lazy var entityName : String =
-    {
-        let fullName = String(describing: T.self)
-        let range = fullName.range(of: ".", options: .backwards)
-        if let range = range
-        {
-            return fullName.substring(from: range.upperBound)
-        }
-        else
-        {
-            return fullName
-        }
-    }()
 }
