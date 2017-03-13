@@ -146,6 +146,9 @@
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
+		AC7186CC1E6C8CF0000323C7 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */; };
+		AC7186CE1E6C8E7D000323C7 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */; };
+		AC7186D11E6CA02C000323C7 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC7186D01E6CA02C000323C7 /* HealthKit.framework */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
@@ -347,6 +350,10 @@
 		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
+		AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
+		AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultHealthKitService.swift; path = Services/DefaultHealthKitService.swift; sourceTree = "<group>"; };
+		AC7186CF1E6CA02C000323C7 /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
+		AC7186D01E6CA02C000323C7 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
@@ -366,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */,
+				AC7186D11E6CA02C000323C7 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +433,7 @@
 		240AC7161D748C8800F21F4F /* teferi */ = {
 			isa = PBXGroup;
 			children = (
+				AC7186CF1E6CA02C000323C7 /* teferi.entitlements */,
 				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
 				24CD8A461D7A13560017C53E /* Extensions */,
@@ -756,6 +765,7 @@
 				24EB96701DE7080F0040C211 /* TrackingService.swift */,
 				24EB966F1DE7080F0040C211 /* MotionService.swift */,
 				247F05F71D87322600451BAD /* LocationService.swift */,
+				AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */,
 			);
 			name = Tracking;
 			sourceTree = "<group>";
@@ -776,6 +786,7 @@
 			children = (
 				24EB966C1DE7080F0040C211 /* DefaultTrackingService.swift */,
 				24564F591D83259100D9A8AE /* DefaultLocationService.swift */,
+				AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */,
 			);
 			name = Tracking;
 			sourceTree = "<group>";
@@ -872,6 +883,7 @@
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AC7186D01E6CA02C000323C7 /* HealthKit.framework */,
 				B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */,
 				43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */,
 				51BED8F61DD26FA800455EF6 /* UserNotifications.framework */,
@@ -963,6 +975,9 @@
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.HealthKit = {
 								enabled = 1;
 							};
 						};
@@ -1223,6 +1238,7 @@
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,
 				2482CAFC1DB12F9F00E892C1 /* OnboardingPage2.swift in Sources */,
 				24564F521D8320FC00D9A8AE /* TimelineViewController.swift in Sources */,
+				AC7186CC1E6C8CF0000323C7 /* HealthKitService.swift in Sources */,
 				2FB611421DE77846007C5646 /* MailFeedbackService.swift in Sources */,
 				24564F5A1D83259100D9A8AE /* DefaultLocationService.swift in Sources */,
 				2FB611401DE777B7007C5646 /* FeedbackService.swift in Sources */,
@@ -1251,6 +1267,7 @@
 				242FE7D61DE7689A00EAEEE3 /* AutoResizingLayerView.swift in Sources */,
 				24EB96771DE7080F0040C211 /* MotionService.swift in Sources */,
 				2482CAFD1DB12F9F00E892C1 /* OnboardingPage3.swift in Sources */,
+				AC7186CE1E6C8E7D000323C7 /* DefaultHealthKitService.swift in Sources */,
 				BEA024321E4106980061FE53 /* Colors.swift in Sources */,
 				24EB967D1DE708570040C211 /* AppState.swift in Sources */,
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
@@ -1479,6 +1496,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = B227VTMZ94;
@@ -1501,6 +1519,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = B227VTMZ94;

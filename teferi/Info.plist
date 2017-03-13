@@ -44,6 +44,8 @@
 	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>We use your HealthKit data to magically guess &amp; track your activities</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your location to magically guess &amp; track your activities</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -60,6 +62,7 @@
 	<array>
 		<string>armv7</string>
 		<string>location-services</string>
+		<string>healthkit</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

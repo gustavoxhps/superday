@@ -15,7 +15,25 @@ class MockSettingsService : SettingsService
     var hasNotificationPermission = true
     var canIgnoreLocationPermission = false
     
+    var healthKitUpdates = [String: Date]()
+    
     //MARK: Methods
+    func lastHealthKitUpdate(for identifier: String) -> Date
+    {
+        guard let dateToReturn = healthKitUpdates[identifier]
+        else
+        {
+            return lastInactiveDate!
+        }
+        
+        return dateToReturn
+    }
+    
+    func setLastHealthKitUpdate(for identifier: String, date: Date)
+    {
+        healthKitUpdates[identifier] = date
+    }
+    
     func setAllowedLocationPermission()
     {
         self.canIgnoreLocationPermission = true
