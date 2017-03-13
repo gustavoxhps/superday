@@ -18,6 +18,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let metricsService : MetricsService
     private let loggingService : LoggingService
     private let feedbackService : FeedbackService
+    private let healthKitService : HealthKitService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
     private let trackingService : TrackingService
@@ -42,6 +43,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.appLifecycleService = DefaultAppLifecycleService()
         self.editStateService = DefaultEditStateService(timeService: self.timeService)
         self.locationService = DefaultLocationService(loggingService: self.loggingService)
+        self.healthKitService = DefaultHealthKitService(settingsService: self.settingsService, loggingService: self.loggingService)
         self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
         self.feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
         
@@ -99,6 +101,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.logAppStartup(isInBackground)
         self.initializeTrackingService()
+        healthKitService.startHealthKitTracking()
         
         self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
         

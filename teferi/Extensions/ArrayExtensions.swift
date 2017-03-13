@@ -33,3 +33,17 @@ extension Array
         return element
     }
 }
+
+extension Array where Element : Hashable
+{
+    public func toDictionary<Value: Any>(_ generateElement: (Element) -> Value?) -> [Element: Value]
+    {
+        var dict = [Element:Value]()
+        for key in self
+        {
+            guard let element = generateElement(key) else { continue }
+            dict.updateValue(element, forKey: key)
+        }
+        return dict
+    }
+}

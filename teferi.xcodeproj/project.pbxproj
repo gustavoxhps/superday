@@ -148,6 +148,8 @@
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		BE24B8821E76C9D8005DF5B3 /* TrackEventPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */; };
+		BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8841E76E560005DF5B3 /* HealthKitService.swift */; };
+		BE24B8871E76E56A005DF5B3 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8861E76E56A005DF5B3 /* DefaultHealthKitService.swift */; };
 		BE7FAFC41E72F90600A62AC9 /* TrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */; };
 		BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */; };
 		BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */; };
@@ -357,6 +359,8 @@
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventPersistencyService.swift; path = Services/TrackEventPersistencyService.swift; sourceTree = "<group>"; };
 		BE24B8831E76D9CE005DF5B3 /* teferi3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = teferi3.xcdatamodel; sourceTree = "<group>"; };
+		BE24B8841E76E560005DF5B3 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
+		BE24B8861E76E56A005DF5B3 /* DefaultHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultHealthKitService.swift; path = Services/DefaultHealthKitService.swift; sourceTree = "<group>"; };
 		BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventService.swift; path = Services/Protocols/TrackEventService.swift; sourceTree = "<group>"; };
 		BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEvent.swift; path = Models/TrackEvent.swift; sourceTree = "<group>"; };
 		BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTrackEventService.swift; path = Services/DefaultTrackEventService.swift; sourceTree = "<group>"; };
@@ -769,6 +773,7 @@
 		24EB96671DE707B20040C211 /* Tracking */ = {
 			isa = PBXGroup;
 			children = (
+				BE24B8841E76E560005DF5B3 /* HealthKitService.swift */,
 				BEE5A3BE1E72F6B200CA717D /* EventSource.swift */,
 				24EB96701DE7080F0040C211 /* TrackingService.swift */,
 				24EB966F1DE7080F0040C211 /* MotionService.swift */,
@@ -792,6 +797,7 @@
 		24EB96691DE707CD0040C211 /* Tracking */ = {
 			isa = PBXGroup;
 			children = (
+				BE24B8861E76E56A005DF5B3 /* DefaultHealthKitService.swift */,
 				BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */,
 				24EB966C1DE7080F0040C211 /* DefaultTrackingService.swift */,
 				24564F591D83259100D9A8AE /* DefaultLocationService.swift */,
@@ -1276,6 +1282,7 @@
 				24526A7C1D92D9BB00DA3FA0 /* CustomEvent.swift in Sources */,
 				24DE23F61E1BB33B0089B49E /* DateChange.swift in Sources */,
 				24DE24021E1BB3A40089B49E /* DefaultTimeService.swift in Sources */,
+				BE24B8871E76E56A005DF5B3 /* DefaultHealthKitService.swift in Sources */,
 				AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */,
 				24D18E221DEF69030046B202 /* SmartGuessService.swift in Sources */,
 				24B03B591D9E4C3E00452D16 /* PagerViewModel.swift in Sources */,
@@ -1304,6 +1311,7 @@
 				247F05FA1D87325600451BAD /* PersistencyService.swift in Sources */,
 				BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */,
 				24564F641D83265900D9A8AE /* UIColorExtensions.swift in Sources */,
+				BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */,
 				2420A8661DB56B5500C0478C /* EmptyStateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

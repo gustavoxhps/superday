@@ -13,6 +13,7 @@ class DefaultSettingsService : SettingsService
     private let lastInactiveDateKey = "lastInactiveDate"
     private let canIgnoreLocationPermissionKey = " canIgnoreLocationPermission"
     private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
+    private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
     
     //MARK: Properties
     var installDate : Date?
@@ -69,6 +70,25 @@ class DefaultSettingsService : SettingsService
     }
     
     //MARK: Methods
+    func lastHealthKitUpdate(for identifier: String) -> Date
+    {
+        let key = lastHealthKitUpdateKey + identifier
+        
+        guard let lastUpdate : Date = get(forKey: key)
+        else
+        {
+            return lastInactiveDate ?? Date()
+        }
+        
+        return lastUpdate
+    }
+    
+    func setLastHealthKitUpdate(for identifier: String, date: Date)
+    {
+        let key = lastHealthKitUpdateKey + identifier
+        set(date, forKey: key)
+    }
+    
     func setInstallDate(_ date: Date)
     {
         guard self.installDate == nil else { return }

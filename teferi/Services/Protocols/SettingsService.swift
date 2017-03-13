@@ -19,6 +19,9 @@ protocol SettingsService
     var lastInactiveDate : Date?  { get }
     
     //MARK: Methods
+    func lastHealthKitUpdate(for identifier: String) -> Date
+    
+    func setLastHealthKitUpdate(for identifier: String, date: Date)
     
     func setInstallDate(_ date: Date)
     
