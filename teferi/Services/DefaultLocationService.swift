@@ -5,7 +5,7 @@ import CoreLocation
 import CoreMotion
 
 ///Default implementation for the location service.
-class DefaultLocationService : NSObject, CLLocationManagerDelegate, LocationService
+class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource, LocationService
 {
     //MARK: Fields
     private let loggingService : LoggingService
@@ -13,7 +13,7 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, LocationServ
     ///The location manager itself
     private let locationManager = CLLocationManager()
     
-    private var locationVariable = Variable(CLLocation())
+    private var locationSubject = PublishSubject<CLLocation>()
     
     // for logging date/time of received location updates
     private let dateTimeFormatter = DateFormatter()
@@ -32,13 +32,13 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, LocationServ
         self.loggingService.log(withLogLevel: .verbose, message: "DefaultLocationService Initialized")
     }
     
-    //MARK: LocationService implementation
-    
-    lazy private(set) var locationObservable : Observable<CLLocation> =
+    // MARK: Methods
+    private(set) lazy var eventObservable : Observable<TrackEvent> =
     {
-        return self.locationVariable
-                .asObservable()
-                .filter(self.filterLocations)
+        return self.locationSubject
+                   .asObservable()
+                   .filter(self.innacurateLocations)
+                   .map(TrackEvent.toTrackEvent)
     }()
     
     func startLocationTracking()
@@ -62,11 +62,11 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, LocationServ
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
         //Notifies new locations to listeners
-        locations.forEach { location in self.locationVariable.value = location }
+        locations.forEach(self.locationSubject.onNext)
     }
     
     //MARK: Methods
-    private func filterLocations(_ location: CLLocation) -> Bool
+    private func innacurateLocations(_ location: CLLocation) -> Bool
     {
         //Location is valid
         guard location.coordinate.latitude != 0.0 && location.coordinate.latitude != 0.0 else

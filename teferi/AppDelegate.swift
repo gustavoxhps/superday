@@ -2,6 +2,7 @@ import UIKit
 import RxSwift
 import CoreData
 import Foundation
+import CoreLocation
 import UserNotifications
 
 @UIApplicationMain
@@ -17,12 +18,13 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let metricsService : MetricsService
     private let loggingService : LoggingService
     private let feedbackService : FeedbackService
-    private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
     private let trackingService : TrackingService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
+    private let trackEventService : TrackEventService
+    private let locationService : DefaultLocationService
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
@@ -113,10 +115,15 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.loggingService.log(withLogLevel: .debug, message: message)
     }
 
+    // TODO This needs to be removed in the subsequent PRs.
+    // Whichever approach we pick, The Algorithm® should consume the tracking events
+    // and not the raw observables
     private func initializeTrackingService()
     {
         self.locationService
-            .locationObservable
+            .eventObservable
+            .map(self.toLocation)
+            .filterNil()
             .subscribe(onNext: self.trackingService.onLocation)
             .addDisposableTo(disposeBag)
         
@@ -124,6 +131,15 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             .lifecycleEventObservable
             .subscribe(onNext: self.trackingService.onLifecycleEvent)
             .addDisposableTo(disposeBag)
+    }
+    
+    private func toLocation(event: TrackEvent) -> CLLocation?
+    {
+        switch event
+        {
+            case .newLocation(let location):
+                return location
+        }
     }
     
     private func initializeWindowIfNeeded()
