@@ -38,9 +38,4 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
         managedObject.setValue(model.endTime, forKey: self.endTimeKey)
         managedObject.setValue(model.quantity, forKey: self.quantityKey)
     }
-    
-    override func getEntityName() -> String
-    {
-        return "HealthKitSample"
-    }
 }
