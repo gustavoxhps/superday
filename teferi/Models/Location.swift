@@ -4,18 +4,14 @@ import CoreLocation
 
 class Location
 {
+    let timestamp : Date
     let latitude : Double
     let longitude : Double
     
-    init(coordinate: CLLocationCoordinate2D)
+    init(fromLocation location: CLLocation)
     {
-        self.latitude = coordinate.latitude
-        self.longitude = coordinate.longitude
-    }
-    
-    init(latitude : Double, longitude : Double)
-    {
-        self.latitude = latitude
-        self.longitude = longitude
+        self.timestamp = location.timestamp
+        self.latitude = location.coordinate.latitude
+        self.longitude = location.coordinate.longitude
     }
 }

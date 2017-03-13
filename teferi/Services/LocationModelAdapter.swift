@@ -1,7 +1,7 @@
 import CoreLocation
 import CoreData
 
-class CLLocationModelAdapter : CoreDataModelAdapter<CLLocation>
+class LocationModelAdapter : CoreDataModelAdapter<Location>
 {
     //MARK: Fields
     private let locationTimeKey = "time"
@@ -15,25 +15,20 @@ class CLLocationModelAdapter : CoreDataModelAdapter<CLLocation>
         self.sortDescriptors = [ NSSortDescriptor(key: self.locationTimeKey, ascending: false) ]
     }
     
-    override func getModel(fromManagedObject managedObject: NSManagedObject) -> CLLocation
+    override func getModel(fromManagedObject managedObject: NSManagedObject) -> Location
     {
         let location =  super.getLocation(managedObject,
                                           timeKey: self.locationTimeKey,
                                           latKey: self.locationLatitudeKey,
-                                          lngKey: self.locationLongitudeKey)
+                                          lngKey: self.locationLongitudeKey)!
         
-        return location!
+        return Location(fromLocation: location)
     }
     
-    override func setManagedElementProperties(fromModel model: CLLocation, managedObject: NSManagedObject)
+    override func setManagedElementProperties(fromModel model: Location, managedObject: NSManagedObject)
     {
         managedObject.setValue(model.timestamp, forKey: self.locationTimeKey)
-        managedObject.setValue(model.coordinate.latitude, forKey: self.locationLatitudeKey)
-        managedObject.setValue(model.coordinate.longitude, forKey: self.locationLongitudeKey)
-    }
-    
-    override func getEntityName() -> String
-    {
-        return "Location"
+        managedObject.setValue(model.latitude, forKey: self.locationLatitudeKey)
+        managedObject.setValue(model.longitude, forKey: self.locationLongitudeKey)
     }
 }

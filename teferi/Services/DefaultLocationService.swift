@@ -38,6 +38,7 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource,
         return self.locationSubject
                    .asObservable()
                    .filter(self.innacurateLocations)
+                   .map(Location.init(fromLocation:))
                    .map(TrackEvent.toTrackEvent)
     }()
     

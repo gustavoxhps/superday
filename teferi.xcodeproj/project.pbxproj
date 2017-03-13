@@ -153,7 +153,7 @@
 		BE7FAFC41E72F90600A62AC9 /* TrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */; };
 		BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */; };
 		BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */; };
-		BE7FAFCA1E7319AD00A62AC9 /* CLLocationModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC91E7319AD00A62AC9 /* CLLocationModelAdapter.swift */; };
+		BE7FAFCA1E7319AD00A62AC9 /* LocationModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
 		BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783601E6DB4A400D44603 /* CategoryProvider.swift */; };
@@ -364,7 +364,7 @@
 		BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventService.swift; path = Services/Protocols/TrackEventService.swift; sourceTree = "<group>"; };
 		BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEvent.swift; path = Models/TrackEvent.swift; sourceTree = "<group>"; };
 		BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTrackEventService.swift; path = Services/DefaultTrackEventService.swift; sourceTree = "<group>"; };
-		BE7FAFC91E7319AD00A62AC9 /* CLLocationModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CLLocationModelAdapter.swift; path = Services/CLLocationModelAdapter.swift; sourceTree = "<group>"; };
+		BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationModelAdapter.swift; path = Services/LocationModelAdapter.swift; sourceTree = "<group>"; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
 		BEA024331E41137D0061FE53 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Generated/Category.swift; sourceTree = "<group>"; };
 		BEA783601E6DB4A400D44603 /* CategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryProvider.swift; sourceTree = "<group>"; };
@@ -612,7 +612,7 @@
 				24EB96711DE7080F0040C211 /* CoreDataModelAdapter.swift */,
 				24D18E2D1DF06B450046B202 /* TimeSlotModelAdapter.swift */,
 				24D18E2F1DF06B9E0046B202 /* SmartGuessModelAdapter.swift */,
-				BE7FAFC91E7319AD00A62AC9 /* CLLocationModelAdapter.swift */,
+				BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */,
 			);
 			name = Adapters;
 			sourceTree = "<group>";
@@ -1215,7 +1215,7 @@
 				24564F561D83254E00D9A8AE /* TimelineCell.swift in Sources */,
 				24564F721D832A4F00D9A8AE /* PagerViewController.swift in Sources */,
 				24C72AA61D906BDA00DABAC3 /* LogLevel.swift in Sources */,
-				BE7FAFCA1E7319AD00A62AC9 /* CLLocationModelAdapter.swift in Sources */,
+				BE7FAFCA1E7319AD00A62AC9 /* LocationModelAdapter.swift in Sources */,
 				24EB96751DE7080F0040C211 /* EditStateService.swift in Sources */,
 				24DE23F51E1BB33B0089B49E /* Activity.swift in Sources */,
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,

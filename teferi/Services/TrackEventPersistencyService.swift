@@ -3,7 +3,7 @@ import CoreLocation
 class TrackEventPersistencyService : BasePersistencyService<TrackEvent>
 {
     private let loggingService : LoggingService
-    private let locationPersistencyService : BasePersistencyService<CLLocation>
+    private let locationPersistencyService : BasePersistencyService<Location>
     
     init(loggingService: LoggingService, locationPersistencyService: BasePersistencyService<CLLocation>)
     {
