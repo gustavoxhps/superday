@@ -1,9 +1,8 @@
 import CoreLocation
 import RxSwift
 
-protocol LocationService
+protocol LocationService : EventSource
 {
-    // MARK: Methods
     func startLocationTracking()
     
     func stopLocationTracking()

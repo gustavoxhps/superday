@@ -18,14 +18,14 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let metricsService : MetricsService
     private let loggingService : LoggingService
     private let feedbackService : FeedbackService
-    private let healthKitService : HealthKitService
+    private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
     private let trackingService : TrackingService
     private let editStateService : EditStateService
+    private let healthKitService : HealthKitService
     private let smartGuessService : SmartGuessService
     private let trackEventService : TrackEventService
-    private let locationService : DefaultLocationService
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
