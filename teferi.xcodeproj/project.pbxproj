@@ -147,6 +147,9 @@
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
+		BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */; };
+		BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */; };
+		BE1898D21E77F6D500EF3035 /* MockHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */; };
 		BE24B8821E76C9D8005DF5B3 /* TrackEventPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */; };
 		BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8841E76E560005DF5B3 /* HealthKitService.swift */; };
 		BE24B8871E76E56A005DF5B3 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8861E76E56A005DF5B3 /* DefaultHealthKitService.swift */; };
@@ -360,6 +363,9 @@
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventServiceTests.swift; path = Services/TrackEventServiceTests.swift; sourceTree = "<group>"; };
+		BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockPersistencyService.swift; path = Mocks/MockPersistencyService.swift; sourceTree = "<group>"; };
+		BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHealthKitService.swift; sourceTree = "<group>"; };
 		BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventPersistencyService.swift; path = Services/TrackEventPersistencyService.swift; sourceTree = "<group>"; };
 		BE24B8831E76D9CE005DF5B3 /* teferi3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = teferi3.xcdatamodel; sourceTree = "<group>"; };
 		BE24B8841E76E560005DF5B3 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
@@ -489,6 +495,7 @@
 				24168E361DC21042004F90AD /* TrackingServiceTests.swift */,
 				24D73F2A1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift */,
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
+				BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -551,6 +558,8 @@
 				249B359C1E1A6015005793B9 /* MockLocator.swift */,
 				24DE24051E1BBD6E0089B49E /* MockSelectedDateService.swift */,
 				24D73F2C1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift */,
+				BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */,
+				BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -1325,6 +1334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */,
+				BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
@@ -1350,8 +1360,10 @@
 				24D73F2B1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift in Sources */,
 				24E7860C1DC399A90048F577 /* OnboardingPageViewControllerTests.swift in Sources */,
 				24564F6A1D8326E700D9A8AE /* DateExtensionsTests.swift in Sources */,
+				BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */,
 				249B359D1E1A6015005793B9 /* MockLocator.swift in Sources */,
 				24D73F2D1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift in Sources */,
+				BE1898D21E77F6D500EF3035 /* MockHealthKitService.swift in Sources */,
 				24B03B611D9E5DEE00452D16 /* MockSettingsService.swift in Sources */,
 				24564F691D8326E700D9A8AE /* ColorExtensionsTests.swift in Sources */,
 				24564F6D1D8326F100D9A8AE /* MainViewModelTests.swift in Sources */,

@@ -6,7 +6,8 @@ import RxSwift
 class MockLocationService : LocationService
 {
     //MARK: Fields
-    private var eventVariable = Variable(CLLocation())
+    private var lastLocation = CLLocation()
+    private var eventSubject = PublishSubject<CLLocation>()
     
     //MARK: Properties
     private(set) var locationStarted = false
@@ -27,14 +28,15 @@ class MockLocationService : LocationService
     
     func getLastKnownLocation() -> CLLocation?
     {
-        return self.useNilOnLastKnownLocation ? nil : self.eventVariable.value
+        return self.useNilOnLastKnownLocation ? nil : self.lastLocation
     }
     
-    var eventObservable : Observable<TrackEvent> { return eventVariable.asObservable().map(Location.init(fromLocation:)).map(TrackEvent.toTrackEvent) }
+    var eventObservable : Observable<TrackEvent> { return eventSubject.asObservable().map(Location.init(fromLocation:)).map(TrackEvent.toTrackEvent) }
     
     //MARK: Methods
     func sendNewTrackEvent(_ location: CLLocation)
     {
-        self.eventVariable.value = location
+        self.lastLocation = location
+        self.eventSubject.onNext(location)
     }
 }
