@@ -1,13 +1,30 @@
 import UIKit
 import RxSwift
 
-class EditTimeSlotView : UIView, TrigonometryHelper
+class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
 {
     typealias ViewType = UIButton
     typealias DismissType = (() -> ())
     typealias TimeSlotEdit = (TimeSlot, Category)
     
     // MARK: Fields
+    // MARK: - Flick components
+    private var flickBehavior : UIDynamicItemBehavior!
+    private var flickAnimator : UIDynamicAnimator!
+    private var previousFlickPoint : CGPoint!
+    private var firstFlickPoint : CGPoint!
+    private var flickView : UIView!
+    
+    private var isFlicking : Bool = false
+    {
+        didSet
+        {
+            viewHandler.visibleCells.forEach { (cell) in
+                cell.isUserInteractionEnabled = !isFlicking
+            }
+        }
+    }
+    
     private var timeSlot : TimeSlot!
     private var selectedItem : Category?
     private let editEndedSubject = PublishSubject<TimeSlotEdit>()
@@ -52,7 +69,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         }
     }
     
-    //MARK: Initializers
+    //MARK: - Initializers
     init(categoryProvider: CategoryProvider)
     {
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
@@ -84,6 +101,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     // MARK: - Tap gesture logic
     @objc private func handleTap(_ sender: UITapGestureRecognizer)
     {
+        resetFlick()
         panGesture.isEnabled = false
         dismissAction?()
     }
@@ -91,6 +109,8 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     // MARK: - Pan gesture logic
     @objc private func handlePan(_ sender: UIPanGestureRecognizer)
     {
+        resetFlick()
+        
         let panPoint: CGPoint = sender.location(in: self)
         
         switch sender.state {
@@ -114,13 +134,20 @@ class EditTimeSlotView : UIView, TrigonometryHelper
             
         case .ended:
             
-            previousPanPoint = nil
+            isFlicking = false
             
-            let distanceBasedOnPageWidth = CGFloat(fmodf(Float(panPoint.x - firstPanPoint.x), Float(pageWidth)))
-
-            abs(pageWidth - abs(distanceBasedOnPageWidth)) < pageWidth / 2 ?
-                snapCellsToCorrrectPosition(with: (distanceBasedOnPageWidth > 0 ? 1 : -1) * pageWidth - distanceBasedOnPageWidth) :
-                snapCellsToCorrrectPosition(with: -distanceBasedOnPageWidth)
+            let velocity = sender.velocity(in: self)
+            
+            if shouldFlick(for: velocity)
+            {
+                flick(with: velocity, from: previousPanPoint!)
+            }
+            else
+            {
+                snapCellsToCorrrectPosition()
+            }
+            
+            previousPanPoint = nil
             
         default:
             break
@@ -168,8 +195,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     
     private func applyScaleTransformIfNeeded(at cell: ViewType, customX: CGFloat? = nil)
     {
+        let tempTransform = cell.transform
         cell.transform = .identity
         let distanceOutOfLeftBound = cellSize.width - (leftBoundryX - (customX ?? cell.frame.minX))
+        cell.transform = tempTransform
         
         guard distanceOutOfLeftBound < cellSize.width
         else
@@ -184,6 +213,75 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         let positionTransform = CGAffineTransform(translationX: cellSize.width / 2 - scaleFactor * cellSize.width / 2, y: 0)
         
         cell.transform = scaleTransform.concatenating(positionTransform)
+    }
+    
+    // MARK: - Flick logic
+    
+    private func flick(with velocity: CGPoint, from point: CGPoint)
+    {
+        resetFlick()
+        
+        flickAnimator = UIDynamicAnimator(referenceView: self)
+        flickAnimator.delegate = self
+        
+        let flickViewCenter = point
+        firstFlickPoint = flickViewCenter
+        flickView = UIView(frame: CGRect(origin: CGPoint(x: flickViewCenter.x - cellSize.width / 2, y: flickViewCenter.y - cellSize.height / 2), size: cellSize))
+        flickView.isUserInteractionEnabled = false
+        flickView.isHidden = true
+        addSubview(flickView)
+        
+        flickBehavior = UIDynamicItemBehavior(items: [flickView])
+        flickBehavior.addLinearVelocity(velocity, for: flickView)
+        flickBehavior.allowsRotation = false
+        flickBehavior.resistance = 5
+        flickBehavior.elasticity = 1
+        flickBehavior.density = 1.5
+        flickBehavior.action = flickBehaviorAction
+        flickAnimator.addBehavior(flickBehavior)
+    }
+    
+    private func resetFlick()
+    {
+        flickAnimator = nil
+        flickBehavior = nil
+        flickView = nil
+        previousFlickPoint = nil
+        firstFlickPoint = nil
+    }
+    
+    func flickBehaviorAction()
+    {
+        guard let _ = self.previousFlickPoint
+        else
+        {
+            self.previousFlickPoint = flickView.center
+            return
+        }
+        
+        if distance(a: self.previousFlickPoint, b: flickView.center) == 0
+        {
+            isFlicking = false
+            resetFlick()
+            snapCellsToCorrrectPosition()
+            return
+        }
+        
+        handle(movement: flickView.center.x - previousFlickPoint.x)
+        
+        self.previousFlickPoint = flickView.center
+    }
+    
+    // MARK: - UIDynamicAnimatorDelegate
+    
+    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
+    {
+        isFlicking = true
+    }
+    
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
+    {
+        isFlicking = false
     }
     
     //MARK: - Methods
@@ -321,6 +419,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         return { delay in
             Timer.schedule(withDelay: delay)
             {
+                self.resetFlick()
                 self.viewHandler.cleanAll()
                 self.alpha = 0
                 self.selectedItem = nil
@@ -361,9 +460,20 @@ class EditTimeSlotView : UIView, TrigonometryHelper
         }
     }
     
-    private func snapCellsToCorrrectPosition(with offset: CGFloat)
+    private func snapCellsToCorrrectPosition()
     {
         let cells = viewHandler.visibleCells
+        
+        let firstCell = cells.first!
+        let tempTransform = firstCell.transform
+        firstCell.transform = .identity
+        
+        let distanceBasedOnPageWidth = firstCell.center.x - leftBoundryX + pageWidth / 2
+        let offset = abs(pageWidth - abs(distanceBasedOnPageWidth)) < pageWidth / 2 ?
+            (distanceBasedOnPageWidth > 0 ? 1 : -1) * pageWidth - distanceBasedOnPageWidth :
+            -distanceBasedOnPageWidth
+        
+        firstCell.transform = tempTransform
         
         let animationDuration = 0.334
         
@@ -448,5 +558,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper
     private func isInAllowedRange(_ cell: ViewType) -> Bool
     {
         return (cell.frame.minX > leftBoundryX && cell.frame.minX < rightBoundryX) || (cell.frame.maxX > leftBoundryX && cell.frame.maxX < rightBoundryX)
+    }
+    
+    private func shouldFlick(for velocity: CGPoint) -> Bool
+    {
+        return abs( velocity.x ) > 200
     }
 }
