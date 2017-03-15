@@ -2,7 +2,7 @@ import HealthKit
 
 extension HKSample
 {
-    func tryGetQuantity() -> Any?
+    func tryGetValue() -> Any?
     {
         if let quantitySample = self as? HKQuantitySample
         {

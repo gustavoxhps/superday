@@ -3,15 +3,15 @@ import HealthKit
 
 class HealthSample
 {
+    let value : Any?
     let endTime : Date
     let startTime : Date
     let identifier : String
-    let quantity : Any?
     
-    init(withIdentifier identifier: String, startTime: Date, endTime: Date, quantity: Any?)
+    init(withIdentifier identifier: String, startTime: Date, endTime: Date, value: Any?)
     {
+        self.value = value
         self.endTime = endTime
-        self.quantity = quantity
         self.startTime = startTime
         self.identifier = identifier
     }
@@ -21,6 +21,6 @@ class HealthSample
         self.identifier = sample.sampleType.identifier
         self.startTime = sample.startDate
         self.endTime = sample.endDate
-        self.quantity = sample.tryGetQuantity()
+        self.value = sample.tryGetValue()
     }
 }

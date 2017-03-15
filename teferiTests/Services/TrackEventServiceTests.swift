@@ -28,7 +28,7 @@ class TrackEventServiceTests : XCTestCase
     
     func testNewEventsGetPersistedByTheTrackEventService()
     {
-        let sample = HealthSample(withIdentifier: "something", startTime: Date(), endTime: Date(), quantity: nil)
+        let sample = HealthSample(withIdentifier: "something", startTime: Date(), endTime: Date(), value: nil)
         
         self.locationService.sendNewTrackEvent(CLLocation())
         self.locationService.sendNewTrackEvent(CLLocation())

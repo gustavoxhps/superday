@@ -4,8 +4,8 @@ import CoreData
 class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
 {
     //MARK: Fields
+    private let valueKey = "value"
     private let endTimeKey = "endTime"
-    private let quantityKey = "quantity"
     private let startTimeKey = "startTime"
     private let identifierKey = "identifier"
     
@@ -21,12 +21,12 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
         let identifier = managedObject.value(forKey: self.identifierKey) as! String
         let startTime = managedObject.value(forKey: self.startTimeKey) as! Date
         let endTime = managedObject.value(forKey: self.endTimeKey) as! Date
-        let quantity = managedObject.value(forKey: self.quantityKey)
+        let value = managedObject.value(forKey: self.valueKey)
         
         let sample = HealthSample(withIdentifier: identifier,
                                   startTime: startTime,
                                   endTime: endTime,
-                                  quantity: quantity)
+                                  value: value)
         
         return sample
     }
@@ -36,6 +36,6 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
         managedObject.setValue(model.identifier, forKey: self.identifierKey)
         managedObject.setValue(model.startTime, forKey: self.startTimeKey)
         managedObject.setValue(model.endTime, forKey: self.endTimeKey)
-        managedObject.setValue(model.quantity, forKey: self.quantityKey)
+        managedObject.setValue(model.value, forKey: self.valueKey)
     }
 }
