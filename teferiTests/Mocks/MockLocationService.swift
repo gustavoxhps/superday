@@ -35,7 +35,7 @@ class MockLocationService : LocationService
     {
         return eventSubject
                 .asObservable()
-                .map(Location.init(fromLocation:))
+                .map(Location.init(fromCLLocation:))
                 .map(TrackEvent.toTrackEvent)
     }
     

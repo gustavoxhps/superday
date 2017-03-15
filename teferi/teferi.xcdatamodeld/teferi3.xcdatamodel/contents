@@ -7,9 +7,14 @@
         <attribute name="value" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <entity name="Location" syncable="YES">
+        <attribute name="altitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="course" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="horizontalAccuracy" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="time" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="speed" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="verticalAccuracy" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <entity name="SmartGuess" syncable="YES">
         <attribute name="category" optional="YES" attributeType="String" syncable="YES"/>
@@ -31,9 +36,9 @@
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <elements>
+        <element name="HealthSample" positionX="-27" positionY="90" width="128" height="30"/>
+        <element name="Location" positionX="-45" positionY="81" width="128" height="30"/>
         <element name="SmartGuess" positionX="-63" positionY="36" width="128" height="150"/>
         <element name="TimeSlot" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Location" positionX="-45" positionY="81" width="128" height="90"/>
-        <element name="HealthSample" positionX="-27" positionY="90" width="128" height="30"/>
     </elements>
 </model>
