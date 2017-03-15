@@ -4,7 +4,7 @@ import Foundation
 private let earthRadius = 6_378_000.0
 private let metersToLatitudeFactor = 1.0 / 111_000
 
-enum Direction
+enum Direction:UInt32
 {
     case north
     case south
@@ -63,4 +63,30 @@ extension CLLocation
                                      timestamp: timestamp ?? self.timestamp)
         return newLocation
     }
+    
+    func randomOffset(withAccuracy accuracy:Double? = nil) -> CLLocation
+    {
+        
+        let newCoordinate = self.coordinate.offset(
+            Direction(rawValue: arc4random_uniform(4))!,
+            meters: randomBetweenNumbers(firstNum: 10, secondNum: 100000)
+        )
+        
+        guard let accuracy = accuracy else {
+            return CLLocation(latitude: newCoordinate.latitude, longitude: newCoordinate.longitude)
+        }
+        
+        return CLLocation(
+            coordinate: newCoordinate,
+            altitude: CLLocationDistance(),
+            horizontalAccuracy: CLLocationAccuracy(exactly: accuracy)!,
+            verticalAccuracy: CLLocationAccuracy(exactly: accuracy)!,
+            timestamp: Date())
+    }
+    
+}
+
+fileprivate func randomBetweenNumbers(firstNum: Double, secondNum: Double) -> Double{
+    return Double(arc4random()) / Double(Int.max) * (secondNum - firstNum) + firstNum
+
 }

@@ -1,8 +1,15 @@
 import Foundation
 import HealthKit
 
-class HealthSample
+class HealthSample : Equatable
 {
+    public static func ==(lhs: HealthSample, rhs: HealthSample) -> Bool
+    {
+        return lhs.endTime == rhs.endTime &&
+               lhs.startTime == rhs.startTime &&
+               lhs.identifier == rhs.identifier
+    }
+
     let value : Any?
     let endTime : Date
     let startTime : Date

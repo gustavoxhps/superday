@@ -17,4 +17,10 @@ class Constants
     
     //Notification category identifier
     static let notificationCategoryId = "notificationTimeSlotCategorySelectionIdentifier"
+    
+    //Mark: Location Service Constants
+    static let maxGPSTime:Double = 5.0
+    static let gpsAccuracy:Double = 50.0 //meters
+    static let significantLocationChangeAccuracy:Double = 2000.0 //meters
+
 }

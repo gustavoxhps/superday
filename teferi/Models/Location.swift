@@ -2,8 +2,20 @@ import Foundation
 import UIKit
 import CoreLocation
 
-class Location
+class Location : Equatable
 {
+    public static func ==(lhs: Location, rhs: Location) -> Bool
+    {
+        return lhs.speed == rhs.speed &&
+            lhs.course == rhs.course &&
+            lhs.latitude == rhs.latitude &&
+            lhs.altitude == rhs.altitude &&
+            lhs.longitude == rhs.longitude &&
+            lhs.timestamp == rhs.timestamp &&
+            lhs.verticalAccuracy == rhs.verticalAccuracy &&
+            lhs.horizontalAccuracy == rhs.horizontalAccuracy
+    }
+    
     let timestamp : Date
     let latitude : Double
     let longitude : Double

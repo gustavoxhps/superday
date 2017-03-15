@@ -29,3 +29,27 @@ extension Optional: OptionalType
     /// Cast `Optional<Wrapped>` to `Wrapped?`
     public var value: Wrapped? { return self }
 }
+
+extension ObservableType {
+    public func completeAfter(_ predicate: @escaping (Self.E) throws -> Bool) -> Observable<Self.E> {
+        return Observable<Self.E>.create { observer in
+            return self.subscribe { event in
+                switch event {
+                case .next(let element):
+                    do {
+                        observer.onNext(element)
+                        if try predicate(element) {
+                            observer.onCompleted()
+                        }
+                    } catch let err {
+                        observer.onError(err)
+                    }
+                case .error(let err):
+                    observer.onError(err)
+                case .completed:
+                    observer.onCompleted()
+                }
+            }
+        }
+    }
+}

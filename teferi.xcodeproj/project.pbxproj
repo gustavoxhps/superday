@@ -151,6 +151,9 @@
 		BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */; };
 		BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */; };
 		BE1898D21E77F6D500EF3035 /* MockHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */; };
+		BE1BDFAF1E79BEB80077D694 /* CLLocationManagerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BDFAE1E79BEB80077D694 /* CLLocationManagerExtensions.swift */; };
+		BE1BDFB11E79BFAB0077D694 /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BDFB01E79BFAB0077D694 /* LocationServiceTests.swift */; };
+		BE1BDFB31E79BFB20077D694 /* MockCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BDFB21E79BFB20077D694 /* MockCLLocationManager.swift */; };
 		BE24B8821E76C9D8005DF5B3 /* TrackEventPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */; };
 		BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8841E76E560005DF5B3 /* HealthKitService.swift */; };
 		BE24B8871E76E56A005DF5B3 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8861E76E56A005DF5B3 /* DefaultHealthKitService.swift */; };
@@ -369,6 +372,9 @@
 		BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventServiceTests.swift; path = Services/TrackEventServiceTests.swift; sourceTree = "<group>"; };
 		BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockPersistencyService.swift; path = Mocks/MockPersistencyService.swift; sourceTree = "<group>"; };
 		BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockHealthKitService.swift; sourceTree = "<group>"; };
+		BE1BDFAE1E79BEB80077D694 /* CLLocationManagerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CLLocationManagerExtensions.swift; path = Extensions/CLLocationManagerExtensions.swift; sourceTree = "<group>"; };
+		BE1BDFB01E79BFAB0077D694 /* LocationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationServiceTests.swift; path = Services/LocationServiceTests.swift; sourceTree = "<group>"; };
+		BE1BDFB21E79BFB20077D694 /* MockCLLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockCLLocationManager.swift; path = Mocks/MockCLLocationManager.swift; sourceTree = "<group>"; };
 		BE24B8811E76C9D8005DF5B3 /* TrackEventPersistencyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventPersistencyService.swift; path = Services/TrackEventPersistencyService.swift; sourceTree = "<group>"; };
 		BE24B8831E76D9CE005DF5B3 /* teferi3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = teferi3.xcdatamodel; sourceTree = "<group>"; };
 		BE24B8841E76E560005DF5B3 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
@@ -497,6 +503,7 @@
 		24168E351DC21038004F90AD /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				BE1BDFB01E79BFAB0077D694 /* LocationServiceTests.swift */,
 				24168E361DC21042004F90AD /* TrackingServiceTests.swift */,
 				24D73F2A1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift */,
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
@@ -549,6 +556,7 @@
 		24874DE41D7C3FC40099DC1F /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				BE1BDFB21E79BFB20077D694 /* MockCLLocationManager.swift */,
 				24DE24031E1BBD500089B49E /* MockTimeService.swift */,
 				24EB96861DE7163E0040C211 /* MockTimeSlotService.swift */,
 				240575B81DC7F39E002C0C06 /* MockAppLifecycleService.swift */,
@@ -615,6 +623,7 @@
 		24CD8A461D7A13560017C53E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				BE1BDFAE1E79BEB80077D694 /* CLLocationManagerExtensions.swift */,
 				24DE23F71E1BB3450089B49E /* ArrayExtensions.swift */,
 				24DE23F81E1BB3450089B49E /* ObservableExtensions.swift */,
 				24EB96841DE709830040C211 /* PredicateExtensions.swift */,
@@ -1282,6 +1291,7 @@
 				BE7FAFC41E72F90600A62AC9 /* TrackEventService.swift in Sources */,
 				2482CAFB1DB12F9F00E892C1 /* OnboardingPage1.swift in Sources */,
 				247F05F81D87322600451BAD /* LocationService.swift in Sources */,
+				BE1BDFAF1E79BEB80077D694 /* CLLocationManagerExtensions.swift in Sources */,
 				24B03B5B1D9E4D1100452D16 /* SettingsService.swift in Sources */,
 				24DE23F21E1BB32F0089B49E /* CalendarViewController.swift in Sources */,
 				AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */,
@@ -1341,6 +1351,7 @@
 			files = (
 				BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */,
 				BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */,
+				BE1BDFB11E79BFAB0077D694 /* LocationServiceTests.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
@@ -1365,6 +1376,7 @@
 				7E57ECE91E30DF370094251E /* LocationExtensionsTests.swift in Sources */,
 				24D73F2B1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift in Sources */,
 				24E7860C1DC399A90048F577 /* OnboardingPageViewControllerTests.swift in Sources */,
+				BE1BDFB31E79BFB20077D694 /* MockCLLocationManager.swift in Sources */,
 				24564F6A1D8326E700D9A8AE /* DateExtensionsTests.swift in Sources */,
 				BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */,
 				249B359D1E1A6015005793B9 /* MockLocator.swift in Sources */,

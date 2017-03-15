@@ -4,28 +4,31 @@ import RxSwift
 import CoreLocation
 import CoreMotion
 
-///Default implementation for the location service.
-class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource, LocationService
+class DefaultLocationService : NSObject, LocationService
 {
     //MARK: Fields
     private let loggingService : LoggingService
+    private let timeoutScheduler : SchedulerType
+    private let locationManager : CLLocationManager
+    private let accurateLocationManager : CLLocationManager
+    private let locationSubject = PublishSubject<CLLocation>()
     
-    ///The location manager itself
-    private let locationManager = CLLocationManager()
-    
-    private var locationSubject = PublishSubject<CLLocation>()
-    
-    // for logging date/time of received location updates
     private let dateTimeFormatter = DateFormatter()
     
     //MARK: Initializers
-    init(loggingService: LoggingService)
+    init(loggingService: LoggingService,
+         locationManager:CLLocationManager = CLLocationManager(),
+         accurateLocationManager:CLLocationManager = CLLocationManager(),
+         timeoutScheduler:SchedulerType = MainScheduler.instance)
     {
         self.loggingService = loggingService
+        self.locationManager = locationManager
+        self.accurateLocationManager = accurateLocationManager
+        self.timeoutScheduler = timeoutScheduler
         
         super.init()
         
-        self.locationManager.delegate = self
+        self.accurateLocationManager.allowsBackgroundLocationUpdates = true
         
         self.dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
@@ -37,21 +40,26 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource,
     {
         return self.locationSubject
                    .asObservable()
-                   .filter(self.innacurateLocations)
-                   .map(Location.init(fromCLLocation:))
+                   .filter(self.filterLocations)
                    .map(TrackEvent.toTrackEvent)
     }()
     
     func startLocationTracking()
     {
-        self.loggingService.log(withLogLevel: .debug, message: "DefaultLocationService started")
-        self.locationManager.startMonitoringSignificantLocationChanges()
-    }
-    
-    func stopLocationTracking()
-    {
-        self.loggingService.log(withLogLevel: .debug, message: "DefaultLocationService stoped")
-        self.locationManager.stopMonitoringSignificantLocationChanges()
+        self.loggingService.log(withLogLevel: .debug, message: "Accurate Location Service started")
+        self.accurateLocationManager.startUpdatingLocation()
+        
+        _ = self.accurateLocationManager.rx.didUpdateLocations
+            .completeAfter(locationsAccurateEnough)
+            .take(Constants.maxGPSTime, scheduler: timeoutScheduler)
+            .flatMap{ Observable.from($0) }
+            .reduce(nil, accumulator: selectBestLocation)
+            .filterNil()
+            .map{ location in [location] }
+            .subscribe(
+                onNext: forwardLocations,
+                onCompleted: startSignificaLocationChangeTracking
+        )
     }
     
     func getLastKnownLocation() -> CLLocation?
@@ -59,15 +67,41 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource,
         return self.locationManager.location
     }
     
-    //MARK: CLLocationManagerDelegate Implementation
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    //MARK: Methods
+    private func selectBestLocation(old:CLLocation?, new:CLLocation) -> CLLocation
+    {
+        guard let old = old, old.horizontalAccuracy < new.horizontalAccuracy else {
+            return new
+        }
+        return old
+    }
+    
+    private func startSignificaLocationChangeTracking() {
+        self.accurateLocationManager.stopUpdatingLocation()
+        
+        self.loggingService.log(withLogLevel: .debug, message: "DefaultLocationService started")
+        self.locationManager.startMonitoringSignificantLocationChanges()
+        
+        _ = self.locationManager.rx.didUpdateLocations
+            .subscribe(
+                onNext:forwardLocations
+        )
+    }
+    
+    private func forwardLocations(_ locations:[CLLocation])
     {
         //Notifies new locations to listeners
         locations.forEach(self.locationSubject.onNext)
     }
     
-    //MARK: Methods
-    private func innacurateLocations(_ location: CLLocation) -> Bool
+    private func locationsAccurateEnough(locations:[CLLocation]) -> Bool
+    {
+        return locations.reduce(false, { isAccurate, location in
+            return isAccurate || (location.horizontalAccuracy < Constants.gpsAccuracy)
+        })
+    }
+    
+    private func filterLocations(_ location: CLLocation) -> Bool
     {
         //Location is valid
         guard location.coordinate.latitude != 0.0 && location.coordinate.latitude != 0.0 else
@@ -77,7 +111,7 @@ class DefaultLocationService : NSObject, CLLocationManagerDelegate, EventSource,
         }
                 
         //Location is accurate enough
-        guard 0 ... 2000 ~= location.horizontalAccuracy else
+        guard 0 ... Constants.significantLocationChangeAccuracy ~= location.horizontalAccuracy else
         {
             self.logLocationUpdate(location, "Received an inaccurate location")
             return false
