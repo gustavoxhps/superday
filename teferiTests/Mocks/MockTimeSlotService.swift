@@ -119,3 +119,21 @@ class MockTimeSlotService : TimeSlotService
         self.timeSlotUpdatedSubject.on(.next(timeSlot))
     }
 }
+
+class PagerMockTimeSlotService : MockTimeSlotService
+{
+    @discardableResult override func addTimeSlot(withStartTime startTime: Date, category: teferi.Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
+    {
+        return nil
+    }
+    
+    @discardableResult override func addTimeSlot(withStartTime startTime: Date, category: teferi.Category, categoryWasSetByUser: Bool, location: CLLocation?) -> TimeSlot?
+    {
+        return nil
+    }
+    
+    @discardableResult override func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    {
+        return nil
+    }
+}

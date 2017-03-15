@@ -15,43 +15,135 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Oj-R3-3Vm">
-                    <rect key="frame" x="66" y="39" width="4" height="18"/>
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MQM-XP-kp0">
+                    <rect key="frame" x="56" y="7" width="303" height="94"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Oj-R3-3Vm">
+                            <rect key="frame" x="10" y="31" width="4" height="18"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="120" id="14b-ji-uew"/>
+                                <constraint firstAttribute="height" constant="120" id="ClH-NM-vgv"/>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="4" id="f9L-Do-0P0"/>
+                                <constraint firstAttribute="height" constant="18" id="lza-2z-Fm4"/>
+                                <constraint firstAttribute="width" constant="4" id="z4R-zv-o1M"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="2"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="14b-ji-uew"/>
+                                    <exclude reference="ClH-NM-vgv"/>
+                                </mask>
+                            </variation>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Commute" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dA-qd-byA">
+                            <rect key="frame" x="8" y="8" width="66" height="17"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                            <color key="textColor" red="0.015686274509803921" green="0.015686274509803921" blue="0.023529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8o1-Rs-sBZ" userLabel="Running Indicator Dot">
+                            <rect key="frame" x="10" y="53" width="4" height="4"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="4" id="HI2-cA-qNP"/>
+                                <constraint firstAttribute="height" constant="4" id="xaS-LH-YFU"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="2"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b8e-1M-wfP" userLabel="Running Indicator Dot">
+                            <rect key="frame" x="10" y="69" width="4" height="4"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="4" id="SRx-nR-RMt"/>
+                                <constraint firstAttribute="height" constant="4" id="pAg-Rc-QNT"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="2"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12 h 59 min" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lWX-Wq-cy4">
+                            <rect key="frame" x="22" y="30" width="116" height="21"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="CQ7-Rg-OCd"/>
+                                <constraint firstAttribute="width" constant="116" id="pU6-ML-EEi"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:00 AM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6B-z7-bFn" userLabel="Slot Time">
+                            <rect key="frame" x="80" y="8" width="62" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nvo-Lf-5RD" userLabel="Running Indicator Dot">
+                            <rect key="frame" x="10" y="61" width="4" height="4"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="4" id="lZV-xi-z96"/>
+                                <constraint firstAttribute="width" constant="4" id="yqt-uJ-7qF"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="2"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="120" id="14b-ji-uew"/>
-                        <constraint firstAttribute="height" constant="120" id="ClH-NM-vgv"/>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="4" id="f9L-Do-0P0"/>
-                        <constraint firstAttribute="height" constant="18" id="lza-2z-Fm4"/>
-                        <constraint firstAttribute="width" constant="4" id="z4R-zv-o1M"/>
+                        <constraint firstItem="2Oj-R3-3Vm" firstAttribute="leading" secondItem="2dA-qd-byA" secondAttribute="leading" constant="2" id="21Q-bE-siz"/>
+                        <constraint firstItem="I6B-z7-bFn" firstAttribute="leading" secondItem="2dA-qd-byA" secondAttribute="trailing" constant="6" id="BG9-St-xj6"/>
+                        <constraint firstItem="Nvo-Lf-5RD" firstAttribute="top" secondItem="8o1-Rs-sBZ" secondAttribute="bottom" constant="4" id="CFN-5h-9Nx"/>
+                        <constraint firstItem="lWX-Wq-cy4" firstAttribute="leading" secondItem="2Oj-R3-3Vm" secondAttribute="trailing" constant="8" id="H9c-fm-HFb"/>
+                        <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="IBn-4f-5ft"/>
+                        <constraint firstItem="8o1-Rs-sBZ" firstAttribute="top" secondItem="2Oj-R3-3Vm" secondAttribute="bottom" constant="4" id="KID-8j-8PN"/>
+                        <constraint firstItem="b8e-1M-wfP" firstAttribute="top" secondItem="Nvo-Lf-5RD" secondAttribute="bottom" constant="4" id="LNc-2f-9kd"/>
+                        <constraint firstItem="Nvo-Lf-5RD" firstAttribute="centerX" secondItem="8o1-Rs-sBZ" secondAttribute="centerX" id="Tl0-Ua-TKu"/>
+                        <constraint firstItem="I6B-z7-bFn" firstAttribute="centerY" secondItem="2dA-qd-byA" secondAttribute="centerY" id="Vn7-sl-6xs"/>
+                        <constraint firstItem="2dA-qd-byA" firstAttribute="top" secondItem="MQM-XP-kp0" secondAttribute="top" constant="8" id="ZB5-mc-E49"/>
+                        <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="I6B-z7-bFn" secondAttribute="bottom" constant="6" id="blO-aU-KR5"/>
+                        <constraint firstItem="b8e-1M-wfP" firstAttribute="centerX" secondItem="Nvo-Lf-5RD" secondAttribute="centerX" id="cgl-Qc-02V"/>
+                        <constraint firstItem="2dA-qd-byA" firstAttribute="leading" secondItem="MQM-XP-kp0" secondAttribute="leading" constant="8" id="iPK-wR-SgL"/>
+                        <constraint firstAttribute="height" constant="94" id="ivT-hU-pYD"/>
+                        <constraint firstItem="8o1-Rs-sBZ" firstAttribute="centerX" secondItem="2Oj-R3-3Vm" secondAttribute="centerX" id="qjD-5f-YwC"/>
                     </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="2"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="14b-ji-uew"/>
-                            <exclude reference="ClH-NM-vgv"/>
-                        </mask>
-                    </variation>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Commute" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dA-qd-byA">
-                    <rect key="frame" x="64" y="16" width="66" height="17"/>
-                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                    <color key="textColor" red="0.015686274509803921" green="0.015686274509803921" blue="0.023529411764705882" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LmH-eW-Lnz" userLabel="Category Background">
                     <rect key="frame" x="16" y="8" width="32" height="32"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icCommuteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="hvt-Yn-Mch" userLabel="Category Icon">
+                            <rect key="frame" x="8" y="8" width="15" height="15"/>
+                            <accessibility key="accessibilityConfiguration">
+                                <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+                            </accessibility>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="15.4" id="656-vJ-41H"/>
+                                <constraint firstAttribute="height" constant="15.4" id="E8H-Eu-jld"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
                     <color key="backgroundColor" red="0.38823529411764707" green="0.83529411764705885" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
                     <accessibility key="accessibilityConfiguration">
                         <accessibilityTraits key="traits" notEnabled="YES"/>
                     </accessibility>
                     <constraints>
+                        <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerX" secondItem="LmH-eW-Lnz" secondAttribute="centerX" id="Fnf-8b-jMm"/>
                         <constraint firstAttribute="width" constant="32" id="Vwj-5s-bBh"/>
                         <constraint firstAttribute="height" constant="32" id="dtC-VY-JbA"/>
+                        <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="gao-QY-pz0"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -59,52 +151,6 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icCommuteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="hvt-Yn-Mch" userLabel="Category Icon">
-                    <rect key="frame" x="25" y="17" width="15" height="15"/>
-                    <accessibility key="accessibilityConfiguration">
-                        <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
-                    </accessibility>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="15.4" id="656-vJ-41H"/>
-                        <constraint firstAttribute="height" constant="15.4" id="E8H-Eu-jld"/>
-                    </constraints>
-                </imageView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8o1-Rs-sBZ" userLabel="Running Indicator Dot">
-                    <rect key="frame" x="66" y="61" width="4" height="4"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="4" id="HI2-cA-qNP"/>
-                        <constraint firstAttribute="height" constant="4" id="xaS-LH-YFU"/>
-                    </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="2"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b8e-1M-wfP" userLabel="Running Indicator Dot">
-                    <rect key="frame" x="66" y="77" width="4" height="4"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="4" id="SRx-nR-RMt"/>
-                        <constraint firstAttribute="height" constant="4" id="pAg-Rc-QNT"/>
-                    </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="2"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12 h 59 min" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lWX-Wq-cy4">
-                    <rect key="frame" x="78" y="38" width="116" height="21"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="21" id="CQ7-Rg-OCd"/>
-                        <constraint firstAttribute="width" constant="116" id="pU6-ML-EEi"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3XR-CB-WIl">
                     <rect key="frame" x="8" y="0.0" width="48" height="48"/>
                     <constraints>
@@ -112,81 +158,31 @@
                         <constraint firstAttribute="width" constant="48" id="QiH-Ps-cHV"/>
                     </constraints>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:00 AM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6B-z7-bFn" userLabel="Slot Time">
-                    <rect key="frame" x="136" y="16" width="62" height="17"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <color key="highlightedColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                </label>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nvo-Lf-5RD" userLabel="Running Indicator Dot">
-                    <rect key="frame" x="66" y="69" width="4" height="4"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="4" id="lZV-xi-z96"/>
-                        <constraint firstAttribute="width" constant="4" id="yqt-uJ-7qF"/>
-                    </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="2"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Nvo-Lf-5RD" firstAttribute="top" secondItem="8o1-Rs-sBZ" secondAttribute="bottom" constant="4" id="1dO-EF-CjJ"/>
-                <constraint firstItem="Nvo-Lf-5RD" firstAttribute="centerX" secondItem="8o1-Rs-sBZ" secondAttribute="centerX" id="2KT-Md-CQ2"/>
-                <constraint firstItem="I6B-z7-bFn" firstAttribute="centerY" secondItem="2dA-qd-byA" secondAttribute="centerY" id="3xu-Rx-16V"/>
-                <constraint firstItem="2dA-qd-byA" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="53W-4Y-JjP"/>
-                <constraint firstItem="lWX-Wq-cy4" firstAttribute="leading" secondItem="2Oj-R3-3Vm" secondAttribute="trailing" constant="8" id="DiF-dD-Wuc"/>
-                <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="EOh-hF-EWE"/>
-                <constraint firstItem="b8e-1M-wfP" firstAttribute="centerX" secondItem="Nvo-Lf-5RD" secondAttribute="centerX" id="Hpv-Yd-J7P"/>
-                <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="LNB-k5-pGJ"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="2dA-qd-byA" secondAttribute="bottom" constant="6" id="NBP-uS-Hr4"/>
-                <constraint firstItem="b8e-1M-wfP" firstAttribute="top" secondItem="Nvo-Lf-5RD" secondAttribute="bottom" constant="4" id="QZx-3c-EC0"/>
+                <constraint firstItem="MQM-XP-kp0" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="7" id="6Jf-hu-rMM"/>
                 <constraint firstItem="3XR-CB-WIl" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="RCj-0L-0Fi"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="2dA-qd-byA" secondAttribute="bottom" constant="8" id="Sjc-hs-xMO"/>
-                <constraint firstItem="2dA-qd-byA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="64" id="Twh-jI-9us"/>
-                <constraint firstItem="I6B-z7-bFn" firstAttribute="leading" secondItem="2dA-qd-byA" secondAttribute="trailing" constant="6" id="U6l-FP-Gdh"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="UGd-hE-u9Z"/>
-                <constraint firstItem="8o1-Rs-sBZ" firstAttribute="centerX" secondItem="2Oj-R3-3Vm" secondAttribute="centerX" id="Vkk-E1-7Bo"/>
-                <constraint firstItem="lWX-Wq-cy4" firstAttribute="leading" secondItem="2Oj-R3-3Vm" secondAttribute="trailing" constant="8" id="YJc-Zc-tdB"/>
+                <constraint firstItem="MQM-XP-kp0" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="56" id="Rcd-Ec-Krr"/>
                 <constraint firstItem="LmH-eW-Lnz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="ZYg-WH-LYz"/>
-                <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="Zhv-yT-HBa"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="top" secondItem="I6B-z7-bFn" secondAttribute="bottom" constant="6" id="bYh-XQ-SPG"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="fNn-m3-CiX"/>
-                <constraint firstItem="8o1-Rs-sBZ" firstAttribute="top" secondItem="2Oj-R3-3Vm" secondAttribute="bottom" constant="4" id="hg8-of-dyE"/>
-                <constraint firstItem="hvt-Yn-Mch" firstAttribute="centerX" secondItem="LmH-eW-Lnz" secondAttribute="centerX" id="hhh-VN-Zbc"/>
                 <constraint firstItem="LmH-eW-Lnz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="qtk-cj-O7D"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="93" id="stt-O3-5bP"/>
-                <constraint firstItem="lWX-Wq-cy4" firstAttribute="centerY" secondItem="2Oj-R3-3Vm" secondAttribute="centerY" id="t6i-W9-Dg3"/>
                 <constraint firstItem="3XR-CB-WIl" firstAttribute="centerX" secondItem="LmH-eW-Lnz" secondAttribute="centerX" id="taM-js-yRG"/>
-                <constraint firstItem="2Oj-R3-3Vm" firstAttribute="leading" secondItem="2dA-qd-byA" secondAttribute="leading" constant="2" id="uJ0-ma-rRq"/>
+                <constraint firstAttribute="trailing" secondItem="MQM-XP-kp0" secondAttribute="trailing" constant="16" id="z0F-sh-Kls"/>
             </constraints>
-            <variation key="default">
-                <mask key="constraints">
-                    <exclude reference="NBP-uS-Hr4"/>
-                    <exclude reference="Sjc-hs-xMO"/>
-                    <exclude reference="UGd-hE-u9Z"/>
-                    <exclude reference="fNn-m3-CiX"/>
-                    <exclude reference="stt-O3-5bP"/>
-                    <exclude reference="EOh-hF-EWE"/>
-                    <exclude reference="YJc-Zc-tdB"/>
-                    <exclude reference="Zhv-yT-HBa"/>
-                </mask>
-            </variation>
             <connections>
                 <outlet property="categoryButton" destination="3XR-CB-WIl" id="TXI-2T-HrP"/>
                 <outlet property="categoryCircle" destination="LmH-eW-Lnz" id="7bk-ey-qKG"/>
                 <outlet property="categoryIcon" destination="hvt-Yn-Mch" id="Qid-wR-D65"/>
+                <outlet property="contentHolder" destination="MQM-XP-kp0" id="fed-7f-WV3"/>
                 <outlet property="elapsedTime" destination="lWX-Wq-cy4" id="1Z9-0E-U6W"/>
                 <outlet property="lineView" destination="2Oj-R3-3Vm" id="kYE-eO-Upc"/>
                 <outlet property="slotDescription" destination="2dA-qd-byA" id="LH0-9M-jTv"/>
                 <outlet property="slotTime" destination="I6B-z7-bFn" id="mEk-dd-w5G"/>
-                <outlet property="timeSlotDistanceConstraint" destination="U6l-FP-Gdh" id="IMR-Co-dlJ"/>
-                <outletCollection property="indicatorDots" destination="8o1-Rs-sBZ" id="bk3-qf-5tR"/>
-                <outletCollection property="indicatorDots" destination="Nvo-Lf-5RD" id="RYD-xt-RqB"/>
-                <outletCollection property="indicatorDots" destination="b8e-1M-wfP" id="Dz3-yo-Q94"/>
+                <outlet property="timeSlotDistanceConstraint" destination="BG9-St-xj6" id="MvB-xK-zMQ"/>
+                <outlet property="topConstraint" destination="6Jf-hu-rMM" id="2Zt-hU-2NT"/>
+                <outletCollection property="indicatorDots" destination="8o1-Rs-sBZ" collectionClass="NSMutableArray" id="bk3-qf-5tR"/>
+                <outletCollection property="indicatorDots" destination="b8e-1M-wfP" collectionClass="NSMutableArray" id="Dz3-yo-Q94"/>
+                <outletCollection property="indicatorDots" destination="Nvo-Lf-5RD" collectionClass="NSMutableArray" id="RYD-xt-RqB"/>
             </connections>
             <point key="canvasLocation" x="205.5" y="267.5"/>
         </view>
