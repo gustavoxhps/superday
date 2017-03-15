@@ -92,11 +92,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                    notificationService: self.notificationService)
     }
     
-    private static func getPersistencyService<T>(forAdapter adapter: CoreDataModelAdapter<T>, _ loggingService: LoggingService) -> BasePersistencyService<T>
-    {
-        return CoreDataPersistencyService<T>(loggingService: loggingService, modelAdapter: adapter)
-    }
-    
     //MARK: UIApplicationDelegate lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
