@@ -31,7 +31,13 @@ class MockLocationService : LocationService
         return self.useNilOnLastKnownLocation ? nil : self.lastLocation
     }
     
-    var eventObservable : Observable<TrackEvent> { return eventSubject.asObservable().map(Location.init(fromLocation:)).map(TrackEvent.toTrackEvent) }
+    var eventObservable : Observable<TrackEvent>
+    {
+        return eventSubject
+                .asObservable()
+                .map(Location.init(fromLocation:))
+                .map(TrackEvent.toTrackEvent)
+    }
     
     //MARK: Methods
     func sendNewTrackEvent(_ location: CLLocation)

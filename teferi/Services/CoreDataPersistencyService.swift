@@ -163,16 +163,16 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     }
     
     private lazy var entityName : String =
+    {
+        let fullName = String(describing: T.self)
+        let range = fullName.range(of: ".", options: .backwards)
+        if let range = range
         {
-            let fullName = String(describing: T.self)
-            let range = fullName.range(of: ".", options: .backwards)
-            if let range = range
-            {
-                return fullName.substring(from: range.upperBound)
-            }
-            else
-            {
-                return fullName
-            }
+            return fullName.substring(from: range.upperBound)
+        }
+        else
+        {
+            return fullName
+        }
     }()
 }
