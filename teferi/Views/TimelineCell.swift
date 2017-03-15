@@ -16,15 +16,18 @@ class TimelineCell : UITableViewCell
         return self.lineView.constraints.filter{ $0.firstAttribute == .height }.first!
     }()
 
-    @IBOutlet private weak var lineView : UIView!
-    @IBOutlet private weak var slotTime : UILabel!
-    @IBOutlet private var indicatorDots : [UIView]!
-    @IBOutlet private weak var elapsedTime : UILabel!
-    @IBOutlet private weak var categoryButton : UIButton!
-    @IBOutlet private weak var slotDescription : UILabel!
-    @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
-    @IBOutlet weak var categoryCircle: UIView!
-    @IBOutlet private weak var categoryIcon: UIImageView!
+    @IBOutlet private(set) weak var contentHolder: UIView!
+    @IBOutlet private(set) weak var lineView : UIView!
+    @IBOutlet private(set) weak var slotTime : UILabel!
+    @IBOutlet private(set) var indicatorDots : [UIView]!
+    @IBOutlet private(set) weak var elapsedTime : UILabel!
+    @IBOutlet private(set) weak var categoryButton : UIButton!
+    @IBOutlet private(set) weak var slotDescription : UILabel!
+    @IBOutlet private(set) weak var timeSlotDistanceConstraint : NSLayoutConstraint!
+    @IBOutlet private(set) weak var categoryCircle: UIView!
+    @IBOutlet private(set) weak var categoryIcon: UIImageView!
+    @IBOutlet private(set) weak var topConstraint: NSLayoutConstraint!
+    
     private var lineFadeView : AutoResizingLayerView?
     
     //MARK: Properties
@@ -66,6 +69,25 @@ class TimelineCell : UITableViewCell
         self.layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
         self.layoutDescriptionLabel(withTimelineItem: timelineItem)
         self.layoutCategoryIcon(withAsset: timeSlot.category.icon, color: categoryColor)
+    }
+    
+    func animateIntro()
+    {
+        self.categoryCircle.transform = CGAffineTransform(scaleX: 0, y: 0)
+        UIView.animate(
+            withDuration: 0.39,
+            options: UIViewAnimationOptions.curveEaseInOut) {
+                self.categoryCircle.transform = CGAffineTransform(scaleX: 1, y: 1)
+        }
+        
+        self.contentHolder.alpha = 0
+        self.contentHolder.transform = CGAffineTransform(translationX: 0, y: 20)
+        UIView.animate(
+            withDuration: 0.492,
+            options: UIViewAnimationOptions.curveEaseInOut) {
+                self.contentHolder.transform = CGAffineTransform.identity
+                self.contentHolder.alpha = 1
+        }
     }
     
     /// Updates the icon that indicates the slot's category

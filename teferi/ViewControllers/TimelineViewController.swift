@@ -15,6 +15,8 @@ class TimelineViewController : UITableViewController
     private let cellIdentifier = "timelineCell"
     private let emptyCellIdentifier = "emptyStateView"
     
+    private var willDisplayNewCell:Bool = false
+    
     private lazy var footerCell : UITableViewCell = { return UITableViewCell(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120)) }()
     
     // MARK: Initializers
@@ -73,14 +75,15 @@ class TimelineViewController : UITableViewController
     
     private func onTimeSlotCreated(atIndex index: Int)
     {
-        self.tableView.reloadData()
-     
+        self.willDisplayNewCell = true
+
         let numberOfItems = self.viewModel.timelineItems.count
+                
+        self.tableView.insertRows(at: [IndexPath(row: numberOfItems - 1, section: 0)], with: .none)
         
-        self.tableView.reloadRows(at: [IndexPath(row: numberOfItems - 1, section: 0)], with: .top)
         if numberOfItems > 1
         {
-            self.tableView.reloadRows(at: [IndexPath(row: numberOfItems - 2, section: 0)], with: .fade)
+            self.tableView.reloadRows(at: [IndexPath(row: numberOfItems - 2, section: 0)], with: .none)
         }
         
         let scrollIndexPath = IndexPath(row: numberOfItems, section: 0)
@@ -197,5 +200,13 @@ class TimelineViewController : UITableViewController
             + (isRunning ? 24 : 0)
         
         return CGFloat(height)
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        guard self.willDisplayNewCell && indexPath.row == self.viewModel.timelineItems.count - 1 else { return }
+        
+        (cell as! TimelineCell).animateIntro()
+        self.willDisplayNewCell = false
     }
 }

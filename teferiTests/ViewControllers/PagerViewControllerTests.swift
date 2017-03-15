@@ -12,6 +12,7 @@ class PagerViewControllerTests : XCTestCase
         super.setUp()
  
         self.locator = MockLocator()
+        self.locator.timeSlotService = PagerMockTimeSlotService(timeService: self.locator.timeService, locationService: self.locator.locationService)
         self.locator.timeService.mockDate = nil
         
         self.pagerViewController = PagerViewController(coder: NSCoder())!
