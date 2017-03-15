@@ -9,9 +9,6 @@ protocol LocationService
     ///Starts the tracking service.
     func startLocationTracking()
     
-    ///Stops the tracking service.
-    func stopLocationTracking()
-    
     ///Gets the last known position
     func getLastKnownLocation() -> CLLocation?
     

@@ -141,15 +141,18 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C423FE91E6D74BD00AAFE27 /* CLLocationManagerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C423FE81E6D74BD00AAFE27 /* CLLocationManagerExtensions.swift */; };
+		8C423FED1E6DCFBE00AAFE27 /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C423FEC1E6DCFBE00AAFE27 /* LocationServiceTests.swift */; };
+		8CD8EF0E1E6EC19400882131 /* MockCLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD8EF0D1E6EC19400882131 /* MockCLLocationManager.swift */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
 		AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* WheelControl.swift */; };
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		AC7186CC1E6C8CF0000323C7 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */; };
-		AC7186CE1E6C8E7D000323C7 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */; };
 		AC7186D11E6CA02C000323C7 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC7186D01E6CA02C000323C7 /* HealthKit.framework */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
+		BE1BDFAD1E79A8250077D694 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BDFAC1E79A8250077D694 /* DefaultHealthKitService.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
 		BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783601E6DB4A400D44603 /* CategoryProvider.swift */; };
@@ -345,6 +348,9 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
+		8C423FE81E6D74BD00AAFE27 /* CLLocationManagerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CLLocationManagerExtensions.swift; path = Extensions/CLLocationManagerExtensions.swift; sourceTree = "<group>"; };
+		8C423FEC1E6DCFBE00AAFE27 /* LocationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationServiceTests.swift; path = Services/LocationServiceTests.swift; sourceTree = "<group>"; };
+		8CD8EF0D1E6EC19400882131 /* MockCLLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockCLLocationManager.swift; path = Mocks/MockCLLocationManager.swift; sourceTree = "<group>"; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrigonometryHelper.swift; path = Helpers/TrigonometryHelper.swift; sourceTree = "<group>"; };
 		AC0A632B1E548FE800D56433 /* WheelControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelControl.swift; path = Views/WheelControl.swift; sourceTree = "<group>"; };
@@ -352,11 +358,11 @@
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
 		AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
-		AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultHealthKitService.swift; path = Services/DefaultHealthKitService.swift; sourceTree = "<group>"; };
 		AC7186CF1E6CA02C000323C7 /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
 		AC7186D01E6CA02C000323C7 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1BDFAC1E79A8250077D694 /* DefaultHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultHealthKitService.swift; path = Services/DefaultHealthKitService.swift; sourceTree = "<group>"; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
 		BEA024331E41137D0061FE53 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Generated/Category.swift; sourceTree = "<group>"; };
 		BEA783601E6DB4A400D44603 /* CategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryProvider.swift; sourceTree = "<group>"; };
@@ -479,6 +485,7 @@
 				24168E361DC21042004F90AD /* TrackingServiceTests.swift */,
 				24D73F2A1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift */,
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
+				8C423FEC1E6DCFBE00AAFE27 /* LocationServiceTests.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -541,6 +548,7 @@
 				249B359C1E1A6015005793B9 /* MockLocator.swift */,
 				24DE24051E1BBD6E0089B49E /* MockSelectedDateService.swift */,
 				24D73F2C1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift */,
+				8CD8EF0D1E6EC19400882131 /* MockCLLocationManager.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -597,6 +605,7 @@
 				24564F621D83265900D9A8AE /* DateExtensions.swift */,
 				51EAA2871DC0BA910025680D /* UIViewExtensions.swift */,
 				51DB18751E26144F00E0182D /* CLLocationExtensions.swift */,
+				8C423FE81E6D74BD00AAFE27 /* CLLocationManagerExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -788,9 +797,9 @@
 		24EB96691DE707CD0040C211 /* Tracking */ = {
 			isa = PBXGroup;
 			children = (
+				BE1BDFAC1E79A8250077D694 /* DefaultHealthKitService.swift */,
 				24EB966C1DE7080F0040C211 /* DefaultTrackingService.swift */,
 				24564F591D83259100D9A8AE /* DefaultLocationService.swift */,
-				AC7186CD1E6C8E7D000323C7 /* DefaultHealthKitService.swift */,
 			);
 			name = Tracking;
 			sourceTree = "<group>";
@@ -1262,6 +1271,7 @@
 				24DE23FA1E1BB3450089B49E /* ObservableExtensions.swift in Sources */,
 				BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */,
 				240AC7181D748C8800F21F4F /* AppDelegate.swift in Sources */,
+				BE1BDFAD1E79A8250077D694 /* DefaultHealthKitService.swift in Sources */,
 				24526A7C1D92D9BB00DA3FA0 /* CustomEvent.swift in Sources */,
 				24DE23F61E1BB33B0089B49E /* DateChange.swift in Sources */,
 				24DE24021E1BB3A40089B49E /* DefaultTimeService.swift in Sources */,
@@ -1271,7 +1281,7 @@
 				242FE7D61DE7689A00EAEEE3 /* AutoResizingLayerView.swift in Sources */,
 				24EB96771DE7080F0040C211 /* MotionService.swift in Sources */,
 				2482CAFD1DB12F9F00E892C1 /* OnboardingPage3.swift in Sources */,
-				AC7186CE1E6C8E7D000323C7 /* DefaultHealthKitService.swift in Sources */,
+				8C423FE91E6D74BD00AAFE27 /* CLLocationManagerExtensions.swift in Sources */,
 				BEA024321E4106980061FE53 /* Colors.swift in Sources */,
 				24EB967D1DE708570040C211 /* AppState.swift in Sources */,
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
@@ -1315,9 +1325,11 @@
 				24168E371DC21042004F90AD /* TrackingServiceTests.swift in Sources */,
 				24B03B631D9E946900452D16 /* MockMetricsService.swift in Sources */,
 				24564F6E1D8326F100D9A8AE /* TimelineViewModelTests.swift in Sources */,
+				8CD8EF0E1E6EC19400882131 /* MockCLLocationManager.swift in Sources */,
 				24168E3B1DC21125004F90AD /* MockNotificationService.swift in Sources */,
 				2416B2831E27C7D100CE283B /* TopBarViewModelTests.swift in Sources */,
 				7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */,
+				8C423FED1E6DCFBE00AAFE27 /* LocationServiceTests.swift in Sources */,
 				24B03B5F1D9E5BB900452D16 /* PagerViewModelTests.swift in Sources */,
 				ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */,
 				2416B27D1E278B1300CE283B /* CalendarViewControllerTests.swift in Sources */,
