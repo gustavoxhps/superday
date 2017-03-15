@@ -339,6 +339,7 @@
 		6AC29DA11E426807000A99EF /* TimeSlotMiniView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TimeSlotMiniView.xib; path = teferiNotifications/Views/TimeSlotMiniView.xib; sourceTree = SOURCE_ROOT; };
 		6AC29DA41E426814000A99EF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = teferiNotifications/Info.plist; sourceTree = SOURCE_ROOT; };
 		6AC29DA61E4269FB000A99EF /* ViewModelLocator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModelLocator.swift; sourceTree = "<group>"; };
+		6B3F4C597FA7A650472E9F8E /* Pods-teferi.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferi.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-teferi/Pods-teferi.adhoc.xcconfig"; sourceTree = "<group>"; };
 		7E3C06951E30B7CA00859747 /* Assets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Assets.swift; path = Generated/Assets.swift; sourceTree = "<group>"; };
 		7E3C06961E30B7CA00859747 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Strings.swift; path = Generated/Strings.swift; sourceTree = "<group>"; };
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
@@ -365,6 +366,7 @@
 		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
 		BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelTests.swift; path = ViewModels/PermissionViewModelTests.swift; sourceTree = "<group>"; };
+		EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,6 +406,8 @@
 				00B20CBA66D17AE2580ADF08 /* Pods-teferi.release.xcconfig */,
 				03B30B73DD8EB78B4E96F162 /* Pods-teferiTests.debug.xcconfig */,
 				924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */,
+				6B3F4C597FA7A650472E9F8E /* Pods-teferi.adhoc.xcconfig */,
+				EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -870,16 +874,16 @@
 			name = Algorithm;
 			sourceTree = "<group>";
 		};
-        BEA7835F1E6DB48F00D44603 /* Providers */ = {
-            isa = PBXGroup;
-            children = (
-                BEA783601E6DB4A400D44603 /* CategoryProvider.swift */,
-                BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */,
-                BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */,
-            );
-            name = Providers;
-            sourceTree = "<group>";
-        };
+		BEA7835F1E6DB48F00D44603 /* Providers */ = {
+			isa = PBXGroup;
+			children = (
+				BEA783601E6DB4A400D44603 /* CategoryProvider.swift */,
+				BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */,
+				BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */,
+			);
+			name = Providers;
+			sourceTree = "<group>";
+		};
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1494,7 +1498,7 @@
 			baseConfigurationReference = 326FBECEEBCDD54BD7B16CF8 /* Pods-teferi.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1504,7 +1508,7 @@
 				INFOPLIST_FILE = teferi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -1576,7 +1580,7 @@
 				INFOPLIST_FILE = teferiNotifications/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday.notifications;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday.dev.notifications;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -1601,6 +1605,102 @@
 			};
 			name = Release;
 		};
+		8C0533CC1E76872900175AFF /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/GoogleAnalytics/**";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AdHoc;
+		};
+		8C0533CD1E76872900175AFF /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6B3F4C597FA7A650472E9F8E /* Pods-teferi.adhoc.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconAdhoc;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 20;
+				DEVELOPMENT_TEAM = B227VTMZ94;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = teferi/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday.adhoc;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				USER_HEADER_SEARCH_PATHS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = AdHoc;
+		};
+		8C0533CE1E76872900175AFF /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = teferiTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.teferiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/teferi.app/teferi";
+			};
+			name = AdHoc;
+		};
+		8C0533CF1E76872900175AFF /* AdHoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = B227VTMZ94;
+				INFOPLIST_FILE = teferiNotifications/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.toggl.superday.adhoc.notifications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = AdHoc;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1609,6 +1709,7 @@
 			buildConfigurations = (
 				240AC73D1D748C8900F21F4F /* Debug */,
 				240AC73E1D748C8900F21F4F /* Release */,
+				8C0533CC1E76872900175AFF /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1618,6 +1719,7 @@
 			buildConfigurations = (
 				240AC7401D748C8900F21F4F /* Debug */,
 				240AC7411D748C8900F21F4F /* Release */,
+				8C0533CD1E76872900175AFF /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1627,6 +1729,7 @@
 			buildConfigurations = (
 				24A21B6E1D7C3E0800CEB4F3 /* Debug */,
 				24A21B6F1D7C3E0800CEB4F3 /* Release */,
+				8C0533CE1E76872900175AFF /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1636,6 +1739,7 @@
 			buildConfigurations = (
 				51BED9051DD26FA800455EF6 /* Debug */,
 				51BED9061DD26FA800455EF6 /* Release */,
+				8C0533CF1E76872900175AFF /* AdHoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
