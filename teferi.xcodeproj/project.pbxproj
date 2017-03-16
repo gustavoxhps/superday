@@ -160,6 +160,8 @@
 		BE24B8891E76EB24005DF5B3 /* HealthSampleModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8881E76EB24005DF5B3 /* HealthSampleModelAdapter.swift */; };
 		BE24B88B1E76F08C005DF5B3 /* HealthSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B88A1E76F08C005DF5B3 /* HealthSample.swift */; };
 		BE24B88F1E7702F8005DF5B3 /* HealthKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */; };
+		BE55CED11E7AC994006B851E /* TemporaryTimeSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE55CED01E7AC994006B851E /* TemporaryTimeSlot.swift */; };
+		BE55CED31E7ACB28006B851E /* TemporaryTimelineGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE55CED21E7ACB28006B851E /* TemporaryTimelineGenerator.swift */; };
 		BE7FAFC41E72F90600A62AC9 /* TrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */; };
 		BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */; };
 		BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */; };
@@ -382,6 +384,8 @@
 		BE24B8881E76EB24005DF5B3 /* HealthSampleModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSampleModelAdapter.swift; path = Services/HealthSampleModelAdapter.swift; sourceTree = "<group>"; };
 		BE24B88A1E76F08C005DF5B3 /* HealthSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSample.swift; path = Models/HealthSample.swift; sourceTree = "<group>"; };
 		BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitExtensions.swift; path = Extensions/HealthKitExtensions.swift; sourceTree = "<group>"; };
+		BE55CED01E7AC994006B851E /* TemporaryTimeSlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemporaryTimeSlot.swift; path = Models/TemporaryTimeSlot.swift; sourceTree = "<group>"; };
+		BE55CED21E7ACB28006B851E /* TemporaryTimelineGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemporaryTimelineGenerator.swift; path = Services/Protocols/TemporaryTimelineGenerator.swift; sourceTree = "<group>"; };
 		BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventService.swift; path = Services/Protocols/TrackEventService.swift; sourceTree = "<group>"; };
 		BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEvent.swift; path = Models/TrackEvent.swift; sourceTree = "<group>"; };
 		BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTrackEventService.swift; path = Services/DefaultTrackEventService.swift; sourceTree = "<group>"; };
@@ -616,6 +620,7 @@
 				24D18E251DEF6D640046B202 /* SmartGuess.swift */,
 				24224B071E28E37700AD7575 /* TimelineItem.swift */,
 				BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */,
+				BE55CED01E7AC994006B851E /* TemporaryTimeSlot.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -811,6 +816,7 @@
 				24EB966F1DE7080F0040C211 /* MotionService.swift */,
 				247F05F71D87322600451BAD /* LocationService.swift */,
 				BE7FAFC31E72F90600A62AC9 /* TrackEventService.swift */,
+				BE55CED21E7ACB28006B851E /* TemporaryTimelineGenerator.swift */,
 			);
 			name = Tracking;
 			sourceTree = "<group>";
@@ -1329,10 +1335,12 @@
 				240AC7201D748C8800F21F4F /* teferi.xcdatamodeld in Sources */,
 				24DE23FD1E1BB38C0089B49E /* SelectedDateService.swift in Sources */,
 				24EB967F1DE708570040C211 /* Predicate.swift in Sources */,
+				BE55CED11E7AC994006B851E /* TemporaryTimeSlot.swift in Sources */,
 				BEA024341E41137D0061FE53 /* Category.swift in Sources */,
 				7E3C06991E30B7CA00859747 /* Strings.swift in Sources */,
 				24EB96851DE709830040C211 /* PredicateExtensions.swift in Sources */,
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
+				BE55CED31E7ACB28006B851E /* TemporaryTimelineGenerator.swift in Sources */,
 				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,
 				24564F4D1D83207900D9A8AE /* MainViewModel.swift in Sources */,
 				BEE5A3BF1E72F6B200CA717D /* (null) in Sources */,
