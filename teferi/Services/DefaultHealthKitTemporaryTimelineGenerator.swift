@@ -157,7 +157,6 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         
         for (index, sample) in data.enumerated()
         {
-            print(index, data.endIndex - 1)
             if currentBatch.isEmpty
             {
                 currentBatch.append(sample)
