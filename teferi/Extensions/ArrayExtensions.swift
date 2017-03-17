@@ -36,6 +36,11 @@ extension Array
 
 extension Array where Element : Hashable
 {
+    func distinct() -> [Element]
+    {
+        return Array(Set(self))
+    }
+    
     public func toDictionary<Value: Any>(_ generateElement: (Element) -> Value?) -> [Element: Value]
     {
         var dict = [Element:Value]()
