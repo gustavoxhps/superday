@@ -6,9 +6,9 @@ extension CLLocation
     {
         let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
         self.init(coordinate: coordinate,
-                  altitude: 0,
-                  horizontalAccuracy: 0,
-                  verticalAccuracy: 0,
+                  altitude: location.altitude,
+                  horizontalAccuracy: location.horizontalAccuracy,
+                  verticalAccuracy: location.verticalAccuracy,
                   timestamp: location.timestamp)
     }
     
