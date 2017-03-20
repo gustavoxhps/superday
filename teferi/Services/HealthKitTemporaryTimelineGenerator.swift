@@ -1,7 +1,7 @@
 import Foundation
 import HealthKit
 
-class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
+class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
 {
     private let trackEventService : TrackEventService
     private let fastMovingSpeedThreshold : Double
