@@ -90,7 +90,9 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         
         for sample in walkingAndRunning
         {
-            if let previousSample = previousSample, categoryBasedOnSpeed(previousSample) == categoryBasedOnSpeed(sample)
+            let sampleCategory = categoryBasedOnSpeed(sample)
+            
+            if let previousSample = previousSample, categoryBasedOnSpeed(previousSample) == sampleCategory
             {
                 continue
             }
@@ -98,7 +100,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             previousSample = sample
             slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
                                                    smartGuess: nil,
-                                                   category: categoryBasedOnSpeed(sample),
+                                                   category: sampleCategory,
                                                    location: nil))
         }
         
