@@ -34,7 +34,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         let allHealthSamples = trackEventService
             .getEvents()
             .flatMap(toHealthSample)
-            .filter(isValidSleepDuration)
+            .filter(shortSleepSamples)
             .sorted(by: { $0.startTime < $1.startTime })
         
         let groupedHealthSamples = groupByContinuityAndIdentifier(from: allHealthSamples)
@@ -47,7 +47,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     }
     
     // MARK: - Helper
-    private func isValidSleepDuration(_ healthSample: HealthSample) -> Bool
+    private func shortSleepSamples(_ healthSample: HealthSample) -> Bool
     {
         guard healthSample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue else { return true }
         
