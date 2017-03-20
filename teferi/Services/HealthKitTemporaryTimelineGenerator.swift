@@ -82,7 +82,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     
     private func makeSlots(fromWalkingAndRunning walkingAndRunning: [HealthSample]) -> [TemporaryTimeSlot]?
     {
-        guard !walkingAndRunning.isEmpty else { return nil }
+        if walkingAndRunning.isEmpty { return nil }
         
         var slotsToReturn = [TemporaryTimeSlot]()
         
