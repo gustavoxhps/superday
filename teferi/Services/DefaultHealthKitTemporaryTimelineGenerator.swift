@@ -9,6 +9,14 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     private let minGapAllowedDuration : Double
     
     // MARK: - Init
+    
+    /// Initialiser
+    ///
+    /// - Parameters:
+    ///   - trackEventService: Used to retrive Health TrackEvents
+    ///   - fastMovingSpeedThreshold: Used to filter out samples with lower speed than this value (mesured in m/s). Default: 0.3
+    ///   - minSleepDuration: Used to filter out sleep with duration lower than this value (mesured in sec). Default: 10.800
+    ///   - minGapAllowedDuration: Used to filter out temporaryTimeSlots with duration smaller than this value (mesured in sec). Default: 300
     init(trackEventService: TrackEventService,
          fastMovingSpeedThreshold: Double = 0.3,
          minSleepDuration: Double = 10_800,
@@ -25,57 +33,57 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     {
         let allHealthSamples = trackEventService
             .getEvents()
-            .filter { (trackEvent) -> Bool in
-                switch trackEvent {
-                case .newLocation(_):
-                    return false
-                case .newHealthSample(let healthSample):
-                    if healthSample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue
-                    {
-                        return healthSample.endTime.timeIntervalSince(healthSample.startTime) > minSleepDuration
-                    }
-                    return true
-                }
-            }
-            .map { (trackEvent) -> HealthSample! in
-                switch trackEvent {
-                case .newHealthSample(let healthSample):
-                    return healthSample
-                default:
-                    return nil
-                }
-            }
+            .flatMap(toHealthSample)
+            .filter(isValidSleepDuration)
             .sorted(by: { $0.startTime < $1.startTime })
         
-        let groupedHealthSamples = groupByContinuetyAndIdentifier(from: allHealthSamples)
+        let groupedHealthSamples = groupByContinuityAndIdentifier(from: allHealthSamples)
         
-        let temporaryTimeSlotsToReturn = groupedHealthSamples.flatMap(toTemporaryTimeSlots())
+        let temporaryTimeSlotsToReturn = groupedHealthSamples
+            .flatMap(toTemporaryTimeSlots)
+            .flatMap { $0 }
         
         return temporaryTimeSlotsToReturn
     }
     
     // MARK: - Helper
-    private func toTemporaryTimeSlots() -> ([HealthSample]) -> [TemporaryTimeSlot]
+    private func isValidSleepDuration(_ healthSample: HealthSample) -> Bool
     {
-        return { (samples) in
-            
-            let first = samples.first!
-            
-            switch first.identifier {
-            case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
-                return self.makeSlots(fromWalkingAndRunning: samples)
-            case HKQuantityTypeIdentifier.distanceCycling.rawValue:
-                return self.makeSlots(fromDistanceCycling: samples)
-            case HKCategoryTypeIdentifier.sleepAnalysis.rawValue:
-                return self.makeSlots(fromSleepAnalysis: samples)
-            default:
-                return [TemporaryTimeSlot]()
-            }
+        guard healthSample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue else { return true }
+        
+        return healthSample.endTime.timeIntervalSince(healthSample.startTime) > minSleepDuration
+    }
+    
+    private func toHealthSample(_ trackEvent: TrackEvent) -> HealthSample?
+    {
+        switch trackEvent {
+        case .newHealthSample(let healthSample):
+            return healthSample
+        default:
+            return nil
         }
     }
     
-    private func makeSlots(fromWalkingAndRunning walkingAndRunning: [HealthSample]) -> [TemporaryTimeSlot]
+    private func toTemporaryTimeSlots(_ samples: [HealthSample]) -> [TemporaryTimeSlot]?
     {
+        guard let first = samples.first else { return nil }
+        
+        switch first.identifier {
+        case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
+            return self.makeSlots(fromWalkingAndRunning: samples)
+        case HKQuantityTypeIdentifier.distanceCycling.rawValue:
+            return self.makeSlots(fromDistanceCycling: samples)
+        case HKCategoryTypeIdentifier.sleepAnalysis.rawValue:
+            return self.makeSlots(fromSleepAnalysis: samples)
+        default:
+            return nil
+        }
+    }
+    
+    private func makeSlots(fromWalkingAndRunning walkingAndRunning: [HealthSample]) -> [TemporaryTimeSlot]?
+    {
+        guard !walkingAndRunning.isEmpty else { return nil }
+        
         var slotsToReturn = [TemporaryTimeSlot]()
         
         var previousSample : HealthSample?
@@ -95,6 +103,7 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         }
         
         let lastSample = walkingAndRunning.last!
+        
         slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
                                                smartGuess: nil,
                                                category: .unknown,
@@ -103,10 +112,13 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         return slotsToReturn
     }
     
-    private func makeSlots(fromDistanceCycling distanceCycling: [HealthSample]) -> [TemporaryTimeSlot]
+    private func makeSlots(fromDistanceCycling distanceCycling: [HealthSample]) -> [TemporaryTimeSlot]?
     {
-        let firstSample = distanceCycling.first!
-        let lastSample = distanceCycling.last!
+        guard
+            let firstSample = distanceCycling.first,
+            let lastSample = distanceCycling.last
+            else { return nil }
+        
         return [ TemporaryTimeSlot(start: firstSample.startTime,
                                    smartGuess: nil,
                                    category: .commute,
@@ -117,10 +129,13 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
                                    location: nil) ]
     }
     
-    private func makeSlots(fromSleepAnalysis sleepAnalysis: [HealthSample]) -> [TemporaryTimeSlot]
+    private func makeSlots(fromSleepAnalysis sleepAnalysis: [HealthSample]) -> [TemporaryTimeSlot]?
     {
-        let firstSample = sleepAnalysis.first!
-        let lastSample = sleepAnalysis.last!
+        guard
+            let firstSample = sleepAnalysis.first,
+            let lastSample = sleepAnalysis.last
+        else { return nil }
+        
         return [ TemporaryTimeSlot(start: firstSample.startTime,
                                    smartGuess: nil,
                                    category: .unknown,
@@ -140,8 +155,15 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     
     private func getSpeed(from sample: HealthSample) -> Double
     {
-        let distance = (sample.value as! HKQuantity).doubleValue(for: HKUnit.meter())
         let duration = getDuration(from: sample)
+        
+        guard
+            let quantity = sample.value as? HKQuantity,
+            quantity.is(compatibleWith: .meter()),
+            duration > 0
+        else { return 0.0 }
+        
+        let distance = quantity.doubleValue(for: HKUnit.meter())
         return distance / duration
     }
     
@@ -150,21 +172,26 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         return sample.endTime.timeIntervalSince(sample.startTime)
     }
     
-    private func groupByContinuetyAndIdentifier(from data: [HealthSample]) -> [[HealthSample]]
+    private func groupByContinuityAndIdentifier(from data: [HealthSample]) -> [[HealthSample]]
     {
         var dataToReturn = [[HealthSample]]()
         var currentBatch = [HealthSample]()
+        
+        func add(_ sample: HealthSample, _ index: Int)
+        {
+            currentBatch.append(sample)
+            if index == data.endIndex - 1
+            {
+                dataToReturn.append(currentBatch)
+                currentBatch.removeAll()
+            }
+        }
         
         for (index, sample) in data.enumerated()
         {
             if currentBatch.isEmpty
             {
-                currentBatch.append(sample)
-                if index == data.endIndex - 1
-                {
-                    dataToReturn.append(currentBatch)
-                    currentBatch.removeAll()
-                }
+                add(sample, index)
                 continue
             }
             
@@ -172,24 +199,14 @@ class DefaultHealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             
             if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < TimeInterval(minGapAllowedDuration)
             {
-                currentBatch.append(sample)
-                if index == data.endIndex - 1
-                {
-                    dataToReturn.append(currentBatch)
-                    currentBatch.removeAll()
-                }
+                add(sample, index)
                 continue
             }
             
             dataToReturn.append(currentBatch)
             currentBatch.removeAll()
             
-            currentBatch.append(sample)
-            if index == data.endIndex - 1
-            {
-                dataToReturn.append(currentBatch)
-                currentBatch.removeAll()
-            }
+            add(sample, index)
         }
         
         return dataToReturn
