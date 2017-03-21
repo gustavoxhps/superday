@@ -20,7 +20,7 @@ class TimelineMerger : TemporaryTimelineGenerator
         
         let timeline = (startTimes + endTimes)
                         .distinct()
-                        .sorted(by: >)
+                        .sorted(by: <)
                         .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: timelines))
         
         return timeline
