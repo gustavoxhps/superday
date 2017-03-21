@@ -37,8 +37,7 @@ class TimelineMerger : TemporaryTimelineGenerator
         
             if let previousTimeSlot = result.last
             {
-                var result = result.dropLast()
-                result.append(previousTimeSlot.with(end: currentTime))
+                result[result.count - 1] = previousTimeSlot.with(end: currentTime)
             }
         
             result.append(TemporaryTimeSlot(start: currentTime,
