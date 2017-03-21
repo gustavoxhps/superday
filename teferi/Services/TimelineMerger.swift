@@ -33,7 +33,7 @@ class TimelineMerger : TemporaryTimelineGenerator
             var result = timeline
         
             let intersectedTimeSlots = timelines.flatMap(self.toFirstTimeSlot(thatIntersects: currentTime))
-            let category =  intersectedTimeSlots.reduce(Category.unknown, self.categoryOfIntersectedTimeslots)
+            let bestTimeSlot =  self.getTimeSlotWithBestCategory(inIntersectedTimeslots: intersectedTimeSlots)
         
             if let previousTimeSlot = result.last
             {
@@ -43,9 +43,9 @@ class TimelineMerger : TemporaryTimelineGenerator
         
             result.append(TemporaryTimeSlot(start: currentTime,
                                             end: nil,
-                                            smartGuess: intersectedTimeSlots.reduce(nil, self.firstValidSmartGuess),
-                                            category: category,
-                                            location: intersectedTimeSlots.reduce(nil, self.firstValidLocation)))
+                                            smartGuess: bestTimeSlot?.smartGuess,
+                                            category: bestTimeSlot?.category ?? .unknown,
+                                            location: bestTimeSlot?.location))
             
             return result
         }
@@ -67,32 +67,28 @@ class TimelineMerger : TemporaryTimelineGenerator
         }
     }
     
+    private func getTimeSlotWithBestCategory(inIntersectedTimeslots timeSlots: [TemporaryTimeSlot]) -> TemporaryTimeSlot?
     {
-    private func categoryOfIntersectedTimeslots(currentCategory: Category, timeSlot: TemporaryTimeSlot) -> Category
-    {
-        guard currentCategory != .commute else { return currentCategory }
+        var bestTemporaryTimeSlot : TemporaryTimeSlot?
         
-        if currentCategory == .unknown
+        for timeSlot in timeSlots
         {
-            return timeSlot.smartGuess?.category ?? timeSlot.category
+            if timeSlot.category == .unknown { continue }
+            
+            if let currentBest = bestTemporaryTimeSlot
+            {
+                if currentBest.category == .commute && currentBest.category != .commute { continue }
+                
+                //If both temporary timeSlots have the same category, we're fine
+                if currentBest.category == timeSlot.category { continue }
+                
+                //If they have different categories, we stick to the one with a SmartGuess
+                if currentBest.smartGuess != nil || timeSlot.smartGuess == nil { continue }
+            }
+            
+            bestTemporaryTimeSlot = timeSlot
         }
         
-        //TODO: Returning unknown when categories clash. will break if we add a third source
-        // We need to find a better way of handling it
-        return .unknown
-    }
-    
-    private func firstValidSmartGuess(currentSmartGuess: SmartGuess?, timeSlot: TemporaryTimeSlot) -> SmartGuess?
-    {
-        if currentSmartGuess != nil { return currentSmartGuess }
-        
-        return timeSlot.smartGuess
-    }
-    
-    private func firstValidLocation(currentLocation: Location?, timeSlot: TemporaryTimeSlot) -> Location?
-    {
-        if currentLocation != nil { return currentLocation }
-        
-        return timeSlot.location
+        return bestTemporaryTimeSlot ?? timeSlots.first
     }
 }
