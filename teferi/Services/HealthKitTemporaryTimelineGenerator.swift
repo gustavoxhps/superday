@@ -49,6 +49,46 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     }
     
     // MARK: - Helper
+    private func groupByContinuityAndIdentifier(from data: [HealthSample]) -> [[HealthSample]]
+    {
+        var dataToReturn = [[HealthSample]]()
+        var currentBatch = [HealthSample]()
+        
+        func add(_ sample: HealthSample, _ index: Int)
+        {
+            currentBatch.append(sample)
+            if index == data.endIndex - 1
+            {
+                dataToReturn.append(currentBatch)
+                currentBatch.removeAll()
+            }
+        }
+        
+        for (index, sample) in data.enumerated()
+        {
+            if currentBatch.isEmpty
+            {
+                add(sample, index)
+                continue
+            }
+            
+            let previeousSample = currentBatch.last!
+            
+            if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
+            {
+                add(sample, index)
+                continue
+            }
+            
+            dataToReturn.append(currentBatch)
+            currentBatch.removeAll()
+            
+            add(sample, index)
+        }
+        
+        return dataToReturn
+    }
+    
     private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
         var indicesToRemove = [Int]()
@@ -203,45 +243,5 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     private func getDuration(from sample: HealthSample) -> Double
     {
         return sample.endTime.timeIntervalSince(sample.startTime)
-    }
-    
-    private func groupByContinuityAndIdentifier(from data: [HealthSample]) -> [[HealthSample]]
-    {
-        var dataToReturn = [[HealthSample]]()
-        var currentBatch = [HealthSample]()
-        
-        func add(_ sample: HealthSample, _ index: Int)
-        {
-            currentBatch.append(sample)
-            if index == data.endIndex - 1
-            {
-                dataToReturn.append(currentBatch)
-                currentBatch.removeAll()
-            }
-        }
-        
-        for (index, sample) in data.enumerated()
-        {
-            if currentBatch.isEmpty
-            {
-                add(sample, index)
-                continue
-            }
-            
-            let previeousSample = currentBatch.last!
-            
-            if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
-            {
-                add(sample, index)
-                continue
-            }
-            
-            dataToReturn.append(currentBatch)
-            currentBatch.removeAll()
-            
-            add(sample, index)
-        }
-        
-        return dataToReturn
     }
 }
