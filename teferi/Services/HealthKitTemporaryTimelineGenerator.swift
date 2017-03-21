@@ -39,14 +39,45 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         
         let groupedHealthSamples = groupByContinuityAndIdentifier(from: allHealthSamples)
         
-        let temporaryTimeSlotsToReturn = groupedHealthSamples
+        let temporaryTimeSlots = groupedHealthSamples
             .flatMap(toTemporaryTimeSlots)
             .flatMap { $0 }
+        
+        let temporaryTimeSlotsToReturn = removeSmallTimeSlots(from: temporaryTimeSlots)
         
         return temporaryTimeSlotsToReturn
     }
     
     // MARK: - Helper
+    private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    {
+        var indicesToRemove = [Int]()
+        
+        for (currentIndex, timeSlot) in timeSlots.enumerated()
+        {
+            guard timeSlot.category == .unknown else { continue }
+            
+            let nextIndex = timeSlots.index(after: currentIndex)
+            
+            guard nextIndex < timeSlots.endIndex else { continue }
+            
+            let nextTimeSlot = timeSlots[nextIndex]
+            
+            if nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
+            {
+                indicesToRemove.append(currentIndex)
+            }
+        }
+        
+        var timeSlotsToReturn = timeSlots
+        
+        indicesToRemove.reversed().forEach { (index) in
+            timeSlotsToReturn.remove(at: index)
+        }
+        
+        return timeSlotsToReturn
+    }
+    
     private func shortSleepSamples(_ healthSample: HealthSample) -> Bool
     {
         guard healthSample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue else { return true }
@@ -199,7 +230,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             
             let previeousSample = currentBatch.last!
             
-            if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < TimeInterval(minGapAllowedDuration)
+            if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
             {
                 add(sample, index)
                 continue
