@@ -40,11 +40,13 @@ class TimelineMerger : TemporaryTimelineGenerator
                 result[result.count - 1] = previousTimeSlot.with(end: currentTime)
             }
         
+            let location = bestTimeSlot?.location ?? intersectedTimeSlots.first(where: { $0.location != nil })?.location
+            
             result.append(TemporaryTimeSlot(start: currentTime,
                                             end: nil,
                                             smartGuess: bestTimeSlot?.smartGuess,
                                             category: bestTimeSlot?.category ?? .unknown,
-                                            location: bestTimeSlot?.location))
+                                            location: location))
             
             return result
         }
