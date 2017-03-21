@@ -20,7 +20,7 @@ class TimelineMerger : TemporaryTimelineGenerator
         
         let timeline = (startTimes + endTimes)
                         .distinct()
-                        .sorted(by: time)
+                        .sorted(by: >)
                         .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: timelines))
         
         return timeline
@@ -67,11 +67,7 @@ class TimelineMerger : TemporaryTimelineGenerator
         }
     }
     
-    private func time(lhs: Date, rhs: Date) -> Bool
     {
-        return lhs > rhs
-    }
-    
     private func categoryOfIntersectedTimeslots(currentCategory: Category, timeSlot: TemporaryTimeSlot) -> Category
     {
         guard currentCategory != .commute else { return currentCategory }
