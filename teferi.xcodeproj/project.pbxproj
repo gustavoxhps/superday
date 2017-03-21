@@ -160,6 +160,8 @@
 		BE24B8891E76EB24005DF5B3 /* HealthSampleModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B8881E76EB24005DF5B3 /* HealthSampleModelAdapter.swift */; };
 		BE24B88B1E76F08C005DF5B3 /* HealthSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B88A1E76F08C005DF5B3 /* HealthSample.swift */; };
 		BE24B88F1E7702F8005DF5B3 /* HealthKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */; };
+		BE3D19FC1E81569800701AE6 /* TimelineMergerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D19FB1E81569800701AE6 /* TimelineMergerTests.swift */; };
+		BE3D19FE1E8187BD00701AE6 /* MockTimelineGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3D19FD1E8187BD00701AE6 /* MockTimelineGenerator.swift */; };
 		BE55CED11E7AC994006B851E /* TemporaryTimeSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE55CED01E7AC994006B851E /* TemporaryTimeSlot.swift */; };
 		BE55CED31E7ACB28006B851E /* TemporaryTimelineGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE55CED21E7ACB28006B851E /* TemporaryTimelineGenerator.swift */; };
 		BE55CED71E7AD70F006B851E /* TimelineMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE55CED61E7AD70F006B851E /* TimelineMerger.swift */; };
@@ -385,6 +387,8 @@
 		BE24B8881E76EB24005DF5B3 /* HealthSampleModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSampleModelAdapter.swift; path = Services/HealthSampleModelAdapter.swift; sourceTree = "<group>"; };
 		BE24B88A1E76F08C005DF5B3 /* HealthSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSample.swift; path = Models/HealthSample.swift; sourceTree = "<group>"; };
 		BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitExtensions.swift; path = Extensions/HealthKitExtensions.swift; sourceTree = "<group>"; };
+		BE3D19FB1E81569800701AE6 /* TimelineMergerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimelineMergerTests.swift; path = Services/TimelineMergerTests.swift; sourceTree = "<group>"; };
+		BE3D19FD1E8187BD00701AE6 /* MockTimelineGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockTimelineGenerator.swift; path = Mocks/MockTimelineGenerator.swift; sourceTree = "<group>"; };
 		BE55CED01E7AC994006B851E /* TemporaryTimeSlot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemporaryTimeSlot.swift; path = Models/TemporaryTimeSlot.swift; sourceTree = "<group>"; };
 		BE55CED21E7ACB28006B851E /* TemporaryTimelineGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemporaryTimelineGenerator.swift; path = Services/Protocols/TemporaryTimelineGenerator.swift; sourceTree = "<group>"; };
 		BE55CED61E7AD70F006B851E /* TimelineMerger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimelineMerger.swift; path = Services/TimelineMerger.swift; sourceTree = "<group>"; };
@@ -514,6 +518,7 @@
 				24D73F2A1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift */,
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
 				BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */,
+				BE3D19FB1E81569800701AE6 /* TimelineMergerTests.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -579,6 +584,7 @@
 				24D73F2C1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift */,
 				BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */,
 				BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */,
+				BE3D19FD1E8187BD00701AE6 /* MockTimelineGenerator.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -1371,6 +1377,7 @@
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
+				BE3D19FE1E8187BD00701AE6 /* MockTimelineGenerator.swift in Sources */,
 				2FB611441DE785AB007C5646 /* MockFeedbackService.swift in Sources */,
 				24168E3A1DC21125004F90AD /* MockLoggingService.swift in Sources */,
 				24D18E281DF0251A0046B202 /* MockSmartGuessService.swift in Sources */,
@@ -1396,6 +1403,7 @@
 				BE1898D21E77F6D500EF3035 /* MockHealthKitService.swift in Sources */,
 				24B03B611D9E5DEE00452D16 /* MockSettingsService.swift in Sources */,
 				24564F691D8326E700D9A8AE /* ColorExtensionsTests.swift in Sources */,
+				BE3D19FC1E81569800701AE6 /* TimelineMergerTests.swift in Sources */,
 				24564F6D1D8326F100D9A8AE /* MainViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

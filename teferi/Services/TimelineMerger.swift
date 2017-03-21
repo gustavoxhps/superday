@@ -4,7 +4,7 @@ class TimelineMerger : TemporaryTimelineGenerator
 {
     private let timelineGenerators : [TemporaryTimelineGenerator]
     
-    init(withTimelineGenerator timelineGenerators: [TemporaryTimelineGenerator])
+    init(withTimelineGenerators timelineGenerators: TemporaryTimelineGenerator...)
     {
         self.timelineGenerators = timelineGenerators
     }
