@@ -54,16 +54,13 @@ class TimelineMerger : TemporaryTimelineGenerator
     private func toFirstTimeSlot(thatIntersects time: Date) -> ([TemporaryTimeSlot]) -> TemporaryTimeSlot?
     {
         return { timeline in
-            do
-            {
-                let first = timeline.first(where:)
-                let timeSlot = try first { timeSlot in return timeSlot.start <= time && (timeSlot.end == nil || timeSlot.end! > time) }
-                return timeSlot
-            }
-            catch
+            
+            guard let timeSlot = timeline.first(where: { $0.start <= time && ($0.end == nil || $0.end! > time) }) else
             {
                 return nil
             }
+            
+            return timeSlot
         }
     }
     
