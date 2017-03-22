@@ -149,6 +149,7 @@
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
+		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
 		BE03D9241E797A1D00F79377 /* EventSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE03D9231E797A1D00F79377 /* EventSource.swift */; };
 		BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */; };
 		BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */; };
@@ -374,6 +375,7 @@
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
+		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSampleExtensions.swift; path = Extensions/HealthSampleExtensions.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE03D9231E797A1D00F79377 /* EventSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventSource.swift; path = Services/Protocols/EventSource.swift; sourceTree = "<group>"; };
 		BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventServiceTests.swift; path = Services/TrackEventServiceTests.swift; sourceTree = "<group>"; };
@@ -645,6 +647,7 @@
 				51EAA2871DC0BA910025680D /* UIViewExtensions.swift */,
 				51DB18751E26144F00E0182D /* CLLocationExtensions.swift */,
 				BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */,
+				ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -1339,6 +1342,7 @@
 				2482CAFD1DB12F9F00E892C1 /* OnboardingPage3.swift in Sources */,
 				BEA024321E4106980061FE53 /* Colors.swift in Sources */,
 				24EB967D1DE708570040C211 /* AppState.swift in Sources */,
+				ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */,
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
 				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,

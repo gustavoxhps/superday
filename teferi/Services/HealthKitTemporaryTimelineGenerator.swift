@@ -117,9 +117,9 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         
         for sample in walkingAndRunning
         {
-            let sampleCategory = categoryBasedOnSpeed(sample)
+            let sampleCategory = sample.categoryBasedOnSpeed(using: fastMovingSpeedThreshold)
             
-            if let previousSample = previousSample, categoryBasedOnSpeed(previousSample) == sampleCategory
+            if let previousSample = previousSample, previousSample.categoryBasedOnSpeed(using: fastMovingSpeedThreshold) == sampleCategory
             {
                 continue
             }
@@ -173,31 +173,5 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
                                    smartGuess: nil,
                                    category: .unknown,
                                    location: nil) ]
-    }
-    
-    private func categoryBasedOnSpeed(_ sample: HealthSample) -> Category
-    {
-        return getSpeed(from: sample) > fastMovingSpeedThreshold ?
-            .commute :
-            .unknown
-    }
-    
-    private func getSpeed(from sample: HealthSample) -> Double
-    {
-        let duration = getDuration(from: sample)
-        
-        guard
-            let quantity = sample.value as? HKQuantity,
-            quantity.is(compatibleWith: .meter()),
-            duration > 0
-        else { return 0.0 }
-        
-        let distance = quantity.doubleValue(for: HKUnit.meter())
-        return distance / duration
-    }
-    
-    private func getDuration(from sample: HealthSample) -> Double
-    {
-        return sample.endTime.timeIntervalSince(sample.startTime)
     }
 }
