@@ -46,6 +46,36 @@ class DefaultSmartGuessService : SmartGuessService
         return smartGuess
     }
     
+    func markAsUsed(_ smartGuess: SmartGuess, atTime time: Date)
+    {
+        let id = smartGuess.id
+        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: smartGuess as AnyObject)
+        
+        guard let persistedSmartGuess = self.persistencyService.get(withPredicate: predicate).first else
+        {
+            self.loggingService.log(withLogLevel: .warning, message: "Tried updating smart guess with invalid id \(id)")
+            return
+        }
+        guard time >= persistedSmartGuess.lastUsed else
+        {
+            self.loggingService.log(withLogLevel: .debug, message: "Tried updating smart guess with date before the one already set  \(id)")
+            return
+        }
+        
+        let editFunction = { (smartGuess: SmartGuess) -> (SmartGuess) in
+            smartGuess.lastUsed = time
+            return smartGuess
+        }
+        
+        if !self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        {
+            self.loggingService.log(withLogLevel: .error, message: "Error trying to update last-used time of SmartGuess with id \(id)")
+        }
+        
+        smartGuess.lastUsed = time
+
+    }
+    
     func strike(withId id: Int)
     {
         let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
@@ -106,18 +136,6 @@ class DefaultSmartGuessService : SmartGuessService
         
         guard let bestMatch = bestKnnMatch.smartGuess
         else { return nil }
-        
-        //Every time a dictionary entry gets used in a guess, it gets refreshed.
-        //Entries not refresh in N days get purged
-        let lastUsedDate = self.timeService.now
-        
-        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: bestMatch.id as AnyObject)
-        self.persistencyService.update(withPredicate: predicate, updateFunction: { smartGuess in
-            smartGuess.lastUsed = lastUsedDate
-            return smartGuess
-        })
-        
-        bestMatch.lastUsed = lastUsedDate
         
         return bestMatch
     }

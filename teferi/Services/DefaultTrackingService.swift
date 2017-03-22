@@ -181,6 +181,7 @@ class DefaultTrackingService : TrackingService
         if let smartGuess = smartGuess
         {
             self.timeSlotService.addTimeSlot(withStartTime: location.timestamp, smartGuess: smartGuess, location: location)
+            self.smartGuessService.markAsUsed(smartGuess, atTime: location.timestamp)
         }
         else
         {

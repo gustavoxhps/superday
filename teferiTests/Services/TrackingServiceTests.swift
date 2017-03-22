@@ -369,6 +369,21 @@ class TrackingServiceTests : XCTestCase
         expect(self.timeSlotService.timeSlots[1].category).to(equal(Category.food))
     }
     
+    func testSmartGuessGetsMarkedAsUsedIfSmartGuessIsUsed()
+    {
+        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
+        let guess = SmartGuess(withId: 42, category: .food, location: CLLocation(), lastUsed: self.midnight)
+        self.smartGuessService.smartGuessToReturn = guess
+        
+        let location = self.getLocation(withTimestamp: self.noon)
+        self.trackingService.onLocation(location)
+        
+        expect(self.smartGuessService.smartGuessUpdates.count).to(equal(1))
+        expect(self.smartGuessService.smartGuessUpdates.first!.0.id).to(equal(guess.id))
+        expect(self.smartGuessService.smartGuessUpdates.first!.1).to(equal(self.noon))
+        
+    }
+    
     func testNotificationIsCancelledIfSmartGuessExists()
     {
         self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
