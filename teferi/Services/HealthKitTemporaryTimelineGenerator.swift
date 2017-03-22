@@ -55,31 +55,23 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     
     private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
-        var indicesToRemove = [Int]()
-        
-        for (currentIndex, timeSlot) in timeSlots.enumerated()
-        {
-            guard timeSlot.category == .unknown else { continue }
-            
-            let nextIndex = timeSlots.index(after: currentIndex)
-            
-            guard nextIndex < timeSlots.endIndex else { continue }
-            
-            let nextTimeSlot = timeSlots[nextIndex]
-            
-            if nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
-            {
-                indicesToRemove.append(currentIndex)
+        return timeSlots.enumerated().filter
+            { currentIndex, timeSlot in
+                guard timeSlot.category == .unknown else { return true }
+                
+                let nextIndex = timeSlots.index(after: currentIndex)
+                
+                guard nextIndex < timeSlots.endIndex else { return true }
+                
+                let nextTimeSlot = timeSlots[nextIndex]
+                
+                if nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
+                {
+                    return false
+                }
+                return true
             }
-        }
-        
-        var timeSlotsToReturn = timeSlots
-        
-        indicesToRemove.reversed().forEach { (index) in
-            timeSlotsToReturn.remove(at: index)
-        }
-        
-        return timeSlotsToReturn
+            .map({ $0.element })
     }
     
     private func shortSleepSamples(_ healthSample: HealthSample) -> Bool
