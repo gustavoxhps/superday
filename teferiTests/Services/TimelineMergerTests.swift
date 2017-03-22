@@ -4,13 +4,45 @@ import Nimble
 import CoreLocation
 @testable import teferi
 
+fileprivate struct TestData
+{
+    let startOffset : TimeInterval
+    let endOffset : TimeInterval?
+    let category : teferi.Category
+    let includeLocation : Bool
+    let includeSmartGuess : Bool
+}
+
+fileprivate extension TestData
+{
+    init(startOffset: TimeInterval, endOffset: TimeInterval?)
+    {
+        self.startOffset = startOffset
+        self.endOffset = endOffset
+        self.category = .unknown
+        self.includeSmartGuess = false
+        self.includeLocation = false
+    }
+    
+    init(startOffset: TimeInterval,
+         endOffset: TimeInterval?,
+         _ category: teferi.Category,
+         includeSmartGuess: Bool = false,
+         includeLocation: Bool = false)
+    {
+        self.startOffset = startOffset
+        self.endOffset = endOffset
+        self.category = category
+        self.includeSmartGuess = includeSmartGuess
+        self.includeLocation = includeLocation
+    }
+}
+
 class TimelineMergerTests : XCTestCase
 {
-    private typealias SlotTimeDiff = (start: TimeInterval, end: TimeInterval?)
-    private typealias SlotTimeDiffWithCategory = (start: TimeInterval, end: TimeInterval?, category: teferi.Category)
-    
     private var noon : Date!
     private var baseSlot : TemporaryTimeSlot!
+    private let baseLocation = Location(fromCLLocation: CLLocation())
     
     private var timelineMerger : TimelineMerger!
     
@@ -21,10 +53,10 @@ class TimelineMergerTests : XCTestCase
     {
         self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         self.baseSlot = TemporaryTimeSlot(start: noon,
-                                        end: nil,
-                                        smartGuess: nil,
-                                        category: Category.unknown,
-                                        location: nil)
+                                          end: nil,
+                                          smartGuess: nil,
+                                          category: Category.unknown,
+                                          location: nil)
         
         self.locationTemporaryTimelineGenerator = MockTimelineGenerator()
         self.healthKitTemporaryTimelineGenerator = MockTimelineGenerator()
@@ -35,20 +67,68 @@ class TimelineMergerTests : XCTestCase
     func testTheMergerCreatesATimelineThatUsesTheIntersectionOfAllTimeSlots()
     {
         /*
-         HealthKit   : [   |    |     | ]
          CoreLocation: [ |   |     |    ]
+         HealthKit   : [   |    |     | ]
          Merged      : [ | | |  |  |  | ]
          */
         
         self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
-            [ (0, 100), (100, 400), (400, 0900), (0900, 1300) ].map(toTempTimeSlot)
+            [ TestData(startOffset: 0000, endOffset: 0100),
+              TestData(startOffset: 0100, endOffset: 0400),
+              TestData(startOffset: 0400, endOffset: 0900),
+              TestData(startOffset: 0900, endOffset: 1300) ].map(toTempTimeSlot)
         
         self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
-            [ (0, 300), (300, 700), (700, 1200), (1200, 1300) ].map(toTempTimeSlot)
+            [ TestData(startOffset: 0000, endOffset: 0300),
+              TestData(startOffset: 0300, endOffset: 0700),
+              TestData(startOffset: 0700, endOffset: 1200),
+              TestData(startOffset: 1200, endOffset: 1300) ].map(toTempTimeSlot)
         
         let expectedTimeline =
-            [ (0, 100), (100, 300), (300, 400), (400, 700), (700, 900), (900, 1200), (1200, 1300), (1300, nil) ]
-                .map(toTempTimeSlot)
+            [ TestData(startOffset: 0000, endOffset: 0100),
+              TestData(startOffset: 0100, endOffset: 0300),
+              TestData(startOffset: 0300, endOffset: 0400),
+              TestData(startOffset: 0400, endOffset: 0700),
+              TestData(startOffset: 0700, endOffset: 0900),
+              TestData(startOffset: 0900, endOffset: 1200),
+              TestData(startOffset: 1200, endOffset: 1300),
+              TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
+        
+        self.timelineMerger
+            .generateTemporaryTimeline()
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
+    }
+    
+    func testTimelinesWithEquallySizedTimeSlotsDoNotCreateZeroDurationSlots()
+    {
+        /*
+         CoreLocation: [ |   |     |    ]
+         HealthKit   : [ |   |  |     | ]
+         Merged      : [ |   |  |  |  | ]
+         */
+        
+        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0100),
+              TestData(startOffset: 0100, endOffset: 0400),
+              TestData(startOffset: 0400, endOffset: 0900),
+              TestData(startOffset: 0900, endOffset: 1300) ].map(toTempTimeSlot)
+        
+        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0100),
+              TestData(startOffset: 0100, endOffset: 0400),
+              TestData(startOffset: 0400, endOffset: 0600),
+              TestData(startOffset: 0600, endOffset: 1100),
+              TestData(startOffset: 1100, endOffset: 1300) ].map(toTempTimeSlot)
+        
+        let expectedTimeline =
+            [ TestData(startOffset: 0000, endOffset: 0100),
+              TestData(startOffset: 0100, endOffset: 0400),
+              TestData(startOffset: 0400, endOffset: 0600),
+              TestData(startOffset: 0600, endOffset: 0900),
+              TestData(startOffset: 0900, endOffset: 1100),
+              TestData(startOffset: 1100, endOffset: 1300),
+              TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
         
         self.timelineMerger
             .generateTemporaryTimeline()
@@ -63,30 +143,70 @@ class TimelineMergerTests : XCTestCase
          W = work
          Otherwise, unknown
          
-         HealthKit   : [   C    |     | ]
          CoreLocation: [ |   |  W  |    ]
+         HealthKit   : [   C    |     | ]
          Merged      : [C| C |C |W |  | ]
          */
         
         self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
-            [ (0000, 0100, teferi.Category.unknown),
-              (0100, 0400, teferi.Category.unknown),
-              (0400, 0900, teferi.Category.work   ),
-              (0900, 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown),
+              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work   ),
+              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
         
         self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
-            [ (0000, 0700, teferi.Category.commute),
-              (0700, 1200, teferi.Category.unknown),
-              (1200, 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
+            [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute),
+              TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
         
         let expectedTimeline =
-            [ (0000, 0100, teferi.Category.commute),
-              (0100, 0400, teferi.Category.commute),
-              (0400, 0700, teferi.Category.commute),
-              (0700, 0900, teferi.Category.work),
-              (0900, 1200, teferi.Category.unknown),
-              (1200, 1300, teferi.Category.unknown),
-              (1300, nil , teferi.Category.unknown) ]
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.commute),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.commute),
+              TestData(startOffset: 0400, endOffset: 0700, teferi.Category.commute),
+              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.work   ),
+              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown),
+              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown) ].map(toTempTimeSlot)
+        
+        self.timelineMerger
+            .generateTemporaryTimeline()
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
+    }
+    
+    func testCategoriesThatAreBackedByASmartGuessesHaveHigherPriorityOverOnesThatAreNot()
+    {
+        /*
+         C = commute
+         W = work
+         F = food
+         Lowercase = No SmartGuess
+         Otherwise, unknown
+         
+         CoreLocation: [ |   |  W  |  w ]
+         HealthKit   : [   c    |     |F]
+         Merged      : [c| c |c |W | w|F]
+         */
+        
+        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work   , includeSmartGuess: true),
+              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.work   , includeSmartGuess: false)].map(toTempTimeSlot)
+        
+        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food   , includeSmartGuess: true )].map(toTempTimeSlot)
+        
+        let expectedTimeline =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0400, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.work   , includeSmartGuess: true),
+              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.work   , includeSmartGuess: false),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food   , includeSmartGuess: true),
+              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
         self.timelineMerger
@@ -95,17 +215,76 @@ class TimelineMergerTests : XCTestCase
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
     
-    private func toTempTimeSlot(dates: SlotTimeDiff) -> TemporaryTimeSlot
+    func testALocationShouldAlwaysBeSelectedWhenAvailableEvenIfTheTimeSlotProvidingItHasTheWrongCategory()
     {
-        return self.baseSlot.with(start: self.date(dates.start),
-                                  end: dates.end == nil ? nil : self.date(dates.end!))
+        /*
+         C = Commute
+         L = Unknown with location
+         WL = Work with location
+         CL = Commute with location
+         Otherwise, unknown
+         
+         CoreLocation: [ | WL|     |  L ]
+         HealthKit   : [   C    |     | ]
+         Merged      : [C| CL|C |  | L|L]
+         */
+        
+        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeLocation: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.work   , includeLocation: true ),
+              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.unknown, includeLocation: false),
+              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeLocation: true ) ].map(toTempTimeSlot)
+        
+        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute),
+              TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
+        
+        let expectedTimeline =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.commute, includeLocation: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.commute, includeLocation: true ),
+              TestData(startOffset: 0400, endOffset: 0700, teferi.Category.commute, includeLocation: false),
+              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.unknown, includeLocation: false),
+              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown, includeLocation: true ),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeLocation: true ),
+              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeLocation: false) ].map(toTempTimeSlot)
+        
+        self.timelineMerger
+            .generateTemporaryTimeline()
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
     
-    private func toTempTimeSlot(slot: SlotTimeDiffWithCategory) -> TemporaryTimeSlot
+    
+    private func compare(timeSlot actualTimeSlot: TemporaryTimeSlot, to expectedTimeSlot: TemporaryTimeSlot)
     {
-        return self.baseSlot.with(start: self.date(slot.start),
-                                  end: slot.end == nil ? nil : self.date(slot.end!),
-                                  category: slot.category)
+        expect(actualTimeSlot.start).to(equal(expectedTimeSlot.start))
+        expect(actualTimeSlot.category).to(equal(expectedTimeSlot.category))
+        
+        compareOptional(actualTimeSlot.end, expectedTimeSlot.end)
+        compareOptional(actualTimeSlot.location, expectedTimeSlot.location)
+        compareOptional(actualTimeSlot.smartGuess, expectedTimeSlot.smartGuess)
+    }
+    
+    private func compareOptional<T : Equatable>(_ actual: T?, _ expected: T?)
+    {
+        if expected == nil
+        {
+            expect(actual).to(beNil())
+        }
+        else
+        {
+            expect(actual).to(equal(expected))
+        }
+    }
+    
+    private func toTempTimeSlot(data: TestData) -> TemporaryTimeSlot
+    {
+        return self.baseSlot.with(start: self.date(data.startOffset),
+                                  end: data.endOffset != nil ? self.date(data.endOffset!) : nil,
+                                  smartGuess: data.includeSmartGuess ? self.smartGuess(withCategory: data.category) : nil,
+                                  category: data.category,
+                                  location: data.includeLocation ? self.baseLocation : nil)
     }
     
     private func date(_ timeInterval: TimeInterval) -> Date
@@ -113,18 +292,19 @@ class TimelineMergerTests : XCTestCase
         return noon.addingTimeInterval(timeInterval)
     }
     
-    private func compare(timeSlot actualTimeSlot: TemporaryTimeSlot, to expectedTimeSlot: TemporaryTimeSlot)
+    private func smartGuess(withCategory category: teferi.Category) -> SmartGuess
     {
-        expect(actualTimeSlot.start).to(equal(expectedTimeSlot.start))
-        expect(actualTimeSlot.category).to(equal(expectedTimeSlot.category))
-        
-        if expectedTimeSlot.end == nil
-        {
-            expect(actualTimeSlot.end).to(beNil())
-        }
-        else
-        {
-            expect(actualTimeSlot.end).to(equal(expectedTimeSlot.end))
-        }
+        return SmartGuess(withId: 0, category: category, location: CLLocation(), lastUsed: noon)
+    }
+}
+
+extension SmartGuess : Equatable
+{
+    public static func ==(lhs: SmartGuess, rhs: SmartGuess) -> Bool
+    {
+        return lhs.id == rhs.id &&
+            lhs.errorCount == rhs.errorCount &&
+            lhs.category == rhs.category &&
+            lhs.lastUsed == rhs.lastUsed
     }
 }
