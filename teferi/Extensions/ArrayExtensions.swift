@@ -32,6 +32,29 @@ extension Array
         let element : Element? = self.indices.contains(index) ? self[index] : nil
         return element
     }
+    
+    func groupBy(_ sameGroup: (Element, Element) -> Bool) -> [[Element]]
+    {
+        var groups = [[Element]]()
+        
+        for element in self
+        {
+            guard let lastGroup = groups.last,
+                let lastElement = lastGroup.last else {
+                    groups = [[element]]
+                    continue
+            }
+            if sameGroup(lastElement, element) {
+                groups = groups.dropLast() + [lastGroup + [element]]
+                continue
+            } else {
+                groups = groups + [[element]]
+                continue
+            }
+        }
+        
+        return groups
+    }
 }
 
 extension Array where Element : Hashable

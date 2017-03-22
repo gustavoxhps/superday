@@ -31,13 +31,12 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     // MARK: - Protocol implementation
     func generateTemporaryTimeline() -> [TemporaryTimeSlot]
     {
-        let allHealthSamples = trackEventService
+        let groupedHealthSamples = trackEventService
             .getEvents()
             .flatMap(toHealthSample)
             .filter(shortSleepSamples)
             .sorted(by: { $0.startTime < $1.startTime })
-        
-        let groupedHealthSamples = groupByContinuityAndIdentifier(from: allHealthSamples)
+            .groupBy(sameIdAndContinuous)
         
         let temporaryTimeSlots = groupedHealthSamples
             .flatMap(toTemporaryTimeSlots)
@@ -49,44 +48,9 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     }
     
     // MARK: - Helper
-    private func groupByContinuityAndIdentifier(from data: [HealthSample]) -> [[HealthSample]]
+    private func sameIdAndContinuous(previousSample:HealthSample, sample:HealthSample) -> Bool
     {
-        var dataToReturn = [[HealthSample]]()
-        var currentBatch = [HealthSample]()
-        
-        func add(_ sample: HealthSample, _ index: Int)
-        {
-            currentBatch.append(sample)
-            if index == data.endIndex - 1
-            {
-                dataToReturn.append(currentBatch)
-                currentBatch.removeAll()
-            }
-        }
-        
-        for (index, sample) in data.enumerated()
-        {
-            if currentBatch.isEmpty
-            {
-                add(sample, index)
-                continue
-            }
-            
-            let previeousSample = currentBatch.last!
-            
-            if previeousSample.identifier == sample.identifier && previeousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
-            {
-                add(sample, index)
-                continue
-            }
-            
-            dataToReturn.append(currentBatch)
-            currentBatch.removeAll()
-            
-            add(sample, index)
-        }
-        
-        return dataToReturn
+        return previousSample.identifier == sample.identifier && previousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
     }
     
     private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
