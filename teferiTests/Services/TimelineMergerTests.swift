@@ -254,6 +254,45 @@ class TimelineMergerTests : XCTestCase
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
     
+    func testCommutesWithSmartGuessesHavePriorityOverCommutesWithoutItRegardlessOfTheOrderOfTheSourcesSuggestingCommute()
+    {
+        /*
+         C = commute with SmartGuess
+         c = commute with no SmartGuess
+         Otherwise, unknown
+         
+         CoreLocation: [ |   |  C  |    ]
+         HealthKit   : [   c    |     | ]
+         Merged      : [c| c |C |C |  | ]
+         */
+        
+        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.commute, includeSmartGuess: true ),
+              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
+        
+        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
+        
+        let expectedTimeline =
+            [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.commute, includeSmartGuess: false),
+              TestData(startOffset: 0400, endOffset: 0700, teferi.Category.commute, includeSmartGuess: true ),
+              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.commute, includeSmartGuess: true ),
+              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false),
+              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
+                .map(toTempTimeSlot)
+        
+        self.timelineMerger
+            .generateTemporaryTimeline()
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
+    }
+    
     func testALocationShouldAlwaysBeSelectedWhenAvailableEvenIfTheTimeSlotProvidingItHasTheWrongCategory()
     {
         /*

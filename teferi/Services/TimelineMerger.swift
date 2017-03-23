@@ -75,13 +75,16 @@ class TimelineMerger : TemporaryTimelineGenerator
             {
                 case .unknown:
                     continue
-                case .commute:
-                    break
                 default:
                 
                     guard let currentBest = bestTemporaryTimeSlot else { break }
                     
-                    if currentBest.category == .commute { continue }
+                    let currentBestIsCommute = currentBest.category == .commute
+                    let currentIsCommute = timeSlot.category == .commute
+                    
+                    if currentBestIsCommute && !currentIsCommute { continue }
+                   
+                    if currentIsCommute && !currentBestIsCommute { break }
                     
                     //If we can't decide, we stick to the one with a SmartGuess
                     if currentBest.smartGuess != nil || timeSlot.smartGuess == nil { continue }
