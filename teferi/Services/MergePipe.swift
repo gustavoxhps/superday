@@ -1,27 +1,17 @@
 import Foundation
 
-class TimelineMerger : TemporaryTimelineGenerator
+class MergePipe : CrossPipe
 {
-    private let timelineGenerators : [TemporaryTimelineGenerator]
-    
-    init(withTimelineGenerators timelineGenerators: TemporaryTimelineGenerator...)
+    func process(data: [[TemporaryTimeSlot]]) -> [TemporaryTimeSlot]
     {
-        self.timelineGenerators = timelineGenerators
-    }
-    
-    func generateTemporaryTimeline() -> [TemporaryTimeSlot]
-    {
-        let timelines = self.timelineGenerators
-                            .map { $0.generateTemporaryTimeline() }
-    
-        let flatTimeline = timelines.flatMap { $0 }
+        let flatTimeline = data.flatMap { $0 }
         let startTimes =  flatTimeline.map { $0.start }
         let endTimes = flatTimeline.flatMap { $0.end }
         
         let timeline = (startTimes + endTimes)
                         .distinct()
                         .sorted(by: <)
-                        .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: timelines))
+                        .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: data))
         
         return timeline
     }

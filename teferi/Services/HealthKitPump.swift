@@ -1,7 +1,7 @@
 import Foundation
 import HealthKit
 
-class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
+class HealthKitPump : Pump
 {
     private let trackEventService : TrackEventService
     private let fastMovingSpeedThreshold : Double
@@ -25,7 +25,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     }
     
     // MARK: - Protocol implementation
-    func generateTemporaryTimeline() -> [TemporaryTimeSlot]
+    func start() -> [TemporaryTimeSlot]
     {
         let groupedHealthSamples = trackEventService
             .getEvents()

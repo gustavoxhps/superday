@@ -3,7 +3,7 @@ import Nimble
 import HealthKit
 @testable import teferi
 
-class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
+class HealthKitPumpTests : XCTestCase
 {
     private typealias TupleHKSample = (start: Double, end: Double, identifier: String, quantity: Int)
     private typealias TupleTempTimeSlot = (start: Double, category: teferi.Category)
@@ -11,13 +11,13 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     private let startData = Date().ignoreTimeComponents()
     
     private var trackEventService : MockTrackEventService!
-    private var healthKitTemporaryTimelineGenerator : HealthKitTemporaryTimeLineGenerator!
+    private var healthKitPump : HealthKitPump!
     
     override func setUp()
     {
         
         self.trackEventService = MockTrackEventService()
-        self.healthKitTemporaryTimelineGenerator = HealthKitTemporaryTimeLineGenerator(trackEventService: trackEventService)
+        self.healthKitPump = HealthKitPump(trackEventService: trackEventService)
     }
     
     func testExtraUnknownTemporaryTimeslotIsAddedInTheEnd()
@@ -27,7 +27,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         let expectedResult = [(start: 00, category: .commute),
                               (start: 10, category: .unknown)].map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -50,7 +50,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
 
@@ -78,7 +78,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -117,7 +117,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -145,7 +145,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
 
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -170,7 +170,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let generatedTimeslots = self.healthKitPump.start()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         

@@ -1,10 +1,10 @@
 @testable import teferi
 
-class MockTimelineGenerator : TemporaryTimelineGenerator
+class MockPump : Pump
 {
     var timeSlotsToReturn = [TemporaryTimeSlot]()
     
-    func generateTemporaryTimeline() -> [TemporaryTimeSlot]
+    func start() -> [TemporaryTimeSlot]
     {
         return timeSlotsToReturn
     }
