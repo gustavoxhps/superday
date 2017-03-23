@@ -293,6 +293,35 @@ class TimelineMergerTests : XCTestCase
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
     
+    func testTheMergeAlgoShouldHandleMissingSlotsInSomeSources()
+    {
+        /*
+         - = Covered by slots and unknown
+         Otherwise, no slot info
+         
+         CoreLocation: [ |-|  ]
+         HealthKit   : [------]
+         Merged      : [-|-|--]
+         */
+        
+        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0100, endOffset: 0200) ].map(toTempTimeSlot)
+        
+        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+            [ TestData(startOffset: 0000, endOffset: 0600) ].map(toTempTimeSlot)
+        
+        let expectedTimeline =
+            [ TestData(startOffset: 000, endOffset: 100),
+              TestData(startOffset: 100, endOffset: 200),
+              TestData(startOffset: 200, endOffset: 600),
+              TestData(startOffset: 600, endOffset: nil ) ].map(toTempTimeSlot)
+        
+        self.timelineMerger
+            .generateTemporaryTimeline()
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
+    }
+    
     func testALocationShouldAlwaysBeSelectedWhenAvailableEvenIfTheTimeSlotProvidingItHasTheWrongCategory()
     {
         /*
@@ -332,7 +361,6 @@ class TimelineMergerTests : XCTestCase
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
-    
     
     private func compare(timeSlot actualTimeSlot: TemporaryTimeSlot, to expectedTimeSlot: TemporaryTimeSlot)
     {
