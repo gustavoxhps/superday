@@ -115,6 +115,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             
             previousSample = sample
             slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
+                                                   end: nil,
                                                    smartGuess: nil,
                                                    category: sampleCategory,
                                                    location: nil))
@@ -123,6 +124,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         let lastSample = walkingAndRunning.last!
         
         slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
+                                               end: nil,
                                                smartGuess: nil,
                                                category: .unknown,
                                                location: nil))
@@ -138,10 +140,12 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             else { return nil }
         
         return [ TemporaryTimeSlot(start: firstSample.startTime,
+                                   end: nil,
                                    smartGuess: nil,
                                    category: .commute,
                                    location: nil),
                  TemporaryTimeSlot(start: lastSample.endTime,
+                                   end: nil,
                                    smartGuess: nil,
                                    category: .unknown,
                                    location: nil) ]
@@ -156,6 +160,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         sleepAnalysis.forEach({ (sample) in
             
             slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
+                                                   end: nil,
                                                    smartGuess: nil,
                                                    category: .unknown,
                                                    location: nil))
@@ -164,6 +169,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         let lastSample = sleepAnalysis.last!
         
         slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
+                                               end: nil,
                                                smartGuess: nil,
                                                category: .unknown,
                                                location: nil))
