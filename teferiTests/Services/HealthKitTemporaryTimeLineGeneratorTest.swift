@@ -154,7 +154,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedResult[i]) }
     }
     
-    func testNonContinuousHealthSamplesFromSameTypeAreConvertedToSeparateTimeslotsWithUnkwonTimeSlotInBetween()
+    func testNonContinuousHealthSamplesFromSameTypeAreConvertedToSeparateTimeslotsWithUnknownTimeSlotInBetween()
     {
         let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 10, end: 20, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
