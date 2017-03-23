@@ -5,7 +5,6 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
 {
     private let trackEventService : TrackEventService
     private let fastMovingSpeedThreshold : Double
-    private let minSleepDuration : Double
     private let minGapAllowedDuration : Double
     
     // MARK: - Init
@@ -15,16 +14,13 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     /// - Parameters:
     ///   - trackEventService: Used to retrive Health TrackEvents
     ///   - fastMovingSpeedThreshold: Used to filter out samples with lower speed than this value (mesured in m/s). Default: 0.3
-    ///   - minSleepDuration: Used to filter out sleep with duration lower than this value (mesured in sec). Default: 10.800
     ///   - minGapAllowedDuration: Used to filter out temporaryTimeSlots with duration smaller than this value (mesured in sec). Default: 300
     init(trackEventService: TrackEventService,
          fastMovingSpeedThreshold: Double = 0.3,
-         minSleepDuration: Double = 10_800,
          minGapAllowedDuration: Double = 300)
     {
         self.trackEventService = trackEventService
         self.fastMovingSpeedThreshold = fastMovingSpeedThreshold
-        self.minSleepDuration = minSleepDuration
         self.minGapAllowedDuration = minGapAllowedDuration
     }
     
@@ -34,23 +30,22 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
         let groupedHealthSamples = trackEventService
             .getEvents()
             .flatMap(toHealthSample)
-            .filter(shortSleepSamples)
             .sorted(by: { $0.startTime < $1.startTime })
             .groupBy(sameIdAndContinuous)
         
         let temporaryTimeSlots = groupedHealthSamples
             .flatMap(toTemporaryTimeSlots)
             .flatMap { $0 }
-        
+                
         let temporaryTimeSlotsToReturn = removeSmallTimeSlots(from: temporaryTimeSlots)
-        
+
         return temporaryTimeSlotsToReturn
     }
     
     // MARK: - Helper
     private func sameIdAndContinuous(previousSample:HealthSample, sample:HealthSample) -> Bool
     {
-        return previousSample.identifier == sample.identifier && previousSample.endTime.timeIntervalSince(sample.startTime) < minGapAllowedDuration
+        return previousSample.identifier == sample.identifier && abs(previousSample.endTime.timeIntervalSince(sample.startTime)) < minGapAllowedDuration
     }
     
     private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
@@ -74,12 +69,6 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
             .map({ $0.element })
     }
     
-    private func shortSleepSamples(_ healthSample: HealthSample) -> Bool
-    {
-        guard healthSample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue else { return true }
-        
-        return healthSample.endTime.timeIntervalSince(healthSample.startTime) > minSleepDuration
-    }
     
     private func toHealthSample(_ trackEvent: TrackEvent) -> HealthSample?
     {
@@ -160,18 +149,25 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     
     private func makeSlots(fromSleepAnalysis sleepAnalysis: [HealthSample]) -> [TemporaryTimeSlot]?
     {
-        guard
-            let firstSample = sleepAnalysis.first,
-            let lastSample = sleepAnalysis.last
-        else { return nil }
+        if sleepAnalysis.isEmpty { return nil }
         
-        return [ TemporaryTimeSlot(start: firstSample.startTime,
-                                   smartGuess: nil,
-                                   category: .unknown,
-                                   location: nil),
-                 TemporaryTimeSlot(start: lastSample.endTime,
-                                   smartGuess: nil,
-                                   category: .unknown,
-                                   location: nil) ]
+        var slotsToReturn = [TemporaryTimeSlot]()
+        
+        sleepAnalysis.forEach({ (sample) in
+            
+            slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
+                                                   smartGuess: nil,
+                                                   category: .unknown,
+                                                   location: nil))
+        })
+        
+        let lastSample = sleepAnalysis.last!
+        
+        slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
+                                               smartGuess: nil,
+                                               category: .unknown,
+                                               location: nil))
+        
+        return slotsToReturn
     }
 }
