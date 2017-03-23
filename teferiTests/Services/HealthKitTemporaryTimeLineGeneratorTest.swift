@@ -126,6 +126,59 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedResult[i]) }
     }
     
+    func testContinuousSleepSamplesAreConvertedToSeparateTimeslots()
+    {
+        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 2*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+                                              (start: 2*60, end: 3*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+                                              (start: 3*60, end: 4*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+                                              (start: 4*60, end: 11*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+                                              (start: 11*60, end: 12*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0)]
+        
+        trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
+        
+        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 00, category: .unknown),
+                                                          (start: 2*60, category: .unknown),
+                                                          (start: 3*60, category: .unknown),
+                                                          (start: 4*60, category: .unknown),
+                                                          (start: 11*60, category: .unknown),
+                                                          (start: 12*60, category: .unknown)]
+        
+        let expectedResult = expectedResultTuples.map(toTempTimeSlot)
+        
+        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+
+        expect(generatedTimeslots.count).to(equal(expectedResult.count))
+        
+        generatedTimeslots
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedResult[i]) }
+    }
+    
+    func testNonContinuousHealthSamplesFromSameTypeAreConvertedToSeparateTimeslotsWithUnkwonTimeSlotInBetween()
+    {
+        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
+                                              (start: 10, end: 20, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
+                                              (start: 100, end: 110, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
+                                              (start: 110, end: 120, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0)]
+        
+        trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
+        
+        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 0, category: .commute),
+                                                          (start: 20, category: .unknown),
+                                                          (start: 100, category: .commute),
+                                                          (start: 120, category: .unknown)]
+        
+        let expectedResult = expectedResultTuples.map(toTempTimeSlot)
+        
+        let generatedTimeslots = self.healthKitTemporaryTimelineGenerator.generateTemporaryTimeline()
+        
+        expect(generatedTimeslots.count).to(equal(expectedResult.count))
+        
+        generatedTimeslots
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedResult[i]) }
+    }
+    
     // MARK: - Helper
     private func toTempTimeSlot(tuple: TempTimeSlotTuple) -> TemporaryTimeSlot
     {
