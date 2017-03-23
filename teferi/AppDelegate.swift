@@ -81,7 +81,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
                                                           persistencyService: trackEventServicePersistency,
-                                                          withEventSources: locationService)
+                                                          withEventSources: locationService, healthKitService)
         
         self.trackingService =
             DefaultTrackingService(timeService: self.timeService,
