@@ -5,8 +5,8 @@ import HealthKit
 
 class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
 {
-    private typealias HKSampleTuple = (start: Double, end: Double, identifier: String, quantity: Int)
-    private typealias TempTimeSlotTuple = (start: Double, category: teferi.Category)
+    private typealias TupleHKSample = (start: Double, end: Double, identifier: String, quantity: Int)
+    private typealias TupleTempTimeSlot = (start: Double, category: teferi.Category)
     
     private let startData = Date().ignoreTimeComponents()
     
@@ -38,14 +38,14 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     
     func testContinuousHealthSamplesFromSameTypeAreMergedIntoOneTemporaryTimeslot()
     {
-        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 10, end: 20, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 20, end: 23, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 23, end: 25, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0)]
         
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
-        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 0, category: .commute),
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 0, category: .commute),
                                                           (start: 25, category: .unknown)]
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
@@ -61,7 +61,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     
     func testContinuousHealthSamplesFromDifferentTypesAreMergedIntoSeparateTemporaryTimeslot()
     {
-        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 200),
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 200),
                                               (start: 10, end: 20, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 200),
                                               (start: 20, end: 30, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 200),
                                               (start: 30, end: 40, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 200),
@@ -72,7 +72,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
-        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 00, category: .commute),
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .commute),
                                                           (start: 40, category: .commute),
                                                           (start: 80, category: .unknown)]
         
@@ -89,7 +89,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     
     func testCommuteIsDetectedInsideContinuousWalkingAndRunningSamples()
     {
-        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 100),
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 100),
                                               (start: 10, end: 15, identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 50),
                                               (start: 15, end: 20, identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 200),
                                               (start: 20, end: 30, identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 250),
@@ -106,7 +106,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
-        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 00, category: .unknown),
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .unknown),
                                                           (start: 15, category: .commute),
                                                           (start: 30, category: .unknown),
                                                           (start: 40, category: .commute),
@@ -128,7 +128,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     
     func testContinuousSleepSamplesAreConvertedToSeparateTimeslots()
     {
-        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 2*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 2*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
                                               (start: 2*60, end: 3*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
                                               (start: 3*60, end: 4*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
                                               (start: 4*60, end: 11*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
@@ -136,7 +136,7 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
         
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
-        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 00, category: .unknown),
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .unknown),
                                                           (start: 2*60, category: .unknown),
                                                           (start: 3*60, category: .unknown),
                                                           (start: 4*60, category: .unknown),
@@ -156,14 +156,14 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     
     func testNonContinuousHealthSamplesFromSameTypeAreConvertedToSeparateTimeslotsWithUnknownTimeSlotInBetween()
     {
-        let sampleTuples : [HKSampleTuple] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 10, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 10, end: 20, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 100, end: 110, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0),
                                               (start: 110, end: 120, identifier: HKQuantityTypeIdentifier.distanceCycling.rawValue, quantity: 0)]
         
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
-        let expectedResultTuples : [TempTimeSlotTuple] = [(start: 0, category: .commute),
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 0, category: .commute),
                                                           (start: 20, category: .unknown),
                                                           (start: 100, category: .commute),
                                                           (start: 120, category: .unknown)]
@@ -180,12 +180,12 @@ class HealthKitTemporaryTimeLineGeneratorTest: XCTestCase
     }
     
     // MARK: - Helper
-    private func toTempTimeSlot(tuple: TempTimeSlotTuple) -> TemporaryTimeSlot
+    private func toTempTimeSlot(tuple: TupleTempTimeSlot) -> TemporaryTimeSlot
     {
         return TemporaryTimeSlot(start: date(tuple.start), end: nil, smartGuess: nil, category: tuple.category, location: nil)
     }
     
-    private func toTrackEvent(tuple: HKSampleTuple) -> TrackEvent
+    private func toTrackEvent(tuple: TupleHKSample) -> TrackEvent
     {
         var healthSample : HealthSample?
         
