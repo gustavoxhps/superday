@@ -14,6 +14,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
     
+    private let pipeline : Pipeline
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let loggingService : LoggingService
@@ -82,6 +83,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                           persistencyService: trackEventServicePersistency,
                                                           withEventSources: locationService, healthKitService)
         
+        self.pipeline = Pipeline.with(pumps: HealthKitPump(trackEventService: self.trackEventService))
+                                .pipe(to: MergePipe())
+                                .sink(PersistencySink())
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -101,6 +105,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             return true
         }
         
+        self.pipeline.start()
         self.initializeWindowIfNeeded()
         self.smartGuessService.purgeEntries(olderThan: self.timeService.now.add(days: -30))
         
