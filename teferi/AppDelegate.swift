@@ -21,7 +21,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
-    private let trackingService : TrackingService
     private let editStateService : EditStateService
     private let healthKitService : HealthKitService
     private let smartGuessService : SmartGuessService
@@ -83,13 +82,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                           persistencyService: trackEventServicePersistency,
                                                           withEventSources: locationService, healthKitService)
         
-        self.trackingService =
-            DefaultTrackingService(timeService: self.timeService,
-                                   loggingService: self.loggingService,
-                                   settingsService: self.settingsService,
-                                   timeSlotService: self.timeSlotService,
-                                   smartGuessService: self.smartGuessService,
-                                   notificationService: self.notificationService)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -98,7 +90,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         self.logAppStartup(isInBackground)
-        self.initializeTrackingService()
         healthKitService.startHealthKitTracking()
         
         self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
@@ -124,35 +115,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let message = "Application started on \(startedOn). App Version: \(versionNumber) Build: \(buildNumber)"
 
         self.loggingService.log(withLogLevel: .debug, message: message)
-    }
-
-    // TODO This needs to be removed in the subsequent PRs.
-    // Whichever approach we pick, The Algorithm® should consume the tracking events
-    // and not the raw observables
-    private func initializeTrackingService()
-    {
-        self.locationService
-            .eventObservable
-            .map(self.toLocation)
-            .filterNil()
-            .subscribe(onNext: self.trackingService.onLocation)
-            .addDisposableTo(disposeBag)
-        
-        self.appLifecycleService
-            .lifecycleEventObservable
-            .subscribe(onNext: self.trackingService.onLifecycleEvent)
-            .addDisposableTo(disposeBag)
-    }
-    
-    private func toLocation(event: TrackEvent) -> CLLocation?
-    {
-        switch event
-        {
-            case .newLocation(let location):
-                return CLLocation(fromLocation: location)
-            default:
-                return nil
-        }
     }
     
     private func initializeWindowIfNeeded()
