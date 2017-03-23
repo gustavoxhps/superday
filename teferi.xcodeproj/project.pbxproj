@@ -181,6 +181,11 @@
 		BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */; };
 		BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */; };
 		BEE5A3BF1E72F6B200CA717D /* (null) in Sources */ = {isa = PBXBuildFile; };
+		BEF8AB171E8403D900B4F289 /* Pump.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB161E8403D900B4F289 /* Pump.swift */; };
+		BEF8AB1A1E84060B00B4F289 /* Pipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB191E84060B00B4F289 /* Pipe.swift */; };
+		BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB1B1E84064400B4F289 /* Sink.swift */; };
+		BEF8AB1F1E840C7400B4F289 /* Pipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */; };
+		BEF8AB211E8413AA00B4F289 /* PersistencySink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -410,6 +415,11 @@
 		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
 		BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelTests.swift; path = ViewModels/PermissionViewModelTests.swift; sourceTree = "<group>"; };
+		BEF8AB161E8403D900B4F289 /* Pump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Pump.swift; path = Pipeline/Protocols/Pump.swift; sourceTree = "<group>"; };
+		BEF8AB191E84060B00B4F289 /* Pipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Pipe.swift; path = Pipeline/Protocols/Pipe.swift; sourceTree = "<group>"; };
+		BEF8AB1B1E84064400B4F289 /* Sink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Sink.swift; path = Pipeline/Protocols/Sink.swift; sourceTree = "<group>"; };
+		BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Pipeline.swift; path = Pipeline/Pipeline.swift; sourceTree = "<group>"; };
+		BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PersistencySink.swift; path = Pipeline/PersistencySink.swift; sourceTree = "<group>"; };
 		EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -486,6 +496,7 @@
 				7E3C06941E30B7AA00859747 /* Generated */,
 				24CD8A461D7A13560017C53E /* Extensions */,
 				2421F8C11D9BAC4A00AF8857 /* Helpers */,
+				BEF8AB151E84038F00B4F289 /* Pipeline */,
 				BEA7835F1E6DB48F00D44603 /* Providers */,
 				24BA51A91D74D79C00042CDF /* Models */,
 				24BA51A51D74D69C00042CDF /* Services */,
@@ -600,6 +611,7 @@
 		24A21B671D7C3E0800CEB4F3 /* teferiTests */ = {
 			isa = PBXGroup;
 			children = (
+				BEF8AB1D1E8409E400B4F289 /* Pipeline */,
 				7E57ECEA1E30EBD40094251E /* Helpers */,
 				24564F401D82FDBB00D9A8AE /* Extensions */,
 				24168E351DC21038004F90AD /* Services */,
@@ -949,6 +961,37 @@
 			name = Providers;
 			sourceTree = "<group>";
 		};
+		BEF8AB151E84038F00B4F289 /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				BEF8AB181E8405F800B4F289 /* Protocols */,
+				BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */,
+				AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */,
+				BE55CED61E7AD70F006B851E /* MergePipe.swift */,
+				BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */,
+			);
+			name = Pipeline;
+			sourceTree = "<group>";
+		};
+		BEF8AB181E8405F800B4F289 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BEF8AB161E8403D900B4F289 /* Pump.swift */,
+				BEF8AB191E84060B00B4F289 /* Pipe.swift */,
+				BEF8AB1B1E84064400B4F289 /* Sink.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		BEF8AB1D1E8409E400B4F289 /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				ACFF02661E829D7C00498981 /* HealthKitPumpTests.swift */,
+				BE3D19FB1E81569800701AE6 /* MergePipeTests.swift */,
+			);
+			name = Pipeline;
+			sourceTree = "<group>";
+		};
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1258,6 +1301,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2416B2811E27B8CC00CE283B /* TopBarViewController.swift in Sources */,
+				BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */,
 				24EB96791DE7080F0040C211 /* CoreDataModelAdapter.swift in Sources */,
 				24564F651D83265900D9A8AE /* DateExtensions.swift in Sources */,
 				2407A98C1D9D534B00066889 /* TimerExtensions.swift in Sources */,
@@ -1270,6 +1314,7 @@
 				24DE23F51E1BB33B0089B49E /* Activity.swift in Sources */,
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
+				BEF8AB1F1E840C7400B4F289 /* Pipeline.swift in Sources */,
 				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
 				246531701DA7B4150066DFE0 /* NotificationService.swift in Sources */,
@@ -1281,6 +1326,7 @@
 				24EB96721DE7080F0040C211 /* DefaultEditStateService.swift in Sources */,
 				7E3C06981E30B7CA00859747 /* Assets.swift in Sources */,
 				24526A771D92D99F00DA3FA0 /* MetricsService.swift in Sources */,
+				BEF8AB171E8403D900B4F289 /* Pump.swift in Sources */,
 				BEDE5B3A1E4A3F260082FFC3 /* PermissionViewModel.swift in Sources */,
 				24D213AF1DB8CB8300E429CA /* DefaultAppLifecycleService.swift in Sources */,
 				51DDF7181DB4DBC200F9B672 /* OnboardingPage.swift in Sources */,
