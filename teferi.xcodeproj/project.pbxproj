@@ -143,10 +143,15 @@
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
 		AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* WheelControl.swift */; };
+		AC14E7F11E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14E7F01E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift */; };
+		AC14E7F41E7BE31D0034A1BA /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */; };
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
+		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
+		ACFF02671E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02661E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift */; };
+		ACFF02691E82A21700498981 /* MockTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02681E82A21700498981 /* MockTrackEventService.swift */; };
 		BE03D9241E797A1D00F79377 /* EventSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE03D9231E797A1D00F79377 /* EventSource.swift */; };
 		BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */; };
 		BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */; };
@@ -368,10 +373,16 @@
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrigonometryHelper.swift; path = Helpers/TrigonometryHelper.swift; sourceTree = "<group>"; };
 		AC0A632B1E548FE800D56433 /* WheelControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelControl.swift; path = Views/WheelControl.swift; sourceTree = "<group>"; };
+		AC14E7F01E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitTemporaryTimelineGenerator.swift; path = Services/HealthKitTemporaryTimelineGenerator.swift; sourceTree = "<group>"; };
+		AC14E7F21E7BE31D0034A1BA /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
+		AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
+		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSampleExtensions.swift; path = Extensions/HealthSampleExtensions.swift; sourceTree = "<group>"; };
+		ACFF02661E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitTemporaryTimeLineGeneratorTest.swift; path = Services/HealthKitTemporaryTimeLineGeneratorTest.swift; sourceTree = "<group>"; };
+		ACFF02681E82A21700498981 /* MockTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockTrackEventService.swift; path = Mocks/MockTrackEventService.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE03D9231E797A1D00F79377 /* EventSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventSource.swift; path = Services/Protocols/EventSource.swift; sourceTree = "<group>"; };
 		BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEventServiceTests.swift; path = Services/TrackEventServiceTests.swift; sourceTree = "<group>"; };
@@ -414,6 +425,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */,
+				AC14E7F41E7BE31D0034A1BA /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +487,7 @@
 		240AC7161D748C8800F21F4F /* teferi */ = {
 			isa = PBXGroup;
 			children = (
+				AC14E7F21E7BE31D0034A1BA /* teferi.entitlements */,
 				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
 				24CD8A461D7A13560017C53E /* Extensions */,
@@ -519,6 +532,7 @@
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
 				BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */,
 				BE3D19FB1E81569800701AE6 /* TimelineMergerTests.swift */,
+				ACFF02661E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -585,6 +599,7 @@
 				BE1898CF1E77F53E00EF3035 /* MockPersistencyService.swift */,
 				BE1898D11E77F6D500EF3035 /* MockHealthKitService.swift */,
 				BE3D19FD1E8187BD00701AE6 /* MockTimelineGenerator.swift */,
+				ACFF02681E82A21700498981 /* MockTrackEventService.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -646,6 +661,7 @@
 				51EAA2871DC0BA910025680D /* UIViewExtensions.swift */,
 				51DB18751E26144F00E0182D /* CLLocationExtensions.swift */,
 				BE24B88E1E7702F8005DF5B3 /* HealthKitExtensions.swift */,
+				ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -848,6 +864,7 @@
 				24EB966C1DE7080F0040C211 /* DefaultTrackingService.swift */,
 				24564F591D83259100D9A8AE /* DefaultLocationService.swift */,
 				BE55CED61E7AD70F006B851E /* TimelineMerger.swift */,
+				AC14E7F01E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift */,
 			);
 			name = Tracking;
 			sourceTree = "<group>";
@@ -944,6 +961,7 @@
 		ED14C2EC617C158AAE12C910 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */,
 				B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */,
 				43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */,
 				51BED8F61DD26FA800455EF6 /* UserNotifications.framework */,
@@ -1035,6 +1053,9 @@
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.HealthKit = {
 								enabled = 1;
 							};
 						};
@@ -1292,6 +1313,7 @@
 				24B03B651DA3864500452D16 /* AddTimeSlotView.swift in Sources */,
 				BE03D9241E797A1D00F79377 /* EventSource.swift in Sources */,
 				2421F8C31D9BACB500AF8857 /* ClosureGestureRecognizer.swift in Sources */,
+				AC14E7F11E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift in Sources */,
 				BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */,
 				24DE23EE1E1BB3180089B49E /* CalendarDailyActivityView.swift in Sources */,
 				BE55CED71E7AD70F006B851E /* TimelineMerger.swift in Sources */,
@@ -1336,6 +1358,7 @@
 				2482CAFD1DB12F9F00E892C1 /* OnboardingPage3.swift in Sources */,
 				BEA024321E4106980061FE53 /* Colors.swift in Sources */,
 				24EB967D1DE708570040C211 /* AppState.swift in Sources */,
+				ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */,
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
 				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,
@@ -1378,6 +1401,7 @@
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
 				BE3D19FE1E8187BD00701AE6 /* MockTimelineGenerator.swift in Sources */,
+				ACFF02671E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift in Sources */,
 				2FB611441DE785AB007C5646 /* MockFeedbackService.swift in Sources */,
 				24168E3A1DC21125004F90AD /* MockLoggingService.swift in Sources */,
 				24D18E281DF0251A0046B202 /* MockSmartGuessService.swift in Sources */,
@@ -1391,6 +1415,7 @@
 				24B03B5F1D9E5BB900452D16 /* PagerViewModelTests.swift in Sources */,
 				ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */,
 				2416B27D1E278B1300CE283B /* CalendarViewControllerTests.swift in Sources */,
+				ACFF02691E82A21700498981 /* MockTrackEventService.swift in Sources */,
 				24564F7D1D83893900D9A8AE /* TimelineCellTests.swift in Sources */,
 				7E57ECE91E30DF370094251E /* LocationExtensionsTests.swift in Sources */,
 				24D73F2B1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift in Sources */,
@@ -1574,6 +1599,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDev;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = B227VTMZ94;
@@ -1596,6 +1622,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = B227VTMZ94;
@@ -1726,6 +1753,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconAdhoc;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = B227VTMZ94;
