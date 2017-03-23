@@ -45,7 +45,7 @@ class HealthKitTemporaryTimeLineGenerator : TemporaryTimelineGenerator
     // MARK: - Helper
     private func sameIdAndContinuous(previousSample:HealthSample, sample:HealthSample) -> Bool
     {
-        return previousSample.identifier == sample.identifier && abs(previousSample.endTime.timeIntervalSince(sample.startTime)) < minGapAllowedDuration
+        return previousSample.identifier == sample.identifier && sample.startTime.timeIntervalSince(previousSample.endTime) < minGapAllowedDuration
     }
     
     private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
