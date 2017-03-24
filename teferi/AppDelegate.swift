@@ -83,7 +83,14 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                           persistencyService: trackEventServicePersistency,
                                                           withEventSources: locationService, healthKitService)
         
-        self.pipeline = Pipeline.with(pumps: HealthKitPump(trackEventService: self.trackEventService))
+        let locationPump = LocationPump(trackEventService: self.trackEventService,
+                                        settingsService: self.settingsService,
+                                        smartGuessService: self.smartGuessService,
+                                        timeSlotService: self.timeSlotService)
+        
+        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService)
+        
+        self.pipeline = Pipeline.with(pumps: locationPump, healthKitPump)
                                 .pipe(to: MergePipe())
                                 .sink(PersistencySink(settingsService: self.settingsService,
                                                       timeSlotService: self.timeSlotService,
