@@ -54,7 +54,7 @@ class DefaultTimeSlotService : TimeSlotService
         return self.tryAdd(timeSlot: timeSlot)
     }
     
-    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation?) -> TimeSlot?
     {
         let timeSlot = TimeSlot(withStartTime: startTime,
                                 smartGuess: smartGuess,

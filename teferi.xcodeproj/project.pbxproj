@@ -178,6 +178,8 @@
 		BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */; };
 		BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */; };
 		BE7FAFCA1E7319AD00A62AC9 /* LocationModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */; };
+		BE8AD9321E843B17002704A9 /* TimelinePersistingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8AD9311E843B17002704A9 /* TimelinePersistingServiceTests.swift */; };
+		BE8AD9341E84448B002704A9 /* TempTimelineTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
 		BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783601E6DB4A400D44603 /* CategoryProvider.swift */; };
@@ -188,6 +190,7 @@
 		BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */; };
 		BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */; };
 		BEE5A3BF1E72F6B200CA717D /* (null) in Sources */ = {isa = PBXBuildFile; };
+		BEF8AB231E84233200B4F289 /* TemporaryTimelinePersistingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEF8AB221E84233200B4F289 /* TemporaryTimelinePersistingService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -415,6 +418,8 @@
 		BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEvent.swift; path = Models/TrackEvent.swift; sourceTree = "<group>"; };
 		BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTrackEventService.swift; path = Services/DefaultTrackEventService.swift; sourceTree = "<group>"; };
 		BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationModelAdapter.swift; path = Services/LocationModelAdapter.swift; sourceTree = "<group>"; };
+		BE8AD9311E843B17002704A9 /* TimelinePersistingServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimelinePersistingServiceTests.swift; path = Services/TimelinePersistingServiceTests.swift; sourceTree = "<group>"; };
+		BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempTimelineTestHelper.swift; sourceTree = "<group>"; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
 		BEA024331E41137D0061FE53 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Generated/Category.swift; sourceTree = "<group>"; };
 		BEA783601E6DB4A400D44603 /* CategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryProvider.swift; sourceTree = "<group>"; };
@@ -424,6 +429,7 @@
 		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
 		BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelTests.swift; path = ViewModels/PermissionViewModelTests.swift; sourceTree = "<group>"; };
+		BEF8AB221E84233200B4F289 /* TemporaryTimelinePersistingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TemporaryTimelinePersistingService.swift; path = Services/TemporaryTimelinePersistingService.swift; sourceTree = "<group>"; };
 		EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -541,6 +547,7 @@
 				BE1898CD1E77F27E00EF3035 /* TrackEventServiceTests.swift */,
 				BE3D19FB1E81569800701AE6 /* TimelineMergerTests.swift */,
 				ACFF02661E829D7C00498981 /* HealthKitTemporaryTimeLineGeneratorTest.swift */,
+				BE8AD9311E843B17002704A9 /* TimelinePersistingServiceTests.swift */,
 				8CAFC16C1E7C66CC009D17F0 /* LocationTemporaryTimelineGeneratorTests.swift */,
 			);
 			name = Services;
@@ -874,6 +881,7 @@
 				24564F591D83259100D9A8AE /* DefaultLocationService.swift */,
 				BE55CED61E7AD70F006B851E /* TimelineMerger.swift */,
 				AC14E7F01E7BDB5C0034A1BA /* HealthKitTemporaryTimelineGenerator.swift */,
+				BEF8AB221E84233200B4F289 /* TemporaryTimelinePersistingService.swift */,
 				8CAFC1651E7BF5A4009D17F0 /* LocationTemporaryTimelineGenerator.swift */,
 			);
 			name = Tracking;
@@ -945,6 +953,7 @@
 			isa = PBXGroup;
 			children = (
 				7E57ECEB1E30EC000094251E /* LocationExtensions.swift */,
+				BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */,
 				8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */,
 			);
 			name = Helpers;
@@ -1336,6 +1345,7 @@
 				BE24B88F1E7702F8005DF5B3 /* HealthKitExtensions.swift in Sources */,
 				24564F5A1D83259100D9A8AE /* DefaultLocationService.swift in Sources */,
 				2FB611401DE777B7007C5646 /* FeedbackService.swift in Sources */,
+				BEF8AB231E84233200B4F289 /* TemporaryTimelinePersistingService.swift in Sources */,
 				BE7FAFC41E72F90600A62AC9 /* TrackEventService.swift in Sources */,
 				2482CAFB1DB12F9F00E892C1 /* OnboardingPage1.swift in Sources */,
 				247F05F81D87322600451BAD /* LocationService.swift in Sources */,
@@ -1404,6 +1414,7 @@
 			files = (
 				BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */,
 				BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */,
+				BE8AD9341E84448B002704A9 /* TempTimelineTestHelper.swift in Sources */,
 				BE1BDFB11E79BFAB0077D694 /* LocationServiceTests.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				8CAFC16D1E7C66CC009D17F0 /* LocationTemporaryTimelineGeneratorTests.swift in Sources */,
@@ -1411,6 +1422,7 @@
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
 				24EB96871DE7163E0040C211 /* MockTimeSlotService.swift in Sources */,
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
+				BE8AD9321E843B17002704A9 /* TimelinePersistingServiceTests.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
 				BE3D19FE1E8187BD00701AE6 /* MockTimelineGenerator.swift in Sources */,

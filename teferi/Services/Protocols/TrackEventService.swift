@@ -4,4 +4,6 @@ protocol TrackEventService
 {
     // MARK: Methods
     func getEvents() -> [ TrackEvent ]
+    
+    func clearAllData()
 }

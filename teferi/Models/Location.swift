@@ -77,10 +77,9 @@ class Location : Equatable
     func toCLLocation() -> CLLocation
     {
         let coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-        return CLLocation(coordinate: coordinate,
-                  altitude: self.altitude,
-                  horizontalAccuracy: self.horizontalAccuracy,
-                  verticalAccuracy: self.verticalAccuracy,
-                  timestamp: self.timestamp)
+        return CLLocation(coordinate: coordinate,                          altitude: self.altitude,
+                          horizontalAccuracy: self.horizontalAccuracy,
+                          verticalAccuracy: self.verticalAccuracy,
+                          timestamp: self.timestamp)
     }
 }

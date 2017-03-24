@@ -1,12 +1,17 @@
 import Foundation
 @testable import teferi
 
-class MockTrackEventService:TrackEventService
+class MockTrackEventService : TrackEventService
 {
     var mockEvents:[TrackEvent] = []
     
     func getEvents() -> [ TrackEvent ]
     {
         return mockEvents
+    }
+    
+    func clearAllData()
+    {
+        mockEvents = [TrackEvent]()
     }
 }

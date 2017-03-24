@@ -102,10 +102,14 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         }
     }
     
-    @discardableResult override func delete(withPredicate predicate: Predicate) -> Bool
+    @discardableResult override func delete(withPredicate predicate: Predicate? = nil) -> Bool
     {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: self.entityName)
-        fetchRequest.predicate = predicate.convertToNSPredicate()
+        
+        if let nsPredicate = predicate?.convertToNSPredicate()
+        {
+            fetchRequest.predicate = nsPredicate
+        }
         
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         

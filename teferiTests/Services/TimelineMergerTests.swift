@@ -4,42 +4,10 @@ import Nimble
 import CoreLocation
 @testable import teferi
 
-fileprivate struct TestData
-{
-    let startOffset : TimeInterval
-    let endOffset : TimeInterval?
-    let category : teferi.Category
-    let includeLocation : Bool
-    let includeSmartGuess : Bool
-}
-
-fileprivate extension TestData
-{
-    init(startOffset: TimeInterval, endOffset: TimeInterval?)
-    {
-        self.startOffset = startOffset
-        self.endOffset = endOffset
-        self.category = .unknown
-        self.includeSmartGuess = false
-        self.includeLocation = false
-    }
-    
-    init(startOffset: TimeInterval,
-         endOffset: TimeInterval?,
-         _ category: teferi.Category,
-         includeSmartGuess: Bool = false,
-         includeLocation: Bool = false)
-    {
-        self.startOffset = startOffset
-        self.endOffset = endOffset
-        self.category = category
-        self.includeSmartGuess = includeSmartGuess
-        self.includeLocation = includeLocation
-    }
-}
-
 class TimelineMergerTests : XCTestCase
 {
+    private typealias TestData = TempTimelineTestData
+    
     private var noon : Date!
     private var baseSlot : TemporaryTimeSlot!
     private let baseLocation = Location(fromCLLocation: CLLocation())

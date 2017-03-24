@@ -27,7 +27,7 @@ class MockPersistencyService<T> : BasePersistencyService<T>
         return true
     }
     
-    @discardableResult override func delete(withPredicate predicate: Predicate) -> Bool
+    @discardableResult override func delete(withPredicate predicate: Predicate?) -> Bool
     {
         return true
     }
