@@ -24,6 +24,11 @@ class DefaultTrackEventService : TrackEventService
         return self.persistencyService.get()
     }
     
+    func clearAllData()
+    {
+        self.persistencyService.delete()
+    }
+    
     private func subscribeToEvents(eventSource: EventSource)
     {
         eventSource

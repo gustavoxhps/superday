@@ -36,4 +36,13 @@ class TrackEventPersistencyService : BasePersistencyService<TrackEvent>
                 return self.healthSamplePersistencyService.create(sample)
         }
     }
+    
+    override func delete(withPredicate predicate: Predicate?) -> Bool
+    {
+        var deleted = true
+        deleted = self.locationPersistencyService.delete(withPredicate: predicate)
+        deleted = self.healthSamplePersistencyService.delete(withPredicate: predicate) && deleted
+        
+        return deleted
+    }
 }

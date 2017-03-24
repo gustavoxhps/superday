@@ -54,4 +54,32 @@ class Location : Equatable
         self.verticalAccuracy = location.verticalAccuracy
         self.horizontalAccuracy = location.horizontalAccuracy
     }
+    
+    func isCommute(fromLocation previousLocation:Location) -> Bool
+    {
+        return self.timestamp.timeIntervalSince(previousLocation.timestamp) < Constants.commuteDetectionLimit
+    }
+    
+    func isMoreAccurate(than other: Location) -> Bool
+    {
+        return self.horizontalAccuracy < other.horizontalAccuracy
+    }
+    
+    func isSignificantlyDifferent(fromLocation other: Location) -> Bool
+    {
+        let clLocation = self.toCLLocation()
+        let otherCLLocation = other.toCLLocation()
+        
+        let distance = clLocation.distance(from: otherCLLocation)
+        return distance > Constants.significantDistanceThreshold
+    }
+    
+    func toCLLocation() -> CLLocation
+    {
+        let coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
+        return CLLocation(coordinate: coordinate,                          altitude: self.altitude,
+                          horizontalAccuracy: self.horizontalAccuracy,
+                          verticalAccuracy: self.verticalAccuracy,
+                          timestamp: self.timestamp)
+    }
 }

@@ -1,0 +1,131 @@
+import Foundation
+import RxSwift
+import CoreLocation
+
+class LocationPump : Pump
+{
+    
+    private let trackEventService:TrackEventService
+    private let settingsService:SettingsService
+    private let smartGuessService:SmartGuessService
+    private let timeSlotService:TimeSlotService
+    
+    private var lastSavedTimeSlot:TimeSlot!
+    
+    // MARK: Initializers
+    init(trackEventService:TrackEventService, settingsService:SettingsService, smartGuessService:SmartGuessService, timeSlotService:TimeSlotService)
+    {
+        self.trackEventService = trackEventService
+        self.settingsService = settingsService
+        self.smartGuessService = smartGuessService
+        self.timeSlotService = timeSlotService
+    }
+    
+    //MARK:  TemporaryTimelineGenerator implementation
+    func start() -> [TemporaryTimeSlot]
+    {
+        guard let lastTimeSlot = self.timeSlotService.getLast() else { return [] }
+        lastSavedTimeSlot = lastTimeSlot
+
+        var locations = self.trackEventService.getEvents()
+            .flatMap(toLocation)
+        
+        guard locations.count > 0 else { return [] }
+        
+        var lastLocation:Location
+        if let storedLastLocation = self.settingsService.lastLocation {
+            lastLocation = Location(fromCLLocation:storedLastLocation)
+        } else {
+            lastLocation = locations.remove(at: 0)
+        }
+                
+        return locations
+            .reduce([]) { (timeSlots, location) -> [TemporaryTimeSlot] in
+                defer {
+                    lastLocation = replaceIfNeeded(lastLocation, with:location)
+                }
+                
+                guard isValid(location, previousLocation: lastLocation) else { return timeSlots }
+                
+                return toTemporaryTimeSlots(
+                    location: location,
+                    previousLocation:lastLocation,
+                    timeSlots:timeSlots
+                )
+        }
+    }
+    
+    // MARK: Private Methods
+    private func replaceIfNeeded(_ lastLocation:Location, with location:Location) -> Location
+    {
+        guard location.timestamp > lastLocation.timestamp else { return lastLocation }
+        
+        if location.isSignificantlyDifferent(fromLocation: lastLocation) {
+            return location
+        } else {
+            if location.isMoreAccurate(than: lastLocation) {
+                return location
+            }
+        }
+        
+        return lastLocation
+    }
+    
+    private func toLocation(event:TrackEvent) -> Location?
+    {
+        guard case let TrackEvent.newLocation(location) = event else {
+            return nil
+        }
+        
+        return location
+    }
+    
+    private func isValid(_ location:Location, previousLocation:Location) -> Bool
+    {
+        let clLocation = location.toCLLocation()
+        let previousCLLocation = previousLocation.toCLLocation()
+        
+        guard location.timestamp > previousLocation.timestamp else { return false }
+        
+        guard clLocation.isSignificantlyDifferent(fromLocation: previousCLLocation) else
+        {
+            return false
+        }
+
+        return true
+    }
+    
+    private func toTemporaryTimeSlots(location:Location, previousLocation:Location, timeSlots:[TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    {
+        let lastCategory = timeSlots.last?.category ?? lastSavedTimeSlot.category
+        let lastStartTime = timeSlots.last?.start ?? lastSavedTimeSlot.startTime
+        
+        if location.isCommute(fromLocation: previousLocation)
+        {
+            if lastStartTime == previousLocation.timestamp
+            {
+                if let lastTemporaryTimeSlot = timeSlots.last {
+                    return timeSlots.dropLast() + [ lastTemporaryTimeSlot.with(category: .commute) ]
+                }
+            }
+            else if lastCategory != .commute
+            {
+                return timeSlots + [ TemporaryTimeSlot(location: previousLocation, category: .commute) ]
+            }
+        }
+        else
+        {
+            var timeSlotForLastLocation:TemporaryTimeSlot?
+            if lastStartTime < previousLocation.timestamp
+            {
+                let smartGuess = self.smartGuessService.get(forLocation: previousLocation.toCLLocation())
+                timeSlotForLastLocation = TemporaryTimeSlot(location: previousLocation, smartGuess: smartGuess)
+            }
+            
+            let smartGuess = self.smartGuessService.get(forLocation: location.toCLLocation())
+            return timeSlots + [ timeSlotForLastLocation, TemporaryTimeSlot(location: location, smartGuess: smartGuess) ].flatMap({$0})
+        }
+
+        return timeSlots
+    }
+}

@@ -64,6 +64,23 @@ extension CLLocation
         return newLocation
     }
     
+    func offset(_ direction: Direction?, meters: Double = 0, seconds: TimeInterval = 0) -> CLLocation
+    {
+        let newCoordinate:CLLocationCoordinate2D
+        if let direction = direction {
+            newCoordinate = self.coordinate.offset(direction, meters: meters)
+        } else {
+            newCoordinate = self.coordinate
+        }
+        let newLocation = CLLocation(coordinate: newCoordinate,
+                                     altitude: self.altitude,
+                                     horizontalAccuracy: self.horizontalAccuracy,
+                                     verticalAccuracy: self.verticalAccuracy,
+                                     timestamp: self.timestamp.addingTimeInterval(seconds))
+        return newLocation
+    }
+    
+    
     func randomOffset(withAccuracy accuracy:Double? = nil) -> CLLocation
     {
         
@@ -84,6 +101,18 @@ extension CLLocation
             timestamp: Date())
     }
     
+    
+    func with(accuracy:Double) -> CLLocation
+    {
+        return CLLocation(
+            coordinate: self.coordinate,
+            altitude: self.altitude,
+            horizontalAccuracy: accuracy,
+            verticalAccuracy: accuracy,
+            course: self.course,
+            speed: self.speed,
+            timestamp: self.timestamp)
+    }
 }
 
 fileprivate func randomBetweenNumbers(firstNum: Double, secondNum: Double) -> Double{

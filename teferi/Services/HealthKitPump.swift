@@ -31,7 +31,7 @@ class HealthKitPump : Pump
             .getEvents()
             .flatMap(toHealthSample)
             .sorted(by: { $0.startTime < $1.startTime })
-            .groupBy(sameIdAndContinuous)
+            .splitBy(sameIdAndContinuous)
         
         let temporaryTimeSlots = groupedHealthSamples
             .flatMap(toTemporaryTimeSlots)
