@@ -85,7 +85,10 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.pipeline = Pipeline.with(pumps: HealthKitPump(trackEventService: self.trackEventService))
                                 .pipe(to: MergePipe())
-                                .sink(PersistencySink())
+                                .sink(PersistencySink(settingsService: self.settingsService,
+                                                      timeSlotService: self.timeSlotService,
+                                                      smartGuessService: self.smartGuessService,
+                                                      trackEventService: self.trackEventService))
     }
     
     //MARK: UIApplicationDelegate lifecycle
