@@ -12,6 +12,7 @@ class LocationServiceTests: XCTestCase {
     var locationService:DefaultLocationService!
     
     private var logginService : MockLoggingService!
+    private var settingsService : MockSettingsService!
     private var locationManager : MockCLLocationManager!
     private var accurateLocationManager : MockCLLocationManager!
     
@@ -25,6 +26,7 @@ class LocationServiceTests: XCTestCase {
         super.setUp()
         
         self.logginService = MockLoggingService()
+        self.settingsService = MockSettingsService()
         self.locationManager = MockCLLocationManager()
         self.accurateLocationManager = MockCLLocationManager()
         

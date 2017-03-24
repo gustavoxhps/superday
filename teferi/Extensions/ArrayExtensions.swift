@@ -33,7 +33,7 @@ extension Array
         return element
     }
     
-    func groupBy(_ sameGroup: (Element, Element) -> Bool) -> [[Element]]
+    func splitBy(_ sameGroup: (Element, Element) -> Bool) -> [[Element]]
     {
         var groups = [[Element]]()
         

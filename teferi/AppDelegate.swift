@@ -149,7 +149,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         switch event
         {
             case .newLocation(let location):
-                return CLLocation(fromLocation: location)
+                return location.toCLLocation()
             default:
                 return nil
         }

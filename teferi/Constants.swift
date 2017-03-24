@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 
 ///Contains the app's constants.
 class Constants
@@ -22,5 +23,8 @@ class Constants
     static let maxGPSTime:Double = 5.0
     static let gpsAccuracy:Double = 50.0 //meters
     static let significantLocationChangeAccuracy:Double = 2000.0 //meters
+    static let significantDistanceThreshold:Double = 100.0
+    static let commuteDetectionLimit = TimeInterval(25 * 60)
+
 
 }
