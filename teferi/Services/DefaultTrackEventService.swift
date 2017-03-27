@@ -22,9 +22,11 @@ class DefaultTrackEventService : TrackEventService
             .addDisposableTo(disposeBag)
     }
     
-    func getEvents() -> [ TrackEvent ]
+    func getEventData<T : EventData>(ofType: T.Type) -> [ T ]
     {
-        return self.persistencyService.get()
+        let predicate = Predicate(parameter: "", equals: String(describing: T.self) as AnyObject)
+        
+        return self.persistencyService.get(withPredicate: predicate).flatMap(T.fromTrackEvent)
     }
     
     func clearAllData()

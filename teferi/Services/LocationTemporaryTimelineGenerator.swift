@@ -4,7 +4,6 @@ import CoreLocation
 
 class LocationTemporaryTimelineGenerator:TemporaryTimelineGenerator
 {
-    
     private let trackEventService:TrackEventService
     private let settingsService:SettingsService
     private let smartGuessService:SmartGuessService
@@ -27,8 +26,7 @@ class LocationTemporaryTimelineGenerator:TemporaryTimelineGenerator
         guard let lastTimeSlot = self.timeSlotService.getLast() else { return [] }
         lastSavedTimeSlot = lastTimeSlot
 
-        var locations = self.trackEventService.getEvents()
-            .flatMap(toLocation)
+        var locations = self.trackEventService.getEventData(ofType: Location.self)
         
         guard locations.count > 0 else { return [] }
         
@@ -69,15 +67,6 @@ class LocationTemporaryTimelineGenerator:TemporaryTimelineGenerator
         }
         
         return lastLocation
-    }
-    
-    private func toLocation(event:TrackEvent) -> Location?
-    {
-        guard case let TrackEvent.newLocation(location) = event else {
-            return nil
-        }
-        
-        return location
     }
     
     private func isValid(_ location:Location, previousLocation:Location) -> Bool

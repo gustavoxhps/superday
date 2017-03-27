@@ -11,14 +11,16 @@ class TrackEventServiceTests : XCTestCase
     private var loggingService : MockLoggingService!
     private var locationService : MockLocationService!
     private var healthKitService : MockHealthKitService!
-    private var persistencyService : MockPersistencyService<TrackEvent>!
+    private var persistencyService : BasePersistencyService<TrackEvent>!
     
     override func setUp()
     {
         self.loggingService = MockLoggingService()
         self.locationService = MockLocationService()
         self.healthKitService = MockHealthKitService()
-        self.persistencyService = MockPersistencyService<TrackEvent>()
+        self.persistencyService = TrackEventPersistencyService(loggingService: self.loggingService,
+                                                               locationPersistencyService: MockPersistencyService<Location>(),
+                                                               healthSamplePersistencyService: MockPersistencyService<HealthSample>())
         
         self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
                                                           persistencyService: self.persistencyService,
@@ -36,7 +38,7 @@ class TrackEventServiceTests : XCTestCase
         self.locationService.sendNewTrackEvent(CLLocation())
         self.healthKitService.sendNewTrackEvent(sample)
         
-        let persistedEvents = self.trackEventService.getEvents()
-        expect(persistedEvents.count).to(equal(5))
+        let persistedEvents = self.trackEventService.getEventData(ofType: Location.self)
+        expect(persistedEvents.count).to(equal(3))
     }
 }
