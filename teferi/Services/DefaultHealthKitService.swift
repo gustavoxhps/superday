@@ -38,7 +38,9 @@ class DefaultHealthKitService : HealthKitService, EventSource
     
     private(set) lazy var eventObservable : Observable<TrackEvent> =
     {
-        return self.sampleSubject.asObservable().map(TrackEvent.toTrackEvent)
+        return self.sampleSubject
+                   .asObservable()
+                   .map(HealthSample.asTrackEvent)
     }()
     
     // MARK: - New Sample Handler

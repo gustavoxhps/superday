@@ -41,7 +41,8 @@ class DefaultLocationService : NSObject, LocationService
         return self.locationSubject
                    .asObservable()
                    .filter(self.filterLocations)
-                   .map(TrackEvent.toTrackEvent)
+                   .map(Location.init(fromCLLocation:))
+                   .map(Location.asTrackEvent)
     }()
     
     func startLocationTracking()

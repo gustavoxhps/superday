@@ -21,20 +21,8 @@ enum TrackEvent : Equatable
     case newHealthSample(sample: HealthSample)
 }
 
-extension TrackEvent
+protocol EventData : Equatable
 {
-    static func toTrackEvent(_ location: Location) -> TrackEvent
-    {
-        return .newLocation(location: location)
-    }
-    
-    static func toTrackEvent(_ location: CLLocation) -> TrackEvent
-    {
-        return .newLocation(location: Location(fromCLLocation: location))
-    }
-    
-    static func toTrackEvent(_ sample: HealthSample) -> TrackEvent
-    {
-        return .newHealthSample(sample: sample)
-    }
+    static func asTrackEvent(_ instance: Self) -> TrackEvent
+    static func fromTrackEvent(event: TrackEvent) -> Self?
 }

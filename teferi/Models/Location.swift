@@ -2,20 +2,9 @@ import Foundation
 import UIKit
 import CoreLocation
 
-class Location : Equatable
+final class Location : EventData
 {
-    public static func ==(lhs: Location, rhs: Location) -> Bool
-    {
-        return lhs.speed == rhs.speed &&
-            lhs.course == rhs.course &&
-            lhs.latitude == rhs.latitude &&
-            lhs.altitude == rhs.altitude &&
-            lhs.longitude == rhs.longitude &&
-            lhs.timestamp == rhs.timestamp &&
-            lhs.verticalAccuracy == rhs.verticalAccuracy &&
-            lhs.horizontalAccuracy == rhs.horizontalAccuracy
-    }
-    
+    // MARK: Fields
     let timestamp : Date
     let latitude : Double
     let longitude : Double
@@ -26,6 +15,7 @@ class Location : Equatable
     let verticalAccuracy : Double
     let horizontalAccuracy : Double
     
+    // MARK: Initializers
     init(timestamp: Date, latitude: Double, longitude: Double,
          speed: Double, course: Double, altitude: Double,
          verticalAccuracy: Double, horizontalAccuracy: Double)
@@ -41,7 +31,6 @@ class Location : Equatable
         self.horizontalAccuracy = horizontalAccuracy
     }
     
-    
     init(fromCLLocation location: CLLocation)
     {
         self.timestamp = location.timestamp
@@ -55,6 +44,7 @@ class Location : Equatable
         self.horizontalAccuracy = location.horizontalAccuracy
     }
     
+    // MARK: Methods
     func isCommute(fromLocation previousLocation:Location) -> Bool
     {
         return self.timestamp.timeIntervalSince(previousLocation.timestamp) < Constants.commuteDetectionLimit
@@ -81,5 +71,31 @@ class Location : Equatable
                           horizontalAccuracy: self.horizontalAccuracy,
                           verticalAccuracy: self.verticalAccuracy,
                           timestamp: self.timestamp)
+    }
+    
+    // MARK: EventData implementation
+    static func asTrackEvent(_ instance: Location) -> TrackEvent
+    {
+        return .newLocation(location: instance)
+    }
+    
+    static func fromTrackEvent(event: TrackEvent) -> Location?
+    {
+        guard case let .newLocation(location) = event else { return nil }
+            
+        return location
+    }
+
+    // MARK: Equatable implementation
+    public static func ==(lhs: Location, rhs: Location) -> Bool
+    {
+        return lhs.speed == rhs.speed &&
+            lhs.course == rhs.course &&
+            lhs.latitude == rhs.latitude &&
+            lhs.altitude == rhs.altitude &&
+            lhs.longitude == rhs.longitude &&
+            lhs.timestamp == rhs.timestamp &&
+            lhs.verticalAccuracy == rhs.verticalAccuracy &&
+            lhs.horizontalAccuracy == rhs.horizontalAccuracy
     }
 }

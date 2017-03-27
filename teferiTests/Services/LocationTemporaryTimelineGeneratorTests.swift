@@ -77,7 +77,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
         self.settingsService.lastLocation = oldLocation
         
         self.trackEventService.mockEvents = [
-            TrackEvent.toTrackEvent(newLocation)
+            Location.asTrackEvent(Location(fromCLLocation: newLocation))
         ]
         
         let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
@@ -91,7 +91,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
         self.settingsService.lastLocation = nil
 
         let locationA = CLLocation.baseLocation.offset(.north, meters: 400).with(accuracy: 50)
-        let eventA = TrackEvent.toTrackEvent(locationA)
+        let eventA = Location.asTrackEvent(Location(fromCLLocation: locationA))
         self.trackEventService.mockEvents = [
             eventA,
             eventA.delay(minutes: 30).offset(meters: 80), //Should ignore this but keep the 1st (more accurate) and last
@@ -142,7 +142,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
         self.addStoredTimeSlot(minutesBeforeNoon: 30)
 
         let location = CLLocation.baseLocation.offset(.north, meters: 350)
-        let secondEvent = TrackEvent.toTrackEvent(location)
+        let secondEvent = Location.asTrackEvent(Location(fromCLLocation: location))
         
         self.trackEventService.mockEvents = [
             secondEvent
@@ -250,7 +250,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
         let location = CLLocation.baseLocation.offset(.north, meters: 200, seconds: 60*30)
         
         self.trackEventService.mockEvents = [
-            TrackEvent.toTrackEvent(location)
+            Location.asTrackEvent(Location(fromCLLocation: location))
         ]
         
         let _ = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
