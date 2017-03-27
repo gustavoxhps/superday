@@ -87,7 +87,7 @@ class LocationServiceTests: XCTestCase {
         
         scheduler.start()
         
-        let expectedEvents = [next(0, TrackEvent.toTrackEvent(locations[1]))]
+        let expectedEvents = [next(0, Location.asTrackEvent(Location(fromCLLocation: locations[1])))]
         XCTAssertEqual(observer.events, expectedEvents)
     }
     
@@ -148,7 +148,7 @@ class LocationServiceTests: XCTestCase {
         expect(self.locationManager.monitoringSignificantLocationChanges).to(beTrue())
 
         let recordedLocations = observer.events.map({ $0.value })
-        let expectedLocations = locations.map(TrackEvent.toTrackEvent).map { Event.next($0) }
+        let expectedLocations = locations.map(Location.init).map(Location.asTrackEvent).map { Event.next($0) }
         XCTAssertEqual(recordedLocations, expectedLocations)
     }
     

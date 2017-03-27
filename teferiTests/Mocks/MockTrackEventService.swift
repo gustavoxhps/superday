@@ -5,9 +5,9 @@ class MockTrackEventService : TrackEventService
 {
     var mockEvents:[TrackEvent] = []
     
-    func getEvents() -> [ TrackEvent ]
+    func getEventData<T : EventData>(ofType: T.Type) -> [ T ]
     {
-        return mockEvents
+        return mockEvents.flatMap(T.fromTrackEvent)
     }
     
     func clearAllData()

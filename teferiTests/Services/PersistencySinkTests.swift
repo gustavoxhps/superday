@@ -125,7 +125,7 @@ class PersistencySinkTests : XCTestCase
         
         self.persistencySink.execute(data: self.getTestData())
         
-        expect(self.trackEventService.getEvents().count).to(equal(0))
+        expect(self.trackEventService.getEventData(ofType: Location.self).count).to(equal(0))
     }
     
     private func toTempTimeSlot(data: TestData) -> TemporaryTimeSlot

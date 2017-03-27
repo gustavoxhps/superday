@@ -15,26 +15,23 @@ class DefaultTrackEventService : TrackEventService
         self.loggingService = loggingService
         self.persistencyService = persistencyService
 
-        eventSources
-            .forEach(self.subscribeToEvents)
+        let observables = eventSources.map { $0.eventObservable }
+        Observable.from(observables)
+            .merge()
+            .subscribe(onNext: self.persistData)
+            .addDisposableTo(disposeBag)
     }
     
-    func getEvents() -> [ TrackEvent ]
+    func getEventData<T : EventData>(ofType: T.Type) -> [ T ]
     {
-        return self.persistencyService.get()
+        let predicate = Predicate(parameter: "", equals: String(describing: T.self) as AnyObject)
+        
+        return self.persistencyService.get(withPredicate: predicate).flatMap(T.fromTrackEvent)
     }
     
     func clearAllData()
     {
         self.persistencyService.delete()
-    }
-    
-    private func subscribeToEvents(eventSource: EventSource)
-    {
-        eventSource
-            .eventObservable
-            .subscribe(onNext: self.persistData)
-            .addDisposableTo(disposeBag)
     }
     
     private func persistData(event: TrackEvent)

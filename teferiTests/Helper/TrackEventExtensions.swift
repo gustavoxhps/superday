@@ -5,8 +5,8 @@ import CoreLocation
 extension TrackEvent
 {
     static var baseMockEvent:TrackEvent {
-        return TrackEvent.toTrackEvent(
-            CLLocation.baseLocation
+        return Location.asTrackEvent(
+            Location(fromCLLocation: CLLocation.baseLocation)
         )
     }
     

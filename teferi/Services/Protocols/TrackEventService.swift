@@ -3,7 +3,7 @@ import Foundation
 protocol TrackEventService
 {
     // MARK: Methods
-    func getEvents() -> [ TrackEvent ]
+    func getEventData<T : EventData>(ofType: T.Type) -> [ T ]
     
     func clearAllData()
 }

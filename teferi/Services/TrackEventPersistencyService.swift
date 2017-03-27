@@ -1,3 +1,4 @@
+import Darwin
 import HealthKit
 import CoreLocation
 
@@ -17,13 +18,18 @@ class TrackEventPersistencyService : BasePersistencyService<TrackEvent>
     }
     
     override func get(withPredicate predicate: Predicate?) -> [TrackEvent]
-    {
-        let events = [
-            self.locationPersistencyService.get(withPredicate: predicate).map(TrackEvent.toTrackEvent),
-            self.healthSamplePersistencyService.get(withPredicate: predicate).map(TrackEvent.toTrackEvent)
-        ]
+    {   
+        guard let typeName = predicate?.parameters.first as? String else { return [] }
         
-        return events.flatMap { $0 }
+        switch typeName
+        {
+            case String(describing: Location.self):
+                return self.locationPersistencyService.get().map(Location.asTrackEvent)
+            case String(describing: Location.self):
+                return self.healthSamplePersistencyService.get().map(HealthSample.asTrackEvent)
+            default:
+                return []
+        }
     }
     
     override func create(_ element: TrackEvent) -> Bool

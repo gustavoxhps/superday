@@ -28,8 +28,7 @@ class HealthKitPump : Pump
     func start() -> [TemporaryTimeSlot]
     {
         let groupedHealthSamples = trackEventService
-            .getEvents()
-            .flatMap(toHealthSample)
+            .getEventData(ofType: HealthSample.self)
             .sorted(by: { $0.startTime < $1.startTime })
             .splitBy(sameIdAndContinuous)
         
@@ -67,17 +66,6 @@ class HealthKitPump : Pump
                 return true
             }
             .map({ $0.element })
-    }
-    
-    
-    private func toHealthSample(_ trackEvent: TrackEvent) -> HealthSample?
-    {
-        switch trackEvent {
-        case .newHealthSample(let healthSample):
-            return healthSample
-        default:
-            return nil
-        }
     }
     
     private func toTemporaryTimeSlots(_ samples: [HealthSample]) -> [TemporaryTimeSlot]?
