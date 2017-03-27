@@ -97,15 +97,6 @@ class TimelineViewModel
         let timeSlots = self.timeSlotService.getTimeSlots(forDay: self.date)
         let timelineItems = self.getTimelineItems(fromTimeSlots: timeSlots)
     
-        //Creates an empty TimeSlot if there are no TimeSlots for today
-        if self.isCurrentDay && timelineItems.count == 0
-        {
-            self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now,
-                                             category: .unknown,
-                                             categoryWasSetByUser: false,
-                                             tryUsingLatestLocation: false)
-        }
-    
         return timelineItems
     }()
     
