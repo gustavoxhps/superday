@@ -95,7 +95,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                 .sink(PersistencySink(settingsService: self.settingsService,
                                                       timeSlotService: self.timeSlotService,
                                                       smartGuessService: self.smartGuessService,
-                                                      trackEventService: self.trackEventService))
+                                                      trackEventService: self.trackEventService,
+                                                      timeService: self.timeService))
     }
     
     //MARK: UIApplicationDelegate lifecycle

@@ -54,16 +54,31 @@ class PersistencySinkTests : XCTestCase
         self.persistencySink = PersistencySink(settingsService: self.settingsService,
                                                timeSlotService: self.timeSlotService,
                                                smartGuessService: self.smartGuessService,
-                                               trackEventService: self.trackEventService)
+                                               trackEventService: self.trackEventService,
+                                               timeService: self.timeService)
     }
     
-    func testTheTimeSlotServiceIsCalledOnceForEveryTempTimeSlot()
+    func testTheTimeSlotServiceIsCalledOnceForEveryTempTimeSlotPlusOneForTheStartOfTheDay()
     {
         let data = self.getTestData()
         
         self.persistencySink.execute(data: data)
         
-        expect(self.timeSlotService.getTimeSlots(forDay: self.timeService.now).count).to(equal(data.count))
+        expect(self.timeSlotService.getTimeSlots(forDay: self.timeService.now).count).to(equal(data.count + 1))
+    }
+    
+    func testTheTimeSlotServiceOnlyAddsTheStartTimeslotOnceEveryDay()
+    {
+        let data:[TemporaryTimeSlot] = self.getTestData()
+        
+        let firstChunk = Array(data[0..<data.count/2])
+        let secondChunk = Array(data[data.count/2..<data.count])
+        
+        self.persistencySink.execute(data: firstChunk)
+        self.persistencySink.execute(data: secondChunk)
+        
+        expect(self.timeSlotService.getTimeSlots(forDay: self.timeService.now).count).to(equal(data.count + 1))
+
     }
     
     func testTheLastUsedLocationIsPersisted()

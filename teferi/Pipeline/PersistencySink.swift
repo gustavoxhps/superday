@@ -8,16 +8,19 @@ class PersistencySink : Sink
     private let timeSlotService : TimeSlotService
     private let smartGuessService : SmartGuessService
     private let trackEventService : TrackEventService
+    private let timeService: TimeService
     
     init(settingsService: SettingsService,
          timeSlotService: TimeSlotService,
          smartGuessService: SmartGuessService,
-         trackEventService: TrackEventService)
+         trackEventService: TrackEventService,
+         timeService: TimeService)
     {
         self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.smartGuessService = smartGuessService
         self.trackEventService = trackEventService
+        self.timeService = timeService
     }
     
     func execute(data: [TemporaryTimeSlot])
@@ -25,7 +28,7 @@ class PersistencySink : Sink
         if data.isEmpty { return }
         
         //Creates an empty TimeSlot if there are no TimeSlots for today
-        if self.timeSlotService.getTimeSlots(forDay: Date()).count == 0 
+        if self.timeSlotService.getTimeSlots(forDay: Date()).count == 0
         {
             self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now,
                                              category: .unknown,
