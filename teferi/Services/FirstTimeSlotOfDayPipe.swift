@@ -14,9 +14,18 @@ class FirstTimeSlotOfDayPipe : Pipe
     {
         let now = self.timeService.now
         
-        //Creates an empty TimeSlot if there are no TimeSlots for today
-        guard timeline.isEmpty && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
+        guard !self.hasTimeSlotsForToday(timeline) && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
         
-        return [ TemporaryTimeSlot(start: now) ]
+        return timeline + [ TemporaryTimeSlot(start: now) ]
+    }
+    
+    private func hasTimeSlotsForToday(_ timeline: [TemporaryTimeSlot]) -> Bool
+    {
+        return !timeline.isEmpty && timeline.contains(where: self.timeSlotStartsToday)
+    }
+    
+    private func timeSlotStartsToday(timeSlot: TemporaryTimeSlot) -> Bool
+    {
+        return timeSlot.start.ignoreTimeComponents() == self.timeService.now.ignoreTimeComponents()
     }
 }
