@@ -61,17 +61,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       locationService: self.locationService,
                                                       persistencyService: timeSlotPersistencyService)
         
-        if #available(iOS 10.0, *)
-        {
-            self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
-                                                                     loggingService: self.loggingService,
-                                                                     settingsService: self.settingsService,
-                                                                     timeSlotService: self.timeSlotService)
-        }
-        else
-        {
-            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
-        }
+
+        self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
         
         self.trackingService =
             DefaultTrackingService(timeService: self.timeService,
