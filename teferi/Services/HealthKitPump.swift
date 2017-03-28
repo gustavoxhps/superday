@@ -17,7 +17,7 @@ class HealthKitPump : Pump
     ///   - minGapAllowedDuration: Used to filter out temporaryTimeSlots with duration smaller than this value (mesured in sec). Default: 300
     init(trackEventService: TrackEventService,
          fastMovingSpeedThreshold: Double = 0.3,
-         minGapAllowedDuration: Double = 300)
+         minGapAllowedDuration: Double = 900)
     {
         self.trackEventService = trackEventService
         self.fastMovingSpeedThreshold = fastMovingSpeedThreshold
@@ -29,6 +29,7 @@ class HealthKitPump : Pump
     {
         let groupedHealthSamples = trackEventService
             .getEventData(ofType: HealthSample.self)
+            .distinct()
             .sorted(by: { $0.startTime < $1.startTime })
             .splitBy(sameIdAndContinuous)
         
@@ -36,7 +37,7 @@ class HealthKitPump : Pump
             .flatMap(toTemporaryTimeSlots)
             .flatMap { $0 }
                 
-        let temporaryTimeSlotsToReturn = removeSmallTimeSlots(from: temporaryTimeSlots)
+        let temporaryTimeSlotsToReturn = removeSmallUnknownTimeSlots(from: temporaryTimeSlots)
 
         return temporaryTimeSlotsToReturn
     }
@@ -47,7 +48,7 @@ class HealthKitPump : Pump
         return previousSample.identifier == sample.identifier && sample.startTime.timeIntervalSince(previousSample.endTime) < minGapAllowedDuration
     }
     
-    private func removeSmallTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    private func removeSmallUnknownTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
         return timeSlots.enumerated().filter
             { currentIndex, timeSlot in
@@ -59,7 +60,7 @@ class HealthKitPump : Pump
                 
                 let nextTimeSlot = timeSlots[nextIndex]
                 
-                if nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
+                if timeSlot.category == .unknown && nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
                 {
                     return false
                 }
@@ -90,32 +91,44 @@ class HealthKitPump : Pump
         
         var slotsToReturn = [TemporaryTimeSlot]()
         
-        var previousSample : HealthSample?
+        var lastTimeSlot : TemporaryTimeSlot?
         
         for sample in walkingAndRunning
         {
             let sampleCategory = sample.categoryBasedOnSpeed(using: fastMovingSpeedThreshold)
             
-            if let previousSample = previousSample, previousSample.categoryBasedOnSpeed(using: fastMovingSpeedThreshold) == sampleCategory
+            if lastTimeSlot == nil
             {
+                slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
+                                                       end: nil,
+                                                       smartGuess: nil,
+                                                       category: sampleCategory,
+                                                       location: nil))
+                lastTimeSlot = slotsToReturn.last
                 continue
             }
             
-            previousSample = sample
-            slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
-                                                   end: nil,
-                                                   smartGuess: nil,
-                                                   category: sampleCategory,
-                                                   location: nil))
+            if let lastTimeSlot = lastTimeSlot, lastTimeSlot.category != sampleCategory
+            {
+                slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
+                                                       end: nil,
+                                                       smartGuess: nil,
+                                                       category: sampleCategory,
+                                                       location: nil))
+            }
+            
+            lastTimeSlot = slotsToReturn.last
         }
         
-        let lastSample = walkingAndRunning.last!
         
-        slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
-                                               end: nil,
-                                               smartGuess: nil,
-                                               category: .unknown,
-                                               location: nil))
+        if let lastSample = walkingAndRunning.last
+        {
+            slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
+                                                   end: nil,
+                                                   smartGuess: nil,
+                                                   category: .unknown,
+                                                   location: nil))
+        }
         
         return slotsToReturn
     }
