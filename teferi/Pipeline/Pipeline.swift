@@ -30,7 +30,7 @@ class Pipeline
         return self
     }
     
-    func start()
+    func run()
     {
         let pumpData = pumps.map { $0.run() }
         var timeline = crossPipe.process(timeline: pumpData)

@@ -116,7 +116,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             return true
         }
         
-        self.pipeline.start()
+        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.smartGuessService.purgeEntries(olderThan: self.timeService.now.add(days: -30))
         
