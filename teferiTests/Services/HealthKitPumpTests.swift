@@ -15,7 +15,6 @@ class HealthKitPumpTests : XCTestCase
     
     override func setUp()
     {
-        
         self.trackEventService = MockTrackEventService()
         self.healthKitPump = HealthKitPump(trackEventService: trackEventService)
     }
@@ -119,7 +118,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
