@@ -27,15 +27,6 @@ class PersistencySink : Sink
     {
         if data.isEmpty { return }
         
-        //Creates an empty TimeSlot if there are no TimeSlots for today
-        if self.timeSlotService.getTimeSlots(forDay: Date()).count == 0
-        {
-            self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now,
-                                             category: .unknown,
-                                             categoryWasSetByUser: false,
-                                             tryUsingLatestLocation: false)
-        }
-        
         var lastLocation : CLLocation? = nil
         var smartGuessesToUpdate = [SmartGuessUpdate]()
         
