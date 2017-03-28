@@ -299,6 +299,29 @@ class LocationPumpTests: XCTestCase {
         
     }
     
+    func testCanCreateUnkownSlotsBetweenCommuteSlots()
+    {
+        self.addStoredTimeSlot()
+
+        self.trackEventService.mockEvents = [
+            TrackEvent.baseMockEvent.delay(minutes:30).offset(meters: 200),
+            TrackEvent.baseMockEvent.delay(minutes:45).offset(meters: 400),
+            TrackEvent.baseMockEvent.delay(minutes:75).offset(meters: 800),
+            TrackEvent.baseMockEvent.delay(minutes:90).offset(meters: 1000),
+            TrackEvent.baseMockEvent.delay(minutes:120).offset(meters: 1200),
+            TrackEvent.baseMockEvent.delay(minutes:135).offset(meters: 1400)
+        ]
+        
+        let timeSlots = locationPump.start()
+        
+        expect(timeSlots.count).to(equal(5))
+        expect(timeSlots[0].category).to(equal(Category.commute))
+        expect(timeSlots[1].category).to(equal(Category.unknown))
+        expect(timeSlots[2].category).to(equal(Category.commute))
+        expect(timeSlots[3].category).to(equal(Category.unknown))
+        expect(timeSlots[4].category).to(equal(Category.commute))
+    }
+    
     private func addStoredTimeSlot(minutesBeforeNoon:TimeInterval = 0)
     {
         let date = Date.noon.addingTimeInterval(-60 * minutesBeforeNoon)
