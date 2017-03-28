@@ -69,7 +69,7 @@ class PersistencySinkTests : XCTestCase
         data[4] = data[4].with(location: Location(fromCLLocation: CLLocation(latitude: 38.628060, longitude: -117.848463)))
         data[5] = data[5].with(location: Location(fromCLLocation: expectedLocation))
         
-        self.persistencySink.execute(data: data)
+        self.persistencySink.execute(timeline: data)
         
         expect(self.settingsService.lastLocation).toNot(beNil())
         expect(self.settingsService.lastLocation!.coordinate.latitude).to(equal(expectedLocation.coordinate.latitude))
@@ -89,7 +89,7 @@ class PersistencySinkTests : XCTestCase
         
         let expectedDate = data[5].start
         
-        self.persistencySink.execute(data: data)
+        self.persistencySink.execute(timeline: data)
         
         let actualDate = self.smartGuessService.smartGuessUpdates.last!.1
         
@@ -100,7 +100,7 @@ class PersistencySinkTests : XCTestCase
     {
         self.trackEventService.mockEvents = [ TrackEvent.newLocation(location: Location(fromCLLocation: CLLocation())) ]
         
-        self.persistencySink.execute(data: self.getTestData())
+        self.persistencySink.execute(timeline: self.getTestData())
         
         expect(self.trackEventService.getEventData(ofType: Location.self).count).to(equal(0))
     }

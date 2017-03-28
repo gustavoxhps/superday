@@ -10,12 +10,12 @@ class FirstTimeSlotOfDayPipe : Pipe
         self.timeSlotService = timeSlotService
     }
     
-    func process(data: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    func process(timeline: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
         let now = self.timeService.now
         
         //Creates an empty TimeSlot if there are no TimeSlots for today
-        guard data.isEmpty && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return data }
+        guard timeline.isEmpty && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
         
         return [ TemporaryTimeSlot(start: now) ]
     }

@@ -27,7 +27,7 @@ class HealthKitPumpTests : XCTestCase
         let expectedResult = [(start: 00, category: .commute),
                               (start: 10, category: .unknown)].map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -50,7 +50,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
 
@@ -78,7 +78,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -117,7 +117,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -145,7 +145,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
 
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -170,7 +170,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.start()
+        let generatedTimeslots = self.healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         

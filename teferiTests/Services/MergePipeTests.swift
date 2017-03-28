@@ -14,7 +14,7 @@ class MergePipeTests : XCTestCase
     
     private var data : [[TemporaryTimeSlot]]
     {
-        return [ locationPump.start(), healthKitPump.start() ]
+        return [ locationPump.run(), healthKitPump.run() ]
     }
     
     private var mergePipe : MergePipe!
@@ -68,7 +68,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -104,7 +104,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -142,7 +142,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown) ].map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -183,7 +183,7 @@ class MergePipeTests : XCTestCase
                 .map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -222,7 +222,7 @@ class MergePipeTests : XCTestCase
                 .map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -261,7 +261,7 @@ class MergePipeTests : XCTestCase
                 .map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -290,7 +290,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 600, endOffset: nil ) ].map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -330,7 +330,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeLocation: false) ].map(toTempTimeSlot)
         
         self.mergePipe
-            .process(data: self.data)
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }

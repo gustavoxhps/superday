@@ -4,7 +4,7 @@ class MockPump : Pump
 {
     var timeSlotsToReturn = [TemporaryTimeSlot]()
     
-    func start() -> [TemporaryTimeSlot]
+    func run() -> [TemporaryTimeSlot]
     {
         return timeSlotsToReturn
     }

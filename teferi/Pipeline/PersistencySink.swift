@@ -23,14 +23,14 @@ class PersistencySink : Sink
         self.timeService = timeService
     }
     
-    func execute(data: [TemporaryTimeSlot])
+    func execute(timeline: [TemporaryTimeSlot])
     {
-        if data.isEmpty { return }
+        if timeline.isEmpty { return }
         
         var lastLocation : CLLocation? = nil
         var smartGuessesToUpdate = [SmartGuessUpdate]()
         
-        for temporaryTimeSlot in data
+        for temporaryTimeSlot in timeline
         {
             let addedTimeSlot : TimeSlot?
             if let smartGuess = temporaryTimeSlot.smartGuess

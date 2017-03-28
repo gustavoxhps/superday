@@ -23,14 +23,14 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
     
     func testThePipeCreatesATimeSlotIfTheresNoDataForTheCurrentDayBothPersistedAndInThePipe()
     {
-        let result = self.pipe.process(data: [])
+        let result = self.pipe.process(timeline: [])
         
         expect(result.count).to(equal(1))
     }
     
     func testThePipeDoesNotTouchDataIfThereAreSlotsInThePipe()
     {
-        let result = self.pipe.process(data: [ TemporaryTimeSlot(start: self.timeService.now) ])
+        let result = self.pipe.process(timeline: [ TemporaryTimeSlot(start: self.timeService.now) ])
         
         expect(result.count).to(equal(1))
     }
@@ -39,7 +39,7 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
     {
         self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now, category: .unknown, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         
-        let result = self.pipe.process(data: [])
+        let result = self.pipe.process(timeline: [])
         
         expect(result.count).to(equal(0))
     }

@@ -32,15 +32,15 @@ class Pipeline
     
     func start()
     {
-        let pumpData = pumps.map { $0.start() }
-        var data = crossPipe.process(data: pumpData)
+        let pumpData = pumps.map { $0.run() }
+        var timeline = crossPipe.process(timeline: pumpData)
         
         for pipe in pipes
         {
-            data = pipe.process(data: data)
+            timeline = pipe.process(timeline: timeline)
         }
         
-        self.sinks.forEach { sink in sink.execute(data: data) }
+        self.sinks.forEach { sink in sink.execute(timeline: timeline) }
     }
     
     static func with(pumps: Pump...) -> Pipeline

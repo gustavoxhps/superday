@@ -1,4 +1,4 @@
 protocol Sink
 {
-    func execute(data: [TemporaryTimeSlot])
+    func execute(timeline: [TemporaryTimeSlot])
 }

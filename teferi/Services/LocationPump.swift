@@ -20,8 +20,8 @@ class LocationPump : Pump
         self.timeSlotService = timeSlotService
     }
     
-    //MARK:  TemporaryTimelineGenerator implementation
-    func start() -> [TemporaryTimeSlot]
+    // MARK: TemporaryTimelineGenerator implementation
+    func run() -> [TemporaryTimeSlot]
     {
         guard let lastTimeSlot = self.timeSlotService.getLast() else { return [] }
         lastSavedTimeSlot = lastTimeSlot

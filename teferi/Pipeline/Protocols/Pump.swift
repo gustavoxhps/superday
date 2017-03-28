@@ -1,4 +1,4 @@
 protocol Pump
 {
-    func start() -> [TemporaryTimeSlot]
+    func run() -> [TemporaryTimeSlot]
 }

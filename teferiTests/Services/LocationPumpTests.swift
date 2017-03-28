@@ -47,7 +47,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
 
         expect(timeSlots.count).to(equal(0))
     }
@@ -62,7 +62,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours:20).offset(meters: 300),
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(beGreaterThan(0))
     }
@@ -80,7 +80,7 @@ class LocationPumpTests: XCTestCase {
             Location.asTrackEvent(Location(fromCLLocation: newLocation))
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
 
         expect(timeSlots.count).to(equal(0))
     }
@@ -98,7 +98,7 @@ class LocationPumpTests: XCTestCase {
             eventA.delay(minutes: 60).offset(meters: 160)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         // No lastLocation in settings, two updates -> Should create at least one TS.
         expect(timeSlots.count).to(beGreaterThan(0))
@@ -114,7 +114,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours:1).offset(meters: 600),
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         let firstTimeSlot = timeSlots[0]
         expect(firstTimeSlot.category).to(equal(Category.commute))
@@ -131,7 +131,7 @@ class LocationPumpTests: XCTestCase {
             firstEvent.delay(minutes: 15).offset(meters: 400)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         let firstTimeSlot = timeSlots[0]
         expect(firstTimeSlot.category).to(equal(Category.commute))
@@ -148,7 +148,7 @@ class LocationPumpTests: XCTestCase {
             secondEvent
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots.last!.start).to(equal(location.timestamp))
@@ -168,7 +168,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(minutes:$0).offset(meters:100*$0)
         }
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         let commutesDetected = timeSlots.filter { $0.category == .commute }
         
         expect(timeSlots.count).to(equal(3))
@@ -188,7 +188,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 30)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
     }
@@ -201,7 +201,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 10)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(0))
     }
@@ -217,7 +217,7 @@ class LocationPumpTests: XCTestCase {
             firstEvent.delay(minutes: 15).offset(meters: 20)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.unknown))
@@ -233,7 +233,7 @@ class LocationPumpTests: XCTestCase {
             firstEvent
         ]
         
-        let _ = locationPump.start()
+        let _ = locationPump.run()
         
         let lastLocation = self.settingsService.lastLocation!
         let baseLocation = CLLocation.baseLocation
@@ -253,7 +253,7 @@ class LocationPumpTests: XCTestCase {
             Location.asTrackEvent(Location(fromCLLocation: location))
         ]
         
-        let _ = locationPump.start()
+        let _ = locationPump.run()
         
         expect(self.smartGuessService.locationsAskedFor.count).to(equal(1))
 
@@ -275,7 +275,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.offset(meters:200).delay(minutes:30)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.unknown))
@@ -292,7 +292,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 300)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.food))
@@ -312,7 +312,7 @@ class LocationPumpTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(minutes:135).offset(meters: 1400)
         ]
         
-        let timeSlots = locationPump.start()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(5))
         expect(timeSlots[0].category).to(equal(Category.commute))

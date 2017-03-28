@@ -1,9 +1,9 @@
 protocol CrossPipe
 {
-    func process(data: [[TemporaryTimeSlot]]) -> [TemporaryTimeSlot]
+    func process(timeline: [[TemporaryTimeSlot]]) -> [TemporaryTimeSlot]
 }
 
 protocol Pipe
 {
-    func process(data: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    func process(timeline: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
 }

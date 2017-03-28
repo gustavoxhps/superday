@@ -25,7 +25,7 @@ class HealthKitPump : Pump
     }
     
     // MARK: - Protocol implementation
-    func start() -> [TemporaryTimeSlot]
+    func run() -> [TemporaryTimeSlot]
     {
         let groupedHealthSamples = trackEventService
             .getEventData(ofType: HealthSample.self)

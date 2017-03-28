@@ -2,16 +2,16 @@ import Foundation
 
 class MergePipe : CrossPipe
 {
-    func process(data: [[TemporaryTimeSlot]]) -> [TemporaryTimeSlot]
+    func process(timeline: [[TemporaryTimeSlot]]) -> [TemporaryTimeSlot]
     {
-        let flatTimeline = data.flatMap { $0 }
+        let flatTimeline = timeline.flatMap { $0 }
         let startTimes =  flatTimeline.map { $0.start }
         let endTimes = flatTimeline.flatMap { $0.end }
         
         let timeline = (startTimes + endTimes)
                         .distinct()
                         .sorted(by: <)
-                        .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: data))
+                        .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: timeline))
         
         return timeline
     }
