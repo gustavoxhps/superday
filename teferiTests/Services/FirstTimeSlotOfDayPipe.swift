@@ -6,6 +6,7 @@ import CoreLocation
 
 class FirstTimeSlotOfDayPipeTests : XCTestCase
 {
+    private var noon : Date!
     private var timeService : MockTimeService!
     private var timeSlotService : MockTimeSlotService!
     
@@ -13,19 +14,23 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
     
     override func setUp()
     {
+        self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         self.timeService = MockTimeService()
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
                                                    locationService: MockLocationService())
+        
+        self.timeService.mockDate = self.noon
         
         self.pipe = FirstTimeSlotOfDayPipe(timeService: self.timeService,
                                            timeSlotService: self.timeSlotService)
     }
     
-    func testThePipeCreatesATimeSlotIfTheresNoDataForTheCurrentDayBothPersistedAndInThePipe()
+    func testThePipeCreatesATimeSlotIfThereIsNoTimeSlotPersistedTodayAndNoTimeSlotStartingTodayInThePipe()
     {
         let result = self.pipe.process(timeline: [])
         
         expect(result.count).to(equal(1))
+        expect(result.first!.start).to(equal(self.timeService.now))
     }
     
     func testThePipeDoesNotTouchDataIfThereAreSlotsInThePipe()
