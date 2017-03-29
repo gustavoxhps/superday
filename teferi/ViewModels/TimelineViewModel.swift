@@ -68,14 +68,14 @@ class TimelineViewModel
             self.timeSlotService
                 .timeSlotUpdatedObservable
                 .filter(self.timeSlotBelongsToThisDate)
+                .mapTo(())
                 .map(self.refreshTimeSlotsFromService)
         
         let stateObservable =
             self.isCurrentDay ?
                 Observable.empty() :
                 self.appLifecycleService
-                    .lifecycleEventObservable
-                    .filter(self.movedToForeground)
+                    .movedToForegroundObservable
                     .map(self.refreshTimeSlotsFromService)
         
         return Observable.of(stateObservable, updateObservable).merge()
@@ -115,7 +115,7 @@ class TimelineViewModel
 
     private func timeSlotBelongsToThisDate(_ timeSlot: TimeSlot) -> Bool { return timeSlot.startTime.ignoreTimeComponents() == self.date }
     
-    private func refreshTimeSlotsFromService(_ ignore: Any) -> Void
+    private func refreshTimeSlotsFromService() -> Void
     {
         let timeSlots = self.timeSlotService.getTimeSlots(forDay: self.date)
         self.timelineItems = self.getTimelineItems(fromTimeSlots: timeSlots)

@@ -14,7 +14,7 @@ class MockAppLifecycleService : AppLifecycleService
     
     //MARK: Properties
     let lifecycleEventObservable : Observable<LifecycleEvent>
-    
+
     func publish(_ event: LifecycleEvent)
     {
         lifecycleEventSubject.onNext(event)

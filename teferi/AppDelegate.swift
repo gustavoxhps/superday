@@ -29,6 +29,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
+    private let notificationSchedulingService : NotificationSchedulingService
     
     //MARK: Properties
     var window: UIWindow?
@@ -90,6 +91,12 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       smartGuessService: self.smartGuessService,
                                                       trackEventService: self.trackEventService,
                                                       timeService: self.timeService))
+
+        self.notificationSchedulingService = NotificationSchedulingService(timeService: self.timeService,
+                                                                           settingsService: self.settingsService,
+                                                                           locationService: self.locationService,
+                                                                           smartGuessService: self.smartGuessService,
+                                                                           notificationService: self.notificationService)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -184,7 +191,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.appLifecycleService.publish(.movedToForeground)
         self.pipeline.run()
         self.initializeWindowIfNeeded()
-        self.notificationService.unscheduleAllNotifications()
+        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         if self.invalidateOnWakeup
         {
@@ -206,7 +213,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
-        self.showEditViewOnWakeup = true
+        guard let category = notification.category else { return }
+        
+        self.showEditViewOnWakeup = (category == NotificationType.categorySelection.rawValue)
     }
     
     func application(_ application: UIApplication,

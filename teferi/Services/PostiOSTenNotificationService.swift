@@ -56,20 +56,62 @@ class PostiOSTenNotificationService : NotificationService
                                                 completionHandler: { (granted, error) in completed() })
     }
     
-    func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    func scheduleNormalNotification(date: Date, title: String, message: String)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
+    }
+    
+    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
+    }
+    
+    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         self.loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
         
+        var content = notificationContent(title: title, message: message)
+        content.categoryIdentifier = type.rawValue
+        
+        switch type {
+        case .categorySelection:
+            content = prepareForCategorySelectionNotification(content: content, possibleFutureSlotStart: possibleFutureSlotStart)
+        default: break
+        }
+        
+        let fireTime = date.timeIntervalSinceNow
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
+        let request  = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
+        
+        self.notificationCenter.add(request) { (error) in
+            if let error = error
+            {
+                self.loggingService.log(withLogLevel: .error, message: "Tried to schedule notifications, but could't. Got error: \(error)")
+            }
+            else
+            {
+                self.setUserNotificationActions()
+            }
+        }
+    }
+    
+    private func notificationContent(title: String, message: String) -> UNMutableNotificationContent
+    {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = message
         content.sound = UNNotificationSound(named: UILocalNotificationDefaultSoundName)
+        return content
+    }
+    
+    private func prepareForCategorySelectionNotification(content oldContent: UNMutableNotificationContent, possibleFutureSlotStart: Date?) -> UNMutableNotificationContent
+    {
+        let content = oldContent
         
         //We shouldn't try guessing which categories the user will pick before we have enough data
         guard self.appIsBeingUsedForOverAWeek else
         {
-            self.finishScheduling(date, content)
-            return
+            return content
         }
         
         let numberOfSlotsForNotification : Int = 3
@@ -91,10 +133,9 @@ class PostiOSTenNotificationService : NotificationService
             latestTimeSlotsForNotification.append( ["date": formatter.string(from: possibleFutureSlotStart)] )
         }
         
-        content.categoryIdentifier = Constants.notificationCategoryId
         content.userInfo = ["timeSlots": latestTimeSlotsForNotification]
         
-        self.finishScheduling(date, content)
+        return content
     }
     
     private func toDictionary(_ timeSlot: TimeSlot) -> [String: String]
@@ -112,30 +153,19 @@ class PostiOSTenNotificationService : NotificationService
         return timeSlotDictionary
     }
     
-    private func finishScheduling(_ date: Date, _ content: UNMutableNotificationContent)
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
-        let fireTime = date.timeIntervalSinceNow
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
+        let giveTypes = types.flatMap { $0 }
         
-        let identifier = String(date.timeIntervalSince1970)
-        let request  = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        
-        self.notificationCenter.add(request) { (error) in
-            if let error = error
-            {
-                self.loggingService.log(withLogLevel: .error, message: "Tried to schedule notifications, but could't. Got error: \(error)")
-            }
-            else
-            {
-                self.setUserNotificationActions()
-            }
+        if giveTypes.isEmpty
+        {
+            notificationCenter.removeAllDeliveredNotifications()
+            notificationCenter.removeAllPendingNotificationRequests()
+            return
         }
-    }
-    
-    func unscheduleAllNotifications()
-    {
-        notificationCenter.removeAllDeliveredNotifications()
-        notificationCenter.removeAllPendingNotificationRequests()
+        
+        notificationCenter.removeDeliveredNotifications(withIdentifiers: giveTypes.map { $0.rawValue })
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: giveTypes.map { $0.rawValue })
     }
     
     func handleNotificationAction(withIdentifier identifier: String?)
@@ -171,7 +201,7 @@ class PostiOSTenNotificationService : NotificationService
             mostUsedCategories = mostUsedCategories + defaultCategories.prefix(missingCategoryCount)
         }
         
-        let notificationCategory = UNNotificationCategory(identifier: Constants.notificationCategoryId,
+        let notificationCategory = UNNotificationCategory(identifier: NotificationType.categorySelection.rawValue,
                                                           actions: mostUsedCategories.map(toNotificationAction),
                                                           intentIdentifiers: [])
    

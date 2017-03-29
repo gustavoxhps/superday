@@ -52,4 +52,9 @@ extension ObservableType {
             }
         }
     }
+    
+    public func mapTo<R>(_ value: R) -> Observable<R>
+    {
+        return map {_ in value}
+    }
 }

@@ -11,9 +11,14 @@ class DefaultSettingsService : SettingsService
     private let lastLocationDateKey = "lastLocationDate"
     private let lastLocationHorizontalAccuracyKey = "lastLocationHorizongalAccuracy"
     private let lastInactiveDateKey = "lastInactiveDate"
-    private let canIgnoreLocationPermissionKey = " canIgnoreLocationPermission"
     private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
+    private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
+    
+    private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
+    private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
+    private let lastNotificationLocationDateKey = "lastNotificationLocationDate"
+    private let lastNotificationLocationHorizontalAccuracyKey = "lastNotificationLocationHorizontalAccuracy"
     
     //MARK: Properties
     var installDate : Date?
@@ -47,6 +52,21 @@ class DefaultSettingsService : SettingsService
         return location
     }
     
+    var lastNotificationLocation : CLLocation?
+    {
+        guard let time = self.get(forKey: self.lastNotificationLocationDateKey) as Date? else { return nil }
+
+        let latitude = self.getDouble(forKey: self.lastNotificationLocationLatKey)
+        let longitude = self.getDouble(forKey: self.lastNotificationLocationLngKey)
+        let horizontalAccuracy = self.get(forKey: self.lastNotificationLocationHorizontalAccuracyKey) as Double? ?? 0.0
+        
+        let coord = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let location = CLLocation(coordinate: coord, altitude: 0,
+                                  horizontalAccuracy: horizontalAccuracy,
+                                  verticalAccuracy: 0, timestamp: time)
+        return location
+    }
+    
     var hasLocationPermission : Bool
     {
         guard CLLocationManager.locationServicesEnabled() else { return false }
@@ -64,9 +84,9 @@ class DefaultSettingsService : SettingsService
         return self.get(forKey: self.lastAskedForLocationPermissionKey)
     }
     
-    var canIgnoreLocationPermission : Bool
+    var userEverGaveLocationPermission: Bool
     {
-        return self.getBool(forKey: self.canIgnoreLocationPermissionKey)
+        return self.getBool(forKey: self.userGaveLocationPermissionKey)
     }
     
     //MARK: Methods
@@ -109,14 +129,21 @@ class DefaultSettingsService : SettingsService
         self.set(location.horizontalAccuracy, forKey: self.lastLocationHorizontalAccuracyKey)
     }
     
+    func setLastNotificationLocation(_ location: CLLocation)
+    {
+        self.set(location.timestamp, forKey: self.lastNotificationLocationDateKey)
+        self.set(location.coordinate.latitude, forKey: self.lastNotificationLocationLatKey)
+        self.set(location.coordinate.longitude, forKey: self.lastNotificationLocationLngKey)
+        self.set(location.horizontalAccuracy, forKey: self.lastNotificationLocationHorizontalAccuracyKey)
+    }
+    
     func setLastAskedForLocationPermission(_ date: Date)
     {
         self.set(date, forKey: self.lastAskedForLocationPermissionKey)
     }
     
-    func setAllowedLocationPermission()
-    {
-        self.set(true, forKey: self.canIgnoreLocationPermissionKey)
+    func setUserGaveLocationPermission() {
+        self.set(true, forKey: self.userGaveLocationPermissionKey)
     }
     
     // MARK: Helpers

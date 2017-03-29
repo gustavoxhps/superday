@@ -6,3 +6,13 @@ protocol AppLifecycleService
     
     func publish(_ event: LifecycleEvent)
 }
+
+extension AppLifecycleService
+{
+    var movedToForegroundObservable : Observable<Void>
+    {
+        return self.lifecycleEventObservable
+            .filter({ $0 == .movedToForeground })
+            .mapTo(())
+    }
+}

@@ -28,11 +28,22 @@ class PreiOSTenNotificationService : NotificationService
         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
     }
     
-    func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    func scheduleNormalNotification(date: Date, title: String, message: String)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
+    }
+    
+    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
+    }
+    
+    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
         
         let notification = UILocalNotification()
+        notification.userInfo = ["id": type.rawValue]
         notification.fireDate = date
         notification.alertTitle = title
         notification.alertBody = message
@@ -42,9 +53,27 @@ class PreiOSTenNotificationService : NotificationService
         UIApplication.shared.scheduleLocalNotification(notification)
     }
     
-    func unscheduleAllNotifications()
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
-        UIApplication.shared.cancelAllLocalNotifications()
+        let giveTypes = types.flatMap { $0 }
+        
+        guard
+            let notifications = UIApplication.shared.scheduledLocalNotifications,
+            !giveTypes.isEmpty
+        else
+        {
+            UIApplication.shared.cancelAllLocalNotifications()
+            return
+        }
+        
+        notifications.forEach { (notification) in
+            if let notificationId = notification.userInfo?["id"] as? String,
+                let notificationType = NotificationType(rawValue: notificationId),
+                giveTypes.contains(notificationType)
+            {
+                UIApplication.shared.cancelLocalNotification(notification)
+            }
+        }
     }
     
     func handleNotificationAction(withIdentifier identifier: String?)

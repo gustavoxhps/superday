@@ -9,11 +9,12 @@ class MockSettingsService : SettingsService
     var installDate : Date? = Date()
     var lastInactiveDate : Date? = nil
     var lastLocation : CLLocation? = nil
+    var lastNotificationLocation : CLLocation? = nil
     var lastAskedForLocationPermission : Date? = nil
-    
+    var userEverGaveLocationPermission : Bool = false
+
     var hasLocationPermission = true
     var hasNotificationPermission = true
-    var canIgnoreLocationPermission = false
     
     var healthKitUpdates = [String: Date]()
     
@@ -34,11 +35,6 @@ class MockSettingsService : SettingsService
         healthKitUpdates[identifier] = date
     }
     
-    func setAllowedLocationPermission()
-    {
-        self.canIgnoreLocationPermission = true
-    }
-    
     func setInstallDate(_ date: Date)
     {
         self.installDate = date
@@ -54,6 +50,11 @@ class MockSettingsService : SettingsService
         self.lastLocation = location
     }
     
+    func setLastNotificationLocation(_ location: CLLocation)
+    {
+        self.lastNotificationLocation = location
+    }
+    
     func setLastAskedForLocationPermission(_ date: Date)
     {
         self.lastAskedForLocationPermission = date
@@ -67,5 +68,9 @@ class MockSettingsService : SettingsService
     func incrementSmartGuessId()
     {
         self.nextSmartGuessId += 1
+    }
+    
+    func setUserGaveLocationPermission() {
+        self.userEverGaveLocationPermission = true
     }
 }

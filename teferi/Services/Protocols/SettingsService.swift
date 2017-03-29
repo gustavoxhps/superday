@@ -11,12 +11,14 @@ protocol SettingsService
     var hasLocationPermission : Bool { get }
     
     var lastAskedForLocationPermission : Date? { get }
-    
-    var canIgnoreLocationPermission : Bool { get }
-    
+        
     var hasNotificationPermission : Bool { get }
     
+    var userEverGaveLocationPermission : Bool { get }
+    
     var lastInactiveDate : Date?  { get }
+    
+    var lastNotificationLocation : CLLocation? { get }
     
     //MARK: Methods
     func lastHealthKitUpdate(for identifier: String) -> Date
@@ -31,5 +33,8 @@ protocol SettingsService
     
     func setLastAskedForLocationPermission(_ date: Date)
     
-    func setAllowedLocationPermission()
+    func setUserGaveLocationPermission()
+    
+    func setLastNotificationLocation(_ location: CLLocation)
+
 }
