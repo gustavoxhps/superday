@@ -183,7 +183,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     {
         self.appLifecycleService.publish(.movedToForeground)
         self.initializeWindowIfNeeded()
-        self.notificationService.unscheduleAllNotifications()
+        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         if self.invalidateOnWakeup
         {
@@ -205,7 +205,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
-        self.showEditViewOnWakeup = true
+        guard let category = notification.category else { return }
+        
+        self.showEditViewOnWakeup = (category == NotificationType.categorySelection.rawValue)
     }
     
     func application(_ application: UIApplication,

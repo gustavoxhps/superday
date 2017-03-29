@@ -115,16 +115,16 @@ class DefaultTrackingService : TrackingService
     
     private func cancelNotification(andScheduleNew scheduleNew : Bool)
     {
-        self.notificationService.unscheduleAllNotifications()
+        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         guard scheduleNew else { return }
         
         let notificationDate = self.timeService.now.addingTimeInterval(self.commuteDetectionLimit)
         let possibleFutureSlotStart = timeSlotService.getLast()?.category == Category.commute ? settingsService.lastLocation?.timestamp : nil
-        self.notificationService.scheduleNotification(date: notificationDate,
-                                                      title: self.notificationTitle,
-                                                      message: self.notificationBody,
-                                                      possibleFutureSlotStart: possibleFutureSlotStart)
+        self.notificationService.scheduleCategorySelectionNotification(date: notificationDate,
+                                                                       title: self.notificationTitle,
+                                                                       message: self.notificationBody,
+                                                                       possibleFutureSlotStart: possibleFutureSlotStart)
     }
     
     private func onNotificationAction(withCategory category : Category)

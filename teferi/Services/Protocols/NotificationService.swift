@@ -5,9 +5,10 @@ protocol NotificationService
 {
     func requestNotificationPermission(completed: @escaping () -> ())
     
-    func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    func scheduleNormalNotification(date: Date, title: String, message: String)
+    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
     
-    func unscheduleAllNotifications()
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     
     func handleNotificationAction(withIdentifier identifier: String?)
     

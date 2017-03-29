@@ -152,6 +152,7 @@
 		AC7186CC1E6C8CF0000323C7 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */; };
 		AC7186D11E6CA02C000323C7 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC7186D01E6CA02C000323C7 /* HealthKit.framework */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
+		ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCAFD241E8BDF490097F037 /* NotificationType.swift */; };
 		BE1BDFAD1E79A8250077D694 /* DefaultHealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BDFAC1E79A8250077D694 /* DefaultHealthKitService.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
 		BEA024341E41137D0061FE53 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024331E41137D0061FE53 /* Category.swift */; };
@@ -363,6 +364,7 @@
 		AC7186CF1E6CA02C000323C7 /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
 		AC7186D01E6CA02C000323C7 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
+		ACCAFD241E8BDF490097F037 /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationType.swift; path = Models/NotificationType.swift; sourceTree = "<group>"; };
 		B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_teferi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1BDFAC1E79A8250077D694 /* DefaultHealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultHealthKitService.swift; path = Services/DefaultHealthKitService.swift; sourceTree = "<group>"; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
@@ -595,6 +597,7 @@
 				24C72AA51D906BDA00DABAC3 /* LogLevel.swift */,
 				24D18E251DEF6D640046B202 /* SmartGuess.swift */,
 				24224B071E28E37700AD7575 /* TimelineItem.swift */,
+				ACCAFD241E8BDF490097F037 /* NotificationType.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1270,6 +1273,7 @@
 				51EAA2881DC0BA910025680D /* UIViewExtensions.swift in Sources */,
 				246531721DA7B4A10066DFE0 /* PreiOSTenNotificationService.swift in Sources */,
 				2482CAFF1DB12F9F00E892C1 /* OnboardingPager.swift in Sources */,
+				ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */,
 				247F05FC1D87337300451BAD /* CoreDataPersistencyService.swift in Sources */,
 				7E3C069A1E30B7CA00859747 /* Storyboards.swift in Sources */,
 				24DE23F91E1BB3450089B49E /* ArrayExtensions.swift in Sources */,

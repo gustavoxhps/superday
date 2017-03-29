@@ -92,9 +92,9 @@ class NotificationSchedulingService
         guard scheduleNew else { return }
         
         let notificationDate = self.timeService.now.addingTimeInterval(self.commuteDetectionLimit)
-        self.notificationService.scheduleNotification(date: notificationDate,
-                                                      title: self.notificationTitle,
-                                                      message: self.notificationBody,
-                                                      possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: notificationDate,
+                                                                       title: self.notificationTitle,
+                                                                       message: self.notificationBody,
+                                                                       possibleFutureSlotStart: nil)
     }
 }

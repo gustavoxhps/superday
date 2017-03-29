@@ -44,7 +44,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
                                                                  timeSlotService: self.timeSlotService)
         
         
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
         
         waitUntil { done in
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
@@ -62,7 +62,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
             self.timeSlotService.addTimeSlot(withStartTime: Date(), category: category, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         }
         
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
         self.notificationService.setUserNotificationActions()
         
         let expectedCategories : [ teferi.Category ] = [ .friends, .family, .hobby, .fitness ]
@@ -75,7 +75,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .food, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .hobby, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
         self.notificationService.setUserNotificationActions()
         
         let expectedCategories : [ teferi.Category ] = [ .work, .food, .hobby, .leisure ]
@@ -87,7 +87,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .friends, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .family, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
         self.notificationService.setUserNotificationActions()
         
         let expectedCategories : [ teferi.Category ] = [ .friends, .family, .work, .food ]
@@ -97,7 +97,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     func testFakeTimeSlotIsInsertedInNotification()
     {
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .work, categoryWasSetByUser: false, tryUsingLatestLocation: false)
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: Date())
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: Date())
         
         waitUntil { done in
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
@@ -113,7 +113,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     {
         self.timeSlotService.addTimeSlot(withStartTime: timeService.now, category: .work, categoryWasSetByUser: false, tryUsingLatestLocation: false)
         
-        self.notificationService.scheduleNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
         
         waitUntil { done in
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in

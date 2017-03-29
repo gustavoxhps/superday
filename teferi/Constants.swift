@@ -15,9 +15,6 @@ class Constants
     ///Duration of the fade in/out edit animation
     static let editAnimationDuration = 0.09
     
-    //Notification category identifier
-    static let notificationCategoryId = "notificationTimeSlotCategorySelectionIdentifier"
-    
     //Mark: Location Service Constants
     static let maxGPSTime:Double = 5.0
     static let gpsAccuracy:Double = 50.0 //meters
