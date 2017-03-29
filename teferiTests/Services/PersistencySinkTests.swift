@@ -5,14 +5,14 @@ import CoreLocation
 import HealthKit
 @testable import teferi
 
-class TimelinePersistingServiceTests : XCTestCase
+class PersistencySinkTests : XCTestCase
 {
     typealias TestData = TempTimelineTestData
     
     private var noon : Date!
     private var baseSlot : TemporaryTimeSlot!
 
-    private var temporaryTimelinePersistingService : TemporaryTimelinePersistingService!
+    private var persistencySink : PersistencySink!
     
     private var timeService : MockTimeService!
     private var locationService : MockLocationService!
@@ -51,19 +51,11 @@ class TimelinePersistingServiceTests : XCTestCase
         self.smartGuessService = MockSmartGuessService()
         self.trackEventService = MockTrackEventService()
         
-        self.temporaryTimelinePersistingService = TemporaryTimelinePersistingService(settingsService: self.settingsService,
-                                                                                     timeSlotService: self.timeSlotService,
-                                                                                     smartGuessService: self.smartGuessService,
-                                                                                     trackEventService: self.trackEventService)
-    }
-    
-    func testTheTimeSlotServiceIsCalledOnceForEveryTempTimeSlot()
-    {
-        let data = self.getTestData()
-        
-        self.temporaryTimelinePersistingService.execute(data: data)
-        
-        expect(self.timeSlotService.getTimeSlots(forDay: self.timeService.now).count).to(equal(data.count))
+        self.persistencySink = PersistencySink(settingsService: self.settingsService,
+                                               timeSlotService: self.timeSlotService,
+                                               smartGuessService: self.smartGuessService,
+                                               trackEventService: self.trackEventService,
+                                               timeService: self.timeService)
     }
     
     func testTheLastUsedLocationIsPersisted()
@@ -77,7 +69,7 @@ class TimelinePersistingServiceTests : XCTestCase
         data[4] = data[4].with(location: Location(fromCLLocation: CLLocation(latitude: 38.628060, longitude: -117.848463)))
         data[5] = data[5].with(location: Location(fromCLLocation: expectedLocation))
         
-        self.temporaryTimelinePersistingService.execute(data: data)
+        self.persistencySink.execute(timeline: data)
         
         expect(self.settingsService.lastLocation).toNot(beNil())
         expect(self.settingsService.lastLocation!.coordinate.latitude).to(equal(expectedLocation.coordinate.latitude))
@@ -97,7 +89,7 @@ class TimelinePersistingServiceTests : XCTestCase
         
         let expectedDate = data[5].start
         
-        self.temporaryTimelinePersistingService.execute(data: data)
+        self.persistencySink.execute(timeline: data)
         
         let actualDate = self.smartGuessService.smartGuessUpdates.last!.1
         
@@ -108,7 +100,7 @@ class TimelinePersistingServiceTests : XCTestCase
     {
         self.trackEventService.mockEvents = [ TrackEvent.newLocation(location: Location(fromCLLocation: CLLocation())) ]
         
-        self.temporaryTimelinePersistingService.execute(data: self.getTestData())
+        self.persistencySink.execute(timeline: self.getTestData())
         
         expect(self.trackEventService.getEventData(ofType: Location.self).count).to(equal(0))
     }

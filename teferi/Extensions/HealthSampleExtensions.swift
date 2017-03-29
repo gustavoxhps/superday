@@ -29,3 +29,13 @@ extension HealthSample
         return self.endTime.timeIntervalSince(self.startTime)
     }
 }
+
+extension HealthSample : Hashable
+{
+    public var hashValue: Int
+    {
+        let lhs = Int.multiplyWithOverflow(startTime.hashValue, 397).0
+        let rhs = Int(endTime.hashValue)
+        return lhs ^ rhs
+    }
+}

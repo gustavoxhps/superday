@@ -5,23 +5,25 @@ import Nimble
 
 @testable import teferi
 
-class LocationTemporaryTimelineGeneratorTests: XCTestCase {
+class LocationPumpTests: XCTestCase {
     
     private var trackEventService:MockTrackEventService!
     private var settingsService:MockSettingsService!
     private var smartGuessService:MockSmartGuessService!
     private var timeSlotService:MockTimeSlotService!
+    private var loggingService:MockLoggingService!
     
     private var locationService: MockLocationService!
     private var timeService: MockTimeService!
     
-    private var locationTemporaryTimelineGenerator : LocationTemporaryTimelineGenerator!
+    private var locationPump : LocationPump!
     
     override func setUp()
     {        
         self.trackEventService = MockTrackEventService()
         self.settingsService = MockSettingsService()
         self.smartGuessService = MockSmartGuessService()
+        self.loggingService = MockLoggingService()
         
         self.locationService = MockLocationService()
         self.timeService = MockTimeService()
@@ -30,11 +32,12 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             locationService:locationService
         )
         
-        self.locationTemporaryTimelineGenerator = LocationTemporaryTimelineGenerator(
+        self.locationPump = LocationPump(
             trackEventService:self.trackEventService,
             settingsService:self.settingsService,
             smartGuessService:self.smartGuessService,
-            timeSlotService:self.timeSlotService
+            timeSlotService:self.timeSlotService,
+            loggingService: loggingService
         )
     }
     
@@ -47,7 +50,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
 
         expect(timeSlots.count).to(equal(0))
     }
@@ -62,7 +65,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours:20).offset(meters: 300),
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(beGreaterThan(0))
     }
@@ -80,7 +83,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             Location.asTrackEvent(Location(fromCLLocation: newLocation))
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
 
         expect(timeSlots.count).to(equal(0))
     }
@@ -98,7 +101,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             eventA.delay(minutes: 60).offset(meters: 160)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         // No lastLocation in settings, two updates -> Should create at least one TS.
         expect(timeSlots.count).to(beGreaterThan(0))
@@ -114,7 +117,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours:1).offset(meters: 600),
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         let firstTimeSlot = timeSlots[0]
         expect(firstTimeSlot.category).to(equal(Category.commute))
@@ -131,7 +134,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             firstEvent.delay(minutes: 15).offset(meters: 400)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         let firstTimeSlot = timeSlots[0]
         expect(firstTimeSlot.category).to(equal(Category.commute))
@@ -148,7 +151,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             secondEvent
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots.last!.start).to(equal(location.timestamp))
@@ -168,7 +171,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(minutes:$0).offset(meters:100*$0)
         }
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         let commutesDetected = timeSlots.filter { $0.category == .commute }
         
         expect(timeSlots.count).to(equal(3))
@@ -188,7 +191,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 30)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
     }
@@ -201,7 +204,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 10)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(0))
     }
@@ -217,7 +220,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             firstEvent.delay(minutes: 15).offset(meters: 20)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.unknown))
@@ -233,7 +236,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             firstEvent
         ]
         
-        let _ = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let _ = locationPump.run()
         
         let lastLocation = self.settingsService.lastLocation!
         let baseLocation = CLLocation.baseLocation
@@ -253,7 +256,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             Location.asTrackEvent(Location(fromCLLocation: location))
         ]
         
-        let _ = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let _ = locationPump.run()
         
         expect(self.smartGuessService.locationsAskedFor.count).to(equal(1))
 
@@ -275,7 +278,7 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.offset(meters:200).delay(minutes:30)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.unknown))
@@ -292,11 +295,34 @@ class LocationTemporaryTimelineGeneratorTests: XCTestCase {
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 300)
         ]
         
-        let timeSlots = locationTemporaryTimelineGenerator.generateTemporaryTimeline()
+        let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(1))
         expect(timeSlots[0].category).to(equal(Category.food))
         
+    }
+    
+    func testCanCreateUnkownSlotsBetweenCommuteSlots()
+    {
+        self.addStoredTimeSlot()
+
+        self.trackEventService.mockEvents = [
+            TrackEvent.baseMockEvent.delay(minutes:30).offset(meters: 200),
+            TrackEvent.baseMockEvent.delay(minutes:45).offset(meters: 400),
+            TrackEvent.baseMockEvent.delay(minutes:75).offset(meters: 800),
+            TrackEvent.baseMockEvent.delay(minutes:90).offset(meters: 1000),
+            TrackEvent.baseMockEvent.delay(minutes:120).offset(meters: 1200),
+            TrackEvent.baseMockEvent.delay(minutes:135).offset(meters: 1400)
+        ]
+        
+        let timeSlots = locationPump.run()
+        
+        expect(timeSlots.count).to(equal(5))
+        expect(timeSlots[0].category).to(equal(Category.commute))
+        expect(timeSlots[1].category).to(equal(Category.unknown))
+        expect(timeSlots[2].category).to(equal(Category.commute))
+        expect(timeSlots[3].category).to(equal(Category.unknown))
+        expect(timeSlots[4].category).to(equal(Category.commute))
     }
     
     private func addStoredTimeSlot(minutesBeforeNoon:TimeInterval = 0)

@@ -14,6 +14,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
     
+    private let pipeline : Pipeline
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let loggingService : LoggingService
@@ -21,7 +22,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
-    private let trackingService : TrackingService
     private let editStateService : EditStateService
     private let healthKitService : HealthKitService
     private let smartGuessService : SmartGuessService
@@ -74,13 +74,22 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                           persistencyService: trackEventServicePersistency,
                                                           withEventSources: locationService, healthKitService)
         
-        self.trackingService =
-            DefaultTrackingService(timeService: self.timeService,
-                                   loggingService: self.loggingService,
-                                   settingsService: self.settingsService,
-                                   timeSlotService: self.timeSlotService,
-                                   smartGuessService: self.smartGuessService,
-                                   notificationService: self.notificationService)
+        let locationPump = LocationPump(trackEventService: self.trackEventService,
+                                        settingsService: self.settingsService,
+                                        smartGuessService: self.smartGuessService,
+                                        timeSlotService: self.timeSlotService,
+                                        loggingService: loggingService)
+        
+        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService, loggingService: loggingService)
+        
+        self.pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
+                                .pipe(to: MergePipe())
+                                .pipe(to: FirstTimeSlotOfDayPipe(timeService: self.timeService, timeSlotService: self.timeSlotService))
+                                .sink(PersistencySink(settingsService: self.settingsService,
+                                                      timeSlotService: self.timeSlotService,
+                                                      smartGuessService: self.smartGuessService,
+                                                      trackEventService: self.trackEventService,
+                                                      timeService: self.timeService))
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -89,7 +98,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         self.logAppStartup(isInBackground)
-        self.initializeTrackingService()
         healthKitService.startHealthKitTracking()
         
         self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
@@ -116,35 +124,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
         self.loggingService.log(withLogLevel: .debug, message: message)
     }
-
-    // TODO This needs to be removed in the subsequent PRs.
-    // Whichever approach we pick, The Algorithm® should consume the tracking events
-    // and not the raw observables
-    private func initializeTrackingService()
-    {
-        self.locationService
-            .eventObservable
-            .map(self.toLocation)
-            .filterNil()
-            .subscribe(onNext: self.trackingService.onLocation)
-            .addDisposableTo(disposeBag)
-        
-        self.appLifecycleService
-            .lifecycleEventObservable
-            .subscribe(onNext: self.trackingService.onLifecycleEvent)
-            .addDisposableTo(disposeBag)
-    }
-    
-    private func toLocation(event: TrackEvent) -> CLLocation?
-    {
-        switch event
-        {
-            case .newLocation(let location):
-                return location.toCLLocation()
-            default:
-                return nil
-        }
-    }
     
     private func initializeWindowIfNeeded()
     {
@@ -163,7 +142,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        editStateService: self.editStateService,
                                                        smartGuessService : self.smartGuessService,
                                                        appLifecycleService: self.appLifecycleService,
-                                                       selectedDateService: self.selectedDateService)
+                                                       selectedDateService: self.selectedDateService,
+                                                       loggingService: self.loggingService)
         
         let isFirstUse = self.settingsService.installDate == nil
         
@@ -202,6 +182,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     func applicationDidBecomeActive(_ application: UIApplication)
     {
         self.appLifecycleService.publish(.movedToForeground)
+        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications()
         
@@ -242,7 +223,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     {
         self.saveContext()
     }
-
+    
     // MARK: Core Data stack
     private lazy var applicationDocumentsDirectory : URL =
     {

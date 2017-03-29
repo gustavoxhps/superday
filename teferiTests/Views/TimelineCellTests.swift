@@ -162,7 +162,7 @@ class TimelineCellTests : XCTestCase
     func testTheLineColorChangesAccordingToTheBoundTimeSlot()
     {
         let expectedColor = Category.work.color
-        let actualColor = self.view.lineView.backgroundColor!
+        let actualColor = self.view.lineView.color
         
         expect(expectedColor).to(equal(actualColor))
     }

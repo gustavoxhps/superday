@@ -11,6 +11,15 @@ struct TemporaryTimeSlot
 
 extension TemporaryTimeSlot
 {
+    init(start: Date)
+    {
+        self.start = start
+        self.end = nil
+        self.smartGuess = nil
+        self.category = .unknown
+        self.location = nil
+    }
+    
     init(location:Location, category:Category)
     {
         self.start = location.timestamp

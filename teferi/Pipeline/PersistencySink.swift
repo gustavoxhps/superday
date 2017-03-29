@@ -1,7 +1,6 @@
-import Foundation
 import CoreLocation
 
-class TemporaryTimelinePersistingService
+class PersistencySink : Sink
 {
     private typealias SmartGuessUpdate = (smartGuess: SmartGuess, time: Date)
     
@@ -9,26 +8,29 @@ class TemporaryTimelinePersistingService
     private let timeSlotService : TimeSlotService
     private let smartGuessService : SmartGuessService
     private let trackEventService : TrackEventService
+    private let timeService: TimeService
     
     init(settingsService: SettingsService,
          timeSlotService: TimeSlotService,
          smartGuessService: SmartGuessService,
-         trackEventService: TrackEventService)
+         trackEventService: TrackEventService,
+         timeService: TimeService)
     {
         self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.smartGuessService = smartGuessService
         self.trackEventService = trackEventService
+        self.timeService = timeService
     }
     
-    func execute(data: [TemporaryTimeSlot])
+    func execute(timeline: [TemporaryTimeSlot])
     {
-        if data.isEmpty { return }
+        if timeline.isEmpty { return }
         
         var lastLocation : CLLocation? = nil
         var smartGuessesToUpdate = [SmartGuessUpdate]()
         
-        for temporaryTimeSlot in data
+        for temporaryTimeSlot in timeline
         {
             let addedTimeSlot : TimeSlot?
             if let smartGuess = temporaryTimeSlot.smartGuess

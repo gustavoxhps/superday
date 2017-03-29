@@ -4,7 +4,7 @@ import Nimble
 import CoreLocation
 @testable import teferi
 
-class TimelineMergerTests : XCTestCase
+class MergePipeTests : XCTestCase
 {
     private typealias TestData = TempTimelineTestData
     
@@ -12,10 +12,15 @@ class TimelineMergerTests : XCTestCase
     private var baseSlot : TemporaryTimeSlot!
     private let baseLocation = Location(fromCLLocation: CLLocation())
     
-    private var timelineMerger : TimelineMerger!
+    private var data : [[TemporaryTimeSlot]]
+    {
+        return [ locationPump.run(), healthKitPump.run() ]
+    }
     
-    private var locationTemporaryTimelineGenerator : MockTimelineGenerator!
-    private var healthKitTemporaryTimelineGenerator : MockTimelineGenerator!
+    private var mergePipe : MergePipe!
+    
+    private var locationPump : MockPump!
+    private var healthKitPump : MockPump!
     
     override func setUp()
     {
@@ -26,10 +31,10 @@ class TimelineMergerTests : XCTestCase
                                           category: Category.unknown,
                                           location: nil)
         
-        self.locationTemporaryTimelineGenerator = MockTimelineGenerator()
-        self.healthKitTemporaryTimelineGenerator = MockTimelineGenerator()
+        self.locationPump = MockPump()
+        self.healthKitPump = MockPump()
         
-        self.timelineMerger = TimelineMerger(withTimelineGenerators: self.locationTemporaryTimelineGenerator, self.healthKitTemporaryTimelineGenerator)
+        self.mergePipe = MergePipe()
     }
     
     func testTheMergerCreatesATimelineThatUsesTheIntersectionOfAllTimeSlots()
@@ -40,13 +45,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [ | | |  |  |  | ]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100),
               TestData(startOffset: 0100, endOffset: 0400),
               TestData(startOffset: 0400, endOffset: 0900),
               TestData(startOffset: 0900, endOffset: 1300) ].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0300),
               TestData(startOffset: 0300, endOffset: 0700),
               TestData(startOffset: 0700, endOffset: 1200),
@@ -62,8 +67,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1200, endOffset: 1300),
               TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -76,13 +81,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [ |   |  |  |  | ]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100),
               TestData(startOffset: 0100, endOffset: 0400),
               TestData(startOffset: 0400, endOffset: 0900),
               TestData(startOffset: 0900, endOffset: 1300) ].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100),
               TestData(startOffset: 0100, endOffset: 0400),
               TestData(startOffset: 0400, endOffset: 0600),
@@ -98,8 +103,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1100, endOffset: 1300),
               TestData(startOffset: 1300, endOffset: nil ) ].map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -116,13 +121,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [C| C |C |W |  | ]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work   ),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
@@ -136,8 +141,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown),
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown) ].map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -156,13 +161,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [c| c |c |W | w|F]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work   , includeSmartGuess: true),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.work   , includeSmartGuess: false)].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food   , includeSmartGuess: true )].map(toTempTimeSlot)
@@ -177,8 +182,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -195,13 +200,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [C| C |C |c |  | ]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: true ),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
@@ -216,8 +221,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -234,13 +239,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [c| c |C |C |  | ]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.commute, includeSmartGuess: true ),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false)].map(toTempTimeSlot)
@@ -255,8 +260,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -272,10 +277,10 @@ class TimelineMergerTests : XCTestCase
          Merged      : [-|-|--]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0100, endOffset: 0200) ].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0600) ].map(toTempTimeSlot)
         
         let expectedTimeline =
@@ -284,8 +289,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 200, endOffset: 600),
               TestData(startOffset: 600, endOffset: nil ) ].map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
@@ -304,13 +309,13 @@ class TimelineMergerTests : XCTestCase
          Merged      : [C| CL|C |  | L|L]
          */
         
-        self.locationTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeLocation: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.work   , includeLocation: true ),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.unknown, includeLocation: false),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeLocation: true ) ].map(toTempTimeSlot)
         
-        self.healthKitTemporaryTimelineGenerator.timeSlotsToReturn =
+        self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown) ].map(toTempTimeSlot)
@@ -324,8 +329,8 @@ class TimelineMergerTests : XCTestCase
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeLocation: true ),
               TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeLocation: false) ].map(toTempTimeSlot)
         
-        self.timelineMerger
-            .generateTemporaryTimeline()
+        self.mergePipe
+            .process(timeline: self.data)
             .enumerated()
             .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedTimeline[i]) }
     }
