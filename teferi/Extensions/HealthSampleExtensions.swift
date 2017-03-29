@@ -34,6 +34,8 @@ extension HealthSample : Hashable
 {
     public var hashValue: Int
     {
-        return (Int(startTime.timeIntervalSince1970) * 397) ^ Int(endTime.timeIntervalSince1970)
+        let lhs = Int.multiplyWithOverflow(startTime.hashValue, 397).0
+        let rhs = Int(endTime.hashValue)
+        return lhs ^ rhs
     }
 }
