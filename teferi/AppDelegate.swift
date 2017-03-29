@@ -27,6 +27,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
+    private let notificationSchedulingService : NotificationSchedulingService
     
     //MARK: Properties
     var window: UIWindow?
@@ -64,6 +65,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
         self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
         
+        self.notificationSchedulingService = NotificationSchedulingService(timeService: self.timeService,
+                                                                           settingsService: self.settingsService,
+                                                                           locationService: self.locationService,
+                                                                           smartGuessService: self.smartGuessService,
+                                                                           notificationService: self.notificationService)
         self.trackingService =
             DefaultTrackingService(timeService: self.timeService,
                                    loggingService: self.loggingService,

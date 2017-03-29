@@ -158,6 +158,8 @@
 		BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783601E6DB4A400D44603 /* CategoryProvider.swift */; };
 		BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */; };
 		BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */; };
+		BEAFC0AA1E8A87370050CE70 /* NotificationSchedulingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFC0A91E8A87370050CE70 /* NotificationSchedulingServiceTests.swift */; };
+		BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFC0AB1E8A878F0050CE70 /* NotificationSchedulingService.swift */; };
 		BEC84F311E708D4B0096275C /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC84F301E708D4B0096275C /* Style.swift */; };
 		BEDE5B3A1E4A3F260082FFC3 /* PermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */; };
 		BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */; };
@@ -368,6 +370,8 @@
 		BEA783601E6DB4A400D44603 /* CategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryProvider.swift; sourceTree = "<group>"; };
 		BEA783621E6DB4D500D44603 /* OnboardingCategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCategoryProvider.swift; sourceTree = "<group>"; };
 		BEA783641E6DB5AF00D44603 /* DefaultCategoryProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultCategoryProvider.swift; sourceTree = "<group>"; };
+		BEAFC0A91E8A87370050CE70 /* NotificationSchedulingServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationSchedulingServiceTests.swift; path = Services/NotificationSchedulingServiceTests.swift; sourceTree = "<group>"; };
+		BEAFC0AB1E8A878F0050CE70 /* NotificationSchedulingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationSchedulingService.swift; path = Services/NotificationSchedulingService.swift; sourceTree = "<group>"; };
 		BEC84F301E708D4B0096275C /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Styles/Style.swift; sourceTree = "<group>"; };
 		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
@@ -486,6 +490,7 @@
 				24D73F2A1E1FB8B9009FC2DF /* SmartGuessServiceTests.swift */,
 				ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */,
 				8C423FEC1E6DCFBE00AAFE27 /* LocationServiceTests.swift */,
+				BEAFC0A91E8A87370050CE70 /* NotificationSchedulingServiceTests.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -704,6 +709,7 @@
 		24EB96601DE705850040C211 /* Interaction */ = {
 			isa = PBXGroup;
 			children = (
+				BEAFC0AB1E8A878F0050CE70 /* NotificationSchedulingService.swift */,
 				243E37AD1DC8FABC0074032D /* PostiOSTenNotificationService.swift */,
 				246531711DA7B4A10066DFE0 /* PreiOSTenNotificationService.swift */,
 				2FB611411DE77846007C5646 /* MailFeedbackService.swift */,
@@ -1223,6 +1229,7 @@
 				24526A751D92D98800DA3FA0 /* Constants.swift in Sources */,
 				6AC29DA71E4269FB000A99EF /* ViewModelLocator.swift in Sources */,
 				24EB96721DE7080F0040C211 /* DefaultEditStateService.swift in Sources */,
+				BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */,
 				7E3C06981E30B7CA00859747 /* Assets.swift in Sources */,
 				24526A771D92D99F00DA3FA0 /* MetricsService.swift in Sources */,
 				24EB96781DE7080F0040C211 /* TrackingService.swift in Sources */,
@@ -1314,6 +1321,7 @@
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
+				BEAFC0AA1E8A87370050CE70 /* NotificationSchedulingServiceTests.swift in Sources */,
 				24EB96871DE7163E0040C211 /* MockTimeSlotService.swift in Sources */,
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,

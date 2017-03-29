@@ -9,6 +9,7 @@ class MockSettingsService : SettingsService
     var installDate : Date? = Date()
     var lastInactiveDate : Date? = nil
     var lastLocation : CLLocation? = nil
+    var lastNotificationLocation : CLLocation? = nil
     var lastAskedForLocationPermission : Date? = nil
     
     var hasLocationPermission = true
@@ -52,6 +53,11 @@ class MockSettingsService : SettingsService
     func setLastLocation(_ location: CLLocation)
     {
         self.lastLocation = location
+    }
+    
+    func setLastNotificationLocation(_ location: CLLocation)
+    {
+        self.lastNotificationLocation = location
     }
     
     func setLastAskedForLocationPermission(_ date: Date)

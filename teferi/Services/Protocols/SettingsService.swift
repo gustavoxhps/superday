@@ -18,6 +18,8 @@ protocol SettingsService
     
     var lastInactiveDate : Date?  { get }
     
+    var lastNotificationLocation : CLLocation? { get }
+    
     //MARK: Methods
     func lastHealthKitUpdate(for identifier: String) -> Date
     
@@ -32,4 +34,6 @@ protocol SettingsService
     func setLastAskedForLocationPermission(_ date: Date)
     
     func setAllowedLocationPermission()
+    
+    func setLastNotificationLocation(_ location: CLLocation)
 }
