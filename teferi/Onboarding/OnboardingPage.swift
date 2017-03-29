@@ -101,29 +101,29 @@ class OnboardingPage : UIViewController
     
     func initAnimatingTimeline(with slots: [TimeSlot], in containingView: UIView) -> [TimelineCell]
     {
-        var offset = 0.0
         
         let cells = self.createTimelineCells(for: slots)
         
-        for (index, cell) in cells.enumerated()
+        var previousCell:TimelineCell?
+        for cell in cells
         {
             containingView.addSubview(cell)
             
             cell.snp.makeConstraints { make in
-                make.top.equalTo(containingView).offset(offset)
-                make.left.equalTo(containingView)
+                if let previousCell = previousCell
+                {
+                    make.top.equalTo(previousCell.snp.bottom)
+                }
+                else {
+                    make.top.equalToSuperview()
+                }
+                make.leading.trailing.equalToSuperview()
             }
             
             cell.transform = CGAffineTransform(translationX: 0, y: 15)
             cell.alpha = 0
             
-            let slot = slots[index]
-            let cellHeight =
-                TimelineViewController
-                    .timelineCellHeight(duration: self.timeSlotService.calculateDuration(ofTimeSlot: slot),
-                                        isRunning: slot.endTime != nil)
-            
-            offset += Double(cellHeight) - 8
+            previousCell = cell
         }
         
         return cells
@@ -139,8 +139,8 @@ class OnboardingPage : UIViewController
                 {
                     cell.transform = CGAffineTransform(translationX: 0, y: 0)
                     cell.alpha = 1
-                },
-                completion: nil)
+            },
+                           completion: nil)
             
             delay += 0.2
         }
@@ -156,8 +156,8 @@ class OnboardingPage : UIViewController
         UIView.animate(withDuration: duration, delay: delay, options: .curveEaseOut, animations:
             {
                 view.transform = CGAffineTransform(translationX: 0, y: 0)
-            },
-            completion: nil)
+        },
+                       completion: nil)
     }
     
     func getTimeSlot(withStartTime startTime: Date, endTime: Date, category: Category) -> TimeSlot

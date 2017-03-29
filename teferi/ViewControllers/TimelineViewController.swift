@@ -6,8 +6,6 @@ import CoreGraphics
 class TimelineViewController : UITableViewController
 {
     // MARK: Fields
-    private static let baseCellHeight = 40
-    
     private let disposeBag = DisposeBag()
     private let viewModel : TimelineViewModel
     
@@ -16,6 +14,8 @@ class TimelineViewController : UITableViewController
     private let emptyCellIdentifier = "emptyStateView"
     
     private var willDisplayNewCell:Bool = false
+    
+    private var isEditingCategory: Bool = false
     
     private lazy var footerCell : UITableViewCell = { return UITableViewCell(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120)) }()
     
@@ -40,6 +40,8 @@ class TimelineViewController : UITableViewController
     {
         super.viewDidLoad()
         
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 100
         self.tableView.separatorStyle = .none
         self.tableView.allowsSelection = false
         self.tableView.showsVerticalScrollIndicator = false
@@ -92,10 +94,10 @@ class TimelineViewController : UITableViewController
     
     private func onIsEditing(isEditing: Bool)
     {
-        self.tableView.isEditing = isEditing
+        isEditingCategory = isEditing
         self.tableView.isScrollEnabled = !isEditing
         
-        if self.tableView.isEditing || self.editingIndex == -1 { return }
+        if isEditingCategory || self.editingIndex == -1 { return }
         
         let indexPath = IndexPath(row: self.editingIndex, section: 0)
         self.tableView.reloadRows(at: [ indexPath ], with: .fade)
@@ -104,7 +106,7 @@ class TimelineViewController : UITableViewController
     
     private func onTimeTick(time: Int)
     {
-        guard !tableView.isEditing else { return }
+        guard !isEditingCategory else { return }
         
         let indexPath = IndexPath(row: self.viewModel.timelineItems.count - 1, section: 0)
         self.tableView.reloadRows(at: [indexPath], with: .none)
@@ -170,36 +172,6 @@ class TimelineViewController : UITableViewController
         }
         
         return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-    {
-        guard self.viewModel.timelineItems.count > 0 else
-        {
-            return self.view.frame.height
-        }
-        
-        let index = indexPath.item
-        if index == self.viewModel.timelineItems.count { return 120 }
-        
-        let timelineItem = self.viewModel.timelineItems[index]
-        let timeSlot = timelineItem.timeSlot
-        let isRunning = timeSlot.endTime == nil
-        
-        let duration = self.viewModel.calculateDuration(ofTimeSlot: timeSlot)
-        return TimelineViewController.timelineCellHeight(duration: duration, isRunning: isRunning)
-    }
-    
-    static func timelineCellHeight(duration : TimeInterval, isRunning : Bool) -> CGFloat
-    {
-        let interval = Int(duration)
-        let hours = (interval / 3600)
-        let minutes = (interval / 60) % 60
-        let height = baseCellHeight
-            + Constants.minLineSize * (1 + (minutes / 15) + (hours * 4))
-            + (isRunning ? 24 : 0)
-        
-        return CGFloat(height)
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

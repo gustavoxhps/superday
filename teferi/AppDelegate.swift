@@ -142,7 +142,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        editStateService: self.editStateService,
                                                        smartGuessService : self.smartGuessService,
                                                        appLifecycleService: self.appLifecycleService,
-                                                       selectedDateService: self.selectedDateService)
+                                                       selectedDateService: self.selectedDateService,
+                                                       loggingService: self.loggingService)
         
         let isFirstUse = self.settingsService.installDate == nil
         

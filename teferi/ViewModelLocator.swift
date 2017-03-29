@@ -28,6 +28,7 @@ class DefaultViewModelLocator : ViewModelLocator
     private let smartGuessService : SmartGuessService
     private let appLifecycleService : AppLifecycleService
     private let selectedDateService : SelectedDateService
+    private let loggingService : LoggingService
 
     init(timeService: TimeService,
          metricsService: MetricsService,
@@ -38,7 +39,8 @@ class DefaultViewModelLocator : ViewModelLocator
          editStateService: EditStateService,
          smartGuessService: SmartGuessService,
          appLifecycleService: AppLifecycleService,
-         selectedDateService: SelectedDateService)
+         selectedDateService: SelectedDateService,
+         loggingService: LoggingService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
@@ -50,6 +52,7 @@ class DefaultViewModelLocator : ViewModelLocator
         self.smartGuessService = smartGuessService
         self.appLifecycleService = appLifecycleService
         self.selectedDateService = selectedDateService
+        self.loggingService = loggingService
     }
     
     func getMainViewModel() -> MainViewModel
@@ -79,7 +82,8 @@ class DefaultViewModelLocator : ViewModelLocator
                                           timeService: self.timeService,
                                           timeSlotService: self.timeSlotService,
                                           editStateService: self.editStateService,
-                                          appLifecycleService: self.appLifecycleService)
+                                          appLifecycleService: self.appLifecycleService,
+                                          loggingService: self.loggingService)
         return viewModel
     }
     

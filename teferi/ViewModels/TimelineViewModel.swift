@@ -12,18 +12,21 @@ class TimelineViewModel
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
     private let appLifecycleService : AppLifecycleService
+    private let loggingService : LoggingService
     
     //MARK: Initializers
     init(date: Date,
          timeService: TimeService,
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
-         appLifecycleService: AppLifecycleService)
+         appLifecycleService: AppLifecycleService,
+         loggingService: LoggingService)
     {
         self.timeService = timeService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
         self.appLifecycleService = appLifecycleService
+        self.loggingService = loggingService
         
         self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
         self.date = date.ignoreTimeComponents()
@@ -149,6 +152,11 @@ class TimelineViewModel
                 
                 let timeSlot = enumerated.element
                 let n = enumerated.offset
+                let isLastInPastDay = self.isLastInPastDay(n, count: count)
+                
+                if isLastInPastDay && timeSlot.endTime == nil {
+                    loggingService.log(withLogLevel: .error, message: "Timeslot error: Can't be last in past day and still running")
+                }
                 
                 if timeSlot.category != .unknown,
                     let last = accumulated.last,
@@ -158,7 +166,7 @@ class TimelineViewModel
                         last.withoutDurations(),
                         TimelineItem(timeSlot: timeSlot,
                                      durations: last.durations + [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
-                                     lastInPastDay: self.isLastInPastDay(n, count: count),
+                                     lastInPastDay: isLastInPastDay,
                                      shouldDisplayCategoryName: false)
                     ]
                 }
@@ -166,7 +174,7 @@ class TimelineViewModel
                 return accumulated + [
                     TimelineItem(timeSlot: timeSlot,
                                  durations: [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
-                                 lastInPastDay: self.isLastInPastDay(n, count: count),
+                                 lastInPastDay: isLastInPastDay,
                                  shouldDisplayCategoryName: true)
                 ]
         }

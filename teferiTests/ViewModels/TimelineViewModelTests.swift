@@ -15,6 +15,7 @@ class TimelineViewModelTests : XCTestCase
     private var timeSlotService : MockTimeSlotService!
     private var editStateService : MockEditStateService!
     private var appLifecycleService : MockAppLifecycleService!
+    private var loggingService : MockLoggingService!
     
     override func setUp()
     {
@@ -24,13 +25,15 @@ class TimelineViewModelTests : XCTestCase
         self.locationService = MockLocationService()
         self.editStateService = MockEditStateService()
         self.appLifecycleService = MockAppLifecycleService()
+        self.loggingService = MockLoggingService()
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
                                                    locationService: self.locationService)
         self.viewModel = TimelineViewModel(date: Date(),
                                            timeService: self.timeService,
                                            timeSlotService: self.timeSlotService,
                                            editStateService: self.editStateService,
-                                           appLifecycleService: self.appLifecycleService)
+                                           appLifecycleService: self.appLifecycleService,
+                                           loggingService: self.loggingService)
     }
     
     override func tearDown()
@@ -46,7 +49,8 @@ class TimelineViewModelTests : XCTestCase
                               timeService: self.timeService,
                               timeSlotService: newMockTimeSlotService,
                               editStateService: self.editStateService,
-                              appLifecycleService: self.appLifecycleService)
+                              appLifecycleService: self.appLifecycleService,
+                              loggingService: self.loggingService)
         
         expect(newMockTimeSlotService.didSubscribe).to(beFalse())
     }
@@ -117,7 +121,8 @@ class TimelineViewModelTests : XCTestCase
                                            timeService: self.timeService,
                                            timeSlotService: self.timeSlotService,
                                            editStateService: self.editStateService,
-                                           appLifecycleService: self.appLifecycleService)
+                                           appLifecycleService: self.appLifecycleService,
+                                           loggingService: self.loggingService)
         
         [ true, true, true, false ]
             .enumerated()
