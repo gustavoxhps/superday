@@ -107,7 +107,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             return true
         }
         
-        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.smartGuessService.purgeEntries(olderThan: self.timeService.now.add(days: -30))
         
@@ -180,6 +179,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     func applicationDidBecomeActive(_ application: UIApplication)
     {
         self.appLifecycleService.publish(.movedToForeground)
+        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications()
         
@@ -220,7 +220,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     {
         self.saveContext()
     }
-
+    
     // MARK: Core Data stack
     private lazy var applicationDocumentsDirectory : URL =
     {
