@@ -11,6 +11,7 @@ class LocationPumpTests: XCTestCase {
     private var settingsService:MockSettingsService!
     private var smartGuessService:MockSmartGuessService!
     private var timeSlotService:MockTimeSlotService!
+    private var loggingService:MockLoggingService!
     
     private var locationService: MockLocationService!
     private var timeService: MockTimeService!
@@ -22,6 +23,7 @@ class LocationPumpTests: XCTestCase {
         self.trackEventService = MockTrackEventService()
         self.settingsService = MockSettingsService()
         self.smartGuessService = MockSmartGuessService()
+        self.loggingService = MockLoggingService()
         
         self.locationService = MockLocationService()
         self.timeService = MockTimeService()
@@ -34,7 +36,8 @@ class LocationPumpTests: XCTestCase {
             trackEventService:self.trackEventService,
             settingsService:self.settingsService,
             smartGuessService:self.smartGuessService,
-            timeSlotService:self.timeSlotService
+            timeSlotService:self.timeSlotService,
+            loggingService: loggingService
         )
     }
     

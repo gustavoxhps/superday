@@ -77,11 +77,12 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let locationPump = LocationPump(trackEventService: self.trackEventService,
                                         settingsService: self.settingsService,
                                         smartGuessService: self.smartGuessService,
-                                        timeSlotService: self.timeSlotService)
+                                        timeSlotService: self.timeSlotService,
+                                        loggingService: loggingService)
         
-        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService)
+        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService, loggingService: loggingService)
         
-        self.pipeline = Pipeline.with(pumps: locationPump, healthKitPump)
+        self.pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
                                 .pipe(to: MergePipe())
                                 .pipe(to: FirstTimeSlotOfDayPipe(timeService: self.timeService, timeSlotService: self.timeSlotService))
                                 .sink(PersistencySink(settingsService: self.settingsService,

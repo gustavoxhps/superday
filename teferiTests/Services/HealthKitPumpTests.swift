@@ -10,13 +10,16 @@ class HealthKitPumpTests : XCTestCase
     
     private let startData = Date().ignoreTimeComponents()
     
+    private var loggingService: MockLoggingService!
     private var trackEventService : MockTrackEventService!
     private var healthKitPump : HealthKitPump!
     
     override func setUp()
     {
+        self.loggingService = MockLoggingService()
         self.trackEventService = MockTrackEventService()
-        self.healthKitPump = HealthKitPump(trackEventService: trackEventService)
+        self.healthKitPump = HealthKitPump(trackEventService: trackEventService,
+                                           loggingService: loggingService)
     }
     
     func minutes(_ time: String) -> Double

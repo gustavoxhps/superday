@@ -1,12 +1,16 @@
+import Foundation
+
 class Pipeline
 {
     private let pumps : [Pump]
     private var pipes = [Pipe]()
     private var sinks = [Sink]()
     private var crossPipe : CrossPipe!
+    private let loggingService : LoggingService
     
-    private init(withPumps pumps: [Pump])
+    private init(withPumps pumps: [Pump], loggingService: LoggingService)
     {
+        self.loggingService = loggingService
         self.pumps = pumps
     }
     
@@ -32,6 +36,9 @@ class Pipeline
     
     func run()
     {
+        let pipelineStartTime = Date()
+        self.loggingService.log(withLogLevel: .info, message: "Pipeline started running")
+        
         let pumpData = pumps.map { $0.run() }
         var timeline = crossPipe.process(timeline: pumpData)
         
@@ -40,11 +47,18 @@ class Pipeline
             timeline = pipe.process(timeline: timeline)
         }
         
+        self.loggingService.log(withLogLevel: .info, message: "Merge temporary timeline:")
+        timeline.forEach { (slot) in
+            self.loggingService.log(withLogLevel: .info, message: "MergedSlot start: \(slot.start) category: \(slot.category.rawValue)")
+        }
+        
         self.sinks.forEach { sink in sink.execute(timeline: timeline) }
+        
+        self.loggingService.log(withLogLevel: .info, message: "Pipeline ended running (execution time: \(Date().timeIntervalSince(pipelineStartTime)))")
     }
     
-    static func with(pumps: Pump...) -> Pipeline
+    static func with(loggingService: LoggingService, pumps: Pump...) -> Pipeline
     {
-        return Pipeline(withPumps: pumps)
+        return Pipeline(withPumps: pumps, loggingService: loggingService)
     }
 }

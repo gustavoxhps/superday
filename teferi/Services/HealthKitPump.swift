@@ -6,6 +6,7 @@ class HealthKitPump : Pump
     private let trackEventService : TrackEventService
     private let fastMovingSpeedThreshold : Double
     private let minGapAllowedDuration : Double
+    private let loggingService : LoggingService
     
     // MARK: - Init
     
@@ -17,11 +18,13 @@ class HealthKitPump : Pump
     ///   - minGapAllowedDuration: Used to filter out temporaryTimeSlots with duration smaller than this value (mesured in sec). Default: 300
     init(trackEventService: TrackEventService,
          fastMovingSpeedThreshold: Double = 0.3,
-         minGapAllowedDuration: Double = 900)
+         minGapAllowedDuration: Double = 900,
+         loggingService: LoggingService)
     {
         self.trackEventService = trackEventService
         self.fastMovingSpeedThreshold = fastMovingSpeedThreshold
         self.minGapAllowedDuration = minGapAllowedDuration
+        self.loggingService = loggingService
     }
     
     // MARK: - Protocol implementation
@@ -39,6 +42,11 @@ class HealthKitPump : Pump
                 
         let temporaryTimeSlotsToReturn = removeSmallUnknownTimeSlots(from: temporaryTimeSlots)
 
+        self.loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
+        temporaryTimeSlotsToReturn.forEach { (slot) in
+            self.loggingService.log(withLogLevel: .info, message: "HKTempSlot start: \(slot.start) category: \(slot.category.rawValue)")
+        }
+        
         return temporaryTimeSlotsToReturn
     }
     

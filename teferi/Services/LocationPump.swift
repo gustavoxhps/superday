@@ -8,16 +8,22 @@ class LocationPump : Pump
     private let settingsService:SettingsService
     private let smartGuessService:SmartGuessService
     private let timeSlotService:TimeSlotService
+    private let loggingService : LoggingService
     
     private var lastSavedTimeSlot:TimeSlot!
     
     // MARK: Initializers
-    init(trackEventService:TrackEventService, settingsService:SettingsService, smartGuessService:SmartGuessService, timeSlotService:TimeSlotService)
+    init(trackEventService:TrackEventService,
+         settingsService:SettingsService,
+         smartGuessService:SmartGuessService,
+         timeSlotService:TimeSlotService,
+         loggingService: LoggingService)
     {
         self.trackEventService = trackEventService
         self.settingsService = settingsService
         self.smartGuessService = smartGuessService
         self.timeSlotService = timeSlotService
+        self.loggingService = loggingService
     }
     
     // MARK: TemporaryTimelineGenerator implementation
@@ -37,7 +43,7 @@ class LocationPump : Pump
             lastLocation = locations.remove(at: 0)
         }
                 
-        return locations
+        let temporaryTimeSlotsToReturn = locations
             .reduce([]) { (timeSlots, location) -> [TemporaryTimeSlot] in
                 defer {
                     lastLocation = replaceIfNeeded(lastLocation, with:location)
@@ -51,6 +57,13 @@ class LocationPump : Pump
                     timeSlots:timeSlots
                 )
         }
+        
+        self.loggingService.log(withLogLevel: .info, message: "Location pump temporary timeline:")
+        temporaryTimeSlotsToReturn.forEach { (slot) in
+            self.loggingService.log(withLogLevel: .info, message: "LocationSlot start: \(slot.start) category: \(slot.category.rawValue)")
+        }
+        
+        return temporaryTimeSlotsToReturn
     }
     
     // MARK: Private Methods
