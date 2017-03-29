@@ -8,8 +8,6 @@ class PermissionViewController : UIViewController
     private let disposeBag = DisposeBag()
     private var viewModel : PermissionViewModel!
     
-    private var isFirstTimeUser = false
-    
     @IBOutlet private weak var titleLabel : UILabel!
     @IBOutlet private weak var descriptionLabel : UILabel!
     @IBOutlet private weak var remindLaterButton : UIButton!
@@ -35,36 +33,42 @@ class PermissionViewController : UIViewController
             .subscribe(onNext: self.hideOverlay)
             .addDisposableTo(self.disposeBag)
         
-        self.enableLocationButton
-            .rx.tap
-            .subscribe(onNext: self.onEnableLocationTapped)
+        self.enableLocationButton.rx.tap
+            .flatMapLatest(getUserLocationPermission)
+            .subscribe(onNext: onPermissionGiven)
             .addDisposableTo(self.disposeBag)
         
         self.remindLaterButton
             .rx.tap
             .subscribe(onNext: self.onRemindLaterTapped)
             .addDisposableTo(self.disposeBag)
-        
-        self.titleLabel.text = self.viewModel.titleText
-        self.descriptionLabel.text = self.viewModel.descriptionText
-        self.remindLaterButton.isHidden = self.viewModel.isFirstTimeUser
     }
     
-    private func onEnableLocationTapped()
+    private func getUserLocationPermission() -> Observable<Void>
     {
         let url = URL(string: UIApplicationOpenSettingsURLString)!
         UIApplication.shared.openURL(url)
+        
+        return self.viewModel.permissionGivenObservable
+    }
+    
+    private func onPermissionGiven()
+    {
+        self.viewModel.permissionGiven()
     }
     
     private func onRemindLaterTapped()
     {
-        self.viewModel.setLastAskedForLocationPermission()
+        self.viewModel.permissionDeferred()
         self.hideOverlay()
     }
     
     private func showOverlay()
     {
-        self.viewModel.isVisible = true
+        self.titleLabel.text = self.viewModel.titleText
+        self.descriptionLabel.text = self.viewModel.descriptionText
+        self.remindLaterButton.isHidden = self.viewModel.isFirstTimeUser
+        
         self.view.isUserInteractionEnabled = true
         self.view.superview!.isUserInteractionEnabled = true
         self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
@@ -78,7 +82,6 @@ class PermissionViewController : UIViewController
         UIView.animate(withDuration: Constants.editAnimationDuration,
                        animations: { self.view.alpha = 0 })
         
-        self.viewModel.isVisible = false
         self.view.backgroundColor = UIColor.clear
         self.view.isUserInteractionEnabled = false
         self.view.superview!.isUserInteractionEnabled = false

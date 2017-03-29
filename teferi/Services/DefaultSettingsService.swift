@@ -11,8 +11,8 @@ class DefaultSettingsService : SettingsService
     private let lastLocationDateKey = "lastLocationDate"
     private let lastLocationHorizontalAccuracyKey = "lastLocationHorizongalAccuracy"
     private let lastInactiveDateKey = "lastInactiveDate"
-    private let canIgnoreLocationPermissionKey = " canIgnoreLocationPermission"
     private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
+    private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
     
     private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
@@ -84,9 +84,9 @@ class DefaultSettingsService : SettingsService
         return self.get(forKey: self.lastAskedForLocationPermissionKey)
     }
     
-    var canIgnoreLocationPermission : Bool
+    var userEverGaveLocationPermission: Bool
     {
-        return self.getBool(forKey: self.canIgnoreLocationPermissionKey)
+        return self.getBool(forKey: self.userGaveLocationPermissionKey)
     }
     
     //MARK: Methods
@@ -142,9 +142,8 @@ class DefaultSettingsService : SettingsService
         self.set(date, forKey: self.lastAskedForLocationPermissionKey)
     }
     
-    func setAllowedLocationPermission()
-    {
-        self.set(true, forKey: self.canIgnoreLocationPermissionKey)
+    func setUserGaveLocationPermission() {
+        self.set(true, forKey: self.userGaveLocationPermissionKey)
     }
     
     // MARK: Helpers

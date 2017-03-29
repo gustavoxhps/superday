@@ -13,6 +13,8 @@ class PermissionViewModel
     private let settingsService : SettingsService
     private let appLifecycleService : AppLifecycleService
     
+    private let disposeBag = DisposeBag()
+    
     // MARK: Initializers
     init(timeService: TimeService,
          settingsService: SettingsService,
@@ -24,9 +26,7 @@ class PermissionViewModel
     }
     
     // MARK: Properties
-    var isVisible = false
-    
-    var isFirstTimeUser : Bool { return self.settingsService.canIgnoreLocationPermission }
+    var isFirstTimeUser : Bool { return !self.settingsService.userEverGaveLocationPermission }
     
     var titleText : String
     {
@@ -38,50 +38,54 @@ class PermissionViewModel
         return self.isFirstTimeUser ? self.disabledDescriptionFirstUse : self.disabledDescription
     }
     
-    private var shouldShowLocationPermissionOverlay : Bool
-    {
-        if self.settingsService.hasLocationPermission { return false }
-        
-        //If user doesn't have permissions and we never showed the overlay, do it
-        guard let lastRequestedDate = self.settingsService.lastAskedForLocationPermission else { return true }
-        
-        let minimumRequestDate = lastRequestedDate.add(days: 1)
-        
-        //If we previously showed the overlay, we must only do it again after 24 hours
-        return minimumRequestDate < self.timeService.now
+    var permissionGivenObservable : Observable<Void> {
+        return self.appLifecycleService
+            .movedToForegroundObservable
+            .map { [unowned self] in
+                return self.settingsService.hasLocationPermission
+            }
+            .filter{ $0 }
+            .mapTo(())
     }
     
-    private lazy var overlayStateObservable : Observable<Bool> =
+    private lazy var overlayVisibilityStateObservable : Observable<Bool> =
     {
         return self.appLifecycleService
-                   .lifecycleEventObservable
-                   .filter(self.movedToForeground)
-                   .map(self.toOverlayState)
-                   .distinctUntilChanged { $0 != self.isVisible }
+            .movedToForegroundObservable
+            .startWith(())
+            .map(self.overlayVisibilityState)
+            .shareReplayLatestWhileConnected()
     }()
     
     private(set) lazy var showOverlayObservable : Observable<Void> =
     {
-        return self.overlayStateObservable
+        return self.overlayVisibilityStateObservable
                    .filter{ $0 }
-                   .map { _ in () }
+                   .mapTo(())
     }()
     
     private(set) lazy var hideOverlayObservable : Observable<Void> =
     {
-        return self.overlayStateObservable
+        return self.overlayVisibilityStateObservable
                    .filter{ !$0 }
-                   .map { _ in self.settingsService.setAllowedLocationPermission() }
+                   .mapTo(())
     }()
     
-    func setLastAskedForLocationPermission() { self.settingsService.setLastAskedForLocationPermission(self.timeService.now) }
-    
-    private func movedToForeground(_ event: LifecycleEvent) -> Bool
+    func permissionGiven()
     {
-        return event == .movedToForeground
+        if self.settingsService.userEverGaveLocationPermission {
+            self.settingsService.setLastAskedForLocationPermission(self.timeService.now)
+        } else {
+            self.settingsService.setUserGaveLocationPermission()
+        }
     }
     
-    private func toOverlayState(_ ignore: LifecycleEvent) -> Bool
+    func permissionDeferred()
+    {
+        self.settingsService.setLastAskedForLocationPermission(self.timeService.now)
+    }
+        
+    private func overlayVisibilityState() -> Bool
     {
         if self.settingsService.hasLocationPermission { return false }
         

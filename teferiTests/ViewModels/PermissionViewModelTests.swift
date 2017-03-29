@@ -82,4 +82,24 @@ class PermissionViewModelTests : XCTestCase
         
         expect(wouldShow).to(beFalse())
     }
+    
+    func testPermissionShouldShowBlockingOverlayFirstTimeUserOpensTheApp()
+    {
+        self.settingsService.hasLocationPermission = false
+        self.settingsService.lastAskedForLocationPermission = nil
+        
+        expect(self.viewModel.isFirstTimeUser).to(beTrue())
+    }
+    
+    func testPermissionShouldShowNonBlockingOverlayIfUserAlreadyGavePermission()
+    {
+        self.settingsService.hasLocationPermission = false
+        self.settingsService.lastAskedForLocationPermission = nil
+        
+        self.viewModel.permissionGiven()
+        
+        self.appLifecycleService.publish(.movedToForeground)
+        
+        expect(self.viewModel.isFirstTimeUser).to(beFalse())
+    }
 }

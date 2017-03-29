@@ -21,8 +21,8 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
         self.locationManager.requestAlwaysAuthorization()
         
         self.appLifecycleService
-            .lifecycleEventObservable
-            .subscribe(onNext: self.onLifecycleEvent)
+            .movedToForegroundObservable
+            .subscribe(onNext: self.onMovedToForeground)
             .addDisposableTo(self.disposeBag!)
     }
     
@@ -30,11 +30,10 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
     {
         if status == .authorizedAlways || status == .denied
         {
-            if status == .authorizedAlways
-            {
-                self.settingsService.setAllowedLocationPermission()
+            if status == .authorizedAlways {
+                self.settingsService.setUserGaveLocationPermission()
             }
-            
+
             self.finish()
         }
     }
@@ -46,10 +45,9 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
         self.disposeBag = nil
     }
     
-    func onLifecycleEvent(event: LifecycleEvent)
+    func onMovedToForeground()
     {
-        if event == .movedToForeground
-            && self.onboardingPageViewController.isCurrent(page: self)
+        if self.onboardingPageViewController.isCurrent(page: self)
             && !self.settingsService.hasLocationPermission
         {
             self.locationManager.requestAlwaysAuthorization()

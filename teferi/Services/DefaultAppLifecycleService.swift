@@ -3,7 +3,7 @@ import RxSwift
 class DefaultAppLifecycleService : AppLifecycleService
 {
     //MARK: Fields
-    private let lifecycleSubject = BehaviorSubject<LifecycleEvent>(value: .movedToForeground)
+    private let lifecycleSubject = PublishSubject<LifecycleEvent>()
 
     //MARK: Initializers
     init()
