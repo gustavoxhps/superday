@@ -39,12 +39,9 @@ class Pipeline
         let pipelineStartTime = Date()
         self.loggingService.log(withLogLevel: .info, message: "Pipeline started running")
         
-        let pumpData = pumps.map { $0.run() }
-        var timeline = crossPipe.process(timeline: pumpData)
-        
-        for pipe in pipes
-        {
-            timeline = pipe.process(timeline: timeline)
+        let pumpData = self.pumps.map { $0.run() }
+        let timeline = pipes.reduce(crossPipe.process(timeline: pumpData)) { timeline, pipe in
+            return pipe.process(timeline: timeline)
         }
         
         self.loggingService.log(withLogLevel: .info, message: "Merge temporary timeline:")
