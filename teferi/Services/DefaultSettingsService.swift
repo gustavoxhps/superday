@@ -10,7 +10,6 @@ class DefaultSettingsService : SettingsService
     private let lastLocationLngKey = "lastLocationLng"
     private let lastLocationDateKey = "lastLocationDate"
     private let lastLocationHorizontalAccuracyKey = "lastLocationHorizongalAccuracy"
-    private let lastInactiveDateKey = "lastInactiveDate"
     private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
     private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
@@ -24,11 +23,6 @@ class DefaultSettingsService : SettingsService
     var installDate : Date?
     {
         return self.get(forKey: self.installDateKey)
-    }
-    
-    var lastInactiveDate : Date?
-    {
-        return self.get(forKey: self.lastInactiveDateKey)
     }
     
     var lastLocation : CLLocation?
@@ -97,7 +91,7 @@ class DefaultSettingsService : SettingsService
         guard let lastUpdate : Date = get(forKey: key)
         else
         {
-            return lastInactiveDate ?? Date()
+            return Date()
         }
         
         return lastUpdate
@@ -114,11 +108,6 @@ class DefaultSettingsService : SettingsService
         guard self.installDate == nil else { return }
         
         self.set(date, forKey: self.installDateKey)
-    }
-    
-    func setLastInactiveDate(_ date: Date?)
-    {
-        self.set(date, forKey: self.lastInactiveDateKey)
     }
     
     func setLastLocation(_ location: CLLocation)

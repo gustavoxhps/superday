@@ -4,6 +4,8 @@ import Foundation
 class PagerViewModel
 {
     //MARK: Fields
+    private var lastRefresh : Date
+    
     private let timeService : TimeService
     private let settingsService : SettingsService
     private let appLifecycleService : AppLifecycleService
@@ -20,6 +22,7 @@ class PagerViewModel
         self.settingsService = settingsService
         self.selectedDateService = selectedDateService
         
+        self.lastRefresh = timeService.now
         self.selectedDate = timeService.now
         
         self.isEditingObservable = editStateService.isEditingObservable
@@ -41,10 +44,11 @@ class PagerViewModel
     
     private(set) lazy var refreshObservable : Observable<Void> =
     {
-        return self.appLifecycleService
-            .lifecycleEventObservable
-            .filter(self.shouldRefreshView)
-            .map { _ in () }
+        return
+            self.appLifecycleService
+                .lifecycleEventObservable
+                .filter(self.shouldRefreshView)
+                .mapTo(())
     }()
     
     private var selectedDate : Date
@@ -68,32 +72,22 @@ class PagerViewModel
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
     }
     
-    private func shouldRefreshView(onLifecycleEvent event: LifecycleEvent) -> Bool
+    private func shouldRefreshView(_ event: LifecycleEvent) -> Bool
     {
         switch event
         {
             case .movedToForeground:
-                let today = self.timeService.now.ignoreTimeComponents()
+                guard self.lastRefresh.ignoreTimeComponents() != self.currentDate.ignoreTimeComponents() else { return false }
                 
-                guard let inactiveDate = self.settingsService.lastInactiveDate,
-                    today > inactiveDate.ignoreTimeComponents() else { return false }
-                
-                self.settingsService.setLastInactiveDate(nil)
+                self.lastRefresh = self.currentDate
                 return true
             
             case .movedToBackground:
-                self.settingsService.setLastInactiveDate(self.timeService.now)
-                break
+                return false
             
-            case .invalidatedUiState:
-                self.settingsService.setLastInactiveDate(nil)
-                return true
-            
-            case .receivedNotification:
+            case .invalidatedUiState, .receivedNotification:
                 return true
         }
-        
-        return false
     }
     
     private func toDateChange(_ date: Date) -> DateChange?

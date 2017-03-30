@@ -16,8 +16,6 @@ protocol SettingsService
     
     var userEverGaveLocationPermission : Bool { get }
     
-    var lastInactiveDate : Date?  { get }
-    
     var lastNotificationLocation : CLLocation? { get }
     
     //MARK: Methods
@@ -27,8 +25,6 @@ protocol SettingsService
     
     func setInstallDate(_ date: Date)
     
-    func setLastInactiveDate(_ date: Date?)
-    
     func setLastLocation(_ location: CLLocation)
     
     func setLastAskedForLocationPermission(_ date: Date)
@@ -36,5 +32,4 @@ protocol SettingsService
     func setUserGaveLocationPermission()
     
     func setLastNotificationLocation(_ location: CLLocation)
-
 }

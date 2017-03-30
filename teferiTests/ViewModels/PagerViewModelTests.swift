@@ -93,25 +93,6 @@ class PagerViewModelTests : XCTestCase
         expect(self.viewModel.canScroll(toDate: theDayAfterInstallDate)).to(beTrue())
     }
     
-    func testWhenTheAppBecomesInactiveTheLastInactiveDateShouldBeSet()
-    {
-        let expectedDate = self.noon
-        self.timeService.mockDate = expectedDate
-        
-        self.settingsService.lastInactiveDate = nil
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        expect(self.settingsService.lastInactiveDate).to(equal(expectedDate))
-    }
-    
-    func testWhenTheAppBecomesActiveAndNeedsRefreshingTheLastInactiveDateIsErased()
-    {
-        self.settingsService.lastInactiveDate = Date()
-        self.appLifecycleService.publish(.invalidatedUiState)
-        
-        expect(self.settingsService.lastInactiveDate).to(beNil())
-    }
-    
     func testWhenTheAppBecomesActiveAndNeedsRefreshingANewRefreshEventHappens()
     {
         var refreshEventHappened = false
@@ -164,15 +145,5 @@ class PagerViewModelTests : XCTestCase
         self.appLifecycleService.publish(.movedToForeground)
 
         expect(refreshEventHappened).toEventually(beTrue())
-    }
-
-    func testWhenTheAppBecomesActiveAndAnEventIsPumpedTheLastInactiveDateIsSetToNil()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.settingsService.lastInactiveDate = self.timeService.now
-        self.timeService.mockDate = self.timeService.now.tomorrow
-        self.appLifecycleService.publish(.movedToForeground)
-        
-        expect(self.settingsService.lastInactiveDate).to(beNil())
     }
 }

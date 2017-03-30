@@ -40,11 +40,6 @@ class MockSettingsService : SettingsService
         self.installDate = date
     }
     
-    func setLastInactiveDate(_ date: Date?)
-    {
-        self.lastInactiveDate = date
-    }
-    
     func setLastLocation(_ location: CLLocation)
     {
         self.lastLocation = location
@@ -70,7 +65,8 @@ class MockSettingsService : SettingsService
         self.nextSmartGuessId += 1
     }
     
-    func setUserGaveLocationPermission() {
+    func setUserGaveLocationPermission()
+    {
         self.userEverGaveLocationPermission = true
     }
 }
