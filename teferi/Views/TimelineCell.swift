@@ -154,7 +154,7 @@ class TimelineCell : UITableViewCell
         
         self.lineFadeView?.isHidden = !lastInPastDay
         
-        self.dotsView.isHidden = !isRunning
+        self.dotsView.isHidden = !isRunning && !lastInPastDay
         self.bottomMargin.constant = isRunning ? 24 : 0
         
         self.lineView.layoutIfNeeded()
