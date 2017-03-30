@@ -25,7 +25,7 @@ class TrackEventPersistencyService : BasePersistencyService<TrackEvent>
         {
             case String(describing: Location.self):
                 return self.locationPersistencyService.get().map(Location.asTrackEvent)
-            case String(describing: Location.self):
+            case String(describing: HealthSample.self):
                 return self.healthSamplePersistencyService.get().map(HealthSample.asTrackEvent)
             default:
                 return []
