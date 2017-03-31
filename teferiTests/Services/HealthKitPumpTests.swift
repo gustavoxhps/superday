@@ -104,19 +104,15 @@ class HealthKitPumpTests : XCTestCase
                                                           (start: minutes("13:32:41"), category: .commute),
                                                           (start: minutes("13:40:26"), category: .unknown),
                                                           (start: minutes("14:19:36"), category: .commute),
-                                                          (start: minutes("14:22:26"), category: .commute),
-                                                          (start: minutes("14:44:17"), category: .commute),
                                                           (start: minutes("14:59:21"), category: .unknown),
                                                           (start: minutes("15:35:18"), category: .unknown),
                                                           (start: minutes("16:33:42"), category: .unknown),
                                                           (start: minutes("17:01:38"), category: .unknown),
                                                           (start: minutes("17:37:53"), category: .commute),
-                                                          (start: minutes("17:50:58"), category: .commute),
                                                           (start: minutes("18:22:07"), category: .unknown),
                                                           (start: minutes("19:40:25"), category: .commute),
                                                           (start: minutes("19:40:30"), category: .unknown),
                                                           (start: minutes("21:27:26"), category: .commute),
-                                                          (start: minutes("21:45:02"), category: .commute),
                                                           (start: minutes("21:49:02"), category: .unknown)]
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
@@ -183,7 +179,6 @@ class HealthKitPumpTests : XCTestCase
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
         let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .commute),
-                                                          (start: 40, category: .commute),
                                                           (start: 80, category: .unknown)]
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
@@ -224,7 +219,6 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .unknown),
                                                           (start: 15, category: .commute),
-                                                          (start: 40, category: .commute),
                                                           (start: 60, category: .unknown),
                                                           (start: 80, category: .commute),
                                                           (start: 100, category: .unknown),

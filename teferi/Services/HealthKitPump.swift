@@ -40,7 +40,11 @@ class HealthKitPump : Pump
             .flatMap(toTemporaryTimeSlots)
             .flatMap { $0 }
                 
-        let temporaryTimeSlotsToReturn = removeSmallUnknownTimeSlots(from: temporaryTimeSlots)
+        let temporaryTimeSlotsWithRemovedSmallSlots = removeSmallUnknownTimeSlots(from: temporaryTimeSlots)
+        
+        let temporaryTimeSlotsToReturn = temporaryTimeSlotsWithRemovedSmallSlots
+            .splitBy({ $0.category == $1.category && $0.category == .commute })
+            .flatMap { $0.first }
 
         self.loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
