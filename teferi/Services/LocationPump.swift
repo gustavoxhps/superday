@@ -63,7 +63,7 @@ class LocationPump : Pump
             self.loggingService.log(withLogLevel: .info, message: "LocationSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
-        return temporaryTimeSlotsToReturn
+        return temporaryTimeSlotsToReturn.withEndSetToStartOfNext()
     }
     
     // MARK: Private Methods

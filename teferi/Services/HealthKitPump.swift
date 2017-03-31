@@ -47,7 +47,7 @@ class HealthKitPump : Pump
             self.loggingService.log(withLogLevel: .info, message: "HKTempSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
-        return temporaryTimeSlotsToReturn
+        return temporaryTimeSlotsToReturn.withEndSetToStartOfNext()
     }
     
     // MARK: - Helper

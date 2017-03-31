@@ -75,3 +75,33 @@ extension Array where Element : Hashable
         return dict
     }
 }
+
+extension Array where Element == TemporaryTimeSlot
+{
+    func withEndSetToStartOfNext() -> [TemporaryTimeSlot]
+    {
+        var updated = [TemporaryTimeSlot]()
+        
+        for (currentIndex, slot) in self.enumerated()
+        {
+            let nextIndex = self.index(after: currentIndex)
+            
+            guard
+                nextIndex < self.endIndex
+            else {
+                updated.append(slot)
+                continue
+            }
+            
+            let nextSlot = self[nextIndex]
+            
+            updated.append(TemporaryTimeSlot(start: slot.start,
+                                             end: nextSlot.start,
+                                             smartGuess: slot.smartGuess,
+                                             category: slot.category,
+                                             location: slot.location))
+        }
+        
+        return updated
+    }
+}
