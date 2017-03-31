@@ -15,4 +15,11 @@ extension AppLifecycleService
             .filter({ $0 == .movedToForeground })
             .mapTo(())
     }
+    
+    var notificationObservable : Observable<Void>
+    {
+        return self.lifecycleEventObservable
+            .filter({ $0 == .receivedNotification })
+            .mapTo(())
+    }
 }

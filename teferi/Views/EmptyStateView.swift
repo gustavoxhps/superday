@@ -10,6 +10,10 @@ class EmptyStateView : UITableViewCell
     private let rotationAngles = [ 0.0, 0.0, 0.0, -23.0 ]
     private let categories : [Category] = [ .school, .hobby, .fitness, .family ]
     
+    class func fromNib() -> EmptyStateView {
+        return Bundle.main.loadNibNamed("EmptyStateView", owner: nil, options: nil)![0] as! EmptyStateView
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
