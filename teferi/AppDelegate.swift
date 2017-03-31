@@ -85,6 +85,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         self.pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
                                 .pipe(to: MergePipe())
+                                .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: self.timeService))
                                 .pipe(to: FirstTimeSlotOfDayPipe(timeService: self.timeService, timeSlotService: self.timeSlotService))
                                 .sink(PersistencySink(settingsService: self.settingsService,
                                                       timeSlotService: self.timeSlotService,

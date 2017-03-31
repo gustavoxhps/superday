@@ -21,6 +21,15 @@ extension TempTimelineTestData
         self.includeLocation = false
     }
     
+    init(startOffset: TimeInterval, endOffset: TimeInterval?, isCommute: Bool)
+    {
+        self.startOffset = startOffset
+        self.endOffset = endOffset
+        self.category = isCommute ? .commute : .unknown
+        self.includeSmartGuess = false
+        self.includeLocation = false
+    }
+    
     init(startOffset: TimeInterval,
          endOffset: TimeInterval?,
          _ category: teferi.Category,

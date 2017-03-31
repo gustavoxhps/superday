@@ -50,4 +50,11 @@ extension TemporaryTimeSlot
                                  category: category ?? self.category,
                                  location: location ?? self.location)
     }
+    
+    var duration : TimeInterval?
+    {
+        guard let end = self.end else { return nil }
+        
+        return end.timeIntervalSince(start)
+    }
 }

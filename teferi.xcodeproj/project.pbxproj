@@ -175,6 +175,8 @@
 		BE7FAFC61E72F96F00A62AC9 /* TrackEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */; };
 		BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */; };
 		BE7FAFCA1E7319AD00A62AC9 /* LocationModelAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */; };
+		BE84C6161E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE84C6151E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift */; };
+		BE84C6181E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */; };
 		BE8AD9321E843B17002704A9 /* PersistencySinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */; };
 		BE8AD9341E84448B002704A9 /* TempTimelineTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */; };
 		BEA024321E4106980061FE53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA024311E4106980061FE53 /* Colors.swift */; };
@@ -420,6 +422,8 @@
 		BE7FAFC51E72F96F00A62AC9 /* TrackEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackEvent.swift; path = Models/TrackEvent.swift; sourceTree = "<group>"; };
 		BE7FAFC71E73014700A62AC9 /* DefaultTrackEventService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DefaultTrackEventService.swift; path = Services/DefaultTrackEventService.swift; sourceTree = "<group>"; };
 		BE7FAFC91E7319AD00A62AC9 /* LocationModelAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationModelAdapter.swift; path = Services/LocationModelAdapter.swift; sourceTree = "<group>"; };
+		BE84C6151E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MergeMiniCommuteTimeSlotsPipe.swift; path = Pipeline/MergeMiniCommuteTimeSlotsPipe.swift; sourceTree = "<group>"; };
+		BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MergeMiniCommuteTimeSlotsPipeTests.swift; path = Services/MergeMiniCommuteTimeSlotsPipeTests.swift; sourceTree = "<group>"; };
 		BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PersistencySinkTests.swift; path = Services/PersistencySinkTests.swift; sourceTree = "<group>"; };
 		BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempTimelineTestHelper.swift; sourceTree = "<group>"; };
 		BEA024311E4106980061FE53 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = Generated/Colors.swift; sourceTree = "<group>"; };
@@ -992,6 +996,7 @@
 				BE55CED61E7AD70F006B851E /* MergePipe.swift */,
 				BEAFC0AD1E8AA2690050CE70 /* FirstTimeSlotOfDayPipe.swift */,
 				BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */,
+				BE84C6151E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift */,
 			);
 			name = Pipeline;
 			sourceTree = "<group>";
@@ -1014,6 +1019,7 @@
 				BE1AC7AE1E858346007485B0 /* MergePipeTests.swift */,
 				BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */,
 				BEAFC0AF1E8AA4070050CE70 /* FirstTimeSlotOfDayPipe.swift */,
+				BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */,
 			);
 			name = Pipeline;
 			sourceTree = "<group>";
@@ -1442,6 +1448,7 @@
 				24EB96851DE709830040C211 /* PredicateExtensions.swift in Sources */,
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
 				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,
+				BE84C6161E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift in Sources */,
 				24564F4D1D83207900D9A8AE /* MainViewModel.swift in Sources */,
 				BEE5A3BF1E72F6B200CA717D /* (null) in Sources */,
 				8CB9EF9B1E8BB589003D1FFC /* LineView.swift in Sources */,
@@ -1493,6 +1500,7 @@
 				24E7860C1DC399A90048F577 /* OnboardingPageViewControllerTests.swift in Sources */,
 				BE1BDFB31E79BFB20077D694 /* MockCLLocationManager.swift in Sources */,
 				24564F6A1D8326E700D9A8AE /* DateExtensionsTests.swift in Sources */,
+				BE84C6181E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift in Sources */,
 				BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */,
 				249B359D1E1A6015005793B9 /* MockLocator.swift in Sources */,
 				24D73F2D1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift in Sources */,
