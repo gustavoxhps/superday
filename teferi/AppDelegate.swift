@@ -153,6 +153,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         if isFirstUse
         {
+            notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(30*60), title: "", message: L10n.notificationHealthKitAccessBody)
+            
             let onboardController = StoryboardScene.Onboarding.instantiateOnboardingPager()
             
             initialViewController =
