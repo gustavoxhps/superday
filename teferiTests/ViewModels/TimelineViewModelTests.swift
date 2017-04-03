@@ -149,6 +149,74 @@ class TimelineViewModelTests : XCTestCase
             .forEach { i, result in expect(timelineItems[i].shouldDisplayCategoryName).to(equal(result)) }
     }
     
+    func testViewModelForwardsUpdatesOnCategoriesForToday()
+    {
+        let ts = self.addTimeSlot(minutesAfterNoon: 0)
+        self.addTimeSlot(minutesAfterNoon: 3)
+        
+        self.timeSlotService.update(timeSlot: ts, withCategory: .family, setByUser: true)
+        
+        let timelineItems = observer.events.last!.value.element!
+        
+        expect(self.observer.events.count).to(equal(4)) //3 events plus initial one
+        expect(timelineItems[0].timeSlot.category).to(equal(Category.family))
+    }
+    
+    func testViewModelForwardsUpdatesOnCategoriesForDaysBeforeToday()
+    {
+        let minutesOffset:TimeInterval = -3*24*60
+        
+        let ts = self.addTimeSlot(minutesAfterNoon: Int(0 + minutesOffset))
+        self.addTimeSlot(minutesAfterNoon: Int(3 + minutesOffset))
+
+        
+        self.viewModel = TimelineViewModel(date: Date().addingTimeInterval(minutesOffset*60).ignoreTimeComponents(),
+                                           timeService: self.timeService,
+                                           timeSlotService: self.timeSlotService,
+                                           editStateService: self.editStateService,
+                                           appLifecycleService: self.appLifecycleService,
+                                           loggingService: self.loggingService)
+        
+        observer = scheduler.createObserver([TimelineItem].self)
+        viewModel.timelineItemsObservable
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
+        
+        self.timeSlotService.update(timeSlot: ts, withCategory: .leisure, setByUser: true)
+        
+        let timelineItems = observer.events.last!.value.element!
+        
+        expect(self.observer.events.count).to(equal(2)) //initial one plus update one
+        expect(timelineItems[0].timeSlot.category).to(equal(Category.leisure))
+    }
+    
+    func testViewModelForwardsTimeSlotCreationForToday()
+    {
+        self.addTimeSlot(minutesAfterNoon: Int(20))
+        expect(self.observer.events.count).to(equal(2)) //initial one plus new timeslot
+    }
+    
+    func testViewModelDoesntForwardTimeSlotCreationForDaysBeforeToday()
+    {
+        let dateOffset:TimeInterval = -3*24*60*60
+        
+        self.viewModel = TimelineViewModel(date: Date().addingTimeInterval(dateOffset).ignoreTimeComponents(),
+                                           timeService: self.timeService,
+                                           timeSlotService: self.timeSlotService,
+                                           editStateService: self.editStateService,
+                                           appLifecycleService: self.appLifecycleService,
+                                           loggingService: self.loggingService)
+        
+        observer = scheduler.createObserver([TimelineItem].self)
+        viewModel.timelineItemsObservable
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
+        self.addTimeSlot(minutesAfterNoon: Int(20))
+        expect(self.observer.events.count).to(equal(1)) //just initial one
+    }
+    
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
         return self.addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)

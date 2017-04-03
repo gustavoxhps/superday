@@ -42,7 +42,7 @@ class TimelineViewModel
             .filter(self.timeSlotBelongsToThisDate)
             .mapTo(())
         
-        let updatedTimeSlotForThisDate = !isCurrentDay ? Observable.empty() : self.timeSlotService
+        let updatedTimeSlotForThisDate = self.timeSlotService
             .timeSlotUpdatedObservable
             .filter(self.timeSlotBelongsToThisDate)
             .mapTo(())
