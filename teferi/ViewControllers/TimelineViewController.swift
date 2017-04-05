@@ -14,7 +14,7 @@ class TimelineViewController : UIViewController
     
     private var willDisplayNewCell:Bool = false
     
-    private var emptyStateView:EmptyStateView?
+    private var emptyStateView:EmptyStateView!
     
     // MARK: Initializers
     init(viewModel: TimelineViewModel)
@@ -39,10 +39,17 @@ class TimelineViewController : UIViewController
         
         self.tableView = UITableView(frame: self.view.bounds)
         self.view.addSubview(self.tableView)
-        
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        
+        self.emptyStateView = EmptyStateView.fromNib()
+        view.addSubview(emptyStateView!)
+        emptyStateView!.snp.makeConstraints{ make in
+            make.edges.equalToSuperview()
+        }
+        emptyStateView?.isHidden = true
+
         
         self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -63,12 +70,20 @@ class TimelineViewController : UIViewController
             .drive(onNext: self.startEditOnLastSlot)
             .addDisposableTo(self.disposeBag)
         
-        self.viewModel.timelineItemsObservable
+        let itemsObservable = self.viewModel.timelineItemsObservable
             .asDriver(onErrorJustReturn: [])
-            .do(onNext: handleEmptyState)
-            .do(onNext: handleNewItem)
+            
+        itemsObservable
             .drive(self.tableView.rx.items, curriedArgument: constructCell)
             .addDisposableTo(self.disposeBag)
+        
+        itemsObservable
+            .drive(onNext: { [unowned self] items in
+                self.emptyStateView.isHidden = items.count != 0
+                self.handleNewItem(items)
+            })
+            .addDisposableTo(self.disposeBag)
+
         
         self.tableView.rx.willDisplayCell
             .subscribe(onNext: { (cell, indexPath) in
@@ -80,22 +95,7 @@ class TimelineViewController : UIViewController
             .addDisposableTo(self.disposeBag)
     }
     
-    private func handleEmptyState(items:[TimelineItem])
-    {
-        guard items.count == 0 else {
-            emptyStateView?.removeFromSuperview()
-            emptyStateView = nil
-            return
-        }
-        
-        emptyStateView = EmptyStateView.fromNib()
-        view.addSubview(emptyStateView!)
-        emptyStateView!.snp.makeConstraints{ make in
-            make.edges.equalToSuperview()
-        }
-    }
-    
-    private func handleNewItem(items:[TimelineItem])
+    private func handleNewItem(_ items:[TimelineItem])
     {
         let numberOfItems = self.tableView.numberOfRows(inSection: 0)
         guard numberOfItems > 0, items.count == numberOfItems + 1 else { return }
