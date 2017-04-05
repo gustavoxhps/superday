@@ -9,6 +9,7 @@ class LocationPump : Pump
     private let smartGuessService:SmartGuessService
     private let timeSlotService:TimeSlotService
     private let loggingService : LoggingService
+    private let timeService : TimeService
     
     private var lastSavedTimeSlot:TimeSlot!
     
@@ -17,13 +18,16 @@ class LocationPump : Pump
          settingsService:SettingsService,
          smartGuessService:SmartGuessService,
          timeSlotService:TimeSlotService,
-         loggingService: LoggingService)
+         loggingService: LoggingService,
+         timeService: TimeService
+        )
     {
         self.trackEventService = trackEventService
         self.settingsService = settingsService
         self.smartGuessService = smartGuessService
         self.timeSlotService = timeSlotService
         self.loggingService = loggingService
+        self.timeService = timeService
     }
     
     // MARK: Pump implementation
@@ -43,7 +47,7 @@ class LocationPump : Pump
             lastLocation = locations.remove(at: 0)
         }
                 
-        let temporaryTimeSlotsToReturn = locations
+        var temporaryTimeSlotsToReturn = locations
             .reduce([]) { (timeSlots, location) -> [TemporaryTimeSlot] in
                 defer {
                     lastLocation = replaceIfNeeded(lastLocation, with:location)
@@ -57,6 +61,8 @@ class LocationPump : Pump
                     timeSlots:timeSlots
                 )
         }
+
+        temporaryTimeSlotsToReturn = endLastTimeSlotIfNeeded(temporaryTimeSlots: temporaryTimeSlotsToReturn, lastLocation: lastLocation)
         
         self.loggingService.log(withLogLevel: .info, message: "Location pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
@@ -95,6 +101,17 @@ class LocationPump : Pump
         }
 
         return true
+    }
+    
+    private func endLastTimeSlotIfNeeded(temporaryTimeSlots:[TemporaryTimeSlot], lastLocation:Location) -> [TemporaryTimeSlot]
+    {
+        let now = self.timeService.now
+        if let lastTTS = temporaryTimeSlots.last, lastTTS.category == .commute, now.timeIntervalSince(lastLocation.timestamp) > Constants.commuteDetectionLimit {
+            let smartGuess = self.smartGuessService.get(forLocation: lastLocation.toCLLocation())
+            return temporaryTimeSlots + [TemporaryTimeSlot(location: lastLocation, smartGuess: smartGuess)]
+        }
+        
+        return temporaryTimeSlots
     }
     
     private func toTemporaryTimeSlots(location:Location, previousLocation:Location, timeSlots:[TemporaryTimeSlot]) -> [TemporaryTimeSlot]

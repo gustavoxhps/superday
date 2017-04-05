@@ -37,7 +37,8 @@ class LocationPumpTests: XCTestCase {
             settingsService:self.settingsService,
             smartGuessService:self.smartGuessService,
             timeSlotService:self.timeSlotService,
-            loggingService: loggingService
+            loggingService: loggingService,
+            timeService: timeService
         )
     }
     
@@ -323,6 +324,26 @@ class LocationPumpTests: XCTestCase {
         expect(timeSlots[2].category).to(equal(Category.commute))
         expect(timeSlots[3].category).to(equal(Category.unknown))
         expect(timeSlots[4].category).to(equal(Category.commute))
+    }
+    
+    func testEndsLastTimeSlotIfCommuteAndLongerThanLimit()
+    {
+        let smartGuess = SmartGuess(withId: 0, category: .food, location: CLLocation(), lastUsed: Date.midnight)
+        self.smartGuessService.smartGuessToReturn = smartGuess
+        
+        self.addStoredTimeSlot(minutesBeforeNoon: 60)
+        
+        self.trackEventService.mockEvents = [
+            TrackEvent.baseMockEvent.offset(meters: 200),
+            TrackEvent.baseMockEvent.delay(seconds:15).offset(meters: 400)
+        ]
+        
+        self.timeService.mockDate = Date.noon.addingTimeInterval(2*60*60)
+        
+        let timeSlots = locationPump.run()
+        
+        expect(timeSlots.count).to(equal(2))
+        expect(timeSlots[1].category).to(equal(smartGuess.category))
     }
     
     private func addStoredTimeSlot(minutesBeforeNoon:TimeInterval = 0)

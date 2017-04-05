@@ -79,7 +79,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                         settingsService: self.settingsService,
                                         smartGuessService: self.smartGuessService,
                                         timeSlotService: self.timeSlotService,
-                                        loggingService: loggingService)
+                                        loggingService: loggingService,
+                                        timeService: timeService)
         
         let healthKitPump = HealthKitPump(trackEventService: self.trackEventService, loggingService: loggingService)
         
