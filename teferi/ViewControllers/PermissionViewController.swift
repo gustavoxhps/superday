@@ -12,6 +12,7 @@ class PermissionViewController : UIViewController
     @IBOutlet private weak var descriptionLabel : UILabel!
     @IBOutlet private weak var remindLaterButton : UIButton!
     @IBOutlet private weak var enableLocationButton : UIButton!
+    @IBOutlet private weak var mainButtonBottomConstraint : NSLayoutConstraint!
     
     // MARK: Methods
     func inject(viewModel: PermissionViewModel)
@@ -68,6 +69,9 @@ class PermissionViewController : UIViewController
         self.titleLabel.text = self.viewModel.titleText
         self.descriptionLabel.text = self.viewModel.descriptionText
         self.remindLaterButton.isHidden = self.viewModel.isFirstTimeUser
+        
+        self.mainButtonBottomConstraint.constant = self.viewModel.isFirstTimeUser ? 32 : 70
+        self.view.setNeedsLayout()
         
         self.view.isUserInteractionEnabled = true
         self.view.superview!.isUserInteractionEnabled = true
