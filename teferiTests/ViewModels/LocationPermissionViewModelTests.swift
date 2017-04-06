@@ -3,7 +3,7 @@ import XCTest
 import Nimble
 @testable import teferi
 
-class PermissionViewModelTests : XCTestCase
+class LocationPermissionViewModelTests : XCTestCase
 {
     private var viewModel : PermissionViewModel!
     private var disposable : Disposable? = nil
@@ -18,9 +18,9 @@ class PermissionViewModelTests : XCTestCase
         self.settingsService = MockSettingsService()
         self.appLifecycleService = MockAppLifecycleService()
         
-        self.viewModel = PermissionViewModel(timeService: self.timeService,
-                                             settingsService: self.settingsService,
-                                             appLifecycleService: self.appLifecycleService)
+        self.viewModel = LocationPermissionViewModel(timeService: self.timeService,
+                                                     settingsService: self.settingsService,
+                                                     appLifecycleService: self.appLifecycleService)
     }
     
     override func tearDown()
@@ -88,7 +88,7 @@ class PermissionViewModelTests : XCTestCase
         self.settingsService.hasLocationPermission = false
         self.settingsService.lastAskedForLocationPermission = nil
         
-        expect(self.viewModel.isFirstTimeUser).to(beTrue())
+        expect(self.viewModel.remindMeLater).to(beTrue())
     }
     
     func testPermissionShouldShowNonBlockingOverlayIfUserAlreadyGavePermission()
@@ -100,6 +100,6 @@ class PermissionViewModelTests : XCTestCase
         
         self.appLifecycleService.publish(.movedToForeground)
         
-        expect(self.viewModel.isFirstTimeUser).to(beFalse())
+        expect(self.viewModel.remindMeLater).to(beFalse())
     }
 }

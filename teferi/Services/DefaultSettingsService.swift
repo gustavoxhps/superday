@@ -14,6 +14,7 @@ class DefaultSettingsService : SettingsService
     private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
     private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
+    private let healthKitPermissionKey = "healthKitPermission"
     
     private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
     private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
@@ -71,6 +72,11 @@ class DefaultSettingsService : SettingsService
     {
         guard CLLocationManager.locationServicesEnabled() else { return false }
         return CLLocationManager.authorizationStatus() == .authorizedAlways
+    }
+    
+    var hasHealthKitPermission : Bool
+    {
+        return self.getBool(forKey: self.healthKitPermissionKey)
     }
     
     var hasNotificationPermission : Bool
@@ -144,6 +150,10 @@ class DefaultSettingsService : SettingsService
     
     func setUserGaveLocationPermission() {
         self.set(true, forKey: self.userGaveLocationPermissionKey)
+    }
+    
+    func setUserGaveHealthKitPermission() {
+        self.set(true, forKey: self.healthKitPermissionKey)
     }
     
     // MARK: Helpers

@@ -10,19 +10,22 @@ class MainViewModel
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
+    private let settingsService : SettingsService
     
     init(timeService: TimeService,
          metricsService: MetricsService,
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
          smartGuessService : SmartGuessService,
-         selectedDateService : SelectedDateService)
+         selectedDateService : SelectedDateService,
+         settingsService : SettingsService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
         self.smartGuessService = smartGuessService
+        self.settingsService = settingsService
         
         self.isEditingObservable = self.editStateService.isEditingObservable
         self.dateObservable = selectedDateService.currentlySelectedDateObservable
@@ -98,4 +101,9 @@ class MainViewModel
     }
     
     func notifyEditingEnded() { self.editStateService.notifyEditingEnded() }
+    
+    func shouldAddHealthKitPermisionToViewHierarchy() -> Bool
+    {
+        return !settingsService.hasHealthKitPermission
+    }
 }

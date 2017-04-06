@@ -11,8 +11,9 @@ class PermissionViewController : UIViewController
     @IBOutlet private weak var titleLabel : UILabel!
     @IBOutlet private weak var descriptionLabel : UILabel!
     @IBOutlet private weak var remindLaterButton : UIButton!
-    @IBOutlet private weak var enableLocationButton : UIButton!
+    @IBOutlet private weak var enableButton : UIButton!
     @IBOutlet private weak var mainButtonBottomConstraint : NSLayoutConstraint!
+    @IBOutlet private weak var imageView: UIImageView!
     
     // MARK: Methods
     func inject(viewModel: PermissionViewModel)
@@ -34,8 +35,8 @@ class PermissionViewController : UIViewController
             .subscribe(onNext: self.hideOverlay)
             .addDisposableTo(self.disposeBag)
         
-        self.enableLocationButton.rx.tap
-            .flatMapLatest(getUserLocationPermission)
+        self.enableButton.rx.tap
+            .flatMapLatest(getUserPermission)
             .subscribe(onNext: onPermissionGiven)
             .addDisposableTo(self.disposeBag)
         
@@ -45,11 +46,9 @@ class PermissionViewController : UIViewController
             .addDisposableTo(self.disposeBag)
     }
     
-    private func getUserLocationPermission() -> Observable<Void>
+    private func getUserPermission() -> Observable<Void>
     {
-        let url = URL(string: UIApplicationOpenSettingsURLString)!
-        UIApplication.shared.openURL(url)
-        
+        self.viewModel.getUserPermission()
         return self.viewModel.permissionGivenObservable
     }
     
@@ -68,13 +67,14 @@ class PermissionViewController : UIViewController
     {
         self.titleLabel.text = self.viewModel.titleText
         self.descriptionLabel.text = self.viewModel.descriptionText
-        self.remindLaterButton.isHidden = self.viewModel.isFirstTimeUser
+        self.enableButton.setTitle(self.viewModel.enableButtonTitle, for: .normal)
+        self.remindLaterButton.isHidden = !self.viewModel.remindMeLater
+        self.imageView.image = self.viewModel.image
         
-        self.mainButtonBottomConstraint.constant = self.viewModel.isFirstTimeUser ? 32 : 70
+        self.mainButtonBottomConstraint.constant = !self.viewModel.remindMeLater ? 32 : 70
         self.view.setNeedsLayout()
         
         self.view.isUserInteractionEnabled = true
-        self.view.superview!.isUserInteractionEnabled = true
         self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         
         UIView.animate(withDuration: Constants.editAnimationDuration,
@@ -88,6 +88,5 @@ class PermissionViewController : UIViewController
         
         self.view.backgroundColor = UIColor.clear
         self.view.isUserInteractionEnabled = false
-        self.view.superview!.isUserInteractionEnabled = false
     }
 }

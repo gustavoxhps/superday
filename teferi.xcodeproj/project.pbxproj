@@ -149,6 +149,11 @@
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
 		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
+		AC449C311E92BC8C00847957 /* PermissionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C301E92BC8C00847957 /* PermissionViewModelProtocol.swift */; };
+		AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */; };
+		AC449C371E95248900847957 /* MockHealthKtService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C361E95248900847957 /* MockHealthKtService.swift */; };
+		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
+		AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */; };
 		AC7186CC1E6C8CF0000323C7 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */; };
 		AC7186D11E6CA02C000323C7 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC7186D01E6CA02C000323C7 /* HealthKit.framework */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
@@ -162,9 +167,8 @@
 		BEAFC0AA1E8A87370050CE70 /* NotificationSchedulingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFC0A91E8A87370050CE70 /* NotificationSchedulingServiceTests.swift */; };
 		BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFC0AB1E8A878F0050CE70 /* NotificationSchedulingService.swift */; };
 		BEC84F311E708D4B0096275C /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC84F301E708D4B0096275C /* Style.swift */; };
-		BEDE5B3A1E4A3F260082FFC3 /* PermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */; };
+		BEDE5B3A1E4A3F260082FFC3 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* LocationPermissionViewModel.swift */; };
 		BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */; };
-		BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -360,6 +364,11 @@
 		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
 		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
+		AC449C301E92BC8C00847957 /* PermissionViewModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelProtocol.swift; path = ViewModels/PermissionViewModelProtocol.swift; sourceTree = "<group>"; };
+		AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPermissionViewModel.swift; path = ViewModels/HealthKitPermissionViewModel.swift; sourceTree = "<group>"; };
+		AC449C361E95248900847957 /* MockHealthKtService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockHealthKtService.swift; path = Mocks/MockHealthKtService.swift; sourceTree = "<group>"; };
+		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPermissionViewModelTests.swift; path = ViewModels/LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
+		AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPermissionViewModelTests.swift; path = ViewModels/HealthKitPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC7186CB1E6C8CF0000323C7 /* HealthKitService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitService.swift; path = Services/Protocols/HealthKitService.swift; sourceTree = "<group>"; };
 		AC7186CF1E6CA02C000323C7 /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
 		AC7186D01E6CA02C000323C7 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -375,9 +384,8 @@
 		BEAFC0A91E8A87370050CE70 /* NotificationSchedulingServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationSchedulingServiceTests.swift; path = Services/NotificationSchedulingServiceTests.swift; sourceTree = "<group>"; };
 		BEAFC0AB1E8A878F0050CE70 /* NotificationSchedulingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationSchedulingService.swift; path = Services/NotificationSchedulingService.swift; sourceTree = "<group>"; };
 		BEC84F301E708D4B0096275C /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Styles/Style.swift; sourceTree = "<group>"; };
-		BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModel.swift; path = ViewModels/PermissionViewModel.swift; sourceTree = "<group>"; };
+		BEDE5B391E4A3F260082FFC3 /* LocationPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPermissionViewModel.swift; path = ViewModels/LocationPermissionViewModel.swift; sourceTree = "<group>"; };
 		BEDE5B3B1E4A3F3C0082FFC3 /* PermissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewController.swift; path = ViewControllers/PermissionViewController.swift; sourceTree = "<group>"; };
-		BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelTests.swift; path = ViewModels/PermissionViewModelTests.swift; sourceTree = "<group>"; };
 		EF304A180F700038B21CC019 /* Pods-teferiTests.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.adhoc.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -478,7 +486,8 @@
 			children = (
 				24564F6B1D8326F100D9A8AE /* MainViewModelTests.swift */,
 				24B03B5E1D9E5BB900452D16 /* PagerViewModelTests.swift */,
-				BEDE5B3D1E4A465D0082FFC3 /* PermissionViewModelTests.swift */,
+				AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */,
+				AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */,
 				24564F6C1D8326F100D9A8AE /* TimelineViewModelTests.swift */,
 				2416B2821E27C7D100CE283B /* TopBarViewModelTests.swift */,
 			);
@@ -556,6 +565,7 @@
 				24DE24051E1BBD6E0089B49E /* MockSelectedDateService.swift */,
 				24D73F2C1E1FBA59009FC2DF /* MockSmartGuessPersistencyService.swift */,
 				8CD8EF0D1E6EC19400882131 /* MockCLLocationManager.swift */,
+				AC449C361E95248900847957 /* MockHealthKtService.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -634,7 +644,9 @@
 				24DE23EF1E1BB3260089B49E /* CalendarViewModel.swift */,
 				24564F4B1D83207900D9A8AE /* MainViewModel.swift */,
 				24B03B581D9E4C3E00452D16 /* PagerViewModel.swift */,
-				BEDE5B391E4A3F260082FFC3 /* PermissionViewModel.swift */,
+				AC449C301E92BC8C00847957 /* PermissionViewModelProtocol.swift */,
+				BEDE5B391E4A3F260082FFC3 /* LocationPermissionViewModel.swift */,
+				AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */,
 				24564F4C1D83207900D9A8AE /* TimelineViewModel.swift */,
 				2416B27E1E27B71E00CE283B /* TopBarViewModel.swift */,
 				AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */,
@@ -1235,8 +1247,9 @@
 				BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */,
 				7E3C06981E30B7CA00859747 /* Assets.swift in Sources */,
 				24526A771D92D99F00DA3FA0 /* MetricsService.swift in Sources */,
+				AC449C311E92BC8C00847957 /* PermissionViewModelProtocol.swift in Sources */,
 				24EB96781DE7080F0040C211 /* TrackingService.swift in Sources */,
-				BEDE5B3A1E4A3F260082FFC3 /* PermissionViewModel.swift in Sources */,
+				BEDE5B3A1E4A3F260082FFC3 /* LocationPermissionViewModel.swift in Sources */,
 				24D213AF1DB8CB8300E429CA /* DefaultAppLifecycleService.swift in Sources */,
 				51DDF7181DB4DBC200F9B672 /* OnboardingPage.swift in Sources */,
 				2421F8C51D9BB4C600AF8857 /* SwiftyBeaverLoggingService.swift in Sources */,
@@ -1245,6 +1258,7 @@
 				24DE23FE1E1BB38C0089B49E /* TimeService.swift in Sources */,
 				BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */,
 				24DE24011E1BB3A40089B49E /* DefaultSelectedDateService.swift in Sources */,
+				AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */,
 				24564F601D8325CC00D9A8AE /* TimeSlot.swift in Sources */,
 				24D18E301DF06B9E0046B202 /* SmartGuessModelAdapter.swift in Sources */,
 				513535D61DA2756C00A365A9 /* OnboardingPageViewController.swift in Sources */,
@@ -1321,7 +1335,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEDE5B3E1E4A465D0082FFC3 /* PermissionViewModelTests.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
@@ -1335,8 +1348,11 @@
 				24D18E281DF0251A0046B202 /* MockSmartGuessService.swift in Sources */,
 				24EB96891DE716620040C211 /* TimelineViewControllerTests.swift in Sources */,
 				24168E371DC21042004F90AD /* TrackingServiceTests.swift in Sources */,
+				AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */,
 				24B03B631D9E946900452D16 /* MockMetricsService.swift in Sources */,
 				24564F6E1D8326F100D9A8AE /* TimelineViewModelTests.swift in Sources */,
+				AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */,
+				AC449C371E95248900847957 /* MockHealthKtService.swift in Sources */,
 				8CD8EF0E1E6EC19400882131 /* MockCLLocationManager.swift in Sources */,
 				24168E3B1DC21125004F90AD /* MockNotificationService.swift in Sources */,
 				2416B2831E27C7D100CE283B /* TopBarViewModelTests.swift in Sources */,

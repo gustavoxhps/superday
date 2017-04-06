@@ -14,6 +14,7 @@ class MockLocator : ViewModelLocator
     var smartGuessService = MockSmartGuessService()
     var selectedDateService = MockSelectedDateService()
     var appLifecycleService = MockAppLifecycleService()
+    var healthKitService = MockHealthKitService()
     
     init()
     {
@@ -28,7 +29,8 @@ class MockLocator : ViewModelLocator
                              timeSlotService: self.timeSlotService,
                              editStateService: self.editStateService,
                              smartGuessService: self.smartGuessService,
-                             selectedDateService: self.selectedDateService)
+                             selectedDateService: self.selectedDateService,
+                             settingsService: self.settingsService)
     }
     
     func getPagerViewModel() -> PagerViewModel
@@ -49,11 +51,21 @@ class MockLocator : ViewModelLocator
                                  appLifecycleService: self.appLifecycleService)
     }
     
-    func getPermissionViewModel() -> PermissionViewModel
+    func getLocationPermissionViewModel() -> PermissionViewModel
     {
-        let viewModel = PermissionViewModel(timeService: self.timeService,
-                                            settingsService: self.settingsService,
-                                            appLifecycleService: self.appLifecycleService)
+        let viewModel = LocationPermissionViewModel(timeService: self.timeService,
+                                                    settingsService: self.settingsService,
+                                                    appLifecycleService: self.appLifecycleService)
+        
+        return viewModel
+    }
+    
+    func getHealthKitPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = HealthKitPermissionViewModel(timeService: self.timeService,
+                                                    settingsService: self.settingsService,
+                                                    appLifecycleService: self.appLifecycleService,
+                                                    healthKitService: self.healthKitService)
         
         return viewModel
     }

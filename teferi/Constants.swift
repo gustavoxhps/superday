@@ -20,4 +20,5 @@ class Constants
     static let gpsAccuracy:Double = 50.0 //meters
     static let significantLocationChangeAccuracy:Double = 2000.0 //meters
 
+    static let timeToWaitBeforeShowingHealthKitPermissions : Double = 30*60 //30 min
 }
