@@ -49,8 +49,9 @@ class PostiOSTenNotificationServiceTests : XCTestCase
         waitUntil { done in
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
                 
-                let userInfo = requests.last!.content.userInfo
-                expect(userInfo.count).to(equal(0))
+                let notificationType = NotificationType(rawValue: requests.last!.content.userInfo["id"]! as! String)
+                
+                expect(notificationType).to(equal(NotificationType.categorySelection))
                 done()
             })
         }

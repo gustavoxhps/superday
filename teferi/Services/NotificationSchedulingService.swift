@@ -89,7 +89,7 @@ class NotificationSchedulingService
     
     private func cancelNotification(andScheduleNew scheduleNew : Bool)
     {
-        self.notificationService.unscheduleAllNotifications()
+        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         guard scheduleNew else { return }
         

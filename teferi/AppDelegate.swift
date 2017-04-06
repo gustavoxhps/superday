@@ -64,8 +64,18 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       locationService: self.locationService,
                                                       persistencyService: timeSlotPersistencyService)
         
-
-        self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
+        if #available(iOS 10.0, *)
+        {
+            self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
+                                                                     loggingService: self.loggingService,
+                                                                     settingsService: self.settingsService,
+                                                                     timeSlotService: self.timeSlotService)
+        }
+        else
+        {
+            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService,
+                                                                    self.notificationAuthorizedSubject.asObservable())
+        }
         
         let trackEventServicePersistency = TrackEventPersistencyService(loggingService: self.loggingService,
                                                                         locationPersistencyService: locationPersistencyService,
@@ -217,9 +227,12 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
-        guard let category = notification.category else { return }
+        guard
+            let identifier = notification.userInfo?["id"] as? String,
+            identifier == NotificationType.categorySelection.rawValue
+            else { return }
         
-        self.showEditViewOnWakeup = (category == NotificationType.categorySelection.rawValue)
+        self.showEditViewOnWakeup = true
     }
     
     func application(_ application: UIApplication,
