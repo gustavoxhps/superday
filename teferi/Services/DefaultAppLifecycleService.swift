@@ -19,6 +19,7 @@ class DefaultAppLifecycleService : AppLifecycleService
     
     func publish(_ event: LifecycleEvent)
     {
-        lifecycleSubject.on(.next(event))
+        lifecycleSubject
+            .on(.next(event))
     }
 }

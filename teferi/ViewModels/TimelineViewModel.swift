@@ -33,10 +33,8 @@ class TimelineViewModel
         self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
         self.date = date.ignoreTimeComponents()
         
-        self.timeObservable = !isCurrentDay ? Observable.empty() : Observable<Int>.timer(0, period: 10, scheduler: MainScheduler.instance).mapTo(())
+        self.timeObservable = !isCurrentDay ? Observable.empty() : Observable<Int>.timer(1, period: 10, scheduler: MainScheduler.instance).mapTo(())
         
-        self.notificationObservable = !isCurrentDay ? Observable.empty() : self.appLifecycleService.notificationObservable
-
         let newTimeSlotForThisDate = !isCurrentDay ? Observable.empty() : self.timeSlotService
             .timeSlotCreatedObservable
             .filter(self.timeSlotBelongsToThisDate)
@@ -65,7 +63,6 @@ class TimelineViewModel
     //MARK: Properties
     let date : Date
     let timeObservable : Observable<Void>
-    let notificationObservable : Observable<Void>!
     var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
     
     //MARK: Public methods

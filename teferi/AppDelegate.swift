@@ -9,8 +9,7 @@ import UserNotifications
 class AppDelegate : UIResponder, UIApplicationDelegate
 {   
     //MARK: Fields
-    private var invalidateOnWakeup = false
-    private var showEditViewOnWakeup = false
+    fileprivate var didReceiveCategoryNotification = false
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
     
@@ -119,7 +118,17 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.logAppStartup(isInBackground)
         healthKitService.startHealthKitTracking()
         
-        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self
+        } else {
+            if let notification = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? UILocalNotification {
+                didReceiveCategoryNotification = isCategorySelectionNotification(notification)
+            }
+        }
+        
+        
+        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
+
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -202,22 +211,12 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
     func applicationDidBecomeActive(_ application: UIApplication)
     {
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
         self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
-        if self.invalidateOnWakeup
-        {
-            self.invalidateOnWakeup = false
-            self.appLifecycleService.publish(.invalidatedUiState)
-        }
-        
-        if self.showEditViewOnWakeup
-        {
-            self.showEditViewOnWakeup = false
-            self.appLifecycleService.publish(.receivedNotification)
-        }
+        self.didReceiveCategoryNotification = false
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
@@ -227,24 +226,30 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
+        self.didReceiveCategoryNotification = isCategorySelectionNotification(notification)
+    }
+    
+    private func isCategorySelectionNotification(_ notification:UILocalNotification) -> Bool
+    {
         guard
             let identifier = notification.userInfo?["id"] as? String,
             identifier == NotificationType.categorySelection.rawValue
-            else { return }
+            else { return false }
         
-        self.showEditViewOnWakeup = true
+        return true
     }
     
-    func application(_ application: UIApplication,
-                     handleActionWithIdentifier identifier: String?,
-                     for notification: UILocalNotification, completionHandler: @escaping () -> Void)
+    @available(iOS 10.0, *)
+    fileprivate func isCategorySelectionNotification(_ notification:UNNotification) -> Bool
     {
-        self.notificationService.handleNotificationAction(withIdentifier: identifier)
-        self.invalidateOnWakeup = true
+        guard
+            let identifier = notification.request.content.userInfo["id"] as? String,
+            identifier == NotificationType.categorySelection.rawValue
+            else { return false }
         
-        completionHandler()
+        return true
     }
-
+    
     func applicationWillTerminate(_ application: UIApplication)
     {
         self.saveContext()
@@ -314,5 +319,15 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                 self.loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
             }
         }
+    }
+}
+
+@available(iOS 10.0, *)
+extension AppDelegate:UNUserNotificationCenterDelegate
+{
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        self.didReceiveCategoryNotification = isCategorySelectionNotification(response.notification)
+        completionHandler()
     }
 }

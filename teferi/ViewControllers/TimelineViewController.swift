@@ -60,14 +60,10 @@ class TimelineViewController : UIViewController
         self.tableView.showsHorizontalScrollIndicator = false
         self.tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
         
+        
         self.viewModel.timeObservable
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: self.onTimeTick)
-            .addDisposableTo(self.disposeBag)
-        
-        self.viewModel.notificationObservable
-            .asDriver(onErrorJustReturn: ())
-            .drive(onNext: self.startEditOnLastSlot)
             .addDisposableTo(self.disposeBag)
         
         let itemsObservable = self.viewModel.timelineItemsObservable
@@ -128,7 +124,7 @@ class TimelineViewController : UIViewController
         self.tableView.reloadRows(at: [indexPath], with: .none)
     }
     
-    private func startEditOnLastSlot()
+    func startEditOnLastSlot()
     {
         let lastRow = self.tableView.numberOfRows(inSection: 0) - 1
         let indexPath = IndexPath(row: lastRow, section: 0)

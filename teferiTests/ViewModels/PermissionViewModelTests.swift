@@ -50,7 +50,7 @@ class PermissionViewModelTests : XCTestCase
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
@@ -65,7 +65,7 @@ class PermissionViewModelTests : XCTestCase
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
@@ -98,7 +98,7 @@ class PermissionViewModelTests : XCTestCase
         
         self.viewModel.permissionGiven()
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(self.viewModel.isFirstTimeUser).to(beFalse())
     }

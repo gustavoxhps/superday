@@ -1,7 +1,17 @@
-enum LifecycleEvent
+enum LifecycleEvent:Equatable
 {
-    case movedToForeground
+    case movedToForeground(fromNotification: Bool)
     case movedToBackground
-    case invalidatedUiState
-    case receivedNotification
+}
+
+func == (lhs:LifecycleEvent, rhs:LifecycleEvent) -> Bool
+{
+    switch (lhs, rhs) {
+    case (.movedToForeground(_), .movedToForeground(_)):
+        return true
+    case (.movedToBackground, .movedToBackground):
+        return true
+    default:
+        return false
+    }
 }

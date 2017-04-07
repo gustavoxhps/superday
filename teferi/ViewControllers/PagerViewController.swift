@@ -7,7 +7,6 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     private let disposeBag = DisposeBag()
     private var viewModel : PagerViewModel!
     private var viewModelLocator : ViewModelLocator!
-    private var currentDateViewController : TimelineViewController!
     
     // MARK: Initializers
     override init(transitionStyle style: UIPageViewControllerTransitionStyle, navigationOrientation: UIPageViewControllerNavigationOrientation, options: [String : Any]?)
@@ -45,6 +44,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     override func viewWillAppear(_ animated: Bool)
     {
+        super.viewWillAppear(animated)
         self.setCurrentViewController(forDate: self.viewModel.currentlySelectedDate, animated: false)
     }
     
@@ -60,9 +60,8 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
             .subscribe(onNext: onEditChanged)
             .addDisposableTo(self.disposeBag)
         
-        self.viewModel
-            .refreshObservable
-            .subscribe(onNext: self.onRefreshView)
+        self.viewModel.showEditOnLastObservable
+            .subscribe(onNext: self.showEditOnLastSlot)
             .addDisposableTo(self.disposeBag)
     }
     
@@ -75,9 +74,19 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
             .forEach { scrollView in scrollView.isScrollEnabled = !isEditing }
     }
     
-    private func onRefreshView()
+    private func showEditOnLastSlot()
     {
-        self.initCurrentDateViewController()
+        let now = Date()
+        let viewModel = self.viewModelLocator.getTimelineViewModel(forDate: now)
+        let vc = TimelineViewController(viewModel: viewModel)
+        
+        self.viewModel.currentlySelectedDate = now
+
+        self.setViewControllers([vc],
+                                direction: UIPageViewControllerNavigationDirection.forward,
+                                animated: false) { _ in
+                                    vc.startEditOnLastSlot()
+                                }
     }
     
     private func onDateChanged(_ dateChange: DateChange)
@@ -89,18 +98,7 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
                                           moveBackwards: dateChange.newDate < dateChange.oldDate)
         }
     }
-    
-    private func initCurrentDateViewController()
-    {
-        let viewModel = self.viewModelLocator.getTimelineViewModel(forDate: Date())
-        self.currentDateViewController = TimelineViewController(viewModel: viewModel)
-        
-        self.setViewControllers(
-            [ currentDateViewController ],
-            direction: .forward,
-            animated: false,
-            completion: nil)
-    }
+
     
     private func setCurrentViewController(forDate date: Date, animated: Bool, moveBackwards: Bool = false)
     {
@@ -115,11 +113,6 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
         guard completed else { return }
 
         let timelineController = self.viewControllers!.first as! TimelineViewController
-        
-        if timelineController.date.ignoreTimeComponents() == self.viewModel.currentDate.ignoreTimeComponents()
-        {
-            self.currentDateViewController = timelineController
-        }
         
         self.viewModel.currentlySelectedDate = timelineController.date
     }

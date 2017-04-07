@@ -37,7 +37,6 @@ class PagerViewModelTests : XCTestCase
                                         appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
         
-        self.viewModel.refreshObservable.subscribe().addDisposableTo(disposeBag)
     }
     
     override func tearDown()
@@ -93,57 +92,13 @@ class PagerViewModelTests : XCTestCase
         expect(self.viewModel.canScroll(toDate: theDayAfterInstallDate)).to(beTrue())
     }
     
-    func testWhenTheAppBecomesActiveAndNeedsRefreshingANewRefreshEventHappens()
+    func testWhenTheAppWakesFromANotificationItShouldShowEdit()
     {
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.invalidatedUiState)
-        
-        expect(refreshEventHappened).to(beTrue())
-    }
-    
-    func testWhenTheAppBecomesActiveWithNoPriorInactiveDateNoEventShouldBePumped()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.settingsService.lastInactiveDate = nil
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.movedToForeground)
-        
-        expect(refreshEventHappened).to(beFalse())
-    }
-    
-    func testWhenTheAppBecomesActiveInTheSameDateNoEventShouldBePumped()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.movedToForeground)
-        
-        expect(refreshEventHappened).to(beFalse())
-    }
-    
-    func testWhenTheAppBecomesActiveInTheNextDayANewEventIsPumped()
-    {
-        self.disposeBag = nil
-        
-        let today = self.timeService.now
-        let tomorrow = self.timeService.now.tomorrow
-        
-        self.timeService.mockDate = today
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.timeService.mockDate = tomorrow
-        self.appLifecycleService.publish(.movedToForeground)
+        var editLastRow = false
+        _ = self.viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
 
-        expect(refreshEventHappened).toEventually(beTrue())
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:true))
+        
+        expect(editLastRow).to(beTrue())
     }
 }

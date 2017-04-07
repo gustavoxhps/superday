@@ -42,13 +42,9 @@ class PagerViewModel
     
     var currentDate : Date { return self.timeService.now }
     
-    private(set) lazy var refreshObservable : Observable<Void> =
+    private(set) lazy var showEditOnLastObservable : Observable<Void> =
     {
-        return
-            self.appLifecycleService
-                .lifecycleEventObservable
-                .filter(self.shouldRefreshView)
-                .mapTo(())
+        return self.appLifecycleService.startedOnNotificationObservable
     }()
     
     private var selectedDate : Date
@@ -70,24 +66,6 @@ class PagerViewModel
         let dateWithNoTime = date.ignoreTimeComponents()
         
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
-    }
-    
-    private func shouldRefreshView(_ event: LifecycleEvent) -> Bool
-    {
-        switch event
-        {
-            case .movedToForeground:
-                guard self.lastRefresh.ignoreTimeComponents() != self.currentDate.ignoreTimeComponents() else { return false }
-                
-                self.lastRefresh = self.currentDate
-                return true
-            
-            case .movedToBackground:
-                return false
-            
-            case .invalidatedUiState, .receivedNotification:
-                return true
-        }
     }
     
     private func toDateChange(_ date: Date) -> DateChange?
