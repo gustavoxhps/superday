@@ -71,13 +71,14 @@ class PostiOSTenNotificationService : NotificationService
         self.loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
         
         var content = notificationContent(title: title, message: message)
-        content.categoryIdentifier = type.rawValue
         
         switch type {
         case .categorySelection:
             content = prepareForCategorySelectionNotification(content: content, possibleFutureSlotStart: possibleFutureSlotStart)
         default: break
         }
+        
+        content.userInfo["id"] = type.rawValue
         
         let fireTime = date.timeIntervalSinceNow
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
@@ -201,7 +202,7 @@ class PostiOSTenNotificationService : NotificationService
             mostUsedCategories = mostUsedCategories + defaultCategories.prefix(missingCategoryCount)
         }
         
-        let notificationCategory = UNNotificationCategory(identifier: NotificationType.categorySelection.rawValue,
+        let notificationCategory = UNNotificationCategory(identifier: Constants.notificationCategoryId,
                                                           actions: mostUsedCategories.map(toNotificationAction),
                                                           intentIdentifiers: [])
    

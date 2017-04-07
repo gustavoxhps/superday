@@ -79,7 +79,7 @@ class NotificationSchedulingServiceTests : XCTestCase
         self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 15)
         
         let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.setMockLocation(location)
+        self.locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(1))
@@ -91,7 +91,7 @@ class NotificationSchedulingServiceTests : XCTestCase
         self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
         
         let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.setMockLocation(location)
+        self.locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(1))
@@ -103,7 +103,7 @@ class NotificationSchedulingServiceTests : XCTestCase
         self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 0)
         
         let location = self.getLocation(withTimestamp: self.getDate(minutesPastNoon: 30), metersFromOrigin: 20)
-        self.locationService.setMockLocation(location)
+        self.locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(0))
         expect(self.notificationService.schedulings).to(equal(0))
@@ -116,7 +116,7 @@ class NotificationSchedulingServiceTests : XCTestCase
         let initialLastLocation = self.settingsService.lastNotificationLocation!
         
         let location = self.getLocation(withTimestamp: self.getDate(minutesPastNoon: 30), metersFromOrigin: 20)
-        self.locationService.setMockLocation(location)
+        self.locationService.sendNewTrackEvent(location)
         
         expect(self.settingsService.lastNotificationLocation).to(equal(initialLastLocation))
     }
@@ -128,7 +128,7 @@ class NotificationSchedulingServiceTests : XCTestCase
             withId: 0, category: .food, location: CLLocation(), lastUsed: self.midnight)
         
         let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.setMockLocation(location)
+        self.locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(0))

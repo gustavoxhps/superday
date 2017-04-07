@@ -5,7 +5,6 @@ import CoreLocation
 
 extension Reactive where Base: CLLocationManager
 {
-    
     public var delegate: DelegateProxy
     {
         return RxCLLocationManagerDelegateProxy.proxyForObject(base)
@@ -20,10 +19,8 @@ extension Reactive where Base: CLLocationManager
     }
 }
 
-
 class RxCLLocationManagerDelegateProxy : DelegateProxy, CLLocationManagerDelegate, DelegateProxyType
 {
-    
     class func currentDelegateFor(_ object: AnyObject) -> AnyObject?
     {
         let locationManager: CLLocationManager = object as! CLLocationManager
@@ -41,9 +38,9 @@ class RxCLLocationManagerDelegateProxy : DelegateProxy, CLLocationManagerDelegat
 fileprivate func castOrThrow<T>(_ resultType: T.Type, _ object: Any) throws -> T
 {
     
-    guard let returnValue = object as? T
-        else {
-            throw RxCocoaError.castingError(object: object, targetType: resultType)
+    guard let returnValue = object as? T else
+    {
+        throw RxCocoaError.castingError(object: object, targetType: resultType)
     }
     
     return returnValue

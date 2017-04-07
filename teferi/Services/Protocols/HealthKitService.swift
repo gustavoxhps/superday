@@ -1,4 +1,4 @@
-protocol HealthKitService
+protocol HealthKitService : EventSource
 {
     func startHealthKitTracking()
     

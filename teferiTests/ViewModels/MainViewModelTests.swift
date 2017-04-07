@@ -96,7 +96,7 @@ class MainViewModelTests : XCTestCase
     
     func testSmartGuessIsAddedIfLocationServiceReturnsKnownLastLocationOnAddNewSlot()
     {
-        self.locationService.setMockLocation(CLLocation(latitude:43.4211, longitude:4.7562))
+        self.locationService.sendNewTrackEvent(CLLocation(latitude:43.4211, longitude:4.7562))
         let previousCount = self.smartGuessService.smartGuesses.count
         
         self.viewModel.addNewSlot(withCategory: .food)

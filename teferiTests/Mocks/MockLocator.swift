@@ -14,6 +14,7 @@ class MockLocator : ViewModelLocator
     var smartGuessService = MockSmartGuessService()
     var selectedDateService = MockSelectedDateService()
     var appLifecycleService = MockAppLifecycleService()
+    var loggingService = MockLoggingService()
     var healthKitService = MockHealthKitService()
     
     init()
@@ -48,7 +49,8 @@ class MockLocator : ViewModelLocator
                                  timeService: self.timeService,
                                  timeSlotService: self.timeSlotService,
                                  editStateService: self.editStateService,
-                                 appLifecycleService: self.appLifecycleService)
+                                 appLifecycleService: self.appLifecycleService,
+                                 loggingService: self.loggingService)
     }
     
     func getLocationPermissionViewModel() -> PermissionViewModel

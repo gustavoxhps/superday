@@ -46,7 +46,7 @@ protocol PersistencyService
      
      - Returns: A Bool indicating whether the operation suceeded or not.
      */
-    @discardableResult func delete(withPredicate predicate: Predicate) -> Bool
+    @discardableResult func delete(withPredicate predicate: Predicate?) -> Bool
 }
 
 class BasePersistencyService<T> : PersistencyService
@@ -104,7 +104,7 @@ class BasePersistencyService<T> : PersistencyService
      
      - Returns: A Bool indicating whether the operation suceeded or not.
      */
-    @discardableResult func delete(withPredicate predicate: Predicate) -> Bool
+    @discardableResult func delete(withPredicate predicate: Predicate? = nil) -> Bool
     {
         fatalError("Not implemented")
     }

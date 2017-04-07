@@ -49,8 +49,9 @@ class PostiOSTenNotificationServiceTests : XCTestCase
         waitUntil { done in
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
                 
-                let userInfo = requests.last!.content.userInfo
-                expect(userInfo.count).to(equal(0))
+                let notificationType = NotificationType(rawValue: requests.last!.content.userInfo["id"]! as! String)
+                
+                expect(notificationType).to(equal(NotificationType.categorySelection))
                 done()
             })
         }
@@ -119,6 +120,36 @@ class PostiOSTenNotificationServiceTests : XCTestCase
             self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
                 let category = (requests.last?.content.userInfo["timeSlots"] as! [[String : String]]).last?["category"]
                 expect(category).toNot(beNil())
+                done()
+            })
+        }
+    }
+    
+    func testCategorySelectionNotificationDoNotHaveCategoryIdentifierSet()
+    {
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        
+        waitUntil { done in
+            self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
+                
+                let notificationCategory = requests.last!.content.categoryIdentifier
+                
+                expect(notificationCategory).to(equal(""))
+                done()
+            })
+        }
+    }
+    
+    func testNormalNotificationDoNotHaveCategoryIdentifierSet()
+    {
+        self.notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "")
+        
+        waitUntil { done in
+            self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
+                
+                let notificationCategory = requests.last!.content.categoryIdentifier
+                
+                expect(notificationCategory).to(equal(""))
                 done()
             })
         }

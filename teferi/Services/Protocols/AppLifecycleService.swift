@@ -12,7 +12,20 @@ extension AppLifecycleService
     var movedToForegroundObservable : Observable<Void>
     {
         return self.lifecycleEventObservable
-            .filter({ $0 == .movedToForeground })
+            .filter {
+                guard case .movedToForeground = $0 else { return false }
+                return true
+            }
+            .mapTo(())
+    }
+    
+    var startedOnNotificationObservable : Observable<Void>
+    {
+        return self.lifecycleEventObservable
+            .filter {
+                guard case .movedToForeground(let fromNotification) = $0 else { return false }
+                return fromNotification
+            }
             .mapTo(())
     }
 }

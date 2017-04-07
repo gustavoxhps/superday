@@ -29,6 +29,7 @@ class DefaultViewModelLocator : ViewModelLocator
     private let smartGuessService : SmartGuessService
     private let appLifecycleService : AppLifecycleService
     private let selectedDateService : SelectedDateService
+    private let loggingService : LoggingService
     private let healthKitService : HealthKitService
 
     init(timeService: TimeService,
@@ -41,6 +42,7 @@ class DefaultViewModelLocator : ViewModelLocator
          smartGuessService: SmartGuessService,
          appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService,
+         loggingService: LoggingService,
          healthKitService : HealthKitService)
     {
         self.timeService = timeService
@@ -53,6 +55,7 @@ class DefaultViewModelLocator : ViewModelLocator
         self.smartGuessService = smartGuessService
         self.appLifecycleService = appLifecycleService
         self.selectedDateService = selectedDateService
+        self.loggingService = loggingService
         self.healthKitService = healthKitService
     }
     
@@ -84,7 +87,8 @@ class DefaultViewModelLocator : ViewModelLocator
                                           timeService: self.timeService,
                                           timeSlotService: self.timeSlotService,
                                           editStateService: self.editStateService,
-                                          appLifecycleService: self.appLifecycleService)
+                                          appLifecycleService: self.appLifecycleService,
+                                          loggingService: self.loggingService)
         return viewModel
     }
     

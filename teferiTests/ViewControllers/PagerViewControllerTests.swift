@@ -55,34 +55,6 @@ class PagerViewControllerTests : XCTestCase
         expect(scrollViews).to(allPass { $0!.isScrollEnabled  })
     }
     
-    func testWhenTheAppGetsInactiveTheLastInactiveDateGetsSet()
-    {
-        self.locator.settingsService.setLastInactiveDate(nil)
-        self.locator.appLifecycleService.publish(.movedToBackground)
-        
-        expect(self.locator.settingsService.lastInactiveDate).toNot(beNil())
-    }
-    
-    func testUiGetsRefreshedWhenTheAppGoesToForegroundTheDayAfterItWentToSleep()
-    {
-        self.pagerViewController.setViewControllers( [ UIViewController() ], direction: .forward, animated: false, completion: nil)
-        
-        let date = Date().add(days: -2)
-        self.locator.settingsService.setLastInactiveDate(date)
-        self.locator.appLifecycleService.publish(.movedToForeground)
-        
-        expect(self.pagerViewController.viewControllers!.first).to(beAnInstanceOf(TimelineViewController.self))
-    }
-    
-    func testTheLastInactiveDateGetsResetWhenTheAppIsAwakeAndRefreshed()
-    {
-        let date = Date().add(days: -2)
-        self.locator.settingsService.setLastInactiveDate(date)
-        self.locator.appLifecycleService.publish(.movedToForeground)
-        
-        expect(self.locator.settingsService.lastInactiveDate).to(beNil())
-    }
-    
     func testTheDateObservableNotifiesANewDateWhenTheUserScrollsToADifferentPage()
     {
         var didNotify = false

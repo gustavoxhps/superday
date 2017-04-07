@@ -293,7 +293,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
     func onEditBegan(point: CGPoint, timeSlot: TimeSlot)
     {
         guard point.x != 0 && point.y != 0 else { return }
-        setNeedsLayout()
+        layoutIfNeeded()
         
         self.timeSlot = timeSlot
         self.selectedItem = timeSlot.category

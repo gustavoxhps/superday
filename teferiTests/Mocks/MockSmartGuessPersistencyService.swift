@@ -27,7 +27,7 @@ class MockSmartGuessPersistencyService : BasePersistencyService<SmartGuess>
         return true
     }
     
-    @discardableResult override func delete(withPredicate predicate: Predicate) -> Bool
+    @discardableResult override func delete(withPredicate predicate: Predicate?) -> Bool
     {
         smartGuesses.remove(at: 0)
         return true

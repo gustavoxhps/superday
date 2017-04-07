@@ -37,7 +37,6 @@ class PagerViewModelTests : XCTestCase
                                         appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
         
-        self.viewModel.refreshObservable.subscribe().addDisposableTo(disposeBag)
     }
     
     override func tearDown()
@@ -93,86 +92,13 @@ class PagerViewModelTests : XCTestCase
         expect(self.viewModel.canScroll(toDate: theDayAfterInstallDate)).to(beTrue())
     }
     
-    func testWhenTheAppBecomesInactiveTheLastInactiveDateShouldBeSet()
+    func testWhenTheAppWakesFromANotificationItShouldShowEdit()
     {
-        let expectedDate = self.noon
-        self.timeService.mockDate = expectedDate
-        
-        self.settingsService.lastInactiveDate = nil
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        expect(self.settingsService.lastInactiveDate).to(equal(expectedDate))
-    }
-    
-    func testWhenTheAppBecomesActiveAndNeedsRefreshingTheLastInactiveDateIsErased()
-    {
-        self.settingsService.lastInactiveDate = Date()
-        self.appLifecycleService.publish(.invalidatedUiState)
-        
-        expect(self.settingsService.lastInactiveDate).to(beNil())
-    }
-    
-    func testWhenTheAppBecomesActiveAndNeedsRefreshingANewRefreshEventHappens()
-    {
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.invalidatedUiState)
-        
-        expect(refreshEventHappened).to(beTrue())
-    }
-    
-    func testWhenTheAppBecomesActiveWithNoPriorInactiveDateNoEventShouldBePumped()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.settingsService.lastInactiveDate = nil
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.movedToForeground)
-        
-        expect(refreshEventHappened).to(beFalse())
-    }
-    
-    func testWhenTheAppBecomesActiveInTheSameDateNoEventShouldBePumped()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.appLifecycleService.publish(.movedToForeground)
-        
-        expect(refreshEventHappened).to(beFalse())
-    }
-    
-    func testWhenTheAppBecomesActiveInTheNextDayANewEventIsPumped()
-    {
-        self.disposeBag = nil
-        
-        let today = self.timeService.now
-        let tomorrow = self.timeService.now.tomorrow
-        
-        self.timeService.mockDate = today
-        self.appLifecycleService.publish(.movedToBackground)
-        
-        var refreshEventHappened = false
-        _ = self.viewModel.refreshObservable.subscribe({ _ in refreshEventHappened = true })
-        
-        self.timeService.mockDate = tomorrow
-        self.appLifecycleService.publish(.movedToForeground)
+        var editLastRow = false
+        _ = self.viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
 
-        expect(refreshEventHappened).toEventually(beTrue())
-    }
-
-    func testWhenTheAppBecomesActiveAndAnEventIsPumpedTheLastInactiveDateIsSetToNil()
-    {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.settingsService.lastInactiveDate = self.timeService.now
-        self.timeService.mockDate = self.timeService.now.tomorrow
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:true))
         
-        expect(self.settingsService.lastInactiveDate).to(beNil())
+        expect(editLastRow).to(beTrue())
     }
 }

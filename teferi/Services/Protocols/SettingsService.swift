@@ -18,8 +18,6 @@ protocol SettingsService
     
     var userEverGaveLocationPermission : Bool { get }
     
-    var lastInactiveDate : Date?  { get }
-    
     var lastNotificationLocation : CLLocation? { get }
     
     //MARK: Methods
@@ -28,8 +26,6 @@ protocol SettingsService
     func setLastHealthKitUpdate(for identifier: String, date: Date)
     
     func setInstallDate(_ date: Date)
-    
-    func setLastInactiveDate(_ date: Date?)
     
     func setLastLocation(_ location: CLLocation)
     
@@ -40,5 +36,4 @@ protocol SettingsService
     func setUserGaveHealthKitPermission()
     
     func setLastNotificationLocation(_ location: CLLocation)
-
 }

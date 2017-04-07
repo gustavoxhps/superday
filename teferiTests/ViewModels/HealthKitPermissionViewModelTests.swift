@@ -53,7 +53,7 @@ class HealthKitPermissionViewModelTests : XCTestCase
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
@@ -68,7 +68,7 @@ class HealthKitPermissionViewModelTests : XCTestCase
             .showOverlayObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beFalse())
     }
@@ -80,7 +80,7 @@ class HealthKitPermissionViewModelTests : XCTestCase
         
         self.viewModel.permissionGiven()
         
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(self.viewModel.remindMeLater).to(beFalse())
     }

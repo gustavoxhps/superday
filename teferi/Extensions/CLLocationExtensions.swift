@@ -6,4 +6,10 @@ extension CLLocation
     {
         return self.horizontalAccuracy < other.horizontalAccuracy
     }
+    
+    func isSignificantlyDifferent(fromLocation other: CLLocation) -> Bool
+    {
+        let distance = self.distance(from: other)
+        return distance > Constants.significantDistanceThreshold
+    }
 }

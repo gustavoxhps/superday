@@ -2,28 +2,29 @@ import UIKit
 import RxSwift
 import CoreData
 import Foundation
+import CoreLocation
 import UserNotifications
 
 @UIApplicationMain
 class AppDelegate : UIResponder, UIApplicationDelegate
 {   
     //MARK: Fields
-    private var invalidateOnWakeup = false
-    private var showEditViewOnWakeup = false
+    fileprivate var didReceiveCategoryNotification = false
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
     
+    private let pipeline : Pipeline
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let loggingService : LoggingService
     private let feedbackService : FeedbackService
     private let locationService : LocationService
-    private let healthKitService : HealthKitService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
-    private let trackingService : TrackingService
     private let editStateService : EditStateService
+    private let healthKitService : HealthKitService
     private let smartGuessService : SmartGuessService
+    private let trackEventService : TrackEventService
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
@@ -46,11 +47,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
         self.feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
         
-        let timeSlotPersistencyService = CoreDataPersistencyService<TimeSlot>(loggingService: self.loggingService,
-                                                                              modelAdapter: TimeSlotModelAdapter())
         
-        let smartGuessPersistencyService = CoreDataPersistencyService<SmartGuess>(loggingService: self.loggingService,
-                                                                                  modelAdapter: SmartGuessModelAdapter())
+        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: TimeSlotModelAdapter())
+        let locationPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: LocationModelAdapter())
+        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: SmartGuessModelAdapter())
+        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: HealthSampleModelAdapter())
         
         self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
                                                           loggingService: self.loggingService,
@@ -62,21 +63,51 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       locationService: self.locationService,
                                                       persistencyService: timeSlotPersistencyService)
         
-
-        self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService, self.notificationAuthorizedSubject.asObservable())
+        if #available(iOS 10.0, *)
+        {
+            self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
+                                                                     loggingService: self.loggingService,
+                                                                     settingsService: self.settingsService,
+                                                                     timeSlotService: self.timeSlotService)
+        }
+        else
+        {
+            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService,
+                                                                    self.notificationAuthorizedSubject.asObservable())
+        }
         
+        let trackEventServicePersistency = TrackEventPersistencyService(loggingService: self.loggingService,
+                                                                        locationPersistencyService: locationPersistencyService,
+                                                                        healthSamplePersistencyService: healthSamplePersistencyService)
+        
+        self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
+                                                          persistencyService: trackEventServicePersistency,
+                                                          withEventSources: locationService, healthKitService)
+        
+        let locationPump = LocationPump(trackEventService: self.trackEventService,
+                                        settingsService: self.settingsService,
+                                        smartGuessService: self.smartGuessService,
+                                        timeSlotService: self.timeSlotService,
+                                        loggingService: loggingService,
+                                        timeService: timeService)
+        
+        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService, loggingService: loggingService)
+        
+        self.pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
+                                .pipe(to: MergePipe())
+                                .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: self.timeService))
+                                .pipe(to: FirstTimeSlotOfDayPipe(timeService: self.timeService, timeSlotService: self.timeSlotService))
+                                .sink(PersistencySink(settingsService: self.settingsService,
+                                                      timeSlotService: self.timeSlotService,
+                                                      smartGuessService: self.smartGuessService,
+                                                      trackEventService: self.trackEventService,
+                                                      timeService: self.timeService))
+
         self.notificationSchedulingService = NotificationSchedulingService(timeService: self.timeService,
                                                                            settingsService: self.settingsService,
                                                                            locationService: self.locationService,
                                                                            smartGuessService: self.smartGuessService,
                                                                            notificationService: self.notificationService)
-        self.trackingService =
-            DefaultTrackingService(timeService: self.timeService,
-                                   loggingService: self.loggingService,
-                                   settingsService: self.settingsService,
-                                   timeSlotService: self.timeSlotService,
-                                   smartGuessService: self.smartGuessService,
-                                   notificationService: self.notificationService)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -85,13 +116,23 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         self.logAppStartup(isInBackground)
-        self.initializeTrackingService()
+
         if settingsService.hasHealthKitPermission
         {
             healthKitService.startHealthKitTracking()
         }
         
-        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().delegate = self
+        } else {
+            if let notification = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? UILocalNotification {
+                didReceiveCategoryNotification = isCategorySelectionNotification(notification)
+            }
+        }
+        
+        
+        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
+
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -115,19 +156,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
         self.loggingService.log(withLogLevel: .debug, message: message)
     }
-
-    private func initializeTrackingService()
-    {
-        self.locationService
-            .locationObservable
-            .subscribe(onNext: self.trackingService.onLocation)
-            .addDisposableTo(disposeBag)
-        
-        self.appLifecycleService
-            .lifecycleEventObservable
-            .subscribe(onNext: self.trackingService.onLifecycleEvent)
-            .addDisposableTo(disposeBag)
-    }
     
     private func initializeWindowIfNeeded()
     {
@@ -147,6 +175,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        smartGuessService : self.smartGuessService,
                                                        appLifecycleService: self.appLifecycleService,
                                                        selectedDateService: self.selectedDateService,
+                                                       loggingService: self.loggingService,
                                                        healthKitService: self.healthKitService)
         
         let isFirstUse = self.settingsService.installDate == nil
@@ -187,21 +216,12 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
     func applicationDidBecomeActive(_ application: UIApplication)
     {
-        self.appLifecycleService.publish(.movedToForeground)
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
+        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
-        if self.invalidateOnWakeup
-        {
-            self.invalidateOnWakeup = false
-            self.appLifecycleService.publish(.invalidatedUiState)
-        }
-        
-        if self.showEditViewOnWakeup
-        {
-            self.showEditViewOnWakeup = false
-            self.appLifecycleService.publish(.receivedNotification)
-        }
+        self.didReceiveCategoryNotification = false
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
@@ -211,26 +231,35 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
-        guard let category = notification.category else { return }
-        
-        self.showEditViewOnWakeup = (category == NotificationType.categorySelection.rawValue)
+        self.didReceiveCategoryNotification = isCategorySelectionNotification(notification)
     }
     
-    func application(_ application: UIApplication,
-                     handleActionWithIdentifier identifier: String?,
-                     for notification: UILocalNotification, completionHandler: @escaping () -> Void)
+    private func isCategorySelectionNotification(_ notification:UILocalNotification) -> Bool
     {
-        self.notificationService.handleNotificationAction(withIdentifier: identifier)
-        self.invalidateOnWakeup = true
+        guard
+            let identifier = notification.userInfo?["id"] as? String,
+            identifier == NotificationType.categorySelection.rawValue
+            else { return false }
         
-        completionHandler()
+        return true
     }
-
+    
+    @available(iOS 10.0, *)
+    fileprivate func isCategorySelectionNotification(_ notification:UNNotification) -> Bool
+    {
+        guard
+            let identifier = notification.request.content.userInfo["id"] as? String,
+            identifier == NotificationType.categorySelection.rawValue
+            else { return false }
+        
+        return true
+    }
+    
     func applicationWillTerminate(_ application: UIApplication)
     {
         self.saveContext()
     }
-
+    
     // MARK: Core Data stack
     private lazy var applicationDocumentsDirectory : URL =
     {
@@ -295,5 +324,15 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                 self.loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
             }
         }
+    }
+}
+
+@available(iOS 10.0, *)
+extension AppDelegate:UNUserNotificationCenterDelegate
+{
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        self.didReceiveCategoryNotification = isCategorySelectionNotification(response.notification)
+        completionHandler()
     }
 }

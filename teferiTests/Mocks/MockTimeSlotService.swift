@@ -93,7 +93,7 @@ class MockTimeSlotService : TimeSlotService
         return self.tryAdd(timeSlot: timeSlot)
     }
     
-    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation?) -> TimeSlot?
     {
         let timeSlot = TimeSlot(withStartTime: startTime, smartGuess: smartGuess, location: location)
         return self.tryAdd(timeSlot: timeSlot)
@@ -132,7 +132,7 @@ class PagerMockTimeSlotService : MockTimeSlotService
         return nil
     }
     
-    @discardableResult override func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    @discardableResult override func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation?) -> TimeSlot?
     {
         return nil
     }

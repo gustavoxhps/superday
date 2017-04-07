@@ -27,7 +27,9 @@ class NotificationSchedulingService
         self.notificationService = notificationService
         
         locationService
-            .locationObservable
+            .eventObservable
+            .map { Location.fromTrackEvent(event: $0)?.toCLLocation() }
+            .filterNil()
             .subscribe(onNext: onLocation)
             .addDisposableTo(disposeBag)
         
@@ -87,7 +89,7 @@ class NotificationSchedulingService
     
     private func cancelNotification(andScheduleNew scheduleNew : Bool)
     {
-        self.notificationService.unscheduleAllNotifications()
+        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         guard scheduleNew else { return }
         

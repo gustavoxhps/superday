@@ -55,25 +55,7 @@ class PreiOSTenNotificationService : NotificationService
     
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
-        let giveTypes = types.flatMap { $0 }
-        
-        guard
-            let notifications = UIApplication.shared.scheduledLocalNotifications,
-            !giveTypes.isEmpty
-        else
-        {
-            UIApplication.shared.cancelAllLocalNotifications()
-            return
-        }
-        
-        notifications.forEach { (notification) in
-            if let notificationId = notification.userInfo?["id"] as? String,
-                let notificationType = NotificationType(rawValue: notificationId),
-                giveTypes.contains(notificationType)
-            {
-                UIApplication.shared.cancelLocalNotification(notification)
-            }
-        }
+        UIApplication.shared.cancelAllLocalNotifications()
     }
     
     func handleNotificationAction(withIdentifier identifier: String?)
