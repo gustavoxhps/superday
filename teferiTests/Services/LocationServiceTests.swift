@@ -56,22 +56,34 @@ class LocationServiceTests: XCTestCase {
         super.tearDown()
     }
     
-    func testCallingStartStartsAccurateTracking() {
+    func testCallingStartStartsSignificantLocationTracking()
+    {
+        
+        locationService.startLocationTracking()
+
+        expect(self.locationManager.monitoringSignificantLocationChanges).to(beTrue())
+        expect(self.locationManager.updatingLocation).to(beFalse())
+        
+    }
+    
+    func testCallingStartDoesntStartSignificantLocationTracking()
+    {
         
         locationService.startLocationTracking()
         
-        expect(self.accurateLocationManager.updatingLocation).to(beTrue())
+        expect(self.accurateLocationManager.updatingLocation).to(beFalse())
         expect(self.accurateLocationManager.monitoringSignificantLocationChanges).to(beFalse())
         
     }
     
-    func testCallingStartDoesntStartSignificantLocationTracking() {
-        
+    func testWhenASignificantLocationChangeHappensAccurateLocationTrackingStarts()
+    {
         locationService.startLocationTracking()
         
-        expect(self.locationManager.updatingLocation).to(beFalse())
-        expect(self.locationManager.monitoringSignificantLocationChanges).to(beFalse())
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy:200)])
         
+        expect(self.accurateLocationManager.updatingLocation).to(beTrue())
+        expect(self.accurateLocationManager.monitoringSignificantLocationChanges).to(beFalse())
     }
     
     func testOnlyMostAccurateLocationGetsForwarded()
@@ -83,6 +95,7 @@ class LocationServiceTests: XCTestCase {
             ]
         
         locationService.startLocationTracking()
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy:200)])
         accurateLocationManager.sendLocations(locations)
         
         scheduler.start()
@@ -95,19 +108,20 @@ class LocationServiceTests: XCTestCase {
     {
         locationService.startLocationTracking()
         
-        accurateLocationManager.sendLocations([baseLocation.randomOffset(withAccuracy: 200)])
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy:200)])
         
         var seconds = 3
         scheduler.scheduleAt(seconds) {[unowned self] in
-            self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy: 200)])
+            self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy: Constants.gpsAccuracy + 200)]) //Not accurate enough
         }
         seconds += Int(Constants.maxGPSTime)
         scheduler.scheduleAt(seconds) {[unowned self] in
-            self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy: 200)])
+            self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy: Constants.gpsAccuracy - 10)]) //Accurate enough, but out of time
         }
         
         scheduler.start()
         
+        expect(self.observer.events.count).to(equal(1))
         expect(self.accurateLocationManager.updatingLocation).to(beFalse())
         expect(self.locationManager.monitoringSignificantLocationChanges).to(beTrue())
     }
@@ -116,8 +130,10 @@ class LocationServiceTests: XCTestCase {
     {
         locationService.startLocationTracking()
         
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy:200)])
+
         accurateLocationManager.sendLocations([
-                baseLocation.randomOffset(withAccuracy: 300),
+                baseLocation.randomOffset(withAccuracy: Constants.gpsAccuracy + 10),
                 baseLocation.randomOffset(withAccuracy: Constants.gpsAccuracy - 5)
                 ])
         
@@ -127,47 +143,91 @@ class LocationServiceTests: XCTestCase {
         expect(self.locationManager.monitoringSignificantLocationChanges).to(beTrue())
     }
     
-    func testAfterGPSSignificantLocationUpdatesGetForwarded()
-    {
-        locationService.startLocationTracking()
-        
-        let locations = [
-            baseLocation.randomOffset(withAccuracy: 20),
-            baseLocation.randomOffset(withAccuracy: 10),
-            baseLocation.randomOffset(withAccuracy: 150)
-        ]
-     
-        self.accurateLocationManager.sendLocations([baseLocation.randomOffset(withAccuracy: 200)])
-        self.accurateLocationManager.sendLocations([locations[0]])
-        self.locationManager.sendLocations([locations[1]])
-        self.locationManager.sendLocations([locations[2]])
-        
-        scheduler.start()
-        
-        expect(self.accurateLocationManager.updatingLocation).to(beFalse())
-        expect(self.locationManager.monitoringSignificantLocationChanges).to(beTrue())
-
-        let recordedLocations = observer.events.map({ $0.value })
-        let expectedLocations = locations.map(Location.init).map(Location.asTrackEvent).map { Event.next($0) }
-        XCTAssertEqual(recordedLocations, expectedLocations)
-    }
-    
     func testFiltersOutInvalidLocations()
     {
         locationService.startLocationTracking()
-        accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy: 20)])
         
         let locations = [
-            baseLocation.randomOffset(withAccuracy: 200),
-            baseLocation.randomOffset(withAccuracy: Constants.significantLocationChangeAccuracy + 10), //Filter out this one
-            baseLocation.randomOffset(withAccuracy: 100),
+            baseLocation.randomOffset(withAccuracy: Constants.significantLocationChangeAccuracy - 10),
+            baseLocation.randomOffset(withAccuracy: Constants.significantLocationChangeAccuracy + 10), // Filter out this one
+            baseLocation.randomOffset(withAccuracy: Constants.significantLocationChangeAccuracy - 1),
             CLLocation(latitude: 0, longitude: 0) // And this one
         ]
         
-        self.locationManager.sendLocations(locations)
+        locations.forEach { [unowned self] location in
+            self.locationManager.sendLocations(locations)
+            self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy:4000)]) //GPS won't replace SLC
+        }
+        
         
         scheduler.start()
         
-        expect(self.observer.events.count).to(equal(3))
+        expect(self.observer.events.count).to(equal(2))
+    }
+    
+    
+    func testGPSReplacesSignificantLocationTrackingIfLessAccurate()
+    {
+        locationService.startLocationTracking()
+        
+        let location = baseLocation.randomOffset(withAccuracy: 150)
+        let gpsLocation = baseLocation.randomOffset(withAccuracy: 50)
+        
+        locationManager.sendLocations([location])
+        accurateLocationManager.sendLocations([gpsLocation])
+        
+        scheduler.start()
+        
+        let resultLocation = observer.events.last!.value.element!
+        XCTAssertEqual(resultLocation, TrackEvent.newLocation(location: Location(fromCLLocation: gpsLocation)))
+    }
+    
+    func testGPSDoesntReplaceSignificantLocationTrackingIfLessAccurate()
+    {
+        locationService.startLocationTracking()
+        
+        let location = baseLocation.randomOffset(withAccuracy: 50)
+        let gpsLocation = baseLocation.randomOffset(withAccuracy: 150)
+        
+        locationManager.sendLocations([location])
+        accurateLocationManager.sendLocations([gpsLocation])
+        
+        scheduler.start()
+        
+        let resultLocation = observer.events.last!.value.element!
+        XCTAssertEqual(resultLocation, TrackEvent.newLocation(location: Location(fromCLLocation: location)))
+    }
+    
+    func testIfGPSDoesntReturnAnythinItUsesSignificantLocationChangeValue()
+    {
+        locationService.startLocationTracking()
+        
+        let location = baseLocation.randomOffset(withAccuracy:200)
+        locationManager.sendLocations([location])
+        
+        
+        scheduler.start()
+        scheduler.advanceTo(Int(Constants.maxGPSTime + 10))
+        
+        expect(self.observer.events.count).to(equal(1))
+        let resultLocation = observer.events.last!.value.element!
+        XCTAssertEqual(resultLocation, TrackEvent.newLocation(location: Location(fromCLLocation: location)))
+    }
+    
+    func testGPSRunsEverytimeTheresANewSignificantLocationChange()
+    {
+        locationService.startLocationTracking()
+        
+        let gpsLocation = baseLocation.randomOffset(withAccuracy: 10)
+        
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy: 250)])
+        accurateLocationManager.sendLocations([baseLocation.randomOffset(withAccuracy: 10)])
+        locationManager.sendLocations([baseLocation.randomOffset(withAccuracy: 250)])
+        accurateLocationManager.sendLocations([gpsLocation])
+        
+        scheduler.start()
+        
+        let resultLocation = observer.events.last!.value.element!
+        XCTAssertEqual(resultLocation, TrackEvent.newLocation(location: Location(fromCLLocation: gpsLocation)))
     }
 }
