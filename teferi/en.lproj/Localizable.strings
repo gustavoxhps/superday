@@ -8,6 +8,10 @@
 
 "LocationDisabledTitle" = "Oops! Your location is disabled.";
 "LocationDisabledDescription" = "We use your location to magically guess & track your activities. 🤘";
+"LocationEnableButtonTitle" = "Enable Location";
+
+"HealthKitDisabledDescription" = "We need to access the Health app for more accurate tracking. 🙏";
+"HealthKitEnableButtonTitle" = "Enable Health app access";
 
 "NotificationText" = "I'm so excited to hear what you're doing right now. Would you please tell me?";
 

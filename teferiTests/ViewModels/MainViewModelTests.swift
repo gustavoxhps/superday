@@ -39,7 +39,8 @@ class MainViewModelTests : XCTestCase
                                        timeSlotService: self.timeSlotService,
                                        editStateService: self.editStateService,
                                        smartGuessService: self.smartGuessService,
-                                       selectedDateService: self.selectedDateService)
+                                       selectedDateService: self.selectedDateService,
+                                       settingsService: settingsService)
         
     }
     

@@ -1,7 +1,7 @@
 import RxSwift
 import Foundation
 
-class PermissionViewModel
+class LocationPermissionViewModel : PermissionViewModel
 {
     // MARK: Fields
     private let title = L10n.locationDisabledTitle
@@ -26,9 +26,15 @@ class PermissionViewModel
     }
     
     // MARK: Properties
-    var isFirstTimeUser : Bool { return !self.settingsService.userEverGaveLocationPermission }
     
-    var titleText : String
+    var remindMeLater : Bool
+    {
+        return isFirstTimeUser
+    }
+    
+    private var isFirstTimeUser : Bool { return !self.settingsService.userEverGaveLocationPermission }
+    
+    var titleText : String?
     {
         return self.isFirstTimeUser ? self.titleFirstUse : self.title
     }
@@ -38,7 +44,18 @@ class PermissionViewModel
         return self.isFirstTimeUser ? self.disabledDescriptionFirstUse : self.disabledDescription
     }
     
-    var permissionGivenObservable : Observable<Void> {
+    var enableButtonTitle : String
+    {
+        return L10n.locationEnableButtonTitle
+    }
+    
+    var image : UIImage?
+    {
+        return nil
+    }
+    
+    var permissionGivenObservable : Observable<Void>
+    {
         return self.appLifecycleService
             .movedToForegroundObservable
             .map { [unowned self] in
@@ -70,6 +87,12 @@ class PermissionViewModel
                    .filter{ !$0 }
                    .mapTo(())
     }()
+    
+    func getUserPermission()
+    {
+        let url = URL(string: UIApplicationOpenSettingsURLString)!
+        UIApplication.shared.openURL(url)
+    }
     
     func permissionGiven()
     {

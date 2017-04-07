@@ -14,6 +14,7 @@ class MockSettingsService : SettingsService
     var userEverGaveLocationPermission : Bool = false
 
     var hasLocationPermission = true
+    var hasHealthKitPermission = true
     var hasNotificationPermission = true
     
     var healthKitUpdates = [String: Date]()
@@ -68,5 +69,10 @@ class MockSettingsService : SettingsService
     func setUserGaveLocationPermission()
     {
         self.userEverGaveLocationPermission = true
+    }
+    
+    func setUserGaveHealthKitPermission()
+    {
+        hasHealthKitPermission = true
     }
 }

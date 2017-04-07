@@ -116,7 +116,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         self.logAppStartup(isInBackground)
-        healthKitService.startHealthKitTracking()
+
+        if settingsService.hasHealthKitPermission
+        {
+            healthKitService.startHealthKitTracking()
+        }
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
@@ -171,7 +175,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        smartGuessService : self.smartGuessService,
                                                        appLifecycleService: self.appLifecycleService,
                                                        selectedDateService: self.selectedDateService,
-                                                       loggingService: self.loggingService)
+                                                       loggingService: self.loggingService,
+                                                       healthKitService: self.healthKitService)
         
         let isFirstUse = self.settingsService.installDate == nil
         
@@ -181,7 +186,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         if isFirstUse
         {
-            notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(30*60), title: "", message: L10n.notificationHealthKitAccessBody)
+            notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
             
             let onboardController = StoryboardScene.Onboarding.instantiateOnboardingPager()
             

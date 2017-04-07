@@ -10,6 +10,8 @@ protocol SettingsService
     
     var hasLocationPermission : Bool { get }
     
+    var hasHealthKitPermission : Bool { get }
+    
     var lastAskedForLocationPermission : Date? { get }
         
     var hasNotificationPermission : Bool { get }
@@ -30,6 +32,8 @@ protocol SettingsService
     func setLastAskedForLocationPermission(_ date: Date)
     
     func setUserGaveLocationPermission()
+    
+    func setUserGaveHealthKitPermission()
     
     func setLastNotificationLocation(_ location: CLLocation)
 }
