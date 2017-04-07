@@ -125,6 +125,36 @@ class PostiOSTenNotificationServiceTests : XCTestCase
         }
     }
     
+    func testCategorySelectionNotificationDoNotHaveCategoryIdentifierSet()
+    {
+        self.notificationService.scheduleCategorySelectionNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "", possibleFutureSlotStart: nil)
+        
+        waitUntil { done in
+            self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
+                
+                let notificationCategory = requests.last!.content.categoryIdentifier
+                
+                expect(notificationCategory).to(equal(""))
+                done()
+            })
+        }
+    }
+    
+    func testNormalNotificationDoNotHaveCategoryIdentifierSet()
+    {
+        self.notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(20 * 60), title: "", message: "")
+        
+        waitUntil { done in
+            self.currentNotificationCenter.getPendingNotificationRequests(completionHandler: { (requests) in
+                
+                let notificationCategory = requests.last!.content.categoryIdentifier
+                
+                expect(notificationCategory).to(equal(""))
+                done()
+            })
+        }
+    }
+    
     private func verifyNotificationCategories(_ expectedCategories: [teferi.Category])
     {
         waitUntil { done in
