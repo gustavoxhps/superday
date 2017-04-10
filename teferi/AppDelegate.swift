@@ -216,8 +216,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
 
     func applicationDidBecomeActive(_ application: UIApplication)
     {
-        self.pipeline.run()
         self.appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
+        self.pipeline.run()
         self.initializeWindowIfNeeded()
         self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
