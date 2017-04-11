@@ -22,7 +22,7 @@ class MockSmartGuessPersistencyService : BasePersistencyService<SmartGuess>
         return true
     }
     
-    @discardableResult override func update(withPredicate predicate: Predicate, updateFunction: (T) -> T) -> Bool
+    @discardableResult override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> Bool
     {
         return true
     }

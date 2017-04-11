@@ -18,10 +18,30 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     //MARK: PersistencyService implementation
     override func getLast() -> T?
     {
-        guard let managedElement = self.getLastManagedElement() else { return nil }
+        var elementToReturn: T? = nil
+        let managedContext = self.getManagedObjectContext()
         
-        let element = self.mapManagedObjectIntoElement(managedElement)
-        return element
+        managedContext.performAndWait
+        {
+            let request = NSFetchRequest<NSFetchRequestResult>()
+            request.entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
+            request.fetchLimit = 1
+            request.sortDescriptors = self.modelAdapter.sortDescriptors
+            
+            do
+            {
+                if let managedElement = try managedContext.fetch(request).first as? NSManagedObject
+                {
+                    elementToReturn = self.mapManagedObjectIntoElement(managedElement)
+                }
+            }
+            catch
+            {
+                self.loggingService.log(withLogLevel: .error, message: "No \(self.entityName)s found")
+            }
+        }
+        
+        return elementToReturn
     }
     
     override func get(withPredicate predicate: Predicate? = nil) -> [ T ]
@@ -33,73 +53,93 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             fetchRequest.predicate = nsPredicate
         }
         
-        do
+        var elements = [T]()
+        let managedObjectContext = getManagedObjectContext()
+        
+        managedObjectContext.performAndWait
         {
-            let results = try self.getManagedObjectContext().fetch(fetchRequest) as! [NSManagedObject]
-            
-            let elements = results.map(self.mapManagedObjectIntoElement)
-            return elements
+            do
+            {
+                let results = try managedObjectContext.fetch(fetchRequest) as! [NSManagedObject]
+                
+                elements = results.map(self.mapManagedObjectIntoElement)
+            }
+            catch
+            {
+                //Returns an empty array if anything goes wrong
+                self.loggingService.log(withLogLevel: .warning, message: "No \(self.entityName) found, returning empty array")
+            }
         }
-        catch
-        {
-            //Returns an empty array if anything goes wrong
-            self.loggingService.log(withLogLevel: .warning, message: "No \(self.entityName) found, returning empty array")
-            return []
-        }
+        
+        return elements
     }
     
     @discardableResult override func create(_ element: T) -> Bool
     {
-        //Gets the managed object from CoreData's context
+        var boolToReturn = false
         let managedContext = self.getManagedObjectContext()
-        let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
-        let managedObject = NSManagedObject(entity: entity, insertInto: managedContext)
         
-        //Sets the properties
-        self.setManagedElementProperties(element, managedObject)
+        managedContext.performAndWait
+        {
+            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
+            let managedObject = NSManagedObject(entity: entity, insertInto: managedContext)
+            
+            //Sets the properties
+            self.setManagedElementProperties(element, managedObject)
+            
+            do
+            {
+                try managedContext.save()
+                boolToReturn = true
+            }
+            catch
+            {
+                self.loggingService.log(withLogLevel: .error, message: "Error creating \(self.entityName)")
+            }
+        }
         
-        do
-        {
-            try managedContext.save()
-            return true
-        }
-        catch
-        {
-            self.loggingService.log(withLogLevel: .error, message: "Error creating \(self.entityName)")
-            return false
-        }
+        return boolToReturn
     }
     
-    override func update(withPredicate predicate: Predicate, updateFunction: (T) -> T) -> Bool
+    override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> Bool
     {
+        var boolToReturn = false
+        
         let managedContext = self.getManagedObjectContext()
-        let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)
         
-        let request = NSFetchRequest<NSFetchRequestResult>()
-        let predicate = predicate.convertToNSPredicate()
-        
-        request.entity = entity
-        request.predicate = predicate
-        
-        do
+        managedContext.performAndWait
         {
-            guard let managedElement = try managedContext.fetch(request).first as AnyObject? else { return false }
-            let managedObject = managedElement as! NSManagedObject
+            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)
             
-            let entity = self.modelAdapter.getModel(fromManagedObject: managedObject)
-            let newEntity = updateFunction(entity)
+            let request = NSFetchRequest<NSFetchRequestResult>()
+            let predicate = predicate.convertToNSPredicate()
             
-            self.setManagedElementProperties(newEntity, managedObject)
+            request.entity = entity
+            request.predicate = predicate
             
-            try managedContext.save()
-            
-            return true
+            do
+            {
+                if let managedElement = try managedContext.fetch(request).first as AnyObject?
+                {
+                    let managedObject = managedElement as! NSManagedObject
+                    
+                    let entity = self.modelAdapter.getModel(fromManagedObject: managedObject)
+                    let newEntity = updateFunction(entity)
+                    
+                    self.setManagedElementProperties(newEntity, managedObject)
+                    
+                    try managedContext.save()
+                    
+                    boolToReturn = true
+                }
+            }
+            catch
+            {
+                self.loggingService.log(withLogLevel: .warning, message: "No \(T.self) found when trying to update")
+            }
         }
-        catch
-        {
-            self.loggingService.log(withLogLevel: .warning, message: "No \(T.self) found when trying to update")
-            return false
-        }
+        
+        return boolToReturn
     }
     
     @discardableResult override func delete(withPredicate predicate: Predicate? = nil) -> Bool
@@ -113,18 +153,24 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
-        do
+        var boolToReturn = false
+        let managedObjectContext = getManagedObjectContext()
+        
+        managedObjectContext.performAndWait
         {
-            try self.getManagedObjectContext().execute(batchDeleteRequest)
-            return true
-        }
-        catch
-        {
-            //Returns an empty array if anything goes wrong
-            self.loggingService.log(withLogLevel: .warning, message: "Failed to delete instances of \(self.entityName)")
-            return false
+            do
+            {
+                try managedObjectContext.execute(batchDeleteRequest)
+                boolToReturn = true
+            }
+            catch
+            {
+                //Returns an empty array if anything goes wrong
+                self.loggingService.log(withLogLevel: .warning, message: "Failed to delete instances of \(self.entityName)")
+            }
         }
         
+        return boolToReturn
     }
     
     //MARK: Methods
@@ -143,27 +189,6 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     {
         let result = self.modelAdapter.getModel(fromManagedObject: managedObject)
         return result
-    }
-    
-    private func getLastManagedElement() -> NSManagedObject?
-    {
-        let managedContext = self.getManagedObjectContext()
-        
-        let request = NSFetchRequest<NSFetchRequestResult>()
-        request.entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
-        request.fetchLimit = 1
-        request.sortDescriptors = self.modelAdapter.sortDescriptors
-        
-        do
-        {
-            guard let managedElement = try managedContext.fetch(request).first else { return nil }
-            return managedElement as? NSManagedObject
-        }
-        catch
-        {
-            self.loggingService.log(withLogLevel: .error, message: "No \(self.entityName)s found")
-            return nil
-        }
     }
     
     private lazy var entityName : String =
