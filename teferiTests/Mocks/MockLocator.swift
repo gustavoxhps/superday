@@ -84,6 +84,7 @@ class MockLocator : ViewModelLocator
     {
         return TopBarViewModel(timeService: self.timeService,
                                feedbackService: self.feedbackService,
-                               selectedDateService: self.selectedDateService)
+                               selectedDateService: self.selectedDateService,
+                               appLifecycleService: self.appLifecycleService)
     }
 }

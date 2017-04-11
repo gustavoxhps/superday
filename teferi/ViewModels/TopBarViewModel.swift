@@ -9,19 +9,26 @@ class TopBarViewModel
     
     private let timeService: TimeService
     private let feedbackService: FeedbackService
-    private let dayOfMonthFormatter : DateFormatter
     private let selectedDateService : SelectedDateService
+    private let appLifecycleService: AppLifecycleService
+
+    private let dayOfMonthFormatter : DateFormatter
     
     // MARK: Initializers
     init(timeService : TimeService,
          feedbackService: FeedbackService,
-         selectedDateService: SelectedDateService)
+         selectedDateService: SelectedDateService,
+         appLifecycleService: AppLifecycleService)
     {
         self.timeService = timeService
         self.feedbackService = feedbackService
         self.selectedDateService = selectedDateService
+        self.appLifecycleService = appLifecycleService
         
-        self.dateObservable = self.selectedDateService.currentlySelectedDateObservable
+        self.dateObservable = Observable.combineLatest(
+            self.selectedDateService.currentlySelectedDateObservable,
+            self.appLifecycleService.movedToForegroundObservable)
+        { date, _ in return date }
         
         self.dayOfMonthFormatter = DateFormatter()
         self.dayOfMonthFormatter.timeZone = TimeZone.autoupdatingCurrent
@@ -33,10 +40,14 @@ class TopBarViewModel
     ///Current date for the calendar button
     let dateObservable : Observable<Date>
     
-    var calendarDay : String
+    var calendarDay : Observable<String>
     {
-        let currentDay = Calendar.current.component(.day, from: self.timeService.now)
-        return String(format: "%02d", currentDay)
+        return self.appLifecycleService.movedToForegroundObservable
+            .startWith(())
+            .map {
+                let currentDay = Calendar.current.component(.day, from: self.timeService.now)
+                return String(format: "%02d", currentDay)
+        }
     }
     
     ///Gets the title for the header. Changes on new locations.
