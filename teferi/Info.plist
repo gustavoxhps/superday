@@ -46,6 +46,8 @@
 	<true/>
 	<key>NSHealthShareUsageDescription</key>
 	<string>We use your HealthKit data to magically guess &amp; track your activities</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We use your HealthKit data to magically guess &amp; track your activities</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your location to magically guess &amp; track your activities</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
