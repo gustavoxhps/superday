@@ -1,4 +1,4 @@
-# ![](https://github.com/toggl/superday/blob/develop/teferi/Assets.xcassets/icSuperday.imageset/icSuperday.png) Superday
+# ![](https://github.com/toggl/superday/blob/develop/teferi/Assets.xcassets/icSuperday.imageset/icSuperday.png) Superday [![Build Status](https://www.bitrise.io/app/2a1f0a9fac60e13d.svg?token=dD_zNUdXB5VZwICpmJZHQA&branch=develop)](https://www.bitrise.io/app/2a1f0a9fac60e13d)
 More time, more life.
 Superday tracks your activities, you give the context.
 
