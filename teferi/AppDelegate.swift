@@ -113,6 +113,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     //MARK: UIApplicationDelegate lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
+        setVersionInSettings()
+        
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         self.logAppStartup(isInBackground)
@@ -147,6 +149,13 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         return true
     }
 
+    private func setVersionInSettings()
+    {
+        let appVersionString: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let buildNumber: String = Bundle.main.object(forInfoDictionaryKey:"CFBundleVersion") as! String
+        UserDefaults.standard.set("\(appVersionString) (\(buildNumber))", forKey: "version_string")
+    }
+    
     private func logAppStartup(_ isInBackground: Bool)
     {
         let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
