@@ -28,6 +28,28 @@ class HealthKitPumpTests : XCTestCase
         return Double(components[0])! * 60 + Double(components[1])! + Double(components[2])!/60
     }
     
+    func testNonInBedSleepSamplesAreFilteredOut()
+    {
+        let sampleTuples : [TupleHKSample] = [(start: 00, end: 7*60, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 0),
+                                              (start: 10, end: 20, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 1),
+                                              (start: 20, end: 30, identifier: HKCategoryTypeIdentifier.sleepAnalysis.rawValue, quantity: 1)]
+        
+        trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
+        
+        let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .unknown),
+                                                          (start: 7*60, category: .unknown)]
+        
+        let expectedResult = expectedResultTuples.map(toTempTimeSlot)
+        
+        let generatedTimeslots = self.healthKitPump.run()
+        
+        expect(generatedTimeslots.count).to(equal(expectedResult.count))
+        
+        generatedTimeslots
+            .enumerated()
+            .forEach { i, actualTimeSlot in compare(timeSlot: actualTimeSlot, to: expectedResult[i]) }
+    }
+    
     func testWithRealDataFromLogs()
     {
         let sampleTuples : [TupleHKSample] = [(start: minutes("01:45:56"), end: minutes("01:47:06"), identifier: HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, quantity: 56.5300000002608),
@@ -302,7 +324,7 @@ class HealthKitPumpTests : XCTestCase
         case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue, HKQuantityTypeIdentifier.distanceCycling.rawValue:
             healthSample = HealthSample(withIdentifier: tuple.identifier, startTime: date(tuple.start), endTime: date(tuple.end), value: HKQuantity(unit: HKUnit.meter(), doubleValue: Double(tuple.quantity)))
         case HKCategoryTypeIdentifier.sleepAnalysis.rawValue:
-            healthSample = HealthSample(withIdentifier: tuple.identifier, startTime: date(tuple.start), endTime: date(tuple.end), value: HKCategoryValue.init(rawValue: 0))
+            healthSample = HealthSample(withIdentifier: tuple.identifier, startTime: date(tuple.start), endTime: date(tuple.end), value: HKCategoryValue.init(rawValue: Int(tuple.quantity)))
         default:
             break
         }

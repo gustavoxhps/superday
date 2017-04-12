@@ -75,7 +75,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate))")
+            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     
@@ -87,7 +87,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate))")
+            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     
@@ -120,7 +120,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
                 }
             }
             
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(sleepAnalysisType) start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate))")
+            self.loggingService.log(withLogLevel: .info, message: "⌞ \(sleepAnalysisType) start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     

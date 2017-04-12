@@ -49,7 +49,7 @@ class DefaultSmartGuessService : SmartGuessService
     func markAsUsed(_ smartGuess: SmartGuess, atTime time: Date)
     {
         let id = smartGuess.id
-        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: smartGuess as AnyObject)
+        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
         
         guard let persistedSmartGuess = self.persistencyService.get(withPredicate: predicate).first else
         {

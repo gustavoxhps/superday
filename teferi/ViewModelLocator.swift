@@ -127,7 +127,8 @@ class DefaultViewModelLocator : ViewModelLocator
         
         let viewModel = TopBarViewModel(timeService: self.timeService,
                                         feedbackService: feedbackService,
-                                        selectedDateService: self.selectedDateService)
+                                        selectedDateService: self.selectedDateService,
+                                        appLifecycleService: self.appLifecycleService)
         
         return viewModel
     }

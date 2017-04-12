@@ -34,6 +34,7 @@ class HealthKitPump : Pump
             .getEventData(ofType: HealthSample.self)
             .distinct()
             .sorted(by: { $0.startTime < $1.startTime })
+            .filter(isSampleInBed)
             .splitBy(sameIdAndContinuous)
         
         let temporaryTimeSlots = groupedHealthSamples
@@ -55,7 +56,15 @@ class HealthKitPump : Pump
     }
     
     // MARK: - Helper
-    private func sameIdAndContinuous(previousSample:HealthSample, sample:HealthSample) -> Bool
+    private func isSampleInBed(sample: HealthSample) -> Bool
+    {
+        guard sample.identifier == HKCategoryTypeIdentifier.sleepAnalysis.rawValue else { return true }
+        guard let value = (sample.value as? HKCategoryValue)?.rawValue else { return true }
+        
+        return value == HKCategoryValueSleepAnalysis.inBed.rawValue
+    }
+    
+    private func sameIdAndContinuous(previousSample: HealthSample, sample: HealthSample) -> Bool
     {
         return previousSample.identifier == sample.identifier && sample.startTime.timeIntervalSince(previousSample.endTime) < minGapAllowedDuration
     }
@@ -167,7 +176,6 @@ class HealthKitPump : Pump
         var slotsToReturn = [TemporaryTimeSlot]()
         
         sleepAnalysis.forEach({ (sample) in
-            
             slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
                                                    end: nil,
                                                    smartGuess: nil,
