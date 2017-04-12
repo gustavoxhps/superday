@@ -37,7 +37,17 @@ class PagerViewModel
             .filterNil()
     }()
     
-    //MARK: Properties
+    private(set) lazy var newDayObservable : Observable<Void> =
+    {
+        return self.appLifecycleService.movedToForegroundObservable
+            .filter {
+                self.lastRefresh.differenceInDays(toDate:self.timeService.now) > 0
+            }
+            .do(onNext: {
+                self.lastRefresh = self.timeService.now
+            })
+    }()
+    
     let isEditingObservable : Observable<Bool>
     
     var currentDate : Date { return self.timeService.now }

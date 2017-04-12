@@ -63,6 +63,10 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
         self.viewModel.showEditOnLastObservable
             .subscribe(onNext: self.showEditOnLastSlot)
             .addDisposableTo(self.disposeBag)
+        
+        self.viewModel.newDayObservable
+            .subscribe(onNext: self.showToday)
+            .addDisposableTo(self.disposeBag)
     }
     
     // MARK: Methods
@@ -76,17 +80,12 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
     
     private func showEditOnLastSlot()
     {
-        let now = Date()
-        let viewModel = self.viewModelLocator.getTimelineViewModel(forDate: now)
-        let vc = TimelineViewController(viewModel: viewModel)
-        
-        self.viewModel.currentlySelectedDate = now
-
-        self.setViewControllers([vc],
-                                direction: UIPageViewControllerNavigationDirection.forward,
-                                animated: false) { _ in
-                                    vc.startEditOnLastSlot()
-                                }
+        setTodayViewControllers(editLastSlot: true)
+    }
+    
+    private func showToday()
+    {
+        setTodayViewControllers(editLastSlot: false)
     }
     
     private func onDateChanged(_ dateChange: DateChange)
@@ -96,6 +95,23 @@ class PagerViewController : UIPageViewController, UIPageViewControllerDataSource
             self.setCurrentViewController(forDate: dateChange.newDate,
                                           animated: true,
                                           moveBackwards: dateChange.newDate < dateChange.oldDate)
+        }
+    }
+    
+    private func setTodayViewControllers(editLastSlot:Bool)
+    {
+        let now = self.viewModel.currentDate
+        let timelineViewModel = self.viewModelLocator.getTimelineViewModel(forDate: now)
+        let vc = TimelineViewController(viewModel: timelineViewModel)
+        
+        self.viewModel.currentlySelectedDate = now
+        
+        self.setViewControllers([vc],
+                                direction: UIPageViewControllerNavigationDirection.forward,
+                                animated: false) { _ in
+                                    if editLastSlot {
+                                        vc.startEditOnLastSlot()
+                                    }
         }
     }
 
