@@ -9,7 +9,8 @@ protocol ViewModelLocator
     
     func getPagerViewModel() -> PagerViewModel
     
-    func getPermissionViewModel() -> PermissionViewModel
+    func getLocationPermissionViewModel() -> PermissionViewModel
+    func getHealthKitPermissionViewModel() -> PermissionViewModel
     
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
     
@@ -20,36 +21,42 @@ class DefaultViewModelLocator : ViewModelLocator
 {
     private let timeService : TimeService
     private let metricsService : MetricsService
-    private let appStateService : AppStateService
     private let feedbackService : FeedbackService
     private let locationService : LocationService
     private let settingsService : SettingsService
     private let timeSlotService : TimeSlotService
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
-    private let selectedDateService: SelectedDateService
+    private let appLifecycleService : AppLifecycleService
+    private let selectedDateService : SelectedDateService
+    private let loggingService : LoggingService
+    private let healthKitService : HealthKitService
 
     init(timeService: TimeService,
          metricsService: MetricsService,
-         appStateService: AppStateService,
          feedbackService: FeedbackService,
          locationService: LocationService,
          settingsService: SettingsService,
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
          smartGuessService: SmartGuessService,
-         selectedDateService: SelectedDateService)
+         appLifecycleService: AppLifecycleService,
+         selectedDateService: SelectedDateService,
+         loggingService: LoggingService,
+         healthKitService : HealthKitService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
-        self.appStateService = appStateService
         self.feedbackService = feedbackService
         self.locationService = locationService
         self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
         self.smartGuessService = smartGuessService
+        self.appLifecycleService = appLifecycleService
         self.selectedDateService = selectedDateService
+        self.loggingService = loggingService
+        self.healthKitService = healthKitService
     }
     
     func getMainViewModel() -> MainViewModel
@@ -59,16 +66,17 @@ class DefaultViewModelLocator : ViewModelLocator
                                       timeSlotService: self.timeSlotService,
                                       editStateService: self.editStateService,
                                       smartGuessService: self.smartGuessService,
-                                      selectedDateService: self.selectedDateService)
+                                      selectedDateService: self.selectedDateService,
+                                      settingsService: self.settingsService)
         return viewModel
     }
     
     func getPagerViewModel() -> PagerViewModel
     {
         let viewModel = PagerViewModel(timeService: self.timeService,
-                                       appStateService: self.appStateService,
                                        settingsService: self.settingsService,
                                        editStateService: self.editStateService,
+                                       appLifecycleService: self.appLifecycleService,
                                        selectedDateService: self.selectedDateService)
         return viewModel
     }
@@ -77,17 +85,28 @@ class DefaultViewModelLocator : ViewModelLocator
     {
         let viewModel = TimelineViewModel(date: date,
                                           timeService: self.timeService,
-                                          appStateService: self.appStateService,
                                           timeSlotService: self.timeSlotService,
-                                          editStateService: self.editStateService)
+                                          editStateService: self.editStateService,
+                                          appLifecycleService: self.appLifecycleService,
+                                          loggingService: self.loggingService)
         return viewModel
     }
     
-    func getPermissionViewModel() -> PermissionViewModel
+    func getLocationPermissionViewModel() -> PermissionViewModel
     {
-        let viewModel = PermissionViewModel(timeService: self.timeService,
-                                            appStateService: self.appStateService,
-                                            settingsService: self.settingsService)
+        let viewModel = LocationPermissionViewModel(timeService: self.timeService,
+                                                    settingsService: self.settingsService,
+                                                    appLifecycleService: self.appLifecycleService)
+        
+        return viewModel
+    }
+    
+    func getHealthKitPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = HealthKitPermissionViewModel(timeService: self.timeService,
+                                                     settingsService: self.settingsService,
+                                                     appLifecycleService: self.appLifecycleService,
+                                                     healthKitService: self.healthKitService)
         
         return viewModel
     }
@@ -108,7 +127,8 @@ class DefaultViewModelLocator : ViewModelLocator
         
         let viewModel = TopBarViewModel(timeService: self.timeService,
                                         feedbackService: feedbackService,
-                                        selectedDateService: self.selectedDateService)
+                                        selectedDateService: self.selectedDateService,
+                                        appLifecycleService: self.appLifecycleService)
         
         return viewModel
     }

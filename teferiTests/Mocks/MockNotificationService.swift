@@ -15,14 +15,24 @@ class MockNotificationService : NotificationService
         completed()
     }
     
-    func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    func scheduleNormalNotification(date: Date, title: String, message: String)
+    {
+        
+    }
+    
+    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
+    }
+    
+    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         self.shouldShowFakeTimeSlot = possibleFutureSlotStart != nil
         self.schedulings += 1
         self.scheduledNotifications += 1
     }
     
-    func unscheduleAllNotifications()
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
         self.cancellations += 1
         self.scheduledNotifications = 0

@@ -15,8 +15,8 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
     private var timeService : TimeService!
     private var timeSlotService : TimeSlotService!
     private var settingsService : SettingsService!
-    private var appStateService : AppStateService!
     private var mainViewController : MainViewController!
+    private var appLifecycleService : AppLifecycleService!
     private var notificationService : NotificationService!
     
     //MARK: ViewController lifecycle
@@ -26,15 +26,15 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
 
         self.dataSource = self
         self.delegate = self
-        self.view.backgroundColor = Color.white
+        self.view.backgroundColor = UIColor.white
         self.setViewControllers([pages.first!],
                            direction: .forward,
                            animated: true,
                            completion: nil)
         
         let pageControl = UIPageControl.appearance(whenContainedInInstancesOf: [type(of: self)])
-        pageControl.pageIndicatorTintColor = Color.green.withAlphaComponent(0.4)
-        pageControl.currentPageIndicatorTintColor = Color.green
+        pageControl.pageIndicatorTintColor = Style.Color.green.withAlphaComponent(0.4)
+        pageControl.currentPageIndicatorTintColor = Style.Color.green
         pageControl.backgroundColor = UIColor.clear
         
         self.view.addSubview(self.pager)
@@ -61,15 +61,15 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
     func inject(_ timeService: TimeService,
                 _ timeSlotService: TimeSlotService,
                 _ settingsService: SettingsService,
-                _ appStateService: AppStateService,
+                _ appLifecycleService: AppLifecycleService,
                 _ mainViewController: MainViewController,
                 _ notificationService: NotificationService) -> OnboardingPageViewController
     {
         self.timeService = timeService
-        self.appStateService = appStateService
         self.timeSlotService = timeSlotService
         self.settingsService = settingsService
         self.mainViewController = mainViewController
+        self.appLifecycleService = appLifecycleService
         self.notificationService = notificationService
         return self
     }
@@ -137,7 +137,7 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
         page.inject(self.timeService,
                     self.timeSlotService,
                     self.settingsService,
-                    self.appStateService,
+                    self.appLifecycleService,
                     self.notificationService, self)
         
         return page

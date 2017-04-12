@@ -7,7 +7,6 @@ class AddTimeSlotView : UIView
 {
     //MARK: Fields
     private let isAddingVariable = Variable(false)
-    private let selectedCategory = Variable(Category.unknown)
     private var disposeBag : DisposeBag? = DisposeBag()
     
     @IBOutlet private weak var blur : UIView!
@@ -24,10 +23,10 @@ class AddTimeSlotView : UIView
     
     private(set) lazy var categoryObservable : Observable<Category> =
     {
-        return self
-            .selectedCategory
-            .asObservable()
-            .skip(1)
+        return self.wheel
+                   .rx.controlEvent(.valueChanged)
+                   .map { [unowned self] _ in self.wheel.selectedItem }
+                   .filterNil()
     }()
     
     //MARK: Lifecycle methods
@@ -52,11 +51,9 @@ class AddTimeSlotView : UIView
                       attributeSelector: self.toAttributes,
                       dismissAction: wheelDismissAction)
 
-        wheel.addTarget(self, action: #selector(AddTimeSlotView.wheelChangedValue), for: .valueChanged)
-        
         //Adds some blur to the background of the buttons
         gradientLayer.frame = self.blur.bounds
-        gradientLayer.colors = [ Color.white.withAlphaComponent(0).cgColor, Color.white.cgColor]
+        gradientLayer.colors = [ UIColor.white.withAlphaComponent(0).cgColor, UIColor.white.cgColor]
         gradientLayer.locations = [0.0, 1.0]
         self.blur.layer.addSublayer(gradientLayer)
         self.blur.alpha = 0
@@ -105,11 +102,6 @@ class AddTimeSlotView : UIView
         self.animateAddButton(isAdding: false)
         
         wheel.hide()
-    }
-    
-    func wheelChangedValue()
-    {
-        selectedCategory.value = wheel.selectedItem!
     }
     
     private func onNewCategory(category: Category)

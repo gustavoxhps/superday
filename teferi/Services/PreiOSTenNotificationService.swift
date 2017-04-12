@@ -7,13 +7,13 @@ class PreiOSTenNotificationService : NotificationService
     //MARK: Fields
     private let loggingService : LoggingService
     private var notificationSubscription : Disposable?
-    private let notificationAuthorizationObservable : Observable<Bool>
+    private let notificationAuthorizedObservable : Observable<Void>
     
     //MARK: Initializers
-    init(loggingService: LoggingService, _ notificationAuthorizationObservable: Observable<Bool>)
+    init(loggingService: LoggingService, _ notificationAuthorizedObservable: Observable<Void>)
     {
         self.loggingService = loggingService
-        self.notificationAuthorizationObservable = notificationAuthorizationObservable
+        self.notificationAuthorizedObservable = notificationAuthorizedObservable
     }
     
     //MARK: NotificationService implementation
@@ -22,22 +22,28 @@ class PreiOSTenNotificationService : NotificationService
         let notificationSettings = UIUserNotificationSettings(types: [ .alert, .sound, .badge ], categories: nil)
         
         self.notificationSubscription =
-            self.notificationAuthorizationObservable
-                .subscribe(onNext: { wasSet in
-                    
-                    guard wasSet else { return }
-                    
-                    completed()
-                })
+            self.notificationAuthorizedObservable
+                .subscribe(onNext: completed)
         
         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
     }
     
-    func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    func scheduleNormalNotification(date: Date, title: String, message: String)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
+    }
+    
+    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
+    {
+        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
+    }
+    
+    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
         
         let notification = UILocalNotification()
+        notification.userInfo = ["id": type.rawValue]
         notification.fireDate = date
         notification.alertTitle = title
         notification.alertBody = message
@@ -47,7 +53,7 @@ class PreiOSTenNotificationService : NotificationService
         UIApplication.shared.scheduleLocalNotification(notification)
     }
     
-    func unscheduleAllNotifications()
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
         UIApplication.shared.cancelAllLocalNotifications()
     }

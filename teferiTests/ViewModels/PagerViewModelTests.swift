@@ -6,28 +6,37 @@ import RxSwift
 class PagerViewModelTests : XCTestCase
 {
     //MARK: Fields
+    private var noon : Date!
+    
+    private var disposeBag : DisposeBag!
     private var viewModel : PagerViewModel!
     
-    private var disposable : Disposable? = nil
+    private var disposable : Disposable!
     private var timeService : MockTimeService!
-    private var appStateService : AppStateService!
-    private var settingsService : SettingsService!
-    private var editStateService : EditStateService!
-    private var selectedDateService : SelectedDateService!
+    private var settingsService : MockSettingsService!
+    private var editStateService : MockEditStateService!
+    private var appLifecycleService : MockAppLifecycleService!
+    private var selectedDateService : MockSelectedDateService!
     
     override func setUp()
     {
+        self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        
+        self.disposeBag = DisposeBag()
         self.timeService = MockTimeService()
-        self.appStateService = MockAppStateService()
         self.settingsService = MockSettingsService()
         self.editStateService = MockEditStateService()
         self.selectedDateService = MockSelectedDateService()
+        self.appLifecycleService = MockAppLifecycleService()
+        
+        self.timeService.mockDate = self.noon
         
         self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        appStateService: self.appStateService,
                                         settingsService: self.settingsService,
                                         editStateService: self.editStateService,
+                                        appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
+        
     }
     
     override func tearDown()
@@ -49,9 +58,9 @@ class PagerViewModelTests : XCTestCase
         self.timeService.mockDate = noon
         
         self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        appStateService: self.appStateService,
                                         settingsService: self.settingsService,
                                         editStateService: self.editStateService,
+                                        appLifecycleService: self.appLifecycleService,
                                         selectedDateService: self.selectedDateService)
         
         var value = false
@@ -81,5 +90,15 @@ class PagerViewModelTests : XCTestCase
         let theDayAfterInstallDate = appInstallDate.tomorrow
         
         expect(self.viewModel.canScroll(toDate: theDayAfterInstallDate)).to(beTrue())
+    }
+    
+    func testWhenTheAppWakesFromANotificationItShouldShowEdit()
+    {
+        var editLastRow = false
+        _ = self.viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
+
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:true))
+        
+        expect(editLastRow).to(beTrue())
     }
 }

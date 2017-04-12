@@ -1,5 +1,6 @@
 import UIKit
 import RxSwift
+import RxCocoa
 import Foundation
 
 class TopBarViewController : UIViewController
@@ -29,7 +30,6 @@ class TopBarViewController : UIViewController
     {
         super.viewWillAppear(animated)
         
-        self.calendarButton.setTitle(viewModel.calendarDay, for: .normal)
     }
     
     // MARK: Methods
@@ -48,6 +48,10 @@ class TopBarViewController : UIViewController
         self.feedbackButton
             .rx.tap
             .subscribe(onNext: self.onFeedbackButtonClick)
+            .addDisposableTo(self.disposeBag)
+        
+        self.viewModel.calendarDay
+            .bindTo(self.calendarButton.rx.title(for: .normal))
             .addDisposableTo(self.disposeBag)
     }
     

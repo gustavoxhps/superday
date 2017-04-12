@@ -2,6 +2,7 @@ import UIKit
 import CoreGraphics
 import SnapKit
 import RxSwift
+import RxCocoa
 
 ///Cell that represents a TimeSlot in the timeline
 class TimelineCell : UITableViewCell
@@ -11,40 +12,35 @@ class TimelineCell : UITableViewCell
     private let hourMask = "%02d h %02d min"
     private let minuteMask = "%02d min"
     
-    private lazy var lineHeightConstraint : NSLayoutConstraint =
-    {
-        return self.lineView.constraints.filter{ $0.firstAttribute == .height }.first!
-    }()
-
-    @IBOutlet private weak var lineView : UIView!
-    @IBOutlet private weak var slotTime : UILabel!
-    @IBOutlet private weak var elapsedTime : UILabel!
-    @IBOutlet private weak var indicatorDot : UIView!
-    @IBOutlet private weak var categoryButton : UIButton!
-    @IBOutlet private weak var slotDescription : UILabel!
-    @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
-    @IBOutlet weak var categoryCircle: UIView!
-    @IBOutlet private weak var categoryIcon: UIImageView!
+    @IBOutlet private(set) weak var contentHolder: UIView!
+    @IBOutlet private(set) weak var lineView : LineView!
+    @IBOutlet private(set) weak var slotTime : UILabel!
+    @IBOutlet private(set) weak var elapsedTime : UILabel!
+    @IBOutlet private(set) weak var categoryButton : UIButton!
+    @IBOutlet private(set) weak var slotDescription : UILabel!
+    @IBOutlet private(set) weak var timeSlotDistanceConstraint : NSLayoutConstraint!
+    @IBOutlet private(set) weak var categoryCircle: UIView!
+    @IBOutlet private(set) weak var categoryIcon: UIImageView!
+    @IBOutlet private(set) weak var lineHeight: NSLayoutConstraint!
+    @IBOutlet private(set) weak var bottomMargin: NSLayoutConstraint!
+    @IBOutlet private(set) weak var dotsView : DottedLineView!
+    
     private var lineFadeView : AutoResizingLayerView?
+    
+    let disposeBag = DisposeBag()
     
     //MARK: Properties
     private(set) var isSubscribedToClickObservable = false
     lazy var editClickObservable : Observable<(CGPoint, Int)> =
-    {
-        self.isSubscribedToClickObservable = true
-        
-        return self.categoryButton.rx.tap
-            .map { return (self.categoryCircle.convert(self.categoryCircle.center, to: nil), self.currentIndex) }
-            .asObservable()
+        {
+            self.isSubscribedToClickObservable = true
+            
+            return self.categoryButton.rx.tap
+                .map { return (self.categoryCircle.convert(self.categoryCircle.center, to: nil), self.currentIndex) }
+                .asObservable()
     }()
     
     // MARK: Methods
-    override func awakeFromNib()
-    {
-        super.awakeFromNib()
-        self.contentView.isUserInteractionEnabled = false
-    }
-    
     /**
      Binds the current TimeSlot in order to change the UI accordingly.
      
@@ -66,6 +62,25 @@ class TimelineCell : UITableViewCell
         self.layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
         self.layoutDescriptionLabel(withTimelineItem: timelineItem)
         self.layoutCategoryIcon(withAsset: timeSlot.category.icon, color: categoryColor)
+    }
+    
+    func animateIntro()
+    {
+        self.categoryCircle.transform = CGAffineTransform(scaleX: 0, y: 0)
+        UIView.animate(
+            withDuration: 0.39,
+            options: UIViewAnimationOptions.curveEaseInOut) {
+                self.categoryCircle.transform = CGAffineTransform(scaleX: 1, y: 1)
+        }
+        
+        self.contentHolder.alpha = 0
+        self.contentHolder.transform = CGAffineTransform(translationX: 0, y: 20)
+        UIView.animate(
+            withDuration: 0.492,
+            options: UIViewAnimationOptions.curveEaseInOut) {
+                self.contentHolder.transform = CGAffineTransform.identity
+                self.contentHolder.alpha = 1
+        }
     }
     
     /// Updates the icon that indicates the slot's category
@@ -130,38 +145,19 @@ class TimelineCell : UITableViewCell
         let hours = (interval / 3600)
         
         let newHeight = CGFloat(Constants.minLineSize * (1 + (minutes / 15) + (hours * 4)))
-        self.lineHeightConstraint.constant = newHeight
+        self.lineHeight.constant = max(newHeight, 18)
         
-        self.lineView.backgroundColor = color
+        self.lineView.color = color
+        self.dotsView.color = color
         
-        if lastInPastDay
-        {
-            self.ensureLineFadeExists()
-        }
+        self.lineView.fading = lastInPastDay
+        
         self.lineFadeView?.isHidden = !lastInPastDay
         
+        self.dotsView.isHidden = !isRunning && !lastInPastDay
+        self.bottomMargin.constant = isRunning ? 24 : 0
+        
         self.lineView.layoutIfNeeded()
-        
-        self.indicatorDot.backgroundColor = color
-        self.indicatorDot.isHidden = !isRunning
-        self.indicatorDot.layoutIfNeeded()
-    }
-    
-    private func ensureLineFadeExists()
-    {
-        guard self.lineFadeView == nil else { return }
-        
-        let bottomFadeStartColor = Color.white.withAlphaComponent(1.0)
-        let bottomFadeEndColor = Color.white.withAlphaComponent(0.0)
-        let bottomFadeOverlay = self.fadeOverlay(startColor: bottomFadeStartColor, endColor: bottomFadeEndColor)
-        let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
-        self.lineView.addSubview(fadeView)
-        fadeView.snp.makeConstraints { make in
-            make.bottom.left.right.equalToSuperview()
-            make.height.lessThanOrEqualToSuperview()
-            make.height.equalTo(100).priority(1)
-        }
-        self.lineFadeView = fadeView
     }
     
     /// Configure the fade overlay

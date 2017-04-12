@@ -8,6 +8,7 @@ class MockSmartGuessService : SmartGuessService
     
     var addShouldWork = true
     var smartGuessToReturn : SmartGuess? = nil
+    var smartGuessUpdates = [(SmartGuess, Date)]()
     var locationsAskedFor = [CLLocation]()
     var smartGuesses = [SmartGuess]()
     
@@ -23,6 +24,12 @@ class MockSmartGuessService : SmartGuessService
         self.smartGuesses.append(smartGuess)
         
         return smartGuess
+    }
+    
+    func markAsUsed(_ smartGuess: SmartGuess, atTime time: Date)
+    {
+        smartGuess.lastUsed = time
+        smartGuessUpdates.append(smartGuess, time)
     }
     
     func strike(withId id: Int)

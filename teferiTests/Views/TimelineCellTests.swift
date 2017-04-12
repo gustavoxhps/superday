@@ -15,37 +15,6 @@ class TimelineCellTests : XCTestCase
     
     private var view : TimelineCell!
     
-    private var imageIcon : UIImageView
-    {
-        let view = self.view.subviews.filter { v in v is UIImageView  }.first!
-        return view as! UIImageView
-    }
-    
-    private var slotDescription : UILabel
-    {
-        let view = self.view.subviews.filter { v in v is UILabel  }.first!
-        return view as! UILabel
-    }
-    
-    private var slotTime : UILabel
-    {
-        let view = self.view.subviews.filter { v in v is UILabel  }.last!
-        return view as! UILabel
-    }
-    
-    private var timeLabel : UILabel
-    {
-        let labels = self.view.subviews.filter { v in v is UILabel  }
-        
-        let view = labels[labels.count - 2]
-        return view as! UILabel
-    }
-    
-    private var line : UIView
-    {
-        return  self.view.subviews.first!
-    }
-    
     override func setUp()
     {
         self.timeService = MockTimeService()
@@ -74,12 +43,12 @@ class TimelineCellTests : XCTestCase
     
     func testTheImageChangesAccordingToTheBoundTimeSlot()
     {
-        expect(self.imageIcon.image).toNot(beNil())
+        expect(self.view.categoryIcon.image).toNot(beNil())
     }
     
     func testTheDescriptionChangesAccordingToTheBoundTimeSlot()
     {
-        expect(self.slotDescription.text).to(equal(self.timelineItem.timeSlot.category.description))
+        expect(self.view.slotDescription.text).to(equal(self.timelineItem.timeSlot.category.description))
     }
     
     func testTheTimeChangesAccordingToTheBoundTimeSlot()
@@ -88,7 +57,7 @@ class TimelineCellTests : XCTestCase
         formatter.timeStyle = .short
         let dateString = formatter.string(from: self.timelineItem.timeSlot.startTime)
         
-        expect(self.slotTime.text).to(equal(dateString))
+        expect(self.view.slotTime.text).to(equal(dateString))
     }
     
     func testTheTimeDescriptionShowsEndDateIfIsLastPastTimeSlot()
@@ -111,7 +80,7 @@ class TimelineCellTests : XCTestCase
         
         let expectedText = "\(startText) - \(endText)"
         
-        expect(self.slotTime.text).to(equal(expectedText))
+        expect(self.view.slotTime.text).to(equal(expectedText))
     }
     
     func testTheDescriptionHasNoTextWhenTheCategoryIsUnknown()
@@ -125,7 +94,7 @@ class TimelineCellTests : XCTestCase
 
         view.bind(toTimelineItem: unknownTimelineItem, index: 0, duration: duration)
         
-        expect(self.slotDescription.text).to(equal(""))
+        expect(self.view.slotDescription.text).to(equal(""))
     }
     
     func testTheElapsedTimeLabelShowsOnlyMinutesWhenLessThanAnHourHasPassed()
@@ -136,7 +105,7 @@ class TimelineCellTests : XCTestCase
         
         let expectedText = String(format: minuteMask, minutes)
         
-        expect(self.timeLabel.text).to(equal(expectedText))
+        expect(self.view.elapsedTime.text).to(equal(expectedText))
     }
     
     func testTheElapsedTimeLabelShowsHoursAndMinutesWhenOverAnHourHasPassed()
@@ -160,20 +129,20 @@ class TimelineCellTests : XCTestCase
         
         let expectedText = String(format: hourMask, hours, minutes)
         
-        expect(self.timeLabel.text).to(equal(expectedText))
+        expect(self.view.elapsedTime.text).to(equal(expectedText))
     }
     
     func testTheElapsedTimeLabelColorChangesAccordingToTheBoundTimeSlot()
     {
         let expectedColor = Category.work.color
-        let actualColor = timeLabel.textColor!
+        let actualColor = self.view.elapsedTime.textColor!
         
         expect(expectedColor).to(equal(actualColor))
     }
     
     func testTheTimelineCellLineHeightChangesAccordingToTheBoundTimeSlot()
     {
-        let oldLineHeight = self.line.frame.height
+        let oldLineHeight = self.view.lineView.frame.height
         let date = Date().add(days: -1)
         let newTimeSlot = self.createTimeSlot(withStartTime: date)
         newTimeSlot.endTime = Date()
@@ -185,7 +154,7 @@ class TimelineCellTests : XCTestCase
 
         self.view.bind(toTimelineItem: newTimelineItem, index: 0, duration: duration)
         self.view.layoutIfNeeded()
-        let newLineHeight = line.frame.height
+        let newLineHeight = self.view.lineView.frame.height
         
         expect(oldLineHeight).to(beLessThan(newLineHeight))
     }
@@ -193,7 +162,7 @@ class TimelineCellTests : XCTestCase
     func testTheLineColorChangesAccordingToTheBoundTimeSlot()
     {
         let expectedColor = Category.work.color
-        let actualColor = self.line.backgroundColor!
+        let actualColor = self.view.lineView.color
         
         expect(expectedColor).to(equal(actualColor))
     }
@@ -209,7 +178,7 @@ class TimelineCellTests : XCTestCase
         self.view.bind(toTimelineItem: newTimelineItem, index: 0, duration: duration)
 
         
-        expect(self.slotDescription.text).to(equal(""))
+        expect(self.view.slotDescription.text).to(equal(""))
     }
     
     private func createTimeSlot(withStartTime time: Date) -> TimeSlot

@@ -47,6 +47,13 @@ extension Date
         return calendar.date(from: (calendar as NSCalendar).components(units, from: self))!
     }
     
+    func ignoreDateComponents() -> Date
+    {
+        let units : NSCalendar.Unit = [ .hour, .minute, .second, .nanosecond];
+        let calendar = Calendar.current;
+        return calendar.date(from: (calendar as NSCalendar).components(units, from: self))!
+    }
+    
     //period -> .WeekOfYear, .Day
     func rangeOfPeriod(period: Calendar.Component) -> (Date, Date)
     {
@@ -84,5 +91,26 @@ extension Date
         let components = calendar.dateComponents(units, from: self.ignoreTimeComponents(), to: date.ignoreTimeComponents())
 
         return components.day!
+    }
+    
+    func convert(calendarUnits: NSCalendar.Unit, sameAs date: Date) -> Date
+    {
+        let currentUnits : NSCalendar.Unit = [ .year, .month, .day, .hour, .minute, .second, .nanosecond]
+        let calendar = Calendar.current
+        
+        var currentComponents = (calendar as NSCalendar).components(currentUnits, from: self)
+        let newComponents = (calendar as NSCalendar).components(calendarUnits, from: date)
+        
+        currentComponents.year = newComponents.year
+        currentComponents.month = newComponents.month
+        currentComponents.day = newComponents.day
+        
+        return calendar.date(from: currentComponents)!
+    }
+    
+    func timeIntervalBasedOnWeekDaySince(_ date: Date) -> TimeInterval
+    {
+        let dayDifference = self.dayOfWeek - date.dayOfWeek
+        return self.timeIntervalSince(date.convert(calendarUnits: [ .year, .month, .day], sameAs: self).add(days: -dayDifference))
     }
 }

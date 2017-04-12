@@ -11,13 +11,8 @@ class DefaultTimeSlotService : TimeSlotService
     private let locationService : LocationService
     private let persistencyService : BasePersistencyService<TimeSlot>
     
-    private let timeSlotCreatedVariable = Variable(TimeSlot(withStartTime: Date(),
-                                                            category: .unknown,
-                                                            categoryWasSetByUser: false))
-    
-    private let timeSlotUpdatedVariable = Variable(TimeSlot(withStartTime: Date(),
-                                                            category: .unknown,
-                                                            categoryWasSetByUser: false))
+    private let timeSlotCreatedSubject = PublishSubject<TimeSlot>()
+    private let timeSlotUpdatedSubject = PublishSubject<TimeSlot>()
     
     // MARK: Properties
     init(timeService: TimeService,
@@ -30,8 +25,8 @@ class DefaultTimeSlotService : TimeSlotService
         self.locationService = locationService
         self.persistencyService = persistencyService
 
-        self.timeSlotCreatedObservable = timeSlotCreatedVariable.asObservable().skip(1)
-        self.timeSlotUpdatedObservable = timeSlotUpdatedVariable.asObservable().skip(1)
+        self.timeSlotCreatedObservable = timeSlotCreatedSubject.asObservable()
+        self.timeSlotUpdatedObservable = timeSlotUpdatedSubject.asObservable()
     }
     
     // MARK: Properties
@@ -59,7 +54,7 @@ class DefaultTimeSlotService : TimeSlotService
         return self.tryAdd(timeSlot: timeSlot)
     }
     
-    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation) -> TimeSlot?
+    @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation?) -> TimeSlot?
     {
         let timeSlot = TimeSlot(withStartTime: startTime,
                                 smartGuess: smartGuess,
@@ -79,7 +74,7 @@ class DefaultTimeSlotService : TimeSlotService
         
         self.loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
         
-        self.timeSlotCreatedVariable.value = timeSlot
+        self.timeSlotCreatedSubject.on(.next(timeSlot))
         
         return timeSlot
     }
@@ -121,7 +116,7 @@ class DefaultTimeSlotService : TimeSlotService
         if self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
             timeSlot.category = category
-            self.timeSlotUpdatedVariable.value = timeSlot
+            self.timeSlotUpdatedSubject.on(.next(timeSlot))
         }
         else
         {

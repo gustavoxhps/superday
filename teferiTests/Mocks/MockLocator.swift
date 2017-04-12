@@ -7,13 +7,15 @@ class MockLocator : ViewModelLocator
     var timeService = MockTimeService()
     var metricsService = MockMetricsService()
     var timeSlotService : MockTimeSlotService
-    var appStateService = MockAppStateService()
     var feedbackService = MockFeedbackService()
     var settingsService = MockSettingsService()
     var locationService = MockLocationService()
     var editStateService = MockEditStateService()
     var smartGuessService = MockSmartGuessService()
     var selectedDateService = MockSelectedDateService()
+    var appLifecycleService = MockAppLifecycleService()
+    var loggingService = MockLoggingService()
+    var healthKitService = MockHealthKitService()
     
     init()
     {
@@ -28,15 +30,16 @@ class MockLocator : ViewModelLocator
                              timeSlotService: self.timeSlotService,
                              editStateService: self.editStateService,
                              smartGuessService: self.smartGuessService,
-                             selectedDateService: self.selectedDateService)
+                             selectedDateService: self.selectedDateService,
+                             settingsService: self.settingsService)
     }
     
     func getPagerViewModel() -> PagerViewModel
     {
         return PagerViewModel(timeService: self.timeService,
-                              appStateService: self.appStateService,
                               settingsService: self.settingsService,
                               editStateService: self.editStateService,
+                              appLifecycleService: self.appLifecycleService,
                               selectedDateService: self.selectedDateService)
     }
     
@@ -44,16 +47,27 @@ class MockLocator : ViewModelLocator
     {
         return TimelineViewModel(date: date,
                                  timeService: self.timeService,
-                                 appStateService: self.appStateService,
                                  timeSlotService: self.timeSlotService,
-                                 editStateService: self.editStateService)
+                                 editStateService: self.editStateService,
+                                 appLifecycleService: self.appLifecycleService,
+                                 loggingService: self.loggingService)
     }
     
-    func getPermissionViewModel() -> PermissionViewModel
+    func getLocationPermissionViewModel() -> PermissionViewModel
     {
-        let viewModel = PermissionViewModel(timeService: self.timeService,
-                                            appStateService: self.appStateService,
-                                            settingsService: self.settingsService)
+        let viewModel = LocationPermissionViewModel(timeService: self.timeService,
+                                                    settingsService: self.settingsService,
+                                                    appLifecycleService: self.appLifecycleService)
+        
+        return viewModel
+    }
+    
+    func getHealthKitPermissionViewModel() -> PermissionViewModel
+    {
+        let viewModel = HealthKitPermissionViewModel(timeService: self.timeService,
+                                                    settingsService: self.settingsService,
+                                                    appLifecycleService: self.appLifecycleService,
+                                                    healthKitService: self.healthKitService)
         
         return viewModel
     }
@@ -70,6 +84,7 @@ class MockLocator : ViewModelLocator
     {
         return TopBarViewModel(timeService: self.timeService,
                                feedbackService: self.feedbackService,
-                               selectedDateService: self.selectedDateService)
+                               selectedDateService: self.selectedDateService,
+                               appLifecycleService: self.appLifecycleService)
     }
 }

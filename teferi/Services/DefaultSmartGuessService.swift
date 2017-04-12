@@ -3,10 +3,12 @@ import CoreLocation
 
 class DefaultSmartGuessService : SmartGuessService
 {
-    typealias WeightedGuess = (smartGuess: SmartGuess, weight: Double)
+    typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category, smartGuess: SmartGuess?)
     
     //MARK: Fields
-    private let distanceThreshold = 100.0
+    private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
+    private let timeThreshold : TimeInterval = 5*60*60 //5h
+    private let kNeighbors = 3
     private let smartGuessErrorThreshold = 3
     private let smartGuessIdKey = "smartGuessId"
     
@@ -44,6 +46,36 @@ class DefaultSmartGuessService : SmartGuessService
         return smartGuess
     }
     
+    func markAsUsed(_ smartGuess: SmartGuess, atTime time: Date)
+    {
+        let id = smartGuess.id
+        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
+        
+        guard let persistedSmartGuess = self.persistencyService.get(withPredicate: predicate).first else
+        {
+            self.loggingService.log(withLogLevel: .warning, message: "Tried updating smart guess with invalid id \(id)")
+            return
+        }
+        guard time >= persistedSmartGuess.lastUsed else
+        {
+            self.loggingService.log(withLogLevel: .debug, message: "Tried updating smart guess with date before the one already set  \(id)")
+            return
+        }
+        
+        let editFunction = { (smartGuess: SmartGuess) -> (SmartGuess) in
+            smartGuess.lastUsed = time
+            return smartGuess
+        }
+        
+        if !self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        {
+            self.loggingService.log(withLogLevel: .error, message: "Error trying to update last-used time of SmartGuess with id \(id)")
+        }
+        
+        smartGuess.lastUsed = time
+
+    }
+    
     func strike(withId id: Int)
     {
         let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
@@ -78,30 +110,32 @@ class DefaultSmartGuessService : SmartGuessService
     {
         let bestMatches = self.persistencyService.get()
             .filter(isWithinDistanceThreshold(from: location))
-            .sorted(by: distance(from: location))
+            .filter(isWithinTimeThresholdInNearByWeekDay(from: location))
         
         guard bestMatches.count > 0 else { return nil }
         
-        let minimumDistance = bestMatches.first!.location.distance(from: location)
+        let knnInstances = bestMatches.map { (location: $0.location, timeStamp: $0.location.timestamp, category: $0.category, smartGuess: Optional($0)) }
         
-        guard let bestMatch =
-            bestMatches
-                .groupBy(category)
-                .map(toWeightedDistance(from: location, withMinimumDistance: minimumDistance))
-                .sorted(by: weight)
-                .first?.smartGuess else { return nil }
+        let startTimeForKNN = Date()
         
-        //Every time a dictionary entry gets used in a guess, it gets refreshed.
-        //Entries not refresh in N days get purged
-        let lastUsedDate = self.timeService.now
+        guard let bestKnnMatch = KNN<KNNInstance, Category>
+            .prediction(
+                for: (location: location, timeStamp: location.timestamp, category: Category.unknown, smartGuess: nil),
+                usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
+                with: knnInstances,
+                decisionType: .maxScoreSum,
+                customDistance: self.distance,
+                labelAction: { $0.category })
+        else
+        {
+            self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+            return nil
+        }
         
-        let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: bestMatch.id as AnyObject)
-        self.persistencyService.update(withPredicate: predicate, updateFunction: { smartGuess in
-            smartGuess.lastUsed = lastUsedDate
-            return smartGuess
-        })
+        self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
-        bestMatch.lastUsed = lastUsedDate
+        guard let bestMatch = bestKnnMatch.smartGuess
+        else { return nil }
         
         return bestMatch
     }
@@ -119,47 +153,31 @@ class DefaultSmartGuessService : SmartGuessService
     
     private func isWithinDistanceThreshold(from location: CLLocation) -> (SmartGuess) -> Bool
     {
-        //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
         return { smartGuess in return smartGuess.location.distance(from: location) <= self.distanceThreshold }
     }
     
-    private func distance(from location: CLLocation) -> (SmartGuess, SmartGuess) -> Bool
+    private func isWithinTimeThresholdInNearByWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
     {
-        return { (smartGuess1, smartGuess2) in smartGuess1.location.distance(from: location) > smartGuess2.location.distance(from: location) }
-    }
-    
-    private func category(_ smartGuess: SmartGuess) -> Category
-    {
-        return smartGuess.category
-    }
-    
-    private func toWeightedDistance(from location: CLLocation, withMinimumDistance minimumDistance: Double) ->
-        ([SmartGuess]) -> WeightedGuess
-    {
-        return { smartGuesses in
+        return { smartGuess in
             
-            let weight = smartGuesses.reduce(0.0, self.weightedSumOfDistances(from: location, withMinimumDistance: minimumDistance))
-        
-            return (smartGuesses.first!, weight: weight)
+            let smartGuessTimestamp = smartGuess.location.timestamp
+            let locationTimestamp = location.timestamp
+            
+            return abs(smartGuessTimestamp.timeIntervalBasedOnWeekDaySince(locationTimestamp)) <= self.timeThreshold
         }
     }
     
-    private func weightedSumOfDistances(from location: CLLocation, withMinimumDistance minimumDistance: Double) ->
-        (_ accumulator: Double, _ smartGuess: SmartGuess) -> Double
+    private func distance(instance1: KNNInstance, instance2: KNNInstance) -> Double
     {
-        let divideConstant = self.distanceThreshold - minimumDistance
-        
-        return { (accumulator, smartGuess) in
-            
-            let distance = smartGuess.location.distance(from: location)
-            let weight = (self.distanceThreshold - distance) / divideConstant
-            return accumulator + pow(weight, 2)
-        }
-    }
-    
-    private func weight(_ weightedGuess1: WeightedGuess, _ weightedGuess2: WeightedGuess) -> Bool
-    {
-        return weightedGuess1.weight > weightedGuess2.weight
+        var accumulator = 0.0
+
+        let locationDifference = instance1.location.distance(from: instance2.location) / self.distanceThreshold
+        accumulator += pow(locationDifference, 2)
+
+        let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / self.timeThreshold
+        accumulator += pow(timeDifference, 2)
+
+        return sqrt(accumulator)
     }
     
     private func getNextSmartGuessId() -> Int

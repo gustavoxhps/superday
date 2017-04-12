@@ -4,22 +4,25 @@ import Foundation
 class PagerViewModel
 {
     //MARK: Fields
+    private var lastRefresh : Date
+    
     private let timeService : TimeService
-    private let appStateService : AppStateService
     private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
     private var selectedDateService : SelectedDateService
     
     init(timeService: TimeService,
-         appStateService: AppStateService,
          settingsService: SettingsService,
          editStateService: EditStateService,
+         appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService)
     {
         self.timeService = timeService
-        self.appStateService = appStateService
+        self.appLifecycleService = appLifecycleService
         self.settingsService = settingsService
         self.selectedDateService = selectedDateService
         
+        self.lastRefresh = timeService.now
         self.selectedDate = timeService.now
         
         self.isEditingObservable = editStateService.isEditingObservable
@@ -34,17 +37,24 @@ class PagerViewModel
             .filterNil()
     }()
     
-    //MARK: Properties
+    private(set) lazy var newDayObservable : Observable<Void> =
+    {
+        return self.appLifecycleService.movedToForegroundObservable
+            .filter {
+                self.lastRefresh.differenceInDays(toDate:self.timeService.now) > 0
+            }
+            .do(onNext: {
+                self.lastRefresh = self.timeService.now
+            })
+    }()
+    
     let isEditingObservable : Observable<Bool>
     
     var currentDate : Date { return self.timeService.now }
     
-    private(set) lazy var refreshObservable : Observable<Void> =
+    private(set) lazy var showEditOnLastObservable : Observable<Void> =
     {
-        return self.appStateService
-            .appStateObservable
-            .filter(self.shouldRefreshView)
-            .map { _ in () }
+        return self.appLifecycleService.startedOnNotificationObservable
     }()
     
     private var selectedDate : Date
@@ -66,34 +76,6 @@ class PagerViewModel
         let dateWithNoTime = date.ignoreTimeComponents()
         
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
-    }
-    
-    private func shouldRefreshView(onAppState appState: AppState) -> Bool
-    {
-        switch appState
-        {
-            case .active:
-                let today = self.timeService.now.ignoreTimeComponents()
-                
-                guard let inactiveDate = self.settingsService.lastInactiveDate,
-                    today > inactiveDate.ignoreTimeComponents() else { return false }
-                
-                self.settingsService.setLastInactiveDate(nil)
-                return true
-            
-            case .inactive:
-                self.settingsService.setLastInactiveDate(self.timeService.now)
-                break
-            
-            case .needsRefreshing:
-                self.settingsService.setLastInactiveDate(nil)
-                return true
-            
-            case .activeFromNotification:
-                return true
-        }
-        
-        return false
     }
     
     private func toDateChange(_ date: Date) -> DateChange?

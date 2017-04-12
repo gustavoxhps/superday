@@ -20,7 +20,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
     private var topBarViewController : TopBarViewController { return self.childViewControllers.firstOfType() }
     private var calendarViewController : CalendarViewController { return self.childViewControllers.firstOfType() }
-    private var permissionViewController : PermissionViewController { return self.childViewControllers.firstOfType() }
+    private var locationPermissionViewController : PermissionViewController!
+    private var healthKitPermissionViewController : PermissionViewController!
     
     //Dependencies
     private var editView : EditTimeSlotView!
@@ -43,13 +44,28 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         //Injecting child ViewController's dependencies
         self.pagerViewController.inject(viewModelLocator: self.viewModelLocator)
         self.calendarViewController.inject(viewModel: self.viewModelLocator.getCalendarViewModel())
-        self.permissionViewController.inject(viewModel: self.viewModelLocator.getPermissionViewModel())
+        
+        locationPermissionViewController = StoryboardScene.Main.permissionScene.viewController() as! PermissionViewController
+        addChildViewController(locationPermissionViewController)
+        view.addSubview(locationPermissionViewController.view)
+        locationPermissionViewController.didMove(toParentViewController: self)
+        locationPermissionViewController.inject(viewModel: self.viewModelLocator.getLocationPermissionViewModel())
+        
+        if self.viewModel.shouldAddHealthKitPermisionToViewHierarchy()
+        {
+            healthKitPermissionViewController = StoryboardScene.Main.permissionScene.viewController() as! PermissionViewController
+            addChildViewController(healthKitPermissionViewController)
+            view.addSubview(healthKitPermissionViewController.view)
+            healthKitPermissionViewController.didMove(toParentViewController: self)
+            healthKitPermissionViewController.inject(viewModel: self.viewModelLocator.getHealthKitPermissionViewModel())
+        }
+        
         self.topBarViewController.inject(viewModel: self.viewModelLocator.getTopBarViewModel(forViewController: self),
                                          pagerViewController: self.pagerViewController,
                                          calendarViewController: self.calendarViewController)
         
         //Edit View
-        self.editView = EditTimeSlotView(editEndedCallback: self.viewModel.updateTimeSlot)
+        self.editView = EditTimeSlotView(categoryProvider: DefaultCategoryProvider())
         self.view.insertSubview(self.editView, belowSubview: self.calendarViewController.view.superview!)
         self.editView.constrainEdges(to: self.view)
         
@@ -59,8 +75,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.addButton.constrainEdges(to: self.view)
         
         //Add fade overlay at bottom of timeline
-        let bottomFadeOverlay = self.fadeOverlay(startColor: Color.white,
-                                                 endColor: Color.white.withAlphaComponent(0.0))
+        let bottomFadeOverlay = self.fadeOverlay(startColor: UIColor.white,
+                                                 endColor: UIColor.white.withAlphaComponent(0.0))
         
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         fadeView.isUserInteractionEnabled = false
@@ -86,8 +102,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.startLaunchAnimation()
     }
     
-     private func createBindings()
-     {
+    private func createBindings()
+    {
         editView.dismissAction = { self.viewModel.notifyEditingEnded() }
         
         //Edit state
@@ -105,6 +121,11 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         self.addButton
             .categoryObservable
             .subscribe(onNext: self.viewModel.addNewSlot)
+            .addDisposableTo(self.disposeBag)
+        
+        self.editView
+            .editEndedObservable
+            .subscribe(onNext: self.viewModel.updateTimeSlot)
             .addDisposableTo(self.disposeBag)
         
         self.viewModel

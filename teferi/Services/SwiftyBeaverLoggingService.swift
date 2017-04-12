@@ -1,4 +1,5 @@
 import SwiftyBeaver
+import Crashlytics
 
 /// Implementation of LoggingService that depends on the SwiftyBeaver library
 class SwiftyBeaverLoggingService : LoggingService
@@ -30,6 +31,18 @@ class SwiftyBeaverLoggingService : LoggingService
             case .error:
                 self.swiftBeaver.error(message)
         }
+        
+        #if !DEBUG
+            guard logLevel == .error || logLevel == .warning else { return }
+            
+            logToCrashlytics(withLogLevel: logLevel, message: message)
+        #endif
+    }
+    
+    private func logToCrashlytics(withLogLevel logLevel: LogLevel, message: String)
+    {
+        let error = NSError(domain: logLevel.errorDomain(with: message), code: 0, userInfo: nil)
+        Crashlytics.sharedInstance().recordError(error)
     }
     
     func log(withLogLevel logLevel: LogLevel, message: CustomStringConvertible)

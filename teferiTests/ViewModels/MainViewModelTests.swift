@@ -11,25 +11,25 @@ class MainViewModelTests : XCTestCase
     
     private var timeService : MockTimeService!
     private var metricsService : MockMetricsService!
-    private var appStateService : MockAppStateService!
     private var feedbackService : MockFeedbackService!
     private var locationService : MockLocationService!
     private var settingsService : MockSettingsService!
     private var timeSlotService : MockTimeSlotService!
     private var editStateService : MockEditStateService!
     private var smartGuessService : MockSmartGuessService!
+    private var appLifecycleService : MockAppLifecycleService!
     private var selectedDateService : MockSelectedDateService!
     
     override func setUp()
     {
         self.timeService = MockTimeService()
         self.metricsService = MockMetricsService()
-        self.appStateService = MockAppStateService()
         self.locationService = MockLocationService()
         self.settingsService = MockSettingsService()
         self.feedbackService = MockFeedbackService()
         self.editStateService = MockEditStateService()
         self.smartGuessService = MockSmartGuessService()
+        self.appLifecycleService = MockAppLifecycleService()
         self.selectedDateService = MockSelectedDateService()
         self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
                                                    locationService: self.locationService)
@@ -39,7 +39,8 @@ class MainViewModelTests : XCTestCase
                                        timeSlotService: self.timeSlotService,
                                        editStateService: self.editStateService,
                                        smartGuessService: self.smartGuessService,
-                                       selectedDateService: self.selectedDateService)
+                                       selectedDateService: self.selectedDateService,
+                                       settingsService: settingsService)
         
     }
     
@@ -95,7 +96,7 @@ class MainViewModelTests : XCTestCase
     
     func testSmartGuessIsAddedIfLocationServiceReturnsKnownLastLocationOnAddNewSlot()
     {
-        self.locationService.setMockLocation(CLLocation(latitude:43.4211, longitude:4.7562))
+        self.locationService.sendNewTrackEvent(CLLocation(latitude:43.4211, longitude:4.7562))
         let previousCount = self.smartGuessService.smartGuesses.count
         
         self.viewModel.addNewSlot(withCategory: .food)
