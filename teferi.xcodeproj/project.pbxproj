@@ -135,6 +135,7 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
 		8C9D25E31E97FC9100D39119 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* LocationPermissionViewModel.swift */; };
 		8C9D25E41E97FD1000D39119 /* TimelineViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24564F6C1D8326F100D9A8AE /* TimelineViewModelTests.swift */; };
 		8C9D25E51E97FD3F00D39119 /* MockMetricsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B03B621D9E946900452D16 /* MockMetricsService.swift */; };
@@ -383,6 +384,7 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
+		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8CAFC1651E7BF5A4009D17F0 /* LocationPump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPump.swift; path = Services/LocationPump.swift; sourceTree = "<group>"; };
 		8CAFC16C1E7C66CC009D17F0 /* LocationPumpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPumpTests.swift; path = Services/LocationPumpTests.swift; sourceTree = "<group>"; };
 		8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DottedLineView.swift; path = Views/DottedLineView.swift; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				240AC71E1D748C8800F21F4F /* teferi.xcdatamodeld */,
 				AC14E7F21E7BE31D0034A1BA /* teferi.entitlements */,
 				24564F751D837FBE00D9A8AE /* Localizable.strings */,
+				8C7E11091E9B6E79009AAF49 /* Settings.bundle */,
 			);
 			path = teferi;
 			sourceTree = "<group>";
@@ -1175,6 +1178,7 @@
 			files = (
 				24564F571D83254E00D9A8AE /* TimelineCell.xib in Resources */,
 				24564F771D837FBE00D9A8AE /* Localizable.strings in Resources */,
+				8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */,
 				240AC7221D748C8800F21F4F /* Assets.xcassets in Resources */,
 				24B03B671DA3866400452D16 /* AddTimeSlotView.xib in Resources */,
 				2407A98F1D9D54DB00066889 /* LaunchScreen.storyboard in Resources */,

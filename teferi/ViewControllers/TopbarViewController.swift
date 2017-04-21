@@ -15,6 +15,7 @@ class TopBarViewController : UIViewController
     @IBOutlet private weak var titleLabel : UILabel!
     @IBOutlet private weak var calendarButton : UIButton!
     @IBOutlet private weak var feedbackButton : UIButton!
+    @IBOutlet private weak var chartsButton : UIButton!
     
     func inject(viewModel: TopBarViewModel, pagerViewController: PagerViewController, calendarViewController: CalendarViewController)
     {
@@ -35,21 +36,22 @@ class TopBarViewController : UIViewController
     // MARK: Methods
     private func createBindings()
     {
-        self.viewModel
-            .dateObservable
+        self.viewModel.dateObservable
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
         
-        self.calendarButton
-            .rx.tap
+        self.calendarButton.rx.tap
             .subscribe(onNext: self.onCalendarButtonClick)
             .addDisposableTo(self.disposeBag)
         
-        self.feedbackButton
-            .rx.tap
+        self.feedbackButton.rx.tap
             .subscribe(onNext: self.onFeedbackButtonClick)
             .addDisposableTo(self.disposeBag)
         
+        self.chartsButton.rx.tap
+            .subscribe(onNext: self.onChartsButtonClick)
+            .addDisposableTo(self.disposeBag)
+
         self.viewModel.calendarDay
             .bindTo(self.calendarButton.rx.title(for: .normal))
             .addDisposableTo(self.disposeBag)
@@ -67,10 +69,18 @@ class TopBarViewController : UIViewController
         }
     }
     
-    // MARK: Calendar Actions
     private func onFeedbackButtonClick()
     {
         self.viewModel.composeFeedback()
+    }
+    
+    private func onChartsButtonClick ()
+    {
+        
+        //Replace this with the actual code
+        let vc = UIAlertController(title: "Charts", message: "This is where the charts will go", preferredStyle: UIAlertControllerStyle.alert)
+        vc.addAction(UIAlertAction(title: "📊 👍", style: UIAlertActionStyle.default, handler: nil))
+        self.present(vc, animated: true, completion: nil)
     }
     
     private func onDateChanged(date: Date)
