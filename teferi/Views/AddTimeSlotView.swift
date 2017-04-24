@@ -10,7 +10,7 @@ class AddTimeSlotView : UIView
     private var disposeBag : DisposeBag? = DisposeBag()
     
     @IBOutlet private weak var blur : UIView!
-    @IBOutlet private weak var addButton : UIButton!
+    @IBOutlet private weak var addButton : AddTimeSlotButton!
     private var wheel : Wheel<Category>!
     private let gradientLayer = CAGradientLayer()
 
@@ -129,21 +129,10 @@ class AddTimeSlotView : UIView
     
     private func animateAddButton(isAdding: Bool)
     {
+        self.addButton.changeState(isAdding: isAdding)
+
         let alpha = CGFloat(isAdding ? 1.0 : 0.0)
-        let degrees = isAdding ? 45.0 : 0.0
-        let options = isAdding ? UIViewAnimationOptions.curveEaseOut : UIViewAnimationOptions.curveEaseIn
-
-        let delay : TimeInterval = 0
-        
-        UIView.animate(withDuration: 0.2, delay: delay,
-            options: options,
-            animations:
-            {
-                //Add button
-                self.addButton.transform = CGAffineTransform(rotationAngle: CGFloat(degrees * (Double.pi / 180.0)));
-            },
-            completion: nil)
-
+   
         UIView.animate(withDuration: 0.25)
         {
             self.blur.alpha = alpha

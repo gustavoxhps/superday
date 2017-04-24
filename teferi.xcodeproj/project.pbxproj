@@ -135,6 +135,8 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C7CCB4D1E9D150A00315BF7 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */; };
+		8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */; };
 		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
 		8C9D25E31E97FC9100D39119 /* LocationPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDE5B391E4A3F260082FFC3 /* LocationPermissionViewModel.swift */; };
 		8C9D25E41E97FD1000D39119 /* TimelineViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24564F6C1D8326F100D9A8AE /* TimelineViewModelTests.swift */; };
@@ -384,6 +386,8 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
+		8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MaterialButton.swift; path = Views/MaterialButton.swift; sourceTree = "<group>"; };
+		8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTimeSlotButton.swift; path = Views/AddTimeSlotButton.swift; sourceTree = "<group>"; };
 		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8CAFC1651E7BF5A4009D17F0 /* LocationPump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPump.swift; path = Services/LocationPump.swift; sourceTree = "<group>"; };
 		8CAFC16C1E7C66CC009D17F0 /* LocationPumpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPumpTests.swift; path = Services/LocationPumpTests.swift; sourceTree = "<group>"; };
@@ -760,12 +764,14 @@
 		24D99F691D74B93C00E68163 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8C7CCB4B1E9D148700315BF7 /* Extensions */,
 				24DE23E91E1BB3180089B49E /* CalendarCell.swift */,
 				24DE23EA1E1BB3180089B49E /* CalendarCell.xib */,
 				24DE23EB1E1BB3180089B49E /* CalendarDailyActivityView.swift */,
 				242FE7D51DE7689A00EAEEE3 /* AutoResizingLayerView.swift */,
 				24B03B641DA3864500452D16 /* AddTimeSlotView.swift */,
 				24B03B661DA3866400452D16 /* AddTimeSlotView.xib */,
+				8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */,
 				2420A8691DB6271000C0478C /* EditTimeSlotView.swift */,
 				2420A8651DB56B5500C0478C /* EmptyStateView.swift */,
 				2420A8671DB56B6800C0478C /* EmptyStateView.xib */,
@@ -977,6 +983,14 @@
 				8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		8C7CCB4B1E9D148700315BF7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		AC1E70EF1E3F4C120090D474 /* Algorithm */ = {
@@ -1349,6 +1363,7 @@
 				2416B2811E27B8CC00CE283B /* TopBarViewController.swift in Sources */,
 				BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */,
 				24EB96791DE7080F0040C211 /* CoreDataModelAdapter.swift in Sources */,
+				8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */,
 				24564F651D83265900D9A8AE /* DateExtensions.swift in Sources */,
 				2407A98C1D9D534B00066889 /* TimerExtensions.swift in Sources */,
 				246531741DA7DDF10066DFE0 /* FabricMetricsServices.swift in Sources */,
@@ -1431,6 +1446,7 @@
 				2482CAFE1DB12F9F00E892C1 /* OnboardingPage4.swift in Sources */,
 				24DE23F01E1BB3260089B49E /* CalendarViewModel.swift in Sources */,
 				24DE23FA1E1BB3450089B49E /* ObservableExtensions.swift in Sources */,
+				8C7CCB4D1E9D150A00315BF7 /* MaterialButton.swift in Sources */,
 				BEDE5B3C1E4A3F3C0082FFC3 /* PermissionViewController.swift in Sources */,
 				240AC7181D748C8800F21F4F /* AppDelegate.swift in Sources */,
 				24526A7C1D92D9BB00DA3FA0 /* CustomEvent.swift in Sources */,
