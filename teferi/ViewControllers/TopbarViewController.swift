@@ -6,7 +6,9 @@ import Foundation
 class TopBarViewController : UIViewController
 {
     // MARK: Fields
+    private var presenter : TopBarPresenter!
     private var viewModel : TopBarViewModel!
+    
     private let disposeBag = DisposeBag()
     
     private var pagerViewController : PagerViewController!
@@ -24,6 +26,14 @@ class TopBarViewController : UIViewController
         self.calendarViewController = calendarViewController
         
         self.createBindings()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    
+        //This won't be created here when done for the whole app. It'll be the other way around, the Presenter will create this VC
+        presenter = TopBarPresenter()
+        presenter.view = self
     }
     
     // MARK: UIViewController lifecycle methods
@@ -76,11 +86,7 @@ class TopBarViewController : UIViewController
     
     private func onChartsButtonClick ()
     {
-        
-        //Replace this with the actual code
-        let vc = UIAlertController(title: "Charts", message: "This is where the charts will go", preferredStyle: UIAlertControllerStyle.alert)
-        vc.addAction(UIAlertAction(title: "📊 👍", style: UIAlertActionStyle.default, handler: nil))
-        self.present(vc, animated: true, completion: nil)
+        self.presenter.showDailySummary(fromRect: view.convert(self.chartsButton.frame, to: nil))
     }
     
     private func onDateChanged(date: Date)
