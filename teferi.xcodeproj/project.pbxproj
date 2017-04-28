@@ -142,7 +142,6 @@
 		8C7CCB4D1E9D150A00315BF7 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */; };
 		8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */; };
 		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
-		8C8F2C8E1EADE8860073D93D /* DailySummaryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C8D1EADE8860073D93D /* DailySummaryPresenter.swift */; };
 		8C8F2C901EADE8B10073D93D /* DailySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */; };
 		8C8F2C921EADE8C30073D93D /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */; };
 		8C8F2C941EADEEF10073D93D /* TopBarPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C931EADEEF10073D93D /* TopBarPresenter.swift */; };
@@ -165,6 +164,14 @@
 		AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */; };
 		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
 		AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */; };
+		AC654B7E1EAF846F00F28DC9 /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */; };
+		AC654B801EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */; };
+		AC654B821EB0842B00F28DC9 /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */; };
+		AC654B881EB1F2CA00F28DC9 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */; };
+		AC654B8A1EB1F2EB00F28DC9 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */; };
+		AC654B8C1EB1F31F00F28DC9 /* SummaryPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */; };
+		AC654B8E1EB1F34000F28DC9 /* SummaryPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */; };
+		AC654B901EB2489300F28DC9 /* SummaryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCAFD241E8BDF490097F037 /* NotificationType.swift */; };
 		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
@@ -400,7 +407,6 @@
 		8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MaterialButton.swift; path = Views/MaterialButton.swift; sourceTree = "<group>"; };
 		8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTimeSlotButton.swift; path = Views/AddTimeSlotButton.swift; sourceTree = "<group>"; };
 		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		8C8F2C8D1EADE8860073D93D /* DailySummaryPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryPresenter.swift; path = Presenters/DailySummaryPresenter.swift; sourceTree = "<group>"; };
 		8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryViewController.swift; path = ViewControllers/DailySummaryViewController.swift; sourceTree = "<group>"; };
 		8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryViewModel.swift; path = ViewModels/DailySummaryViewModel.swift; sourceTree = "<group>"; };
 		8C8F2C931EADEEF10073D93D /* TopBarPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TopBarPresenter.swift; path = Presenters/TopBarPresenter.swift; sourceTree = "<group>"; };
@@ -423,6 +429,14 @@
 		AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPermissionViewModel.swift; path = ViewModels/HealthKitPermissionViewModel.swift; sourceTree = "<group>"; };
 		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPermissionViewModelTests.swift; path = ViewModels/LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPermissionViewModelTests.swift; path = ViewModels/HealthKitPermissionViewModelTests.swift; sourceTree = "<group>"; };
+		AC654B7D1EAF846F00F28DC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
+		AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryPieChartActivity.swift; path = Views/DailySummaryPieChartActivity.swift; sourceTree = "<group>"; };
+		AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryTableViewCell.swift; path = Views/DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
+		AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SummaryViewController.swift; path = ViewControllers/SummaryViewController.swift; sourceTree = "<group>"; };
+		AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SummaryViewModel.swift; path = ViewModels/SummaryViewModel.swift; sourceTree = "<group>"; };
+		AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SummaryPageViewController.swift; path = ViewControllers/SummaryPageViewController.swift; sourceTree = "<group>"; };
+		AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SummaryPageViewModel.swift; path = ViewModels/SummaryPageViewModel.swift; sourceTree = "<group>"; };
+		AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SummaryPresenter.swift; path = Presenters/SummaryPresenter.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostiOSTenNotificationServiceTests.swift; path = Services/PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		ACCAFD241E8BDF490097F037 /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationType.swift; path = Models/NotificationType.swift; sourceTree = "<group>"; };
 		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthSampleExtensions.swift; path = Extensions/HealthSampleExtensions.swift; sourceTree = "<group>"; };
@@ -751,6 +765,8 @@
 				2416B27E1E27B71E00CE283B /* TopBarViewModel.swift */,
 				AC3901F31E5665CF008063C7 /* CategoryButtonsHandler.swift */,
 				8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */,
+				AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */,
+				AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */,
 			);
 			name = ViewModels;
 			sourceTree = "<group>";
@@ -766,6 +782,8 @@
 				24564F501D8320FC00D9A8AE /* TimelineViewController.swift */,
 				2416B2801E27B8CC00CE283B /* TopBarViewController.swift */,
 				8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */,
+				AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */,
+				AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -776,6 +794,7 @@
 				2407A98D1D9D54DB00066889 /* LaunchScreen.storyboard */,
 				240AC71B1D748C8800F21F4F /* Main.storyboard */,
 				513535D11DA26E3B00A365A9 /* Onboarding.storyboard */,
+				AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -801,6 +820,8 @@
 				AC0A632B1E548FE800D56433 /* CategoryWheel.swift */,
 				8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */,
 				8CB9EF9A1E8BB589003D1FFC /* LineView.swift */,
+				AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */,
+				AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1033,9 +1054,17 @@
 		8C8F2C8C1EADE84C0073D93D /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
+				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		8C8F2C8C1EADE84C0073D93D /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
 				8C6417021EAE0CB300B893D7 /* Transitions */,
 				8C6416FF1EAE022F00B893D7 /* PresentationControllers */,
-				8C8F2C8D1EADE8860073D93D /* DailySummaryPresenter.swift */,
+				AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */,
 				8C8F2C931EADEEF10073D93D /* TopBarPresenter.swift */,
 			);
 			name = Presenters;
@@ -1241,6 +1270,7 @@
 				24564F571D83254E00D9A8AE /* TimelineCell.xib in Resources */,
 				24564F771D837FBE00D9A8AE /* Localizable.strings in Resources */,
 				8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */,
+				AC654B7E1EAF846F00F28DC9 /* DailySummary.storyboard in Resources */,
 				240AC7221D748C8800F21F4F /* Assets.xcassets in Resources */,
 				24B03B671DA3866400452D16 /* AddTimeSlotView.xib in Resources */,
 				2407A98F1D9D54DB00066889 /* LaunchScreen.storyboard in Resources */,
@@ -1416,6 +1446,7 @@
 				24564F651D83265900D9A8AE /* DateExtensions.swift in Sources */,
 				8C8F2C921EADE8C30073D93D /* DailySummaryViewModel.swift in Sources */,
 				2407A98C1D9D534B00066889 /* TimerExtensions.swift in Sources */,
+				AC654B801EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift in Sources */,
 				246531741DA7DDF10066DFE0 /* FabricMetricsServices.swift in Sources */,
 				24564F561D83254E00D9A8AE /* TimelineCell.swift in Sources */,
 				24564F721D832A4F00D9A8AE /* PagerViewController.swift in Sources */,
@@ -1426,8 +1457,8 @@
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
 				BEF8AB1F1E840C7400B4F289 /* Pipeline.swift in Sources */,
+				AC654B8A1EB1F2EB00F28DC9 /* SummaryViewModel.swift in Sources */,
 				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
-				8C8F2C8E1EADE8860073D93D /* DailySummaryPresenter.swift in Sources */,
 				8C8F2C941EADEEF10073D93D /* TopBarPresenter.swift in Sources */,
 				8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
@@ -1439,6 +1470,7 @@
 				6AC29DA71E4269FB000A99EF /* ViewModelLocator.swift in Sources */,
 				24EB96721DE7080F0040C211 /* DefaultEditStateService.swift in Sources */,
 				BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */,
+				AC654B8E1EB1F34000F28DC9 /* SummaryPageViewModel.swift in Sources */,
 				7E3C06981E30B7CA00859747 /* Assets.swift in Sources */,
 				BEAFC0AE1E8AA2690050CE70 /* FirstTimeSlotOfDayPipe.swift in Sources */,
 				24526A771D92D99F00DA3FA0 /* MetricsService.swift in Sources */,
@@ -1473,6 +1505,7 @@
 				BEF8AB1A1E84060B00B4F289 /* Pipe.swift in Sources */,
 				24DE23EE1E1BB3180089B49E /* CalendarDailyActivityView.swift in Sources */,
 				BE55CED71E7AD70F006B851E /* MergePipe.swift in Sources */,
+				AC654B821EB0842B00F28DC9 /* DailySummaryTableViewCell.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
 				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,
@@ -1522,9 +1555,11 @@
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
 				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,
+				AC654B901EB2489300F28DC9 /* SummaryPresenter.swift in Sources */,
 				24D213AB1DB8CA4600E429CA /* AppLifecycleService.swift in Sources */,
 				243E37AE1DC8FABC0074032D /* PostiOSTenNotificationService.swift in Sources */,
 				51DB18761E26144F00E0182D /* CLLocationExtensions.swift in Sources */,
+				AC654B8C1EB1F31F00F28DC9 /* SummaryPageViewController.swift in Sources */,
 				240AC7201D748C8800F21F4F /* teferi.xcdatamodeld in Sources */,
 				24DE23FD1E1BB38C0089B49E /* SelectedDateService.swift in Sources */,
 				24EB967F1DE708570040C211 /* Predicate.swift in Sources */,
@@ -1545,6 +1580,7 @@
 				24564F641D83265900D9A8AE /* UIColorExtensions.swift in Sources */,
 				BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */,
 				2420A8661DB56B5500C0478C /* EmptyStateView.swift in Sources */,
+				AC654B881EB1F2CA00F28DC9 /* SummaryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1665,6 +1701,14 @@
 				51BED8FE1DD26FA800455EF6 /* Base */,
 			);
 			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AC654B7D1EAF846F00F28DC9 /* Base */,
+			);
+			name = DailySummary.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

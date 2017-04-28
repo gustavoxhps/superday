@@ -62,7 +62,8 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         
         self.topBarViewController.inject(viewModel: self.viewModelLocator.getTopBarViewModel(forViewController: self),
                                          pagerViewController: self.pagerViewController,
-                                         calendarViewController: self.calendarViewController)
+                                         calendarViewController: self.calendarViewController,
+                                         viewModelLocator: self.viewModelLocator)
         
         //Edit View
         self.editView = EditTimeSlotView(categoryProvider: DefaultCategoryProvider())

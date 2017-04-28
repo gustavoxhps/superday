@@ -1,7 +1,7 @@
 import UIKit
 
-class FromBottomTransition: NSObject, UIViewControllerAnimatedTransitioning {
-    
+class FromBottomTransition: NSObject, UIViewControllerAnimatedTransitioning
+{
     let presenting : Bool
     
     init(presenting:Bool)
@@ -9,18 +9,19 @@ class FromBottomTransition: NSObject, UIViewControllerAnimatedTransitioning {
         self.presenting = presenting
     }
     
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval
+    {
         return 0.4
     }
     
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning)
+    {
         let toController = transitionContext.viewController(forKey: .to)!
         let fromController = transitionContext.viewController(forKey: .from)!
         let animationDuration = transitionDuration(using: transitionContext)
 
-
-        if presenting {
+        if presenting
+        {
             
             transitionContext.containerView.addSubview(toController.view)
 
@@ -40,8 +41,9 @@ class FromBottomTransition: NSObject, UIViewControllerAnimatedTransitioning {
                            }
             )
             
-        } else {
-            
+        }
+        else
+        {
             let initialFrame = transitionContext.initialFrame(for: fromController)
             let finalFrame = initialFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
 

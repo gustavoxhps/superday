@@ -87,4 +87,26 @@ class MockLocator : ViewModelLocator
                                selectedDateService: self.selectedDateService,
                                appLifecycleService: self.appLifecycleService)
     }
+    
+    func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
+    {
+        let viewModel = DailySummaryViewModel(date: date,
+                                              timeService: self.timeService,
+                                              timeSlotService: self.timeSlotService,
+                                              appLifecycleService: self.appLifecycleService,
+                                              loggingService: self.loggingService)
+        return viewModel
+    }
+    
+    func getSummaryViewModel() -> SummaryViewModel
+    {
+        return SummaryViewModel(selectedDateService: self.selectedDateService)
+    }
+    
+    func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
+    {
+        return SummaryPageViewModel(date: date,
+                                    timeService: self.timeService,
+                                    settingsService: self.settingsService)
+    }
 }

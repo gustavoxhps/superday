@@ -6,18 +6,20 @@ class SwipeInteractionController : UIPercentDrivenInteractiveTransition
     private var shouldCompleteTransition = false
     private weak var viewController: UIViewController!
     
-    func wireToViewController(viewController: UIViewController!) {
+    func wireToViewController(viewController: UIViewController!)
+    {
         self.viewController = viewController
         prepareGestureRecognizerInView(view: viewController.view)
     }
     
-    private func prepareGestureRecognizerInView(view: UIView) {
+    private func prepareGestureRecognizerInView(view: UIView)
+    {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(SwipeInteractionController.handleGesture(recognizer:)))
         view.addGestureRecognizer(gesture)
     }
     
-    func handleGesture(recognizer: UIPanGestureRecognizer) {
-        
+    func handleGesture(recognizer: UIPanGestureRecognizer)
+    {
         let translation = recognizer.translation(in: recognizer.view!.superview!)
         let percent = translation.y / recognizer.view!.superview!.bounds.size.height
 
@@ -38,9 +40,12 @@ class SwipeInteractionController : UIPercentDrivenInteractiveTransition
         case .ended:
             interactionInProgress = false
             
-            if !shouldCompleteTransition {
+            if !shouldCompleteTransition
+            {
                 cancel()
-            } else {
+            }
+            else
+            {
                 finish()
             }
             

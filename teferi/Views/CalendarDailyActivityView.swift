@@ -24,7 +24,7 @@ class CalendarDailyActivityView : UIView
         
         self.backgroundColor = UIColor.clear
         
-        let totalTimeSpent = activities.reduce(0.0, self.sumDuration)
+        let totalTimeSpent = activities.totalDurations
         let availableWidth = Double(self.bounds.size.width - CGFloat(activities.count) + 1.0)
         
         var startingX = 0.0
@@ -46,10 +46,5 @@ class CalendarDailyActivityView : UIView
         }
         
         self.layoutIfNeeded()
-    }
-    
-    private func sumDuration(accumulator: Double, activity: Activity) -> TimeInterval
-    {
-        return accumulator + activity.duration
     }
 }
