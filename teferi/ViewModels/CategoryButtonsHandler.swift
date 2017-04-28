@@ -1,21 +1,17 @@
 import UIKit
 
-class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
+class CategoryButtonsHandler
 {
-    typealias Attribute = (image: UIImage, color: UIColor)
+    private(set) var visibleCells = [CategoryButton]()
+    private var reusableCells = Set<CategoryButton>()
     
-    private(set) var visibleCells = [ViewType]()
-    private var reusableCells = Set<ViewType>()
+    private(set) var items : [Category]
     
-    private(set) var items : [ItemType]
-    private let attributeSelector : (ItemType) -> Attribute
-    
-    init(items: [ItemType], attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)))
+    init(items: [Category])
     {
         guard !items.isEmpty else { fatalError("empty data array") }
         
         self.items = items
-        self.attributeSelector = attributeSelector
     }
     
     private func itemIndex(before index: Int?, forward: Bool) -> Int
@@ -29,26 +25,22 @@ class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
         return (beforeIndex + items.count) % items.count
     }
     
-    func lastVisibleCell(forward: Bool) -> ViewType?
+    func lastVisibleCell(forward: Bool) -> CategoryButton?
     {
         guard !visibleCells.isEmpty else { return nil }
         
         return forward ? visibleCells.last! : visibleCells.first!
     }
     
-    func cell(before cell: ViewType?, forward: Bool, cellSize: CGSize) -> ViewType
+    func cell(before cell: CategoryButton?, forward: Bool, cellSize: CGSize) -> CategoryButton
     {
         let nextItemIndex = itemIndex(before: cell?.tag, forward: forward)
         
-        let attributes = attributeSelector(items[nextItemIndex])
-        
-        var cellToReturn = reusableCells.isEmpty ?
-            ViewType(frame: CGRect(origin: .zero, size: cellSize)) :
+        let cellToReturn = reusableCells.isEmpty ?
+            CategoryButton(frame: CGRect(origin: .zero, size: cellSize)) :
             reusableCells.removeFirst()
         
-        cellToReturn = cellWithAttributes( cell: cellToReturn, attributes: attributes)
-        cellToReturn.layer.cornerRadius = min(cellSize.width, cellSize.height) / 2
-        cellToReturn.adjustsImageWhenHighlighted = false
+        cellToReturn.category = items[nextItemIndex]
         cellToReturn.tag = nextItemIndex
         visibleCells.insert(cellToReturn, at: forward ? visibleCells.endIndex : visibleCells.startIndex)
         
@@ -58,7 +50,7 @@ class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
         return cellToReturn
     }
     
-    func remove(cell: ViewType)
+    func remove(cell: CategoryButton)
     {
         let index = visibleCells.index(of: cell)
         visibleCells.remove(at: index!)
@@ -79,12 +71,5 @@ class ItemViewHandler<ViewType, ItemType> where ViewType: UIButton
         }
         
         reusableCells.removeAll()
-    }
-    
-    private func cellWithAttributes(cell: ViewType, attributes: Attribute) -> ViewType
-    {
-        cell.backgroundColor = attributes.color
-        cell.setImage(attributes.image, for: .normal)
-        return cell
-    }
+    }    
 }

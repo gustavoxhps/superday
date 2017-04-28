@@ -11,7 +11,7 @@ class AddTimeSlotView : UIView
     
     @IBOutlet private weak var blur : UIView!
     @IBOutlet private weak var addButton : AddTimeSlotButton!
-    private var wheel : Wheel<Category>!
+    private var wheel : CategoryWheel!
     private let gradientLayer = CAGradientLayer()
 
     //MARK: Properties
@@ -40,7 +40,7 @@ class AddTimeSlotView : UIView
         
         self.addButton.layer.cornerRadius = cornerRadius
         
-        wheel = Wheel(frame: self.bounds,
+        wheel = CategoryWheel(frame: self.bounds,
                       cellSize: CGSize(width: 50.0, height: 50.0),
                       centerPoint: self.addButton.center,
                       radius: 144,
@@ -53,8 +53,8 @@ class AddTimeSlotView : UIView
 
         //Adds some blur to the background of the buttons
         gradientLayer.frame = self.blur.bounds
-        gradientLayer.colors = [ UIColor.white.withAlphaComponent(0).cgColor, UIColor.white.cgColor]
-        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.colors = [ UIColor(white: 1.0, alpha: 0.0).cgColor, UIColor(white: 1.0, alpha: 0.8).cgColor]
+        gradientLayer.locations = [0.0, 0.6]
         self.blur.layer.addSublayer(gradientLayer)
         self.blur.alpha = 0
         
@@ -89,7 +89,7 @@ class AddTimeSlotView : UIView
     }
     
     //MARK: Methods
-    func wheelDismissAction(wheel: Wheel<Category>)
+    func wheelDismissAction(wheel: CategoryWheel)
     {
         close()
     }

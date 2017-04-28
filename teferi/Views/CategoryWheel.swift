@@ -1,9 +1,8 @@
 import UIKit
 
-class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
+class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, CategoryButtonDelegate
 {
-    typealias ViewType = UIButton
-    typealias DismissType = ((Wheel<ItemType>) -> ())
+    typealias DismissType = ((CategoryWheel) -> ())
     
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
@@ -29,9 +28,9 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewHandler : ItemViewHandler<ViewType, ItemType>
+    private let viewHandler : CategoryButtonsHandler
     
-    private(set) var selectedItem : ItemType?
+    private(set) var selectedItem : Category?
     
     private let cellSize : CGSize
     private let radius : CGFloat
@@ -80,8 +79,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         startAngle: CGFloat,
         endAngle: CGFloat,
         angleBetweenCells: CGFloat,
-        items: [ItemType],
-        attributeSelector: @escaping ((ItemType) -> (UIImage, UIColor)),
+        items: [Category],
+        attributeSelector: @escaping ((Category) -> (UIImage, UIColor)),
         dismissAction: DismissType?)
     {
         if startAngle >= endAngle
@@ -97,7 +96,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         self.cellSize = cellSize
         self.dismissAction = dismissAction
         
-        self.viewHandler = ItemViewHandler<ViewType, ItemType>(items: items, attributeSelector: attributeSelector)
+        self.viewHandler = CategoryButtonsHandler(items: items)
         
         super.init(frame: frame)
         
@@ -258,7 +257,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         for (index, cell) in cells.enumerated()
         {
-            cell.center = rotatePoint(target: pointToBaseMovement, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat(index) * angleBetweenCells))
+            let center = rotatePoint(target: pointToBaseMovement, aroundOrigin: centerPoint, by: toPositive(angle: CGFloat(index) * angleBetweenCells))
+            positionAndRotateCell(cell, center: center)
             
             if !isInAllowedRange(point: cell.center)
             {
@@ -276,8 +276,9 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         while abs(abs(angleOfLastPoint) - edgeAngle) > angleBetweenCells
         {
             let newCell = viewHandler.cell(before: lastCellBasedOnRotationDirection, forward: rotationDirection, cellSize: cellSize)
-            newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
-            newCell.center = rotatePoint(target: lastCellBasedOnRotationDirection.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
+            newCell.delegate = self
+            let center = rotatePoint(target: lastCellBasedOnRotationDirection.center, aroundOrigin: centerPoint, by: ( rotationDirection ? 1 : -1 ) * angleBetweenCells)
+            positionAndRotateCell(newCell, center:center)
             newCell.isUserInteractionEnabled = !isSpinning
             
             addSubview(newCell)
@@ -300,13 +301,14 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         var animationSequence = DelayedSequence.start()
         
         let delay = TimeInterval(0.04)
-        var previousCell : ViewType?
+        var previousCell : CategoryButton?
         
         for index in 0..<numberToShow
         {
             let cell = viewHandler.cell(before: previousCell, forward: true, cellSize: cellSize)
-            cell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
-            cell.center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
+            cell.delegate = self
+            let center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
+            positionAndRotateCell(cell, center: center)
             cell.isHidden = true
 
             addSubview(cell)
@@ -343,7 +345,7 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         }
     }
     
-    private func animate(_ cell: ViewType, presenting: Bool) -> (TimeInterval) -> ()
+    private func animate(_ cell: CategoryButton, presenting: Bool) -> (TimeInterval) -> ()
     {
         return { delay in
             Timer.schedule(withDelay: delay)
@@ -359,6 +361,8 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
                 cell.alpha = presenting ? 0.0 : 1.0
                 
                 cell.isHidden = false
+                
+                cell.show()
                 
                 let timingFunction = CAMediaTimingFunction(controlPoints: 0.23, 1, 0.32, 1)
                 
@@ -379,11 +383,17 @@ class Wheel<ItemType> : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate
         }
     }
     
-    // MARK: - SelectionHandling
-    
-    @objc private func didSelectCell(_ sender: ViewType)
+    private func positionAndRotateCell(_ cell: CategoryButton, center:CGPoint)
     {
-        selectedItem = viewHandler.items[sender.tag]
+        cell.center = center
+        cell.angle = angle(from: cell.center, to: centerPoint)
+    }
+
+    
+    // MARK: - SelectionHandling
+    func categorySelected(category: Category)
+    {
+        selectedItem = category
         sendActions(for: .valueChanged)
     }
     

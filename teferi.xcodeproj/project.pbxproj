@@ -135,8 +135,10 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* CategoryWheel.swift */; };
 		8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */; };
 		8C6417051EAE0CDA00B893D7 /* FromBottomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417041EAE0CDA00B893D7 /* FromBottomTransition.swift */; };
+		8C6417071EAF415200B893D7 /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417061EAF415200B893D7 /* CategoryButton.swift */; };
 		8C7CCB4D1E9D150A00315BF7 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */; };
 		8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */; };
 		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
@@ -154,12 +156,11 @@
 		8CE6BDE11E7D4BF5003B852C /* TrackEventExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */; };
 		8CF0255A1EAFA2FF00BF0A42 /* SwipeInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF025591EAFA2FF00BF0A42 /* SwipeInteractionController.swift */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
-		AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* WheelControl.swift */; };
 		AC14E7F11E7BDB5C0034A1BA /* HealthKitPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */; };
 		AC14E7F41E7BE31D0034A1BA /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */; };
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
 		AC34445E1E697D1100B1D53B /* KNNDecisionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */; };
-		AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */; };
+		AC3901F41E5665CF008063C7 /* CategoryButtonsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3901F31E5665CF008063C7 /* CategoryButtonsHandler.swift */; };
 		AC449C311E92BC8C00847957 /* PermissionViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C301E92BC8C00847957 /* PermissionViewModelProtocol.swift */; };
 		AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */; };
 		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
@@ -395,6 +396,7 @@
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
 		8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModalPresentationController.swift; path = Presenters/PresentationControllers/ModalPresentationController.swift; sourceTree = "<group>"; };
 		8C6417041EAE0CDA00B893D7 /* FromBottomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FromBottomTransition.swift; path = Presenters/Transitions/FromBottomTransition.swift; sourceTree = "<group>"; };
+		8C6417061EAF415200B893D7 /* CategoryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryButton.swift; path = Views/CategoryButton.swift; sourceTree = "<group>"; };
 		8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MaterialButton.swift; path = Views/MaterialButton.swift; sourceTree = "<group>"; };
 		8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTimeSlotButton.swift; path = Views/AddTimeSlotButton.swift; sourceTree = "<group>"; };
 		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -410,13 +412,13 @@
 		8CF025591EAFA2FF00BF0A42 /* SwipeInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwipeInteractionController.swift; path = Presenters/Transitions/SwipeInteractionController.swift; sourceTree = "<group>"; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrigonometryHelper.swift; path = Helpers/TrigonometryHelper.swift; sourceTree = "<group>"; };
-		AC0A632B1E548FE800D56433 /* WheelControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WheelControl.swift; path = Views/WheelControl.swift; sourceTree = "<group>"; };
+		AC0A632B1E548FE800D56433 /* CategoryWheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryWheel.swift; path = Views/CategoryWheel.swift; sourceTree = "<group>"; };
 		AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPump.swift; path = Services/HealthKitPump.swift; sourceTree = "<group>"; };
 		AC14E7F21E7BE31D0034A1BA /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
 		AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		AC1E70F01E3F4C490090D474 /* KNN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNN.swift; path = Algorithm/KNN.swift; sourceTree = "<group>"; };
 		AC34445D1E697D1100B1D53B /* KNNDecisionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KNNDecisionType.swift; path = Algorithm/KNNDecisionType.swift; sourceTree = "<group>"; };
-		AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemViewHandler.swift; path = ViewModels/ItemViewHandler.swift; sourceTree = "<group>"; };
+		AC3901F31E5665CF008063C7 /* CategoryButtonsHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryButtonsHandler.swift; path = ViewModels/CategoryButtonsHandler.swift; sourceTree = "<group>"; };
 		AC449C301E92BC8C00847957 /* PermissionViewModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PermissionViewModelProtocol.swift; path = ViewModels/PermissionViewModelProtocol.swift; sourceTree = "<group>"; };
 		AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitPermissionViewModel.swift; path = ViewModels/HealthKitPermissionViewModel.swift; sourceTree = "<group>"; };
 		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationPermissionViewModelTests.swift; path = ViewModels/LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
@@ -747,7 +749,7 @@
 				AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */,
 				24564F4C1D83207900D9A8AE /* TimelineViewModel.swift */,
 				2416B27E1E27B71E00CE283B /* TopBarViewModel.swift */,
-				AC3901F31E5665CF008063C7 /* ItemViewHandler.swift */,
+				AC3901F31E5665CF008063C7 /* CategoryButtonsHandler.swift */,
 				8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */,
 			);
 			name = ViewModels;
@@ -790,12 +792,13 @@
 				24B03B661DA3866400452D16 /* AddTimeSlotView.xib */,
 				8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */,
 				2420A8691DB6271000C0478C /* EditTimeSlotView.swift */,
+				8C6417061EAF415200B893D7 /* CategoryButton.swift */,
 				2420A8651DB56B5500C0478C /* EmptyStateView.swift */,
 				2420A8671DB56B6800C0478C /* EmptyStateView.xib */,
 				2407A9871D9D512D00066889 /* LaunchAnimationView.swift */,
 				24564F531D83254E00D9A8AE /* TimelineCell.swift */,
 				24564F541D83254E00D9A8AE /* TimelineCell.xib */,
-				AC0A632B1E548FE800D56433 /* WheelControl.swift */,
+				AC0A632B1E548FE800D56433 /* CategoryWheel.swift */,
 				8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */,
 				8CB9EF9A1E8BB589003D1FFC /* LineView.swift */,
 			);
@@ -1019,6 +1022,14 @@
 			name = Transitions;
 			sourceTree = "<group>";
 		};
+		8C7CCB4B1E9D148700315BF7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		8C8F2C8C1EADE84C0073D93D /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1028,14 +1039,6 @@
 				8C8F2C931EADEEF10073D93D /* TopBarPresenter.swift */,
 			);
 			name = Presenters;
-			sourceTree = "<group>";
-		};
-		8C7CCB4B1E9D148700315BF7 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
-			);
-			name = Extensions;
 			sourceTree = "<group>";
 		};
 		AC1E70EF1E3F4C120090D474 /* Algorithm */ = {
@@ -1404,6 +1407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */,
 				8C9D25E31E97FC9100D39119 /* LocationPermissionViewModel.swift in Sources */,
 				2416B2811E27B8CC00CE283B /* TopBarViewController.swift in Sources */,
 				BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */,
@@ -1455,7 +1459,7 @@
 				24564F601D8325CC00D9A8AE /* TimeSlot.swift in Sources */,
 				24D18E301DF06B9E0046B202 /* SmartGuessModelAdapter.swift in Sources */,
 				513535D61DA2756C00A365A9 /* OnboardingPageViewController.swift in Sources */,
-				AC3901F41E5665CF008063C7 /* ItemViewHandler.swift in Sources */,
+				AC3901F41E5665CF008063C7 /* CategoryButtonsHandler.swift in Sources */,
 				24224B081E28E37700AD7575 /* TimelineItem.swift in Sources */,
 				24EB96761DE7080F0040C211 /* TimeSlotService.swift in Sources */,
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
@@ -1485,7 +1489,6 @@
 				BE1BDFAF1E79BEB80077D694 /* CLLocationManagerExtensions.swift in Sources */,
 				24B03B5B1D9E4D1100452D16 /* SettingsService.swift in Sources */,
 				24DE23F21E1BB32F0089B49E /* CalendarViewController.swift in Sources */,
-				AC0A632C1E548FE800D56433 /* WheelControl.swift in Sources */,
 				8CF0255A1EAFA2FF00BF0A42 /* SwipeInteractionController.swift in Sources */,
 				51EAA2881DC0BA910025680D /* UIViewExtensions.swift in Sources */,
 				246531721DA7B4A10066DFE0 /* PreiOSTenNotificationService.swift in Sources */,
@@ -1528,6 +1531,7 @@
 				BE55CED11E7AC994006B851E /* TemporaryTimeSlot.swift in Sources */,
 				BEA024341E41137D0061FE53 /* Category.swift in Sources */,
 				7E3C06991E30B7CA00859747 /* Strings.swift in Sources */,
+				8C6417071EAF415200B893D7 /* CategoryButton.swift in Sources */,
 				24EB96851DE709830040C211 /* PredicateExtensions.swift in Sources */,
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
 				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,

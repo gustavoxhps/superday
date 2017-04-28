@@ -20,7 +20,26 @@ extension UIView
         UIView.animate(withDuration: duration, delay: delay, options: [], animations: animations, completion: nil)
     }
     
-    
+    static func animate(_ changes: @escaping ()->(), duration: Double, delay: Double = 0.0, options: [UIViewAnimationOptions] = [],
+        withControlPoints c1x: Float = 0, _ c1y: Float = 0, _ c2x: Float = 0, _ c2y: Float = 0,
+        completion: (()->())? = nil)
+    {
+        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
+        
+        CATransaction.begin()
+        CATransaction.setAnimationTimingFunction(timingFunction)
+        
+        UIView.animate(
+            withDuration: duration,
+            delay: delay,
+            options: [],
+            animations: changes) { (_) in
+                completion?()
+        }
+        
+        CATransaction.commit()
+    }
+
     static func scheduleAnimation(withDelay delay: TimeInterval, duration: TimeInterval,
                                   options: UIViewAnimationOptions, animations: @escaping () -> ())
     {
