@@ -136,6 +136,7 @@
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
 		8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* CategoryWheel.swift */; };
+		8C2EE3D21EBC9A3600764B66 /* EmptyDailySummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2EE3D11EBC9A3600764B66 /* EmptyDailySummaryView.swift */; };
 		8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */; };
 		8C6417051EAE0CDA00B893D7 /* FromBottomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417041EAE0CDA00B893D7 /* FromBottomTransition.swift */; };
 		8C6417071EAF415200B893D7 /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417061EAF415200B893D7 /* CategoryButton.swift */; };
@@ -401,6 +402,7 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Storyboards.swift; path = Generated/Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensionsTests.swift; path = Extensions/LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationExtensions.swift; path = Helper/LocationExtensions.swift; sourceTree = "<group>"; };
+		8C2EE3D11EBC9A3600764B66 /* EmptyDailySummaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyDailySummaryView.swift; path = Views/EmptyDailySummaryView.swift; sourceTree = "<group>"; };
 		8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModalPresentationController.swift; path = Presenters/PresentationControllers/ModalPresentationController.swift; sourceTree = "<group>"; };
 		8C6417041EAE0CDA00B893D7 /* FromBottomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FromBottomTransition.swift; path = Presenters/Transitions/FromBottomTransition.swift; sourceTree = "<group>"; };
 		8C6417061EAF415200B893D7 /* CategoryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryButton.swift; path = Views/CategoryButton.swift; sourceTree = "<group>"; };
@@ -822,6 +824,7 @@
 				8CB9EF9A1E8BB589003D1FFC /* LineView.swift */,
 				AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */,
 				AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */,
+				8C2EE3D11EBC9A3600764B66 /* EmptyDailySummaryView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1044,14 +1047,6 @@
 			sourceTree = "<group>";
 		};
 		8C7CCB4B1E9D148700315BF7 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
-			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
-		8C8F2C8C1EADE84C0073D93D /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
 				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
@@ -1577,6 +1572,7 @@
 				2416B27F1E27B71E00CE283B /* TopBarViewModel.swift in Sources */,
 				247F05FA1D87325600451BAD /* PersistencyService.swift in Sources */,
 				BE7FAFC81E73014700A62AC9 /* DefaultTrackEventService.swift in Sources */,
+				8C2EE3D21EBC9A3600764B66 /* EmptyDailySummaryView.swift in Sources */,
 				24564F641D83265900D9A8AE /* UIColorExtensions.swift in Sources */,
 				BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */,
 				2420A8661DB56B5500C0478C /* EmptyStateView.swift in Sources */,
