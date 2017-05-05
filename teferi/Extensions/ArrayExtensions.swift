@@ -1,3 +1,5 @@
+import Foundation
+
 extension Array
 {
     func firstOfType<T>() -> T

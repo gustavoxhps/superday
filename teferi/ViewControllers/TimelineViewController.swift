@@ -135,8 +135,11 @@ class TimelineViewController : UIViewController
             lastCell.window != nil //We need to check if the cell is on screen because multiple view controllers can be loaded at the same time
             else { return }
 
-        let centerPoint = lastCell.categoryCircle.convert(lastCell.categoryCircle.center, to: nil)
+        let mainView = UIApplication.shared.keyWindow?.rootViewController?.view
+
+        let centerPoint = lastCell.categoryCircle.convert(lastCell.categoryCircle.center, to: mainView)
         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+
         self.viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
     }
 }

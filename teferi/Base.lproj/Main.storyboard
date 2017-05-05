@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -252,26 +252,24 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RjY-fi-acF">
-                                <rect key="frame" x="331" y="8.5" width="32" height="32"/>
+                                <rect key="frame" x="327" y="4.5" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="2AF-WV-AC5"/>
-                                    <constraint firstAttribute="width" constant="32" id="nnX-bK-v97"/>
+                                    <constraint firstAttribute="height" constant="40" id="2AF-WV-AC5"/>
+                                    <constraint firstAttribute="width" constant="40" id="nnX-bK-v97"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="11"/>
-                                <inset key="contentEdgeInsets" minX="7" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                <inset key="titleEdgeInsets" minX="-25" minY="2" maxX="0.0" maxY="0.0"/>
-                                <state key="normal" title="25" image="icCalendar"/>
+                                <state key="normal" title="25" backgroundImage="icCalendar"/>
                                 <connections>
                                     <action selector="onCalendarTouchUpInside" destination="BYZ-38-t0r" eventType="touchUpInside" id="789-Jk-6Rh"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vcf-26-zcj">
-                                <rect key="frame" x="289" y="8" width="32" height="32"/>
+                                <rect key="frame" x="243" y="4" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="qfj-7k-Srh"/>
-                                    <constraint firstAttribute="width" constant="32" id="sZT-6M-WCB"/>
+                                    <constraint firstAttribute="height" constant="40" id="qfj-7k-Srh"/>
+                                    <constraint firstAttribute="width" constant="40" id="sZT-6M-WCB"/>
                                 </constraints>
-                                <state key="normal" image="icFeedback"/>
+                                <state key="normal" backgroundImage="icFeedback"/>
                                 <connections>
                                     <action selector="onContactTouchUpInside" destination="BYZ-38-t0r" eventType="touchUpInside" id="tqu-1Y-xNq"/>
                                 </connections>
@@ -282,21 +280,32 @@
                                 <color key="textColor" red="0.015686274510000001" green="0.015686274510000001" blue="0.023529411760000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U4Y-gl-SlH">
+                                <rect key="frame" x="285" y="4" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="IAQ-O9-7sS"/>
+                                    <constraint firstAttribute="height" constant="40" id="Qvn-0I-YjO"/>
+                                </constraints>
+                                <state key="normal" backgroundImage="icChart"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="9qK-kq-YXq" firstAttribute="centerY" secondItem="iHQ-6M-pJq" secondAttribute="centerY" id="A1V-TW-uUG"/>
-                            <constraint firstAttribute="trailing" secondItem="RjY-fi-acF" secondAttribute="trailing" constant="12" id="BVu-7K-UWk"/>
-                            <constraint firstItem="RjY-fi-acF" firstAttribute="leading" secondItem="vcf-26-zcj" secondAttribute="trailing" constant="10" id="I0r-OJ-iyx"/>
+                            <constraint firstAttribute="trailing" secondItem="RjY-fi-acF" secondAttribute="trailing" constant="8" id="BVu-7K-UWk"/>
                             <constraint firstItem="wp3-Hl-EJp" firstAttribute="centerY" secondItem="9qK-kq-YXq" secondAttribute="centerY" id="L7S-fu-30C"/>
+                            <constraint firstItem="RjY-fi-acF" firstAttribute="leading" secondItem="U4Y-gl-SlH" secondAttribute="trailing" constant="2" id="LuJ-Cx-k8r"/>
+                            <constraint firstItem="U4Y-gl-SlH" firstAttribute="leading" secondItem="vcf-26-zcj" secondAttribute="trailing" constant="2" id="SFr-2R-6GR"/>
                             <constraint firstItem="wp3-Hl-EJp" firstAttribute="leading" secondItem="9qK-kq-YXq" secondAttribute="trailing" constant="18" id="SqZ-bh-l9W"/>
                             <constraint firstItem="9qK-kq-YXq" firstAttribute="leading" secondItem="iHQ-6M-pJq" secondAttribute="leadingMargin" constant="4" id="bgw-bp-iee"/>
                             <constraint firstItem="RjY-fi-acF" firstAttribute="centerY" secondItem="iHQ-6M-pJq" secondAttribute="centerY" id="csV-4N-8HA"/>
+                            <constraint firstItem="U4Y-gl-SlH" firstAttribute="centerY" secondItem="iHQ-6M-pJq" secondAttribute="centerY" id="jVy-zc-7UU"/>
                             <constraint firstItem="RjY-fi-acF" firstAttribute="centerY" secondItem="vcf-26-zcj" secondAttribute="centerY" id="o9X-Kn-0Ou"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="calendarButton" destination="RjY-fi-acF" id="Kvd-df-Bkt"/>
+                        <outlet property="chartsButton" destination="U4Y-gl-SlH" id="8Ci-OX-iH0"/>
                         <outlet property="feedbackButton" destination="vcf-26-zcj" id="VBE-02-pa1"/>
                         <outlet property="titleLabel" destination="wp3-Hl-EJp" id="jmE-GM-oZ5"/>
                     </connections>
@@ -399,8 +408,9 @@
     <resources>
         <image name="icArrowLeft" width="6" height="10"/>
         <image name="icArrowRight" width="6" height="10"/>
-        <image name="icCalendar" width="18" height="20"/>
-        <image name="icFeedback" width="16" height="17"/>
+        <image name="icCalendar" width="40" height="40"/>
+        <image name="icChart" width="40" height="40"/>
+        <image name="icFeedback" width="40" height="40"/>
         <image name="icSuperday" width="24" height="24"/>
     </resources>
 </document>

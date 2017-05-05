@@ -1,9 +1,8 @@
 import UIKit
 import RxSwift
 
-class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
+class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, CategoryButtonDelegate
 {
-    typealias ViewType = UIButton
     typealias DismissType = (() -> ())
     typealias TimeSlotEdit = (TimeSlot, Category)
     
@@ -33,7 +32,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
     private var currentCategoryImageView : UIImageView? = nil
     private var plusImageView : UIImageView? = nil
     
-    private var viewHandler : ItemViewHandler<ViewType, Category>!
+    private var viewHandler : CategoryButtonsHandler!
     private var mainY : CGFloat!
     private var leftBoundryX : CGFloat!
     private var rightBoundryX : CGFloat!
@@ -92,10 +91,10 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
     }
     
     // MARK: - SelectionHandling
-    @objc private func didSelectCell(_ sender: ViewType)
+    func categorySelected(category: Category)
     {
-        selectedItem = viewHandler.items[sender.tag]
-        editEndedSubject.onNext((timeSlot, selectedItem!))
+        selectedItem = category
+        editEndedSubject.onNext((timeSlot, category))
     }
     
     // MARK: - Tap gesture logic
@@ -182,7 +181,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         while isMovingForward ? lastCellBasedOnDirection.frame.minX + cellSize.width < rightBoundryX : lastCellBasedOnDirection.frame.minX - cellSpacing > leftBoundryX
         {
             let newCell = viewHandler.cell(before: lastCellBasedOnDirection, forward: isMovingForward, cellSize: cellSize)
-            newCell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
+            newCell.delegate = self
             newCell.center = CGPoint(x: lastCellBasedOnDirection.center.x + pageWidth * (isMovingForward ? 1 : -1), y: mainY)
             
             applyScaleTransformIfNeeded(at: newCell)
@@ -193,7 +192,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         }
     }
     
-    private func applyScaleTransformIfNeeded(at cell: ViewType, customX: CGFloat? = nil)
+    private func applyScaleTransformIfNeeded(at cell: CategoryButton, customX: CGFloat? = nil)
     {
         let tempTransform = cell.transform
         cell.transform = .identity
@@ -303,13 +302,19 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
         
         viewHandler?.cleanAll()
-        viewHandler = ItemViewHandler<ViewType, Category>(items: items, attributeSelector: ({ ($0.icon.image, $0.color) }))
+        viewHandler = CategoryButtonsHandler(items: items)
         
         currentCategoryBackgroundView?.removeFromSuperview()
         currentCategoryBackgroundView = UIView()
         currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
         currentCategoryBackgroundView?.layer.cornerRadius = 16
-        addSubviewWithConstraints(currentCategoryBackgroundView!, basedOn: point)
+        
+        self.addSubview(currentCategoryBackgroundView!)
+        currentCategoryBackgroundView?.snp.makeConstraints { make in
+            make.width.height.equalTo(32)
+            make.top.equalTo(point.y - 24)
+            make.left.equalTo(point.x - 32)
+        }
         
         currentCategoryImageView?.removeFromSuperview()
         currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
@@ -319,16 +324,16 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
         plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
         
-        self.animate({ 
-            self.backgroundColor = UIColor.white.withAlphaComponent(0.6)
+        UIView.animate({
+            self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         }, duration: Constants.editAnimationDuration * 3)
         
-        animate({ 
+        UIView.animate({
             self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
             self.plusImageView?.alpha = 1.0
         }, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1)
         
-        animate({
+        UIView.animate({
             self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         }, duration: 0.102, withControlPoints: 0.4, 0.0, 1, 1)
         
@@ -346,18 +351,18 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         var animationSequence = DelayedSequence.start()
         
         let delay = TimeInterval(0.04)
-        var previousCell : ViewType?
+        var previousCell : CategoryButton?
         var index = 0
         
         while index != 0 ? bounds.contains(previousCell!.frame) : true {
             let cell = viewHandler.cell(before: previousCell, forward: true, cellSize: cellSize)
-            cell.addTarget(self, action: #selector(self.didSelectCell(_:)), for: .touchUpInside)
+            cell.delegate = self
             cell.center = CGPoint(x: leftBoundryX + pageWidth * CGFloat(index) + cellSize.width / 2, y: mainY)
             cell.isHidden = true
             
             addSubview(cell)
             
-            animationSequence = animationSequence.after(delay, animate(cell, presenting: true))
+            animationSequence = animationSequence.after(delay, animateCell(cell, presenting: true))
             
             previousCell = cell
             index += 1
@@ -392,11 +397,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
             self.currentCategoryBackgroundView!.removeFromSuperview()
         }
         
-        animate(firstSetpOfAnimation, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1) {
-            self.animate(secondStepOfAnimation, duration: 0.09, withControlPoints: 0.0, 0.0, 0.2, 1, completion: cleanupAfterAnimation)
+        UIView.animate(firstSetpOfAnimation, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1) {
+            UIView.animate(secondStepOfAnimation, duration: 0.09, withControlPoints: 0.0, 0.0, 0.2, 1, completion: cleanupAfterAnimation)
         }
         
-        animate({ 
+        UIView.animate({
             self.backgroundColor = UIColor.white.withAlphaComponent(0)
         }, duration: animationDuration, options: [.curveLinear])
         
@@ -408,7 +413,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         for cell in cellsToAnimate
         {
             cell.layer.removeAllAnimations()
-            animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
+            animationSequence = animationSequence.after(delay, animateCell(cell, presenting: false))
         }
         
         animationSequence.after(animationDuration, cleanupAfterHide())
@@ -428,34 +433,16 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
     }
     
     // MARK: - Animation
-    private func animate(_ cell: ViewType, presenting: Bool) -> (TimeInterval) -> ()
+    private func animateCell(_ cell: CategoryButton, presenting: Bool) -> (TimeInterval) -> ()
     {
         return { delay in
             Timer.schedule(withDelay: delay)
             {
-                let scaleTransform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                
-                cell.transform = presenting ?
-                    scaleTransform :
-                    .identity
-                
-                cell.isHidden = false
-                
-                let changesToAnimate = {
-                    cell.layer.removeAllAnimations()
-                    cell.transform = presenting ?
-                        .identity :
-                        scaleTransform
-                }
-                
-                if presenting
-                {
-                    self.animate(changesToAnimate, duration: self.animationDuration, withControlPoints: 0.23, 1, 0.32, 1)
-                }
-                else
-                {
-                    self.animate(changesToAnimate, duration: self.animationDuration, withControlPoints: 0.175, 0.885, 0.32, 1)
-                }
+                if presenting {
+                    cell.show()
+                } else {
+                    cell.hide()
+                }                
             }
         }
     }
@@ -477,7 +464,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         
         let animationDuration = 0.334
         
-        animate({
+        UIView.animate({
             cells.forEach { (cell) in
                 cell.center = CGPoint(x: cell.center.x + offset, y: self.mainY)
                 if !self.isInAllowedRange(cell)
@@ -491,33 +478,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
     }
     
     // MARK: - Conveniece methods
-    private func animate(
-        _ changes: @escaping ()->(),
-        duration: Double,
-        delay: Double = 0.0,
-        options: [UIViewAnimationOptions] = [],
-        withControlPoints c1x: Float = 0,
-        _ c1y: Float = 0,
-        _ c2x: Float = 0,
-        _ c2y: Float = 0,
-        completion: (()->())? = nil)
-    {
-        let timingFunction = CAMediaTimingFunction(controlPoints: c1x, c1y, c2x, c2y)
-        
-        CATransaction.begin()
-        CATransaction.setAnimationTimingFunction(timingFunction)
-
-        UIView.animate(
-            withDuration: duration,
-            delay: delay,
-            options: [],
-            animations: changes) { (_) in
-                completion?()
-        }
-        
-        CATransaction.commit()
-    }
-    
     private func newImageView(with image: UIImage, cornerRadius: CGFloat, contentMode: UIViewContentMode, basedOn point: CGPoint) -> UIImageView
     {
         let imageView = UIImageView(image: image)
@@ -535,27 +495,15 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate
         return imageView
     }
     
-    private func addSubviewWithConstraints(_ viewToAdd: UIView, basedOn point: CGPoint)
-    {
-        self.addSubview(viewToAdd)
-        
-        viewToAdd.snp.makeConstraints { make in
-            make.width.height.equalTo(32)
-            make.top.equalTo(point.y - 24)
-            make.left.equalTo(point.x - 32)
-        }
-    }
-    
     // MARK: - for hacky onboarding animations
     func getIcon(forCategory category: Category) -> UIImageView?
     {
-        let color = category.color
-        guard let cell = viewHandler.visibleCells.first(where: { (b) in b.backgroundColor == color }) else { return nil }
+        guard let cell = viewHandler.visibleCells.first(where: { $0.category == category }) else { return nil }
         return UIImageView(frame: cell.frame)
     }
     
     // MARK: - Math functions
-    private func isInAllowedRange(_ cell: ViewType) -> Bool
+    private func isInAllowedRange(_ cell: CategoryButton) -> Bool
     {
         return (cell.frame.minX > leftBoundryX && cell.frame.minX < rightBoundryX) || (cell.frame.maxX > leftBoundryX && cell.frame.maxX < rightBoundryX)
     }

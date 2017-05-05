@@ -20,6 +20,8 @@ protocol TrigonometryHelper
     
     func angle(startPoint a: CGPoint, endPoint c: CGPoint, anchorPoint b: CGPoint) -> CGFloat
     
+    func angle(from vector1: CGPoint, to vector2: CGPoint) -> CGFloat
+    
     func toPositive(angle: CGFloat) -> CGFloat
 }
 
@@ -79,6 +81,11 @@ extension TrigonometryHelper
         let angleToReturn = -atan2(det, dot)
         
         return angleToReturn
+    }
+    
+    func angle(from vector1: CGPoint, to vector2: CGPoint) -> CGFloat
+    {
+        return atan2(vector2.y - vector1.y, vector2.x - vector1.x)
     }
     
     func toPositive(angle: CGFloat) -> CGFloat
