@@ -24,7 +24,24 @@ class DailySummaryPieChartActivity: UIView
     
     override func draw(_ rect: CGRect)
     {
-        guard let activities = self.dailyActivities, activities.count > 0 else { return }
+        defer {
+            //// centerCircle Drawing
+            let centerCirclePath = UIBezierPath(ovalIn: CGRect(x: rect.minX + fastFloor(rect.width * 0.31395 + 0.5), y: rect.minY + fastFloor(rect.height * 0.31395 + 0.5), width: fastFloor(rect.width * 0.68605 + 0.5) - fastFloor(rect.width * 0.31395 + 0.5), height: fastFloor(rect.height * 0.68605 + 0.5) - fastFloor(rect.height * 0.31395 + 0.5)))
+            let centerColor = backgroundColor == .clear && backgroundColor != nil ? .white : backgroundColor!
+            centerColor.setFill()
+            centerCirclePath.fill()
+        }
+        
+        guard let activities = self.dailyActivities, activities.count > 0
+        else {
+            let piePiecePath = UIBezierPath()
+            piePiecePath.addArc(withCenter: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+            piePiecePath.close()
+            
+            Style.Color.summaryNoData.setFill()
+            piePiecePath.fill()
+            return
+        }
         
         // This non-generic function dramatically improves compilation times of complex expressions.
         func fastFloor(_ x: CGFloat) -> CGFloat { return floor(x) }
@@ -49,10 +66,6 @@ class DailySummaryPieChartActivity: UIView
         }
         
         
-        //// centerCircle Drawing
-        let centerCirclePath = UIBezierPath(ovalIn: CGRect(x: rect.minX + fastFloor(rect.width * 0.31395 + 0.5), y: rect.minY + fastFloor(rect.height * 0.31395 + 0.5), width: fastFloor(rect.width * 0.68605 + 0.5) - fastFloor(rect.width * 0.31395 + 0.5), height: fastFloor(rect.height * 0.68605 + 0.5) - fastFloor(rect.height * 0.31395 + 0.5)))
-        let centerColor = backgroundColor == .clear && backgroundColor != nil ? .white : backgroundColor!
-        centerColor.setFill()
-        centerCirclePath.fill()
+
     }
 }
