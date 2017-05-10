@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -244,7 +244,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icSuperday" translatesAutoresizingMaskIntoConstraints="NO" id="9qK-kq-YXq">
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icSuperday" translatesAutoresizingMaskIntoConstraints="NO" id="9qK-kq-YXq">
                                 <rect key="frame" x="20" y="12" width="24" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="8JR-wh-pdo"/>
@@ -307,6 +307,7 @@
                         <outlet property="calendarButton" destination="RjY-fi-acF" id="Kvd-df-Bkt"/>
                         <outlet property="chartsButton" destination="U4Y-gl-SlH" id="8Ci-OX-iH0"/>
                         <outlet property="feedbackButton" destination="vcf-26-zcj" id="VBE-02-pa1"/>
+                        <outlet property="logo" destination="9qK-kq-YXq" id="uh8-U2-Lz3"/>
                         <outlet property="titleLabel" destination="wp3-Hl-EJp" id="jmE-GM-oZ5"/>
                     </connections>
                 </viewController>
