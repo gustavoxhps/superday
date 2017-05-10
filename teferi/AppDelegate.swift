@@ -38,7 +38,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     {
         self.timeService = DefaultTimeService()
         self.metricsService = FabricMetricsService()
-        self.settingsService = DefaultSettingsService()
+        self.settingsService = DefaultSettingsService(timeService: timeService)
         self.loggingService = SwiftyBeaverLoggingService()
         self.appLifecycleService = DefaultAppLifecycleService()
         self.editStateService = DefaultEditStateService(timeService: self.timeService)

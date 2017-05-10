@@ -4,6 +4,8 @@ import CoreLocation
 
 class DefaultSettingsService : SettingsService
 {
+    private let timeService : TimeService
+
     //MARK: Fields
     private let installDateKey = "installDate"
     private let lastLocationLatKey = "lastLocationLat"
@@ -20,6 +22,11 @@ class DefaultSettingsService : SettingsService
     private let lastNotificationLocationDateKey = "lastNotificationLocationDate"
     private let lastNotificationLocationHorizontalAccuracyKey = "lastNotificationLocationHorizontalAccuracy"
     
+    init (timeService : TimeService)
+    {
+        self.timeService = timeService
+    }
+
     //MARK: Properties
     var installDate : Date?
     {
@@ -97,7 +104,9 @@ class DefaultSettingsService : SettingsService
         guard let lastUpdate : Date = get(forKey: key)
         else
         {
-            return Date()
+            let initialDate = timeService.now
+            setLastHealthKitUpdate(for: identifier, date: initialDate)
+            return initialDate
         }
         
         return lastUpdate
