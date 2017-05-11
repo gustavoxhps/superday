@@ -30,7 +30,7 @@ class SwipeInteractionController : UIPercentDrivenInteractiveTransition
             viewController.dismiss(animated: true, completion: nil)
             
         case .changed:
-            shouldCompleteTransition = percent > 0.5
+            shouldCompleteTransition = percent > 0.2
             update(percent)
             
         case .cancelled:
