@@ -18,7 +18,6 @@ class Style
         static let offBlackTransparent = rgb(4, 4, 6, 0.5)
         
         static let calendarNoData = rgb(206, 205, 205, 0.5)
-        static let summaryNoData = rgb(239, 241, 242)
         
         private static let logoTrancparency = CGFloat(0.64)
         static let transparentPurple = purple.withAlphaComponent(logoTrancparency)

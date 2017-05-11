@@ -212,75 +212,21 @@
                                     <outlet property="dataSource" destination="dJx-4f-wcd" id="NLg-sE-zI8"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KFs-VC-uMs" customClass="EmptyDailySummaryView" customModule="teferi" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="249" width="375" height="394"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No data to show..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="19H-Wk-tQW">
-                                        <rect key="frame" x="114" y="186" width="146" height="22"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FNH-oz-dzo">
-                                        <rect key="frame" x="245" y="147" width="24" height="24"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="24" id="6uI-gB-Mw7"/>
-                                            <constraint firstAttribute="height" constant="24" id="hAr-j9-45A"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fgr-lP-y7U">
-                                        <rect key="frame" x="72" y="212" width="24" height="24"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="24" id="Kd7-pa-eWe"/>
-                                            <constraint firstAttribute="height" constant="24" id="W6S-Xu-OtL"/>
-                                        </constraints>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lVP-1M-tFq">
-                                        <rect key="frame" x="274" y="215" width="24" height="24"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="24" id="JHi-3a-3A5"/>
-                                            <constraint firstAttribute="height" constant="24" id="lPP-RA-IYc"/>
-                                        </constraints>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="19H-Wk-tQW" firstAttribute="top" secondItem="FNH-oz-dzo" secondAttribute="bottom" constant="15" id="4zR-Wv-woQ"/>
-                                    <constraint firstItem="19H-Wk-tQW" firstAttribute="centerY" secondItem="KFs-VC-uMs" secondAttribute="centerY" id="Ei7-7X-ZE7"/>
-                                    <constraint firstItem="19H-Wk-tQW" firstAttribute="leading" secondItem="fgr-lP-y7U" secondAttribute="trailing" constant="18" id="U1z-gv-uC1"/>
-                                    <constraint firstItem="lVP-1M-tFq" firstAttribute="leading" secondItem="19H-Wk-tQW" secondAttribute="trailing" constant="14" id="WLH-vZ-LCx"/>
-                                    <constraint firstItem="19H-Wk-tQW" firstAttribute="centerX" secondItem="KFs-VC-uMs" secondAttribute="centerX" id="ZpG-BS-BOV"/>
-                                    <constraint firstItem="fgr-lP-y7U" firstAttribute="top" secondItem="19H-Wk-tQW" secondAttribute="bottom" constant="4" id="oHK-Ds-mYj"/>
-                                    <constraint firstItem="FNH-oz-dzo" firstAttribute="leading" secondItem="19H-Wk-tQW" secondAttribute="trailing" constant="-15" id="s2w-v8-YQX"/>
-                                    <constraint firstItem="lVP-1M-tFq" firstAttribute="top" secondItem="19H-Wk-tQW" secondAttribute="bottom" constant="7" id="zHB-qd-zIf"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="familyIcon" destination="FNH-oz-dzo" id="i4I-pr-RFO"/>
-                                    <outlet property="fitnessIcon" destination="lVP-1M-tFq" id="5xC-YE-iGn"/>
-                                    <outlet property="label" destination="19H-Wk-tQW" id="3pg-jh-Z57"/>
-                                    <outlet property="workIcon" destination="fgr-lP-y7U" id="zdM-uR-xl9"/>
-                                </connections>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Q7b-zl-LBt" secondAttribute="trailing" id="1XV-pW-5SH"/>
                             <constraint firstItem="REo-TX-Dff" firstAttribute="top" secondItem="Q7b-zl-LBt" secondAttribute="bottom" constant="24" id="22d-GW-MNs"/>
-                            <constraint firstItem="KFs-VC-uMs" firstAttribute="leading" secondItem="fkP-Iy-0Fg" secondAttribute="leading" id="9Rp-18-baG"/>
                             <constraint firstItem="kZw-dQ-HlA" firstAttribute="width" secondItem="fkP-Iy-0Fg" secondAttribute="width" multiplier="0.6" id="Qmh-Im-Brh"/>
-                            <constraint firstItem="KFs-VC-uMs" firstAttribute="top" secondItem="kZw-dQ-HlA" secondAttribute="bottom" constant="20" id="RNP-lx-U8b"/>
                             <constraint firstItem="kZw-dQ-HlA" firstAttribute="top" secondItem="xKh-9z-KfN" secondAttribute="bottom" constant="4" id="S3H-Jg-xdl"/>
-                            <constraint firstAttribute="trailing" secondItem="KFs-VC-uMs" secondAttribute="trailing" id="Y2O-tz-VVv"/>
                             <constraint firstItem="Q7b-zl-LBt" firstAttribute="top" secondItem="kZw-dQ-HlA" secondAttribute="bottom" constant="20" id="YUJ-ed-KeQ"/>
                             <constraint firstItem="Q7b-zl-LBt" firstAttribute="leading" secondItem="fkP-Iy-0Fg" secondAttribute="leading" id="fsx-of-aTk"/>
-                            <constraint firstItem="REo-TX-Dff" firstAttribute="top" secondItem="KFs-VC-uMs" secondAttribute="bottom" constant="24" id="pHj-Y9-dbT"/>
                             <constraint firstItem="kZw-dQ-HlA" firstAttribute="centerX" secondItem="fkP-Iy-0Fg" secondAttribute="centerX" id="zRL-mc-OdJ"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="chartView" destination="kZw-dQ-HlA" id="DB4-RT-02g"/>
-                        <outlet property="emptyStateView" destination="KFs-VC-uMs" id="6uT-9z-ALb"/>
                         <outlet property="tableView" destination="Q7b-zl-LBt" id="nFr-Vf-rOl"/>
                     </connections>
                 </viewController>

@@ -15,6 +15,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     {
         didSet
         {
+            guard let viewHandler = viewHandler else { return }
+            
             viewHandler.visibleCells.forEach { (cell) in
                 cell.isUserInteractionEnabled = !isSpinning
             }
@@ -28,7 +30,7 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
 
-    private let viewHandler : CategoryButtonsHandler
+    private var viewHandler : CategoryButtonsHandler?
     
     private(set) var selectedItem : Category?
     
@@ -36,6 +38,7 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private let radius : CGFloat
     private let startAngle : CGFloat
     private let endAngle : CGFloat
+    private let categoryProvider : CategoryProvider
     private var centerPoint : CGPoint
     private let angleBetweenCells : CGFloat
     private let dismissAction : DismissType?
@@ -78,8 +81,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         radius: CGFloat,
         startAngle: CGFloat,
         endAngle: CGFloat,
+        categoryProvider: CategoryProvider,
         angleBetweenCells: CGFloat,
-        items: [Category],
         attributeSelector: @escaping ((Category) -> (UIImage, UIColor)),
         dismissAction: DismissType?)
     {
@@ -90,13 +93,12 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         self.startAngle = startAngle
         self.endAngle = endAngle
+        self.categoryProvider = categoryProvider
         self.angleBetweenCells = angleBetweenCells
         self.radius = radius
         self.centerPoint = centerPoint
         self.cellSize = cellSize
         self.dismissAction = dismissAction
-        
-        self.viewHandler = CategoryButtonsHandler(items: items)
         
         super.init(frame: frame)
         
@@ -249,6 +251,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     private func handleMovement(angleToRotate: CGFloat)
     {
+        guard let viewHandler = viewHandler else { return }
+        
         let rotationDirection = angleToRotate < 0
 
         let cells = viewHandler.visibleCells
@@ -292,6 +296,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
+        viewHandler = CategoryButtonsHandler(items: categoryProvider.getAll(but: .unknown))
+
         view.superview?.insertSubview(self, belowSubview: view)
         
         self.centerPoint = view.center
@@ -305,7 +311,7 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         for index in 0..<numberToShow
         {
-            let cell = viewHandler.cell(before: previousCell, forward: true, cellSize: cellSize)
+            let cell = viewHandler!.cell(before: previousCell, forward: true, cellSize: cellSize)
             cell.delegate = self
             let center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
             positionAndRotateCell(cell, center: center)
@@ -321,6 +327,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     func hide()
     {
+        guard let viewHandler = viewHandler else { return }
+        
         var animationSequence = DelayedSequence.start()
         
         let delay = TimeInterval(0.02)
@@ -335,11 +343,14 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     private func cleanupAfterHide() -> (TimeInterval) -> ()
     {
+        guard let viewHandler = viewHandler else { return { _ in } }
+
         return { delay in
+            
             Timer.schedule(withDelay: delay)
             {
                 self.resetFlick()
-                self.viewHandler.cleanAll()
+                viewHandler.cleanAll()
                 self.removeFromSuperview()
             }
         }

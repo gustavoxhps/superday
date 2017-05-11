@@ -4,7 +4,6 @@ class DailySummaryViewController: UIViewController, UITableViewDataSource
 {
     @IBOutlet weak var chartView: DailySummaryPieChartActivity!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var emptyStateView: EmptyDailySummaryView!
     
     private var viewModel: DailySummaryViewModel!
     private let cellIdentifier = "dailySummaryCell"
@@ -23,8 +22,6 @@ class DailySummaryViewController: UIViewController, UITableViewDataSource
         super.viewDidLoad()
         
         chartView.dailyActivities = viewModel.activities
-        
-        emptyStateView.isHidden = viewModel.activities.count > 0
         
         tableView.rowHeight = 24
     }
