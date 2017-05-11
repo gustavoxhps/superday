@@ -34,16 +34,7 @@ class AddTimeSlotView : UIView
         didSet {
             guard let categoryProvider = categoryProvider else { return }
             
-            self.wheel = CategoryWheel(frame: self.bounds,
-                                       cellSize: CGSize(width: 50.0, height: 50.0),
-                                       centerPoint: self.addButton.center,
-                                       radius: 144,
-                                       startAngle: CGFloat.pi / 4,
-                                       endAngle: CGFloat.pi * 5 / 4,
-                                       categoryProvider: categoryProvider,
-                                       angleBetweenCells: 0.45,
-                                       attributeSelector: self.toAttributes,
-                                       dismissAction: wheelDismissAction)
+            self.wheel.categoryProvider = categoryProvider
         }
     }
     
@@ -57,6 +48,16 @@ class AddTimeSlotView : UIView
         let cornerRadius = CGFloat(25)
         
         self.addButton.layer.cornerRadius = cornerRadius
+        
+        self.wheel = CategoryWheel(frame: self.bounds,
+                                   cellSize: CGSize(width: 50.0, height: 50.0),
+                                   centerPoint: self.addButton.center,
+                                   radius: 144,
+                                   startAngle: CGFloat.pi / 4,
+                                   endAngle: CGFloat.pi * 5 / 4,
+                                   angleBetweenCells: 0.45,
+                                   attributeSelector: self.toAttributes,
+                                   dismissAction: wheelDismissAction)
         
         //Adds some blur to the background of the buttons
         gradientLayer.frame = self.blur.bounds

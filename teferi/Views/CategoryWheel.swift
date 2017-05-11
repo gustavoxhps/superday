@@ -4,6 +4,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
 {
     typealias DismissType = ((CategoryWheel) -> ())
     
+    var categoryProvider : CategoryProvider?
+    
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
     private var flickAnimator : UIDynamicAnimator!
@@ -38,7 +40,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private let radius : CGFloat
     private let startAngle : CGFloat
     private let endAngle : CGFloat
-    private let categoryProvider : CategoryProvider
     private var centerPoint : CGPoint
     private let angleBetweenCells : CGFloat
     private let dismissAction : DismissType?
@@ -81,7 +82,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         radius: CGFloat,
         startAngle: CGFloat,
         endAngle: CGFloat,
-        categoryProvider: CategoryProvider,
         angleBetweenCells: CGFloat,
         attributeSelector: @escaping ((Category) -> (UIImage, UIColor)),
         dismissAction: DismissType?)
@@ -93,7 +93,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         self.startAngle = startAngle
         self.endAngle = endAngle
-        self.categoryProvider = categoryProvider
         self.angleBetweenCells = angleBetweenCells
         self.radius = radius
         self.centerPoint = centerPoint
@@ -296,6 +295,8 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
+        guard let categoryProvider = categoryProvider else { return }
+        
         viewHandler = CategoryButtonsHandler(items: categoryProvider.getAll(but: .unknown))
 
         view.superview?.insertSubview(self, belowSubview: view)
