@@ -23,11 +23,20 @@ class AddTimeSlotView : UIView
     
     private(set) lazy var categoryObservable : Observable<Category> =
     {
-        return self.wheel
-                   .rx.controlEvent(.valueChanged)
-                   .map { [unowned self] _ in self.wheel.selectedItem }
-                   .filterNil()
+        guard let wheel = self.wheel else { return Observable.empty() }
+        
+        return wheel.rx.controlEvent(.valueChanged)
+            .map { _ in wheel.selectedItem }
+            .filterNil()
     }()
+    
+    var categoryProvider : CategoryProvider? {
+        didSet {
+            guard let categoryProvider = categoryProvider else { return }
+            
+            self.wheel.categoryProvider = categoryProvider
+        }
+    }
     
     //MARK: Lifecycle methods
     override func awakeFromNib()
@@ -40,17 +49,16 @@ class AddTimeSlotView : UIView
         
         self.addButton.layer.cornerRadius = cornerRadius
         
-        wheel = CategoryWheel(frame: self.bounds,
-                      cellSize: CGSize(width: 50.0, height: 50.0),
-                      centerPoint: self.addButton.center,
-                      radius: 144,
-                      startAngle: CGFloat.pi / 4,
-                      endAngle: CGFloat.pi * 5 / 4,
-                      angleBetweenCells: 0.45,
-                      items: Category.all.filter({ $0 != .unknown }),
-                      attributeSelector: self.toAttributes,
-                      dismissAction: wheelDismissAction)
-
+        self.wheel = CategoryWheel(frame: self.bounds,
+                                   cellSize: CGSize(width: 50.0, height: 50.0),
+                                   centerPoint: self.addButton.center,
+                                   radius: 144,
+                                   startAngle: CGFloat.pi / 4,
+                                   endAngle: CGFloat.pi * 5 / 4,
+                                   angleBetweenCells: 0.45,
+                                   attributeSelector: self.toAttributes,
+                                   dismissAction: wheelDismissAction)
+        
         //Adds some blur to the background of the buttons
         gradientLayer.frame = self.blur.bounds
         gradientLayer.colors = [ UIColor(white: 1.0, alpha: 0.0).cgColor, UIColor(white: 1.0, alpha: 0.8).cgColor]

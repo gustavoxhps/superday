@@ -31,6 +31,8 @@ class MainViewModel
         self.dateObservable = selectedDateService.currentlySelectedDateObservable
         self.beganEditingObservable = self.editStateService.beganEditingObservable
         
+        self.categoryProvider = DefaultCategoryProvider(timeSlotService: timeSlotService)
+        
         let shouldCreateLeisureTimeSlot = self.timeSlotService.getLast() == nil
         if shouldCreateLeisureTimeSlot
         {
@@ -42,9 +44,11 @@ class MainViewModel
     let dateObservable : Observable<Date>
     let isEditingObservable : Observable<Bool>
     let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+    let categoryProvider : CategoryProvider
     
     // MARK: Properties
     var currentDate : Date { return self.timeService.now }
+    
     
     //MARK: Methods
     

@@ -66,12 +66,13 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
                                          viewModelLocator: self.viewModelLocator)
         
         //Edit View
-        self.editView = EditTimeSlotView(categoryProvider: DefaultCategoryProvider())
+        self.editView = EditTimeSlotView(categoryProvider: viewModel.categoryProvider)
         self.view.insertSubview(self.editView, belowSubview: self.calendarViewController.view.superview!)
         self.editView.constrainEdges(to: self.view)
         
         //Add button
         self.addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
+        self.addButton.categoryProvider = viewModel.categoryProvider
         self.view.insertSubview(self.addButton, belowSubview: self.editView)
         self.addButton.constrainEdges(to: self.view)
         
@@ -133,7 +134,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .dateObservable
             .subscribe(onNext: self.onDateChanged)
             .addDisposableTo(self.disposeBag)
-        
     }
     
     // MARK: Methods

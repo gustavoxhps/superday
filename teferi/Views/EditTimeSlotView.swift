@@ -158,9 +158,11 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     {
         guard movement != 0 else { return }
         
-        let isMovingForward = movement < 0
-        
         let cells = viewHandler.visibleCells
+        
+        guard cells.count > 0 else { return }        
+        
+        let isMovingForward = movement < 0
 
         let pointToBaseMovement = isMovingForward ? CGPoint(x: cells.first!.center.x + movement, y: mainY) : CGPoint(x: cells[1].center.x + movement - pageWidth, y: mainY)
 

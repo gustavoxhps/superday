@@ -2,6 +2,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Foundation
+import Crashlytics
 
 class TopBarViewController : UIViewController
 {
@@ -19,6 +20,7 @@ class TopBarViewController : UIViewController
     @IBOutlet private weak var calendarButton : UIButton!
     @IBOutlet private weak var feedbackButton : UIButton!
     @IBOutlet private weak var chartsButton : UIButton!
+    @IBOutlet private weak var logo: UIImageView!
     
     func inject(viewModel: TopBarViewModel,
                 pagerViewController: PagerViewController,
@@ -33,20 +35,32 @@ class TopBarViewController : UIViewController
         self.createBindings()
     }
     
+    // MARK: UIViewController lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //This won't be created here when done for the whole app. It'll be the other way around, the Presenter will create this VC
         presenter = TopBarPresenter()
         presenter.viewController = self
+    
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(TopBarViewController.crash(recognizer:)))
+        recognizer.numberOfTapsRequired = 10
+        logo.addGestureRecognizer(recognizer)
     }
     
-    // MARK: UIViewController lifecycle methods
-    override func viewWillAppear(_ animated: Bool)
+    func crash(recognizer:UITapGestureRecognizer)
     {
-        super.viewWillAppear(animated)
-        
+        let alert = UIAlertController(title: "Crash and catch fire!", message: "", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Crash 💥", style: .default, handler: { _ in
+            Crashlytics.sharedInstance().crash()
+        }))
+        alert.addAction(UIAlertAction(title: "Error ⚠️", style: .default, handler: { _ in
+            Crashlytics.sharedInstance().recordError(NSError(domain: "TestErrorDomain", code: 0, userInfo: nil))
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        self.present(alert, animated: true, completion: nil)
     }
+    
     
     // MARK: Methods
     private func createBindings()

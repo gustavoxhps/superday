@@ -5,7 +5,7 @@ import RxSwift
 class TimelineViewModel
 {
     //MARK: Fields
-    private let isCurrentDay : Bool
+    private var isCurrentDay : Bool
     private let disposeBag = DisposeBag()
     
     private let timeService : TimeService
@@ -29,7 +29,7 @@ class TimelineViewModel
         self.editStateService = editStateService
         self.appLifecycleService = appLifecycleService
         self.loggingService = loggingService
-        
+
         self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
         self.date = date.ignoreTimeComponents()
         
@@ -52,7 +52,7 @@ class TimelineViewModel
         let refreshObservable = Observable.of(newTimeSlotForThisDate, updatedTimeSlotForThisDate, movedToForeground).merge()
         
         refreshObservable
-            .startWith(())
+            .startWith(()) // This is a hack I can't remove due to something funky with the view controllery lifecycle. We should fix this in the refactor
             .map(timeSlotsForToday)
             .map(toTimelineItems)
             .bindTo(self.timelineItems)
@@ -64,6 +64,12 @@ class TimelineViewModel
     let date : Date
     let timeObservable : Observable<Void>
     var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
+    
+    var presentEditViewObservable : Observable<Void>
+    {
+        return self.appLifecycleService.startedOnNotificationObservable
+            .filter({ [unowned self] in self.isCurrentDay })            
+    }
     
     //MARK: Public methods
     
