@@ -1,6 +1,5 @@
 import UIKit
 import RxSwift
-import CoreData
 import Foundation
 import CoreLocation
 import UserNotifications
@@ -30,6 +29,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let selectedDateService : DefaultSelectedDateService
     private let notificationSchedulingService : NotificationSchedulingService
     
+    private let coreDataStack : CoreDataStack
+    
     //MARK: Properties
     var window: UIWindow?
     
@@ -47,11 +48,11 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
         self.feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
         
-        
-        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: TimeSlotModelAdapter())
-        let locationPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: LocationModelAdapter())
-        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: SmartGuessModelAdapter())
-        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: HealthSampleModelAdapter())
+        self.coreDataStack = CoreDataStack(loggingService: loggingService)
+        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: TimeSlotModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let locationPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: LocationModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: SmartGuessModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: HealthSampleModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
         
         self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
                                                           loggingService: self.loggingService,
@@ -268,73 +269,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     func applicationWillTerminate(_ application: UIApplication)
     {
-        self.saveContext()
-    }
-    
-    // MARK: Core Data stack
-    private lazy var applicationDocumentsDirectory : URL =
-    {
-        // The directory the application uses to store the Core Data store file. This code uses a directory named "com.toggl.teferi" in the application's documents Application Support directory.
-        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return urls[urls.count - 1]
-    }()
-
-    private lazy var managedObjectModel : NSManagedObjectModel =
-    {
-        // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-        let modelURL = Bundle.main.url(forResource: "teferi", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOf: modelURL)!
-    }()
-
-    private lazy var persistentStoreCoordinator : NSPersistentStoreCoordinator =
-    {
-        // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
-        // Create the coordinator and store
-        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.appendingPathComponent("SingleViewCoreData.sqlite")
-        var failureReason = "There was an error creating or loading the application's saved data."
-        do
-        {
-            let options = [
-                NSMigratePersistentStoresAutomaticallyOption: true,
-                NSInferMappingModelAutomaticallyOption: true
-            ]
-            
-            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: options)
-        }
-        catch
-        {
-            let nsError = error as NSError
-            self.loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
-        }
-        
-        return coordinator
-    }()
-
-    lazy var managedObjectContext : NSManagedObjectContext =
-    {
-        // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) This property is optional since there are legitimate error conditions that could cause the creation of the context to fail.
-        let coordinator = self.persistentStoreCoordinator
-        var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
-    }()
-
-    private func saveContext()
-    {
-        if managedObjectContext.hasChanges
-        {
-            do
-            {
-                try managedObjectContext.save()
-            }
-            catch
-            {
-                // Replace this implementation with code to handle the error appropriately.
-                let nsError = error as NSError
-                self.loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
-            }
-        }
+        coreDataStack.saveContext()
     }
 }
 

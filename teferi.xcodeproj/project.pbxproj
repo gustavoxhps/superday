@@ -142,6 +142,7 @@
 		8C6417071EAF415200B893D7 /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417061EAF415200B893D7 /* CategoryButton.swift */; };
 		8C7CCB4D1E9D150A00315BF7 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */; };
 		8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */; };
+		8C7CDCA41EC45E320079F48D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CDCA31EC45E320079F48D /* CoreDataStack.swift */; };
 		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
 		8C8F2C901EADE8B10073D93D /* DailySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */; };
 		8C8F2C921EADE8C30073D93D /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */; };
@@ -408,6 +409,7 @@
 		8C6417061EAF415200B893D7 /* CategoryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryButton.swift; path = Views/CategoryButton.swift; sourceTree = "<group>"; };
 		8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MaterialButton.swift; path = Views/MaterialButton.swift; sourceTree = "<group>"; };
 		8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddTimeSlotButton.swift; path = Views/AddTimeSlotButton.swift; sourceTree = "<group>"; };
+		8C7CDCA31EC45E320079F48D /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataStack.swift; path = CoreData/CoreDataStack.swift; sourceTree = "<group>"; };
 		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryViewController.swift; path = ViewControllers/DailySummaryViewController.swift; sourceTree = "<group>"; };
 		8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DailySummaryViewModel.swift; path = ViewModels/DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -559,6 +561,7 @@
 		240AC7161D748C8800F21F4F /* teferi */ = {
 			isa = PBXGroup;
 			children = (
+				8C7CDCA21EC45E1F0079F48D /* CoreData */,
 				AC1E70EF1E3F4C120090D474 /* Algorithm */,
 				7E3C06941E30B7AA00859747 /* Generated */,
 				24CD8A461D7A13560017C53E /* Extensions */,
@@ -1054,6 +1057,14 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		8C7CDCA21EC45E1F0079F48D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				8C7CDCA31EC45E320079F48D /* CoreDataStack.swift */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
 		8C8F2C8C1EADE84C0073D93D /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1435,6 +1446,7 @@
 				8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */,
 				8C9D25E31E97FC9100D39119 /* LocationPermissionViewModel.swift in Sources */,
 				2416B2811E27B8CC00CE283B /* TopBarViewController.swift in Sources */,
+				8C7CDCA41EC45E320079F48D /* CoreDataStack.swift in Sources */,
 				BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */,
 				24EB96791DE7080F0040C211 /* CoreDataModelAdapter.swift in Sources */,
 				8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */,

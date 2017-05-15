@@ -7,30 +7,31 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     //MARK: Fields
     let loggingService : LoggingService
     let modelAdapter : CoreDataModelAdapter<T>
+    let managedObjectContext : NSManagedObjectContext
     
     //MARK: Initializers
-    init(loggingService: LoggingService, modelAdapter: CoreDataModelAdapter<T>)
+    init(loggingService: LoggingService, modelAdapter: CoreDataModelAdapter<T>, managedObjectContext: NSManagedObjectContext)
     {
         self.modelAdapter = modelAdapter
         self.loggingService = loggingService
+        self.managedObjectContext = managedObjectContext
     }
     
     //MARK: PersistencyService implementation
     override func getLast() -> T?
     {
         var elementToReturn: T? = nil
-        let managedContext = self.getManagedObjectContext()
         
-        managedContext.performAndWait
+        managedObjectContext.performAndWait
         {
             let request = NSFetchRequest<NSFetchRequestResult>()
-            request.entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
+            request.entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)!
             request.fetchLimit = 1
             request.sortDescriptors = self.modelAdapter.sortDescriptors
             
             do
             {
-                if let managedElement = try managedContext.fetch(request).first as? NSManagedObject
+                if let managedElement = try self.managedObjectContext.fetch(request).first as? NSManagedObject
                 {
                     elementToReturn = self.mapManagedObjectIntoElement(managedElement)
                 }
@@ -54,13 +55,12 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         }
         
         var elements = [T]()
-        let managedObjectContext = getManagedObjectContext()
         
         managedObjectContext.performAndWait
         {
             do
             {
-                let results = try managedObjectContext.fetch(fetchRequest) as! [NSManagedObject]
+                let results = try self.managedObjectContext.fetch(fetchRequest) as! [NSManagedObject]
                 
                 elements = results.map(self.mapManagedObjectIntoElement)
             }
@@ -77,19 +77,18 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     @discardableResult override func create(_ element: T) -> Bool
     {
         var boolToReturn = false
-        let managedContext = self.getManagedObjectContext()
         
-        managedContext.performAndWait
+        managedObjectContext.performAndWait
         {
-            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)!
-            let managedObject = NSManagedObject(entity: entity, insertInto: managedContext)
+            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)!
+            let managedObject = NSManagedObject(entity: entity, insertInto: self.managedObjectContext)
             
             //Sets the properties
             self.setManagedElementProperties(element, managedObject)
             
             do
             {
-                try managedContext.save()
+                try self.managedObjectContext.save()
                 boolToReturn = true
             }
             catch
@@ -105,11 +104,9 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     {
         var boolToReturn = false
         
-        let managedContext = self.getManagedObjectContext()
-        
-        managedContext.performAndWait
+        managedObjectContext.performAndWait
         {
-            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: managedContext)
+            let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)
             
             let request = NSFetchRequest<NSFetchRequestResult>()
             let predicate = predicate.convertToNSPredicate()
@@ -119,7 +116,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             
             do
             {
-                if let managedElement = try managedContext.fetch(request).first as AnyObject?
+                if let managedElement = try self.managedObjectContext.fetch(request).first as AnyObject?
                 {
                     let managedObject = managedElement as! NSManagedObject
                     
@@ -128,7 +125,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
                     
                     self.setManagedElementProperties(newEntity, managedObject)
                     
-                    try managedContext.save()
+                    try self.managedObjectContext.save()
                     
                     boolToReturn = true
                 }
@@ -154,13 +151,12 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         var boolToReturn = false
-        let managedObjectContext = getManagedObjectContext()
         
         managedObjectContext.performAndWait
         {
             do
             {
-                try managedObjectContext.execute(batchDeleteRequest)
+                try self.managedObjectContext.execute(batchDeleteRequest)
                 boolToReturn = true
             }
             catch
@@ -174,12 +170,6 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     }
     
     //MARK: Methods
-    private func getManagedObjectContext() -> NSManagedObjectContext
-    {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.managedObjectContext
-    }
-    
     private func setManagedElementProperties(_ element: T, _ managedObject: NSManagedObject)
     {
         self.modelAdapter.setManagedElementProperties(fromModel: element, managedObject: managedObject)
