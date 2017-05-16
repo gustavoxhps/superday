@@ -8,7 +8,7 @@ ____________________
 //Do
 class Foo { }
 
-//Don't 
+//Don't
 class bar { }
 ```
 
@@ -73,7 +73,7 @@ func foo(bar: Int) -> Int
     return min(maxVal, bar)
 }
 
-//Don't 
+//Don't
 func foo(bar: Int) -> Int
 {
     var maxVal = 10
@@ -87,20 +87,20 @@ func foo(bar: Int) -> Int
 class Foo
 {
     private let bar = 0
-    
+
     //Do
     func baz() -> Int
     {
         return self.bar + 1
     }
-    
+
     //Don't
     func qux() -> Int
     {
         return bar + 1
     }
 }
-``` 
+```
 
 ##### Use the guard statement for early returning and property unwrapping
 
@@ -109,15 +109,15 @@ class Foo
 //Do
 func boo(bar: String?)
 {
-    guard let unwrapped = bar else { return } 
+    guard let unwrapped = bar else { return }
     //Magic goes here
 }
 
-//Don't 
+//Don't
 
 func boo(bar: String?)
 {
-    if bar != nil { return } 
+    if bar != nil { return }
     let unwrapped = bar!
     //Magic goes here
 }
@@ -130,15 +130,15 @@ func boo(bar: String?)
 func foo(bar: Int)
 {
     guard bar > 0 else { return }
-    
+
     let someValue = self.calculateSomething(bar)
-    
+
     guard someValue > 0 else { return }
-    
+
     // Magic goes here
 }
 
-//Don't 
+//Don't
 func foo(bar: Int)
 {
     if bar > 0
@@ -161,7 +161,7 @@ func setupButton()
 {
     let customView = MyCustomView()
     self.view.addSubview(customView)
-    
+
     customView.snp.makeConstraints { make in make.edges.equalTo(self.view) }
 }
 
@@ -173,3 +173,169 @@ func setupButton()
 }
 
 ```
+
+##### On functions
+
+- Functions should be small. Generally more than 20 lines of code is too much.
+- Every function should do one thing and one thing only.
+- Naming is crucial; what the function does should be evident by reading its name and signature.
+- Functions should be pure when possible (no side effects).
+- Functions should only handle one level of abstraction, delegating to other functions for lower abstractions.
+- Functions should generally be ordered from higher level to lower level, so they call functions below themselves, not above.
+
+For example, this method...
+
+```swift
+func animateTransition(using transitionContext: UIViewControllerContextTransitioning)
+   {
+       let toController = transitionContext.viewController(forKey: .to)!
+       let fromController = transitionContext.viewController(forKey: .from)!
+       let animationDuration = transitionDuration(using: transitionContext)
+
+       if presenting
+       {
+
+           transitionContext.containerView.addSubview(toController.view)
+
+           let finalFrame = transitionContext.finalFrame(for: toController)
+           toController.view.frame = finalFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
+           toController.view.alpha = 0.5
+
+           UIView.animate(
+               {
+                   toController.view.frame = finalFrame
+                   toController.view.alpha = 1.0
+               },
+               duration: animationDuration,
+               delay: 0,
+               options: [],
+               withControlPoints: 0.175, 0.885, 0.32, 1.14,
+               completion: {
+                   transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+               }
+           )
+       }
+       else
+       {
+           let initialFrame = transitionContext.initialFrame(for: fromController)
+           let finalFrame = initialFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
+
+           if transitionContext.isInteractive
+           {
+               UIView.animate(
+                   withDuration: animationDuration,
+                   animations: {
+                       fromController.view.frame = finalFrame
+                   },
+                   completion: { p in
+                       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                   }
+               )
+           }
+           else
+           {
+               UIView.animate(
+                   {
+                       fromController.view.frame = finalFrame
+                       fromController.view.alpha = 0.5
+                   },
+                   duration: animationDuration,
+                   delay: 0,
+                   options: [],
+                   withControlPoints: 0.4, 0.0, 0.6, 1,
+                   completion: {
+                       transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                   }
+               )
+           }
+       }
+   }
+```
+
+Would be much better this way:
+```swift
+func animateTransition(using transitionContext: UIViewControllerContextTransitioning)
+    {
+        if presenting
+        {
+            presentModal(transitionContext: transitionContext)
+        }
+        else
+        {
+            if transitionContext.isInteractive
+            {
+                dismissModalInteractively(transitionContext: transitionContext)
+            }
+            else
+            {
+                dismissModal(transitionContext: transitionContext)
+            }
+        }
+    }
+
+    private func presentModal(transitionContext: UIViewControllerContextTransitioning)
+    {
+        let toController = transitionContext.viewController(forKey: .to)!
+        let animationDuration = transitionDuration(using: transitionContext)
+
+        transitionContext.containerView.addSubview(toController.view)
+
+        let finalFrame = transitionContext.finalFrame(for: toController)
+        toController.view.frame = finalFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
+        toController.view.alpha = 0.5
+
+        UIView.animate(
+            {
+                toController.view.frame = finalFrame
+                toController.view.alpha = 1.0
+        },
+            duration: animationDuration,
+            delay: 0,
+            options: [],
+            withControlPoints: 0.175, 0.885, 0.32, 1.14,
+            completion: {
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+        })
+    }
+
+    private func dismissModal(transitionContext: UIViewControllerContextTransitioning)
+    {
+        let fromController = transitionContext.viewController(forKey: .from)!
+        let animationDuration = transitionDuration(using: transitionContext)
+        let initialFrame = transitionContext.initialFrame(for: fromController)
+        let finalFrame = initialFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
+
+        UIView.animate(
+            {
+                fromController.view.frame = finalFrame
+                fromController.view.alpha = 0.5
+        },
+            duration: animationDuration,
+            delay: 0,
+            options: [],
+            withControlPoints: 0.4, 0.0, 0.6, 1,
+            completion: {
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+        })
+    }
+
+    private func dismissModalInteractively(transitionContext: UIViewControllerContextTransitioning)
+    {
+        let fromController = transitionContext.viewController(forKey: .from)!
+        let animationDuration = transitionDuration(using: transitionContext)
+        let initialFrame = transitionContext.initialFrame(for: fromController)
+        let finalFrame = initialFrame.offsetBy(dx: 0, dy: transitionContext.containerView.frame.height)
+
+        UIView.animate(
+            withDuration: animationDuration,
+            animations: {
+                fromController.view.frame = finalFrame
+        },
+            completion: { p in
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+        })
+    }
+
+```
+
+Is a good idea to run tools like [this one](https://github.com/yopeso/Taylor) which help you find long functions and many other code metrics.
