@@ -108,6 +108,8 @@ class MainViewModelTests : XCTestCase
     {
         let location = CLLocation(latitude:43.4211, longitude:4.7562)
         
+        self.viewModel.addNewSlot(withCategory: .leisure)
+        
         let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(),
                                                         smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
                                                         location: location)!

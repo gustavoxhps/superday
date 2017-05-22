@@ -32,12 +32,6 @@ class MainViewModel
         self.beganEditingObservable = self.editStateService.beganEditingObservable
         
         self.categoryProvider = DefaultCategoryProvider(timeSlotService: timeSlotService)
-        
-        let shouldCreateLeisureTimeSlot = self.timeSlotService.getLast() == nil
-        if shouldCreateLeisureTimeSlot
-        {
-            self.addNewSlot(withCategory: .leisure)
-        }
     }
     
     // MARK: Properties

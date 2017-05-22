@@ -25,8 +25,18 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
                                            timeSlotService: self.timeSlotService)
     }
     
+    func testThePipeCreatesInitialTimeSlotIfNoneExistYet()
+    {
+        let result = self.pipe.process(timeline: [])
+        
+        expect(result.count).to(equal(1))
+        expect(result.first!.start).to(equal(self.timeService.now))
+    }
+    
     func testThePipeCreatesATimeSlotIfThereIsNoTimeSlotPersistedTodayAndNoTimeSlotStartingTodayInThePipe()
     {
+        self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now.addingTimeInterval(-24*60*60), category: .unknown, categoryWasSetByUser: false, tryUsingLatestLocation: false)
+
         let result = self.pipe.process(timeline: [TemporaryTimeSlot(start: self.timeService.now.yesterday) ])
         
         expect(result.count).to(equal(2))
@@ -36,6 +46,8 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
     
     func testThePipeCreatesATimeSlotIfTheresNoDataForTheCurrentDayBothPersistedAndInThePipe()
     {
+        self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now.addingTimeInterval(-24*60*60), category: .unknown, categoryWasSetByUser: false, tryUsingLatestLocation: false)
+        
         let result = self.pipe.process(timeline: [])
         
         expect(result.count).to(equal(1))
@@ -44,6 +56,8 @@ class FirstTimeSlotOfDayPipeTests : XCTestCase
     
     func testThePipeDoesNotTouchDataIfThereAreSlotsInThePipe()
     {
+        self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now, category: .unknown, categoryWasSetByUser: false, tryUsingLatestLocation: false)
+
         let result = self.pipe.process(timeline: [ TemporaryTimeSlot(start: self.timeService.now) ])
         
         expect(result.count).to(equal(1))

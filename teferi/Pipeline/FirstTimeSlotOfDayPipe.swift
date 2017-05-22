@@ -13,6 +13,12 @@ class FirstTimeSlotOfDayPipe : Pipe
     func process(timeline: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
         let now = self.timeService.now
+
+        let noTimeSlotsExist = self.timeSlotService.getLast() == nil
+        if noTimeSlotsExist
+        {
+            return timeline + [TemporaryTimeSlot(start: now, end: nil, smartGuess: nil, category: .leisure, location: nil)]
+        }        
         
         guard !self.hasTimeSlotsForToday(timeline) && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
         
