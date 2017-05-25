@@ -40,7 +40,8 @@ class MainViewModelTests : XCTestCase
                                        editStateService: self.editStateService,
                                        smartGuessService: self.smartGuessService,
                                        selectedDateService: self.selectedDateService,
-                                       settingsService: settingsService)
+                                       settingsService: settingsService,
+                                       appLifecycleService: appLifecycleService)
         
     }
     
@@ -144,6 +145,96 @@ class MainViewModelTests : XCTestCase
         self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(timeSlot.categoryWasSetByUser).to(beTrue())
+    }
+    
+    func testHKPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()
+    {
+        self.settingsService.hasHealthKitPermission = true
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext:  { _ in wouldShow = true })
+        
+        expect(wouldShow).to(beFalse())
+    }
+    
+    func testHKPermissionShouldBeShownIfItWasNotShownForTheDurationSpecifiedInConstant()
+    {
+        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions)
+        self.settingsService.hasHealthKitPermission = false
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext: { _ in wouldShow = true })
+        
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        
+        expect(wouldShow).to(beTrue())
+    }
+    
+    func testHKPermissionShouldBeNotShownIfItWasNotShownBeforTheDurationSpecifiedInConstant()
+    {
+        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 15*60)
+        self.settingsService.hasHealthKitPermission = false
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext: { _ in wouldShow = true })
+        
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        
+        expect(wouldShow).to(beFalse())
+    }
+    
+    func testLocationPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()
+    {
+        self.settingsService.hasLocationPermission = true
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext:  { _ in wouldShow = true })
+        
+        expect(wouldShow).to(beFalse())
+    }
+    
+    func testIfLocationPermissionWasNeverShownItNeedsToBeShown()
+    {
+        self.settingsService.hasLocationPermission = false
+        self.settingsService.lastAskedForLocationPermission = nil
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext: { type in wouldShow = type == .location })
+        
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        
+        expect(wouldShow).to(beTrue())
+    }
+    
+    func testLocationPermissionShouldBeShownIfItWasNotShownForSpecifiedTime()
+    {
+        self.settingsService.hasLocationPermission = false
+        self.settingsService.lastAskedForLocationPermission = Date().addingTimeInterval(-(Constants.timeToWaitBeforeShowingLocationPermissionsAgain*2))
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext: { type in wouldShow = type == .location })
+        
+        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        
+        expect(wouldShow).to(beTrue())
+    }
+    
+    func testLocationPermissionShouldNotBeShownIfItWasLastShownInTheLastSpecifiedTime()
+    {
+        self.settingsService.hasLocationPermission = false
+        self.settingsService.lastAskedForLocationPermission = Date().ignoreTimeComponents()
+        
+        var wouldShow = false
+        self.disposable = self.viewModel.showPermissionControllerObservable
+            .subscribe(onNext: { _ in wouldShow = true })
+        
+        expect(wouldShow).to(beFalse())
     }
     
     private func addTimeSlot(withCategory category: teferi.Category) -> TimeSlot

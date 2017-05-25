@@ -114,6 +114,9 @@ class TimelineViewController : UIViewController
         if !cell.isSubscribedToClickObservable
         {
             cell.editClickObservable
+                .map{ [unowned self] index in
+                    return (self.buttonPosition(forCellIndex: index), index)
+                }
                 .subscribe(onNext: self.viewModel.notifyEditingBegan)
                 .addDisposableTo(disposeBag)
         }
@@ -135,15 +138,18 @@ class TimelineViewController : UIViewController
         let indexPath = IndexPath(row: lastRow, section: 0)
         
         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-                
-        guard let lastCell = self.tableView.cellForRow(at: indexPath) as? TimelineCell,
-            lastCell.window != nil //We need to check if the cell is on screen because multiple view controllers can be loaded at the same time
-            else { return }
 
-        let mainView = UIApplication.shared.keyWindow?.rootViewController?.view
-
-        let centerPoint = lastCell.categoryCircle.convert(lastCell.categoryCircle.center, to: mainView)
+        let centerPoint = buttonPosition(forCellIndex: lastRow)
 
         self.viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
+    }
+    
+    private func buttonPosition(forCellIndex index: Int) -> CGPoint
+    {
+        guard let cell = self.tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? TimelineCell else {
+            return CGPoint.zero
+        }
+        
+        return cell.categoryCircle.convert(cell.categoryCircle.center, to: self.view)
     }
 }

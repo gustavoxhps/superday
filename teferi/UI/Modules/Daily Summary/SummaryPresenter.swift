@@ -2,7 +2,7 @@ import UIKit
 
 class SummaryPresenter
 {
-    weak var viewController : SummaryViewController!
+    private weak var viewController : SummaryViewController!
     
     static func create(with viewModelLocator: ViewModelLocator) -> SummaryViewController
     {

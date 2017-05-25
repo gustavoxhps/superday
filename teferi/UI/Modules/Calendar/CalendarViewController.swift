@@ -4,6 +4,9 @@ import RxSwift
 
 class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource
 {
+    private var viewModel : CalendarViewModel!
+    private var presenter : CalendarPresenter!
+    
     // MARK: Fields
     private let calendarCell = "CalendarCell"
     
@@ -27,27 +30,24 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     }()
     
     private var disposeBag = DisposeBag()
-    private var viewModel : CalendarViewModel!
     private var calendarCellsShouldAnimate = false
     
-    // MARK: Properties
-    var isVisible = false
-    
-    func inject(viewModel: CalendarViewModel)
+    func inject(presenter:CalendarPresenter, viewModel: CalendarViewModel)
     {
+        self.presenter = presenter
         self.viewModel = viewModel
     }
     
-    override func viewWillAppear(_ animated: Bool)
+    override func viewDidLoad()
     {
-        super.viewWillAppear(animated)
+        super.viewDidLoad()
                 
         //Configures the calendar
         self.calendarView.dataSource = self
         self.calendarView.delegate = self
         self.calendarView.registerCellViewXib(file: self.calendarCell)
         self.calendarView.cellInset = CGPoint(x: 1.5, y: 2)
-        self.calendarView.scrollToDate(self.viewModel.maxValidDate)
+        self.calendarView.scrollToDate(self.viewModel.maxValidDate, animateScroll:false)
         
         self.leftButton.rx.tap
             .subscribe(onNext: self.onLeftClick)
@@ -62,29 +62,30 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
             .subscribe(onNext: self.onCurrentCalendarDateChanged)
             .addDisposableTo(self.disposeBag)
         
-        self.viewModel
-            .dateObservable
+        self.viewModel.dateObservable.skip(1)
             .subscribe(onNext: self.onCurrentlySelectedDateChanged)
             .addDisposableTo(self.disposeBag)
         
         self.calendarView.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        show()
+    }
+    
     func hide()
     {
-        guard self.isVisible else { return }
-        
         DelayedSequence
             .start()
             .then(self.fadeOverlay(fadeIn: false))
             .then(self.fadeElements(fadeIn: false))
-            .then(self.toggleInteraction(enable: false))
+            .after(0.3, self.dismiss())
     }
-    
-    func show()
-    {
-        guard !self.isVisible else { return }
-        
+
+    private func show()
+    {        
         self.calendarCellsShouldAnimate = true
         self.calendarView.reloadData()
         
@@ -92,7 +93,6 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
             .start()
             .then(self.fadeOverlay(fadeIn: true))
             .after(0.105, self.fadeElements(fadeIn: true))
-            .then(self.toggleInteraction(enable: true))
             .then(dissableCalendarCellAnimation())
     }
     
@@ -108,6 +108,10 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         let yDiff = CGFloat(fadeIn ? 0 : -20)
         
         return { delay in
+        
+            self.viewsToAnimate.forEach { v in
+                v.transform = CGAffineTransform(translationX: 0, y: fadeIn ? -20 : 0)
+            }
             
             UIView.animate(withDuration: 0.225, delay: delay)
             {
@@ -128,15 +132,12 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         }
     }
     
-    private func toggleInteraction(enable: Bool) -> (Double) -> ()
+    private func dismiss() -> (Double) -> ()
     {
-        return { delay in
-            
+        return { [unowned self] delay in
             Timer.schedule(withDelay: delay)
             {
-                self.isVisible = enable
-                self.view.isUserInteractionEnabled = enable
-                self.view.superview?.isUserInteractionEnabled = enable
+                self.presenter.dismiss()
             }
         }
     }

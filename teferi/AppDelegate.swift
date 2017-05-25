@@ -115,6 +115,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
         setVersionInSettings()
+        setAppearance()
         
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
@@ -157,6 +158,14 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         UserDefaults.standard.set("\(appVersionString) (\(buildNumber))", forKey: "version_string")
     }
     
+    private func setAppearance()
+    {
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().tintColor = UIColor.white
+    }
+    
     private func logAppStartup(_ isInBackground: Bool)
     {
         let versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
@@ -186,31 +195,15 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        appLifecycleService: self.appLifecycleService,
                                                        selectedDateService: self.selectedDateService,
                                                        loggingService: self.loggingService,
-                                                       healthKitService: self.healthKitService)
+                                                       healthKitService: self.healthKitService,
+                                                       notificationService: self.notificationService)
         
-        let isFirstUse = self.settingsService.installDate == nil
-        
-        let mainViewController = StoryboardScene.Main.instantiateMain()
-        var initialViewController : UIViewController =
-            mainViewController.inject(viewModelLocator: viewModelLocator, isFirstUse: isFirstUse)
-        
-        if isFirstUse
+        if settingsService.installDate == nil
         {
             notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
-            
-            let onboardController = StoryboardScene.Onboarding.instantiateOnboardingPager()
-            
-            initialViewController =
-                onboardController.inject(self.timeService,
-                                         self.timeSlotService,
-                                         self.settingsService,
-                                         self.appLifecycleService,
-                                         mainViewController,
-                                         notificationService)
         }
         
-        
-        self.window!.rootViewController = initialViewController
+        self.window!.rootViewController = IntroPresenter.create(with: viewModelLocator)
         self.window!.makeKeyAndVisible()
     }
     

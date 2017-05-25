@@ -31,14 +31,12 @@ class TimelineCell : UITableViewCell
     
     //MARK: Properties
     private(set) var isSubscribedToClickObservable = false
-    lazy var editClickObservable : Observable<(CGPoint, Int)> =
+    lazy var editClickObservable : Observable<Int> =
         {
             self.isSubscribedToClickObservable = true
             
-            let mainView = UIApplication.shared.keyWindow?.rootViewController?.view
-            
             return self.categoryButton.rx.tap
-                .map { return (self.categoryCircle.convert(self.categoryCircle.center, to: mainView), self.currentIndex) }
+                .map { return self.currentIndex }
                 .asObservable()
     }()
     

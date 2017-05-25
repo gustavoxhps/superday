@@ -1,7 +1,7 @@
 import RxSwift
 import Foundation
 
-class TopBarViewModel
+class NavigationViewModel
 {
     // MARK: Fields
     private let currentDayBarTitle = L10n.currentDayBarTitle
@@ -11,7 +11,7 @@ class TopBarViewModel
     private let feedbackService: FeedbackService
     private let selectedDateService : SelectedDateService
     private let appLifecycleService: AppLifecycleService
-
+    
     private let dayOfMonthFormatter : DateFormatter
     
     // MARK: Initializers
@@ -25,21 +25,12 @@ class TopBarViewModel
         self.selectedDateService = selectedDateService
         self.appLifecycleService = appLifecycleService
         
-        self.dateObservable = Observable.combineLatest(
-            self.selectedDateService.currentlySelectedDateObservable,
-            self.appLifecycleService.movedToForegroundObservable)
-        { date, _ in return date }
-        
         self.dayOfMonthFormatter = DateFormatter()
         self.dayOfMonthFormatter.timeZone = TimeZone.autoupdatingCurrent
         self.dayOfMonthFormatter.dateFormat = "EEE, dd MMM"
     }
     
     // MARK: Properties
-    
-    ///Current date for the calendar button
-    let dateObservable : Observable<Date>
-    
     var calendarDay : Observable<String>
     {
         return self.appLifecycleService.movedToForegroundObservable
@@ -50,23 +41,32 @@ class TopBarViewModel
         }
     }
     
-    ///Gets the title for the header. Changes on new locations.
-    var title : String
+    var title : Observable<String>
     {
+        return Observable.combineLatest(
+            self.selectedDateService.currentlySelectedDateObservable,
+            self.appLifecycleService.movedToForegroundObservable.startWith(())) { date, _ in
+                return date
+            }
+            .map(titleForDate)
+    }
+    
+    private func titleForDate(date:Date) -> String
+    {
+        let currentDate = date.ignoreTimeComponents()
         let today = self.timeService.now.ignoreTimeComponents()
         let yesterday = today.yesterday.ignoreTimeComponents()
-        let currentlySelectedDate = self.selectedDateService.currentlySelectedDate.ignoreTimeComponents()
         
-        if currentlySelectedDate == today
+        if currentDate == today
         {
             return self.currentDayBarTitle
         }
-        else if currentlySelectedDate == yesterday
+        else if currentDate == yesterday
         {
             return self.yesterdayBarTitle
         }
         
-        return dayOfMonthFormatter.string(from: currentlySelectedDate)
+        return dayOfMonthFormatter.string(from: currentDate)
     }
     
     func composeFeedback() { self.feedbackService.composeFeedback() }

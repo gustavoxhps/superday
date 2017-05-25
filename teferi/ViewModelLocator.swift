@@ -3,6 +3,10 @@ import UIKit
 
 protocol ViewModelLocator
 {
+    func getNavigationViewModel(forViewController: UIViewController) -> NavigationViewModel
+    func getIntroViewModel() -> IntroViewModel
+    func getOnboardingViewModel() -> OnboardingViewModel
+    
     func getCalendarViewModel() -> CalendarViewModel
     
     func getMainViewModel() -> MainViewModel
@@ -13,8 +17,6 @@ protocol ViewModelLocator
     func getHealthKitPermissionViewModel() -> PermissionViewModel
     
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
-    
-    func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
     
     func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
     func getSummaryViewModel() -> SummaryViewModel
@@ -35,7 +37,8 @@ class DefaultViewModelLocator : ViewModelLocator
     private let selectedDateService : SelectedDateService
     private let loggingService : LoggingService
     private let healthKitService : HealthKitService
-
+    private let notificationService : NotificationService
+    
     init(timeService: TimeService,
          metricsService: MetricsService,
          feedbackService: FeedbackService,
@@ -47,7 +50,8 @@ class DefaultViewModelLocator : ViewModelLocator
          appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService,
          loggingService: LoggingService,
-         healthKitService : HealthKitService)
+         healthKitService : HealthKitService,
+         notificationService: NotificationService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
@@ -61,6 +65,31 @@ class DefaultViewModelLocator : ViewModelLocator
         self.selectedDateService = selectedDateService
         self.loggingService = loggingService
         self.healthKitService = healthKitService
+        self.notificationService = notificationService
+    }
+    
+    func getNavigationViewModel(forViewController viewController: UIViewController) -> NavigationViewModel
+    {
+        let feedbackService = (self.feedbackService as! MailFeedbackService).with(viewController: viewController)
+
+        return NavigationViewModel(timeService: self.timeService,
+                                       feedbackService: feedbackService,
+                                       selectedDateService: self.selectedDateService,
+                                       appLifecycleService: self.appLifecycleService)
+    }
+    
+    func getIntroViewModel() -> IntroViewModel
+    {
+        return IntroViewModel(settingsService: self.settingsService)
+    }
+    
+    func getOnboardingViewModel() -> OnboardingViewModel
+    {
+        return OnboardingViewModel(timeService: self.timeService,
+                                   timeSlotService: self.timeSlotService,
+                                   settingsService: self.settingsService,
+                                   appLifecycleService: self.appLifecycleService,
+                                   notificationService: self.notificationService)
     }
     
     func getMainViewModel() -> MainViewModel
@@ -71,7 +100,8 @@ class DefaultViewModelLocator : ViewModelLocator
                                       editStateService: self.editStateService,
                                       smartGuessService: self.smartGuessService,
                                       selectedDateService: self.selectedDateService,
-                                      settingsService: self.settingsService)
+                                      settingsService: self.settingsService,
+                                      appLifecycleService: self.appLifecycleService)
         return viewModel
     }
     
@@ -121,18 +151,6 @@ class DefaultViewModelLocator : ViewModelLocator
                                           settingsService: self.settingsService,
                                           timeSlotService: self.timeSlotService,
                                           selectedDateService: self.selectedDateService)
-        
-        return viewModel
-    }
-    
-    func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
-    {
-        let feedbackService = (self.feedbackService as! MailFeedbackService).with(viewController: viewController)
-        
-        let viewModel = TopBarViewModel(timeService: self.timeService,
-                                        feedbackService: feedbackService,
-                                        selectedDateService: self.selectedDateService,
-                                        appLifecycleService: self.appLifecycleService)
         
         return viewModel
     }

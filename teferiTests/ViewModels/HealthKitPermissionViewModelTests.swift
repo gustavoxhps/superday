@@ -31,48 +31,6 @@ class HealthKitPermissionViewModelTests : XCTestCase
         self.disposable?.dispose()
     }
     
-    func testThePermissionStateShouldNotBeShownIfTheUserHasAlreadyAuthorized()
-    {
-        self.settingsService.hasHealthKitPermission = true
-        
-        var wouldShow = false
-        self.disposable = self.viewModel
-            .showOverlayObservable
-            .subscribe(onNext:  { wouldShow = true })
-        
-        expect(wouldShow).to(beFalse())
-    }
-    
-    func testThePermissionStateShouldBeShownIfItWasNotShownForTheDurationSpecifiedInConstant()
-    {
-        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions)
-        self.settingsService.hasHealthKitPermission = false
-        
-        var wouldShow = false
-        self.disposable = self.viewModel
-            .showOverlayObservable
-            .subscribe(onNext: { _ in wouldShow = true })
-        
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
-        
-        expect(wouldShow).to(beTrue())
-    }
-    
-    func testThePermissionStateShouldBeNotShownIfItWasNotShownBeforTheDurationSpecifiedInConstant()
-    {
-        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 15*60)
-        self.settingsService.hasHealthKitPermission = false
-        
-        var wouldShow = false
-        self.disposable = self.viewModel
-            .showOverlayObservable
-            .subscribe(onNext: { _ in wouldShow = true })
-        
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
-        
-        expect(wouldShow).to(beFalse())
-    }
-    
     func testPermissionShouldShowNonBlockingOverlayIfUserAlreadyGavePermission()
     {
         self.settingsService.hasLocationPermission = false

@@ -4,9 +4,11 @@ import Foundation
 
 class PermissionViewController : UIViewController
 {
+    private var viewModel : PermissionViewModel!
+    private var presenter : PermissionPresenter!
+    
     //MARK: Fields
     private let disposeBag = DisposeBag()
-    private var viewModel : PermissionViewModel!
     
     @IBOutlet private weak var titleLabel : UILabel!
     @IBOutlet private weak var descriptionLabel : UILabel!
@@ -16,25 +18,18 @@ class PermissionViewController : UIViewController
     @IBOutlet private weak var imageView: UIImageView!
     
     // MARK: Methods
-    func inject(viewModel: PermissionViewModel)
+    func inject(presenter:PermissionPresenter, viewModel: PermissionViewModel)
     {
+        self.presenter = presenter
         self.viewModel = viewModel
-        
-        self.initializeBindings()
     }
     
-    private func initializeBindings()
+    override func viewDidLoad()
     {
-        self.viewModel
-            .showOverlayObservable
-            .subscribe(onNext: self.showOverlay)
-            .addDisposableTo(self.disposeBag)
+        super.viewDidLoad()
         
-        self.viewModel
-            .hideOverlayObservable
-            .subscribe(onNext: self.hideOverlay)
-            .addDisposableTo(self.disposeBag)
-        
+        self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+
         self.enableButton.rx.tap
             .flatMapLatest(getUserPermission)
             .subscribe(onNext: onPermissionGiven)
@@ -44,6 +39,24 @@ class PermissionViewController : UIViewController
             .rx.tap
             .subscribe(onNext: self.onRemindLaterTapped)
             .addDisposableTo(self.disposeBag)
+        
+        self.initializeBindings()
+    }
+    
+    private func initializeBindings()
+    {
+        self.viewModel.hideOverlayObservable
+            .subscribe(onNext: self.hideOverlay)
+            .addDisposableTo(self.disposeBag)
+        
+        self.titleLabel.text = self.viewModel.titleText
+        self.descriptionLabel.text = self.viewModel.descriptionText
+        self.enableButton.setTitle(self.viewModel.enableButtonTitle, for: .normal)
+        self.remindLaterButton.isHidden = !self.viewModel.remindMeLater
+        self.imageView.image = self.viewModel.image
+        
+        self.mainButtonBottomConstraint.constant = !self.viewModel.remindMeLater ? 32 : 70
+        self.view.setNeedsLayout()
     }
     
     private func getUserPermission() -> Observable<Void>
@@ -63,30 +76,8 @@ class PermissionViewController : UIViewController
         self.hideOverlay()
     }
     
-    private func showOverlay()
-    {
-        self.titleLabel.text = self.viewModel.titleText
-        self.descriptionLabel.text = self.viewModel.descriptionText
-        self.enableButton.setTitle(self.viewModel.enableButtonTitle, for: .normal)
-        self.remindLaterButton.isHidden = !self.viewModel.remindMeLater
-        self.imageView.image = self.viewModel.image
-        
-        self.mainButtonBottomConstraint.constant = !self.viewModel.remindMeLater ? 32 : 70
-        self.view.setNeedsLayout()
-        
-        self.view.isUserInteractionEnabled = true
-        self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
-        
-        UIView.animate(withDuration: Constants.editAnimationDuration,
-                       animations: { self.view.alpha = 1 })
-    }
-    
     private func hideOverlay()
     {
-        UIView.animate(withDuration: Constants.editAnimationDuration,
-                       animations: { self.view.alpha = 0 })
-        
-        self.view.backgroundColor = UIColor.clear
-        self.view.isUserInteractionEnabled = false
+        presenter.dismiss()
     }
 }

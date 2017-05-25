@@ -62,33 +62,20 @@ class HealthKitPermissionViewModel : PermissionViewModel
         .shareReplayLatestWhileConnected()
     }
     
-    private lazy var overlayVisibilityStateObservable : Observable<Bool> =
-    {
-        let appStateObservable = self.appLifecycleService
-                                    .movedToForegroundObservable
-                                    .startWith(())
-                                    .map(self.overlayVisibilityState)
-                                    .shareReplayLatestWhileConnected()
-
-        let visibiltyObservable = self.visibilitySubject
-                                    .asObservable()
-                                    .startWith(self.overlayVisibilityState())
-        
-        return Observable
-            .of(appStateObservable, visibiltyObservable)
-            .merge()
-    }()
-    
-    private(set) lazy var showOverlayObservable : Observable<Void> =
-    {
-        return self.overlayVisibilityStateObservable
-            .filter{ $0 }
-            .mapTo(())
-    }()
-    
     private(set) lazy var hideOverlayObservable : Observable<Void> =
     {
-        return self.overlayVisibilityStateObservable
+        let appStateObservable = self.appLifecycleService
+            .movedToForegroundObservable
+            .startWith(())
+            .map(self.overlayVisibilityState)
+            .shareReplayLatestWhileConnected()
+        
+        let visibiltyObservable = self.visibilitySubject
+            .asObservable()
+            .startWith(self.overlayVisibilityState())
+        
+        return Observable.of(appStateObservable, visibiltyObservable)
+            .merge()
             .filter{ !$0 }
             .mapTo(())
     }()
@@ -108,8 +95,6 @@ class HealthKitPermissionViewModel : PermissionViewModel
     
     private func overlayVisibilityState() -> Bool
     {
-        guard let installDate = settingsService.installDate else { return false }
-        
-        return !settingsService.hasHealthKitPermission && installDate.addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 5) < self.timeService.now
+        return !settingsService.hasHealthKitPermission
     }
 }

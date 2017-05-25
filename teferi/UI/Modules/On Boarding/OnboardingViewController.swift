@@ -2,22 +2,23 @@ import UIKit
 import RxSwift
 import SnapKit
 
-class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate
+class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate
 {
+    private var viewModel : OnboardingViewModel!
+    private var presenter : OnboardingPresenter!
+    
     //MARK: Fields
     internal lazy var pages : [OnboardingPage] = { return (1...4).map { i in self.page("\(i)") } } ()
-    
-    private var launchAnim : LaunchAnimationView!
     
     @IBOutlet var pager: OnboardingPager!
     
     private var lastSeenIndex = 0
-    private var timeService : TimeService!
-    private var timeSlotService : TimeSlotService!
-    private var settingsService : SettingsService!
-    private var mainViewController : MainViewController!
-    private var appLifecycleService : AppLifecycleService!
-    private var notificationService : NotificationService!
+    
+    func inject(presenter: OnboardingPresenter, viewModel:OnboardingViewModel)
+    {
+        self.presenter = presenter
+        self.viewModel = viewModel
+    }
     
     //MARK: ViewController lifecycle
     override func viewDidLoad()
@@ -45,9 +46,6 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
         
         self.pager.createPageDots(forPageCount: self.pages.count)
         
-        self.launchAnim = LaunchAnimationView(frame: self.view.bounds)
-        self.view.addSubview(self.launchAnim)
-        self.startLaunchAnimation()
         self.onNew(page: self.pages[0])
     }
     
@@ -58,52 +56,21 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
     }
     
     //MARK: Methods
-    func inject(_ timeService: TimeService,
-                _ timeSlotService: TimeSlotService,
-                _ settingsService: SettingsService,
-                _ appLifecycleService: AppLifecycleService,
-                _ mainViewController: MainViewController,
-                _ notificationService: NotificationService) -> OnboardingPageViewController
-    {
-        self.timeService = timeService
-        self.timeSlotService = timeSlotService
-        self.settingsService = settingsService
-        self.mainViewController = mainViewController
-        self.appLifecycleService = appLifecycleService
-        self.notificationService = notificationService
-        return self
-    }
-    
     func isCurrent(page: OnboardingPage) -> Bool
     {
         return page == self.viewControllers?.first
     }
-    
-    private func startLaunchAnimation()
-    {
-        //Small delay to give launch screen time to fade away
-        Timer.schedule(withDelay: 0.1) { _ in
-            self.launchAnim.animate(onCompleted:
-            {
-                self.launchAnim.removeFromSuperview()
-                self.launchAnim = nil
-            })
-        }
-    }
-    
+
     func goToNextPage(forceNext: Bool)
     {
         let currentlyVisibleIndex = self.index(of: self.viewControllers!.first!)!
         let currentPageIndex = forceNext ? self.lastSeenIndex : currentlyVisibleIndex
+
         guard let nextPage = self.pageAt(index: currentPageIndex + 1) else
         {
-            self.settingsService.setInstallDate(self.timeService.now)
-         
-            DispatchQueue.main.async
-            {
-                self.mainViewController.modalTransitionStyle = .crossDissolve
-                self.present(self.mainViewController, animated: true)
-            }
+            
+            self.viewModel.settingsService.setInstallDate(self.viewModel.timeService.now)
+            self.presenter.showMain()
 
             return
         }
@@ -134,11 +101,11 @@ class OnboardingPageViewController: UIPageViewController, UIPageViewControllerDa
                     .storyboard()
                     .instantiateViewController(withIdentifier: "OnboardingScreen\(id)") as! OnboardingPage
         
-        page.inject(self.timeService,
-                    self.timeSlotService,
-                    self.settingsService,
-                    self.appLifecycleService,
-                    self.notificationService, self)
+        page.inject(self.viewModel.timeService,
+                    self.viewModel.timeSlotService,
+                    self.viewModel.settingsService,
+                    self.viewModel.appLifecycleService,
+                    self.viewModel.notificationService, self)
         
         return page
     }

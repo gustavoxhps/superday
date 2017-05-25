@@ -37,6 +37,7 @@ class PostiOSTenNotificationServiceTests : XCTestCase
     
     func testASimpleNotificationIsShownIfTheAppIsBeingUsedForLessThanAWeek()
     {
+        
         self.settingsService.setInstallDate(self.timeService.now)
         self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
                                                                  loggingService: self.loggingService,

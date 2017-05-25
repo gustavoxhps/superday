@@ -16,6 +16,7 @@ class MockLocator : ViewModelLocator
     var appLifecycleService = MockAppLifecycleService()
     var loggingService = MockLoggingService()
     var healthKitService = MockHealthKitService()
+    var notificationService  = MockNotificationService()
     
     init()
     {
@@ -23,6 +24,29 @@ class MockLocator : ViewModelLocator
                                                    locationService: self.locationService)
     }
 
+    func getNavigationViewModel(forViewController viewController: UIViewController) -> NavigationViewModel
+    {
+        let feedbackService = (self.feedbackService as! MailFeedbackService).with(viewController: viewController)
+        
+        return NavigationViewModel(timeService: self.timeService,
+                                       feedbackService: feedbackService,
+                                       selectedDateService: self.selectedDateService,
+                                       appLifecycleService: self.appLifecycleService)
+    }
+    
+    func getIntroViewModel() -> IntroViewModel {
+        return IntroViewModel(settingsService: self.settingsService)
+    }
+    
+    func getOnboardingViewModel() -> OnboardingViewModel
+    {
+        return OnboardingViewModel(timeService: self.timeService,
+                                   timeSlotService: self.timeSlotService,
+                                   settingsService: self.settingsService,
+                                   appLifecycleService: self.appLifecycleService,
+                                   notificationService: self.notificationService)
+    }
+    
     func getMainViewModel() -> MainViewModel
     {
         return MainViewModel(timeService: self.timeService,
@@ -31,7 +55,8 @@ class MockLocator : ViewModelLocator
                              editStateService: self.editStateService,
                              smartGuessService: self.smartGuessService,
                              selectedDateService: self.selectedDateService,
-                             settingsService: self.settingsService)
+                             settingsService: self.settingsService,
+                             appLifecycleService: self.appLifecycleService)
     }
     
     func getPagerViewModel() -> PagerViewModel
@@ -78,14 +103,6 @@ class MockLocator : ViewModelLocator
                                  settingsService: self.settingsService,
                                  timeSlotService: self.timeSlotService,
                                  selectedDateService: self.selectedDateService)
-    }
-    
-    func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
-    {
-        return TopBarViewModel(timeService: self.timeService,
-                               feedbackService: self.feedbackService,
-                               selectedDateService: self.selectedDateService,
-                               appLifecycleService: self.appLifecycleService)
     }
     
     func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel

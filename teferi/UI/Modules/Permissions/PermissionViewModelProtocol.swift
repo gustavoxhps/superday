@@ -3,7 +3,6 @@ import Foundation
 
 protocol PermissionViewModel
 {
-    var showOverlayObservable : Observable<Void> { get }
     var hideOverlayObservable : Observable<Void> { get }
     var permissionGivenObservable : Observable<Void> { get }
     var remindMeLater : Bool { get }

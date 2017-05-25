@@ -3,64 +3,56 @@ import RxSwift
 import XCTest
 @testable import teferi
 
-class OnboardingPageViewControllerTests : XCTestCase
+class OnboardingViewControllerTests : XCTestCase
 {
-    private var onBoardingPageViewController : OnboardingPageViewController!
-    private var notificationService : MockNotificationService!
+    private var onboardingViewController : OnboardingViewController!
+    private var viewModelLocator : ViewModelLocator!
     
     override func setUp()
     {
         super.setUp()
         
-        let controller = StoryboardScene.Onboarding.instantiateOnboardingPager()
+        self.viewModelLocator = MockLocator()
+        self.onboardingViewController = OnboardingPresenter.create(with: viewModelLocator)
         
-        self.notificationService = MockNotificationService()
-        self.onBoardingPageViewController = controller.inject(MockTimeService(),
-                                                              MockTimeSlotService(timeService: MockTimeService(),
-                                                                                  locationService: MockLocationService()),
-                                                              MockSettingsService(),
-                                                              MockAppLifecycleService(),
-                                                              MainViewController(),
-                                                              self.notificationService)
-        
-        self.onBoardingPageViewController.loadViewIfNeeded()
-        UIApplication.shared.keyWindow!.rootViewController = onBoardingPageViewController
+        self.onboardingViewController.loadViewIfNeeded()
+        UIApplication.shared.keyWindow!.rootViewController = onboardingViewController
     }
     
     func testTheGoToNextPageMethodNavigatesBetweenPages()
     {
-        let page = self.onBoardingPageViewController.viewControllers!.first!
-        self.onBoardingPageViewController.goToNextPage(forceNext: false)
+        let page = self.onboardingViewController.viewControllers!.first!
+        self.onboardingViewController.goToNextPage(forceNext: false)
         
-        expect(self.onBoardingPageViewController.viewControllers!.first).toNot(equal(page))
+        expect(self.onboardingViewController.viewControllers!.first).toNot(equal(page))
     }
     
     func testTheFirstPageOftheViewControllerAllowsSwipingRight()
     {
-        let page = self.onBoardingPageViewController.pages[0]
+        let page = self.onboardingViewController.pages[0]
         
-        let nextPage = self.onBoardingPageViewController
-            .pageViewController(self.onBoardingPageViewController, viewControllerBefore: page)
+        let nextPage = self.onboardingViewController
+            .pageViewController(self.onboardingViewController, viewControllerBefore: page)
         
         expect(nextPage).to(beNil())
     }
     
     func testTheThirdPageOftheViewControllerDoesNotAllowSwipingRight()
     {
-        let page = self.onBoardingPageViewController.pages[2]
+        let page = self.onboardingViewController.pages[2]
         
-        let nextPage = self.onBoardingPageViewController
-            .pageViewController(self.onBoardingPageViewController, viewControllerBefore: page)
+        let nextPage = self.onboardingViewController
+            .pageViewController(self.onboardingViewController, viewControllerBefore: page)
         
         expect(nextPage).to(beNil())
     }
     
     func testTheThirdPageOftheViewControllerDoesNotAllowSwipingLeft()
     {
-        let page = self.onBoardingPageViewController.pages[2]
+        let page = self.onboardingViewController.pages[2]
         
-        let previousPage = self.onBoardingPageViewController
-                               .pageViewController(self.onBoardingPageViewController, viewControllerAfter: page)
+        let previousPage = self.onboardingViewController
+                               .pageViewController(self.onboardingViewController, viewControllerAfter: page)
 
         expect(previousPage).to(beNil())
     }

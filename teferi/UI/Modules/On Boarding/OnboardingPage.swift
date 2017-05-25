@@ -14,7 +14,7 @@ class OnboardingPage : UIViewController
     
     var allowPagingSwipe : Bool { return self.nextButtonText != nil }
     
-    private(set) var onboardingPageViewController : OnboardingPageViewController!
+    private(set) var onboardingPageViewController : OnboardingViewController!
     
     init?(coder aDecoder: NSCoder, nextButtonText: String?)
     {
@@ -38,7 +38,7 @@ class OnboardingPage : UIViewController
                 _ settingsService: SettingsService,
                 _ appLifecycleService: AppLifecycleService,
                 _ notificationService: NotificationService,
-                _ onboardingPageViewController: OnboardingPageViewController)
+                _ onboardingPageViewController: OnboardingViewController)
     {
         self.timeService = timeService
         self.timeSlotService = timeSlotService
@@ -58,7 +58,9 @@ class OnboardingPage : UIViewController
     
     func finish()
     {
-        self.onboardingPageViewController.goToNextPage(forceNext: false)
+        DispatchQueue.main.async {
+            self.onboardingPageViewController.goToNextPage(forceNext: false)
+        }
     }
     
     func startAnimations()

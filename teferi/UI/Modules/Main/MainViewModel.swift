@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 
 ///ViewModel for the MainViewController.
-class MainViewModel
+class MainViewModel : RxViewModel
 {
     // MARK: Fields
     private let timeService : TimeService
@@ -11,6 +11,7 @@ class MainViewModel
     private let editStateService : EditStateService
     private let smartGuessService : SmartGuessService
     private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
     
     init(timeService: TimeService,
          metricsService: MetricsService,
@@ -18,7 +19,8 @@ class MainViewModel
          editStateService: EditStateService,
          smartGuessService : SmartGuessService,
          selectedDateService : SelectedDateService,
-         settingsService : SettingsService)
+         settingsService : SettingsService,
+         appLifecycleService: AppLifecycleService)
     {
         self.timeService = timeService
         self.metricsService = metricsService
@@ -26,12 +28,14 @@ class MainViewModel
         self.editStateService = editStateService
         self.smartGuessService = smartGuessService
         self.settingsService = settingsService
+        self.appLifecycleService = appLifecycleService
         
         self.isEditingObservable = self.editStateService.isEditingObservable
         self.dateObservable = selectedDateService.currentlySelectedDateObservable
         self.beganEditingObservable = self.editStateService.beganEditingObservable
         
         self.categoryProvider = DefaultCategoryProvider(timeSlotService: timeSlotService)
+
     }
     
     // MARK: Properties
@@ -43,6 +47,23 @@ class MainViewModel
     // MARK: Properties
     var currentDate : Date { return self.timeService.now }
     
+    var showPermissionControllerObservable : Observable<PermissionRequestType>
+    {
+        return Observable.of(
+            self.appLifecycleService.movedToForegroundObservable,
+            self.didBecomeActive)
+            .merge()
+            .map { [unowned self] () -> PermissionRequestType? in
+                if self.shouldShowLocationPermissionRequest() {
+                    return PermissionRequestType.location
+                } else if self.shouldShowHealthKitPermissionRequest() {
+                    return PermissionRequestType.health
+                }
+                
+                return nil
+            }
+            .filterNil()
+    }
     
     //MARK: Methods
     
@@ -100,8 +121,23 @@ class MainViewModel
     
     func notifyEditingEnded() { self.editStateService.notifyEditingEnded() }
     
-    func shouldAddHealthKitPermisionToViewHierarchy() -> Bool
+    private func shouldShowLocationPermissionRequest() -> Bool
     {
-        return !settingsService.hasHealthKitPermission
+        if self.settingsService.hasLocationPermission { return false }
+        
+        //If user doesn't have permissions and we never showed the overlay, do it
+        guard let lastRequestedDate = self.settingsService.lastAskedForLocationPermission else { return true }
+        
+        let minimumRequestDate = lastRequestedDate.addingTimeInterval(Constants.timeToWaitBeforeShowingLocationPermissionsAgain)
+        
+        //If we previously showed the overlay, we must only do it again after timeToWaitBeforeShowingLocationPermissionsAgain
+        return minimumRequestDate < self.timeService.now
+    }
+    
+    private func shouldShowHealthKitPermissionRequest() -> Bool
+    {
+        guard let installDate = settingsService.installDate else { return false }
+        
+        return !settingsService.hasHealthKitPermission && installDate.addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 5) < self.timeService.now
     }
 }

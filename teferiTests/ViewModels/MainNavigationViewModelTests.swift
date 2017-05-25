@@ -4,9 +4,9 @@ import Nimble
 import RxTest
 import RxSwift
 
-class TopBarViewModelTests : XCTestCase
+class MainNavigationViewModelTests : XCTestCase
 {
-    private var viewModel : TopBarViewModel!
+    private var viewModel : NavigationViewModel!
     
     private var timeService : MockTimeService!
     private var feedbackService : MockFeedbackService!
@@ -30,10 +30,10 @@ class TopBarViewModelTests : XCTestCase
         
         self.timeService.mockDate = getDate(withDay: 13)
         
-        self.viewModel =  TopBarViewModel(timeService: self.timeService,
-                                          feedbackService: self.feedbackService,
-                                          selectedDateService: self.selectedDateService,
-                                          appLifecycleService: self.appLifecycleService)
+        self.viewModel = NavigationViewModel(timeService: self.timeService,
+                                             feedbackService: self.feedbackService,
+                                             selectedDateService: self.selectedDateService,
+                                             appLifecycleService: self.appLifecycleService)
         
         scheduler = TestScheduler(initialClock:0)
         dateLabelObserver = scheduler.createObserver(String.self)
@@ -45,21 +45,37 @@ class TopBarViewModelTests : XCTestCase
     
     func testTheTitlePropertyReturnsSuperdayForTheCurrentDate()
     {
+        let observer = scheduler.createObserver(String.self)
+        viewModel.title
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
         let today = self.timeService.mockDate!
         self.selectedDateService.currentlySelectedDate = today
         
-        expect(self.viewModel.title).to(equal(L10n.currentDayBarTitle))
+        expect(observer.events.last!.value.element!).to(equal(L10n.currentDayBarTitle))
     }
-    
+
     func testTheTitlePropertyReturnsSuperyesterdayForYesterday()
     {
+        let observer = scheduler.createObserver(String.self)
+        viewModel.title
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
         let yesterday = self.timeService.mockDate!.yesterday
         self.selectedDateService.currentlySelectedDate = yesterday
-        expect(self.viewModel.title).to(equal(L10n.yesterdayBarTitle))
+    
+        expect(observer.events.last!.value.element!).to(equal(L10n.yesterdayBarTitle))
     }
     
     func testTheTitlePropertyReturnsTheFormattedDayAndMonthForOtherDates()
     {
+        let observer = scheduler.createObserver(String.self)
+        viewModel.title
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
         let olderDate = Date().add(days: -2)
         self.selectedDateService.currentlySelectedDate = olderDate
         
@@ -68,7 +84,7 @@ class TopBarViewModelTests : XCTestCase
         formatter.dateFormat = "EEE, dd MMM";
         let expectedText = formatter.string(from: olderDate)
         
-        expect(self.viewModel.title).to(equal(expectedText))
+        expect(observer.events.last!.value.element!).to(equal(expectedText))
     }
     
     func testTheCalendarDayAlwaysReturnsTheCurrentDate()
@@ -102,6 +118,12 @@ class TopBarViewModelTests : XCTestCase
     
     func testTheTitleChangesWhenTheDateChanges()
     {
+        let observer = scheduler.createObserver(String.self)
+        viewModel.title
+            .debug()
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
         let today = self.timeService.mockDate!
         self.selectedDateService.currentlySelectedDate = today
 
@@ -109,9 +131,8 @@ class TopBarViewModelTests : XCTestCase
         self.timeService.mockDate = today.add(days: 1)
         self.appLifecycleService.publish(.movedToForeground(fromNotification: false))
         
-        expect(self.viewModel.title).to(equal(L10n.yesterdayBarTitle))
+        expect(observer.events.last!.value.element!).to(equal(L10n.yesterdayBarTitle))
     }
-
     
     private func getDate(withDay day: Int) -> Date
     {
