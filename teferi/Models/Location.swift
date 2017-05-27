@@ -67,7 +67,7 @@ final class Location : EventData
     func toCLLocation() -> CLLocation
     {
         let coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-        return CLLocation(coordinate: coordinate,                          altitude: self.altitude,
+        return CLLocation(coordinate: coordinate, altitude: self.altitude,
                           horizontalAccuracy: self.horizontalAccuracy,
                           verticalAccuracy: self.verticalAccuracy,
                           timestamp: self.timestamp)

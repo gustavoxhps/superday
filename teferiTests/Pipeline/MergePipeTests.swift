@@ -139,7 +139,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 0700, endOffset: 0900, teferi.Category.work   ),
               TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown),
-              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown) ].map(toTempTimeSlot)
+              TestData(startOffset: 1300, endOffset: nil, teferi.Category.unknown) ].map(toTempTimeSlot)
         
         self.mergePipe
             .process(timeline: self.data)
@@ -164,22 +164,22 @@ class MergePipeTests : XCTestCase
         self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.unknown, includeSmartGuess: false),
-              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work   , includeSmartGuess: true),
-              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.work   , includeSmartGuess: false)].map(toTempTimeSlot)
+              TestData(startOffset: 0400, endOffset: 0900, teferi.Category.work, includeSmartGuess: true),
+              TestData(startOffset: 0900, endOffset: 1300, teferi.Category.work, includeSmartGuess: false)].map(toTempTimeSlot)
         
         self.healthKitPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0700, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
-              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food   , includeSmartGuess: true )].map(toTempTimeSlot)
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food, includeSmartGuess: true )].map(toTempTimeSlot)
         
         let expectedTimeline =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0100, endOffset: 0400, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0400, endOffset: 0700, teferi.Category.commute, includeSmartGuess: false),
-              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.work   , includeSmartGuess: true),
-              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.work   , includeSmartGuess: false),
-              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food   , includeSmartGuess: true),
-              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
+              TestData(startOffset: 0700, endOffset: 0900, teferi.Category.work, includeSmartGuess: true),
+              TestData(startOffset: 0900, endOffset: 1200, teferi.Category.work, includeSmartGuess: false),
+              TestData(startOffset: 1200, endOffset: 1300, teferi.Category.food, includeSmartGuess: true),
+              TestData(startOffset: 1300, endOffset: nil, teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
         self.mergePipe
@@ -218,7 +218,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 0700, endOffset: 0900, teferi.Category.commute, includeSmartGuess: false),
               TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false),
-              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
+              TestData(startOffset: 1300, endOffset: nil, teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
         self.mergePipe
@@ -257,7 +257,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 0700, endOffset: 0900, teferi.Category.commute, includeSmartGuess: true ),
               TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown, includeSmartGuess: false),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeSmartGuess: false),
-              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeSmartGuess: false) ]
+              TestData(startOffset: 1300, endOffset: nil, teferi.Category.unknown, includeSmartGuess: false) ]
                 .map(toTempTimeSlot)
         
         self.mergePipe
@@ -311,7 +311,7 @@ class MergePipeTests : XCTestCase
         
         self.locationPump.timeSlotsToReturn =
             [ TestData(startOffset: 0000, endOffset: 0100, teferi.Category.unknown, includeLocation: false),
-              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.work   , includeLocation: true ),
+              TestData(startOffset: 0100, endOffset: 0400, teferi.Category.work, includeLocation: true ),
               TestData(startOffset: 0400, endOffset: 0900, teferi.Category.unknown, includeLocation: false),
               TestData(startOffset: 0900, endOffset: 1300, teferi.Category.unknown, includeLocation: true ) ].map(toTempTimeSlot)
         
@@ -327,7 +327,7 @@ class MergePipeTests : XCTestCase
               TestData(startOffset: 0700, endOffset: 0900, teferi.Category.unknown, includeLocation: false),
               TestData(startOffset: 0900, endOffset: 1200, teferi.Category.unknown, includeLocation: true ),
               TestData(startOffset: 1200, endOffset: 1300, teferi.Category.unknown, includeLocation: true ),
-              TestData(startOffset: 1300, endOffset: nil , teferi.Category.unknown, includeLocation: false) ].map(toTempTimeSlot)
+              TestData(startOffset: 1300, endOffset: nil, teferi.Category.unknown, includeLocation: false) ].map(toTempTimeSlot)
         
         self.mergePipe
             .process(timeline: self.data)

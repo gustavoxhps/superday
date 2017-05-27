@@ -418,6 +418,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     private func shouldFlick(for velocity: CGPoint) -> Bool
     {
-        return max( abs( velocity.x ) , abs( velocity.y ) ) > 200
+        return max( abs( velocity.x ), abs( velocity.y ) ) > 200
     }
 }

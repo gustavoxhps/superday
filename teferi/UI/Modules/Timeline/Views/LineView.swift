@@ -37,7 +37,7 @@ class LineView: UIView
             ctx.clip()
             let colors = [color.cgColor, UIColor.white.cgColor] as CFArray
             let colorSpace = CGColorSpaceCreateDeviceRGB()
-            let gradient = CGGradient(colorsSpace: colorSpace, colors: colors , locations: nil)
+            let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: nil)
             
             let gradientHeight = min(100, rect.height)
             ctx.drawLinearGradient(gradient!, start: CGPoint(x:0, y:rect.height - gradientHeight), end: CGPoint(x:rect.origin.x, y:rect.height), options: CGGradientDrawingOptions.drawsBeforeStartLocation)

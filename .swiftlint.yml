@@ -1,0 +1,17 @@
+#disabled_rules: # rule identifiers to exclude from running
+#  - colon
+#  - comma
+#  - control_statement
+#opt_in_rules: # some rules are only opt-in
+#  - empty_count
+  # Find all the available rules by running:
+  # swiftlint rules
+whitelist_rules:
+  - comma
+#  - attributes, closing_brace, closure_end_indentation, closure_parameter_position, closure_spacing, colon, comma, control_statement, cyclomatic_complexity, empty_count
+# DONT: conditional_returns_on_newline
+included: # paths to include during linting. `--path` is ignored if present.
+  - teferi
+  - teferiTests
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
