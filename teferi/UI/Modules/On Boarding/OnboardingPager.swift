@@ -20,9 +20,9 @@ class OnboardingPager: UIView
             dot.layer.cornerRadius = 3
             dot.backgroundColor = Style.Color.green
             
-            self.pageIndicatorContainer.addSubview(dot)
+            pageIndicatorContainer.addSubview(dot)
             
-            dot.snp.makeConstraints { make in
+            dot.snp.makeConstraints { [unowned self] make in
                 make.height.width.equalTo(6)
                 make.top.equalToSuperview()
                 if previousDot == nil
@@ -36,7 +36,7 @@ class OnboardingPager: UIView
                 }
             }
             
-            self.pageDots.append(dot)
+            pageDots.append(dot)
             
             previousDot = dot
         }
@@ -46,7 +46,7 @@ class OnboardingPager: UIView
     
     func switchPage(to newPage: Int)
     {
-        guard newPage != self.currentPage else { return }
+        guard newPage != currentPage else { return }
         
         UIView.animate(withDuration: 0.3)
         {
@@ -54,17 +54,17 @@ class OnboardingPager: UIView
             self.pageDots[newPage].alpha = 1
         }
         
-        self.currentPage = newPage;
+        currentPage = newPage;
     }
     
     func clearButtonText()
     {
-        self.nextButton.setTitle(" ", for: .normal)
+        nextButton.setTitle(" ", for: .normal)
     }
     
     func hideNextButton()
     {
-        self.nextButton.isEnabled = false
+        nextButton.isEnabled = false
         UIView.animate(withDuration: 0.2)
         {
             self.nextButton.alpha = 0
@@ -74,7 +74,7 @@ class OnboardingPager: UIView
     
     func showNextButton(withText text: String)
     {
-        self.nextButton.isEnabled = true
+        nextButton.isEnabled = true
         UIView.animate(withDuration: 0.2)
         {
             self.nextButton.setTitle(text, for: .normal)

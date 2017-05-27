@@ -36,74 +36,74 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         super.viewDidLoad()
         
         //Injecting child ViewController's dependencies
-        self.pagerViewController.inject(viewModelLocator: self.viewModelLocator)
+        pagerViewController.inject(viewModelLocator: viewModelLocator)
         
         //Edit View
-        self.editView = EditTimeSlotView(categoryProvider: viewModel.categoryProvider)
-        self.view.addSubview(self.editView)
-        self.editView.constrainEdges(to: self.view)
+        editView = EditTimeSlotView(categoryProvider: viewModel.categoryProvider)
+        view.addSubview(editView)
+        editView.constrainEdges(to: view)
         
         //Add button
-        self.addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
-        self.addButton.categoryProvider = viewModel.categoryProvider
-        self.view.insertSubview(self.addButton, belowSubview: self.editView)
-        self.addButton.constrainEdges(to: self.view)
+        addButton = (Bundle.main.loadNibNamed("AddTimeSlotView", owner: self, options: nil)?.first) as? AddTimeSlotView
+        addButton.categoryProvider = viewModel.categoryProvider
+        view.insertSubview(addButton, belowSubview: editView)
+        addButton.constrainEdges(to: view)
         
         //Add fade overlay at bottom of timeline
-        let bottomFadeOverlay = self.fadeOverlay(startColor: UIColor.white,
+        let bottomFadeOverlay = fadeOverlay(startColor: UIColor.white,
                                                  endColor: UIColor.white.withAlphaComponent(0.0))
         
         let fadeView = AutoResizingLayerView(layer: bottomFadeOverlay)
         fadeView.isUserInteractionEnabled = false
-        self.view.insertSubview(fadeView, belowSubview: self.addButton)
+        view.insertSubview(fadeView, belowSubview: addButton)
         fadeView.snp.makeConstraints { make in
-            make.bottom.left.right.equalTo(self.view)
+            make.bottom.left.right.equalTo(view)
             make.height.equalTo(100)
         }
         
-        self.createBindings()
+        createBindings()
     }
     
     private func createBindings()
     {
-        editView.dismissAction = { self.viewModel.notifyEditingEnded() }
+        editView.dismissAction = { [unowned self] in self.viewModel.notifyEditingEnded() }
         
         //Edit state
-        self.viewModel
+        viewModel
             .isEditingObservable
-            .subscribe(onNext: self.onEditChanged)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: onEditChanged)
+            .addDisposableTo(disposeBag)
         
-        self.viewModel
+        viewModel
             .beganEditingObservable
-            .subscribe(onNext: self.editView.onEditBegan)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: editView.onEditBegan)
+            .addDisposableTo(disposeBag)
         
         //Category creation
-        self.addButton
+        addButton
             .categoryObservable
-            .subscribe(onNext: self.viewModel.addNewSlot)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: viewModel.addNewSlot)
+            .addDisposableTo(disposeBag)
         
-        self.editView
+        editView
             .editEndedObservable
-            .subscribe(onNext: self.viewModel.updateTimeSlot)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: viewModel.updateTimeSlot)
+            .addDisposableTo(disposeBag)
         
-        self.viewModel
+        viewModel
             .dateObservable
-            .subscribe(onNext: self.onDateChanged)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: onDateChanged)
+            .addDisposableTo(disposeBag)
         
-        self.viewModel.showPermissionControllerObservable
-            .subscribe(onNext: self.presenter.showPermissionController)
-            .addDisposableTo(self.disposeBag)
+        viewModel.showPermissionControllerObservable
+            .subscribe(onNext: presenter.showPermissionController)
+            .addDisposableTo(disposeBag)
     }
     
     // MARK: Methods
     private func onDateChanged(date: Date)
     {
-        let today = self.viewModel.currentDate
+        let today = viewModel.currentDate
         let isToday = today.ignoreTimeComponents() == date.ignoreTimeComponents()
         let alpha = CGFloat(isToday ? 1 : 0)
         
@@ -112,17 +112,17 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             self.addButton.alpha = alpha
         }
         
-        self.addButton.close()
-        self.addButton.isUserInteractionEnabled = isToday
+        addButton.close()
+        addButton.isUserInteractionEnabled = isToday
     }
     
     private func onEditChanged(_ isEditing: Bool)
     {
         //Close add menu
-        self.addButton.close()
+        addButton.close()
         
         //Grey out views
-        self.editView.isEditing = isEditing
+        editView.isEditing = isEditing
     }
     
     //Configure overlay

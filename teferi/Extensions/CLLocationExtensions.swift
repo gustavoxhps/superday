@@ -4,7 +4,7 @@ extension CLLocation
 {
     func isMoreAccurate(than other: CLLocation) -> Bool
     {
-        return self.horizontalAccuracy < other.horizontalAccuracy
+        return horizontalAccuracy < other.horizontalAccuracy
     }
     
     func isSignificantlyDifferent(fromLocation other: CLLocation) -> Bool

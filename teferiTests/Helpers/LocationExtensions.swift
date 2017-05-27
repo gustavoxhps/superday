@@ -55,11 +55,11 @@ extension CLLocation
 {
     func offset(_ direction: Direction, meters: Double, timestamp: Date? = nil) -> CLLocation
     {
-        let newCoordinate = self.coordinate.offset(direction, meters: meters)
+        let newCoordinate = coordinate.offset(direction, meters: meters)
         let newLocation = CLLocation(coordinate: newCoordinate,
-                                     altitude: self.altitude,
-                                     horizontalAccuracy: self.horizontalAccuracy,
-                                     verticalAccuracy: self.verticalAccuracy,
+                                     altitude: altitude,
+                                     horizontalAccuracy: horizontalAccuracy,
+                                     verticalAccuracy: verticalAccuracy,
                                      timestamp: timestamp ?? self.timestamp)
         return newLocation
     }
@@ -68,15 +68,15 @@ extension CLLocation
     {
         let newCoordinate:CLLocationCoordinate2D
         if let direction = direction {
-            newCoordinate = self.coordinate.offset(direction, meters: meters)
+            newCoordinate = coordinate.offset(direction, meters: meters)
         } else {
-            newCoordinate = self.coordinate
+            newCoordinate = coordinate
         }
         let newLocation = CLLocation(coordinate: newCoordinate,
-                                     altitude: self.altitude,
-                                     horizontalAccuracy: self.horizontalAccuracy,
-                                     verticalAccuracy: self.verticalAccuracy,
-                                     timestamp: self.timestamp.addingTimeInterval(seconds))
+                                     altitude: altitude,
+                                     horizontalAccuracy: horizontalAccuracy,
+                                     verticalAccuracy: verticalAccuracy,
+                                     timestamp: timestamp.addingTimeInterval(seconds))
         return newLocation
     }
     
@@ -84,7 +84,7 @@ extension CLLocation
     func randomOffset(withAccuracy accuracy:Double? = nil) -> CLLocation
     {
         
-        let newCoordinate = self.coordinate.offset(
+        let newCoordinate = coordinate.offset(
             Direction(rawValue: arc4random_uniform(4))!,
             meters: randomBetweenNumbers(firstNum: 10, secondNum: 100000)
         )
@@ -105,13 +105,13 @@ extension CLLocation
     func with(accuracy:Double) -> CLLocation
     {
         return CLLocation(
-            coordinate: self.coordinate,
-            altitude: self.altitude,
+            coordinate: coordinate,
+            altitude: altitude,
             horizontalAccuracy: accuracy,
             verticalAccuracy: accuracy,
-            course: self.course,
-            speed: self.speed,
-            timestamp: self.timestamp)
+            course: course,
+            speed: speed,
+            timestamp: timestamp)
     }
 }
 

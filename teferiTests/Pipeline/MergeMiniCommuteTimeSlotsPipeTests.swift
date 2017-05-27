@@ -17,17 +17,17 @@ class MergeMiniCommuteTimeSlotsPipeTests : XCTestCase
     
     override func setUp()
     {
-        self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
-        self.timeService = MockTimeService()
-        self.baseSlot = TemporaryTimeSlot(start: noon,
+        noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        timeService = MockTimeService()
+        baseSlot = TemporaryTimeSlot(start: noon,
                                           end: nil,
                                           smartGuess: nil,
                                           category: Category.commute,
                                           location: nil)
         
-        self.timeService.mockDate = self.noon
+        timeService.mockDate = noon
         
-        self.pipe = MergeMiniCommuteTimeSlotsPipe(timeService: self.timeService)
+        pipe = MergeMiniCommuteTimeSlotsPipe(timeService: timeService)
     }
     
     func testThePipeMergesConsecutiveSmallCommutes()
@@ -95,8 +95,8 @@ class MergeMiniCommuteTimeSlotsPipeTests : XCTestCase
     
     private func toTempTimeSlot(data: TestData) -> TemporaryTimeSlot
     {
-        return self.baseSlot.with(start: self.date(data.startOffset),
-                                  end: data.endOffset != nil ? self.date(data.endOffset!) : nil,
+        return baseSlot.with(start: date(data.startOffset),
+                                  end: data.endOffset != nil ? date(data.endOffset!) : nil,
                                   smartGuess: nil,
                                   category: data.category,
                                   location: nil)

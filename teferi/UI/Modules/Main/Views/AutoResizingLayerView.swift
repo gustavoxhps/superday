@@ -11,7 +11,7 @@ class AutoResizingLayerView: UIView
         //Set to arbitrary "starter" frame (Use autolayout to change in usage.)
         super.init(frame: UIScreen.main.bounds)
             
-        self.layer.addSublayer(self.caLayer)
+        layer.addSublayer(caLayer)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -20,6 +20,6 @@ class AutoResizingLayerView: UIView
     
     override func layoutSubviews()
     {
-        caLayer.frame = self.bounds
+        caLayer.frame = bounds
     }
 }

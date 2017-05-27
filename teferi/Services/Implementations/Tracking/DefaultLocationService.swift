@@ -30,20 +30,20 @@ class DefaultLocationService : NSObject, LocationService
         
         super.init()
         
-        self.accurateLocationManager.allowsBackgroundLocationUpdates = true
+        accurateLocationManager.allowsBackgroundLocationUpdates = true
         
-        self.dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        self.loggingService.log(withLogLevel: .verbose, message: "DefaultLocationService Initialized")
+        loggingService.log(withLogLevel: .verbose, message: "DefaultLocationService Initialized")
         
-        _ = self.locationManager.rx.didUpdateLocations
+        _ = locationManager.rx.didUpdateLocations
             .do(onNext: { [unowned self] locations in
                 self.logLocationUpdate(locations.first!, "received SLC locations: \(locations.count)")
                 self.startGPSTracking()
             })
             .flatMapLatest(improveWithGPS)
             .flatMap{ Observable.from($0) } // Transform the Observable<[CLLocation]> into Observable<CLLocation>
-            .filter(self.filterLocations)
+            .filter(filterLocations)
             .bindTo(locationVariable)
     }
     
@@ -66,8 +66,8 @@ class DefaultLocationService : NSObject, LocationService
     
     func startLocationTracking()
     {
-        self.loggingService.log(withLogLevel: .debug, message: "Location Service started")
-        self.locationManager.startMonitoringSignificantLocationChanges()
+        loggingService.log(withLogLevel: .debug, message: "Location Service started")
+        locationManager.startMonitoringSignificantLocationChanges()
     }
     
     func getLastKnownLocation() -> CLLocation?
@@ -82,14 +82,14 @@ class DefaultLocationService : NSObject, LocationService
     // MARK: Private Methods
     private func startGPSTracking()
     {
-        self.loggingService.log(withLogLevel: .debug, message: "Accurate Location Service started")
-        self.accurateLocationManager.startUpdatingLocation()
+        loggingService.log(withLogLevel: .debug, message: "Accurate Location Service started")
+        accurateLocationManager.startUpdatingLocation()
     }
     
     private func stopGPSTracking()
     {
-        self.loggingService.log(withLogLevel: .debug, message: "Accurate Location Service stopped")
-        self.accurateLocationManager.stopUpdatingLocation()
+        loggingService.log(withLogLevel: .debug, message: "Accurate Location Service stopped")
+        accurateLocationManager.stopUpdatingLocation()
     }
     
     private func improveWithGPS(locations:[CLLocation]) -> Observable<[CLLocation]>
@@ -111,7 +111,7 @@ class DefaultLocationService : NSObject, LocationService
     
     private func getBestGPSLocation() -> Observable<CLLocation?>
     {
-        return self.accurateLocationManager.rx.didUpdateLocations
+        return accurateLocationManager.rx.didUpdateLocations
             .completeAfter(locationsAccurateEnough)
             .take(Constants.maxGPSTime, scheduler: timeoutScheduler)
             .catchErrorJustReturn([])
@@ -148,14 +148,14 @@ class DefaultLocationService : NSObject, LocationService
         //Location is valid
         guard location.coordinate.latitude != 0.0 && location.coordinate.latitude != 0.0 else
         {
-            self.logLocationUpdate(location, "Filtered an invalid location")
+            logLocationUpdate(location, "Filtered an invalid location")
             return false
         }
                 
         //Location is accurate enough
         guard 0 ... Constants.significantLocationChangeAccuracy ~= location.horizontalAccuracy else
         {
-            self.logLocationUpdate(location, "Filtered an inaccurate location")
+            logLocationUpdate(location, "Filtered an inaccurate location")
             return false
         }
         
@@ -169,6 +169,6 @@ class DefaultLocationService : NSObject, LocationService
                  + " (speed: \(location.speed)m/s course: \(location.course))"
                  + " at \(dateTimeFormatter.string(from: location.timestamp))"
         
-        self.loggingService.log(withLogLevel: .debug, message: text)
+        loggingService.log(withLogLevel: .debug, message: text)
     }
 }

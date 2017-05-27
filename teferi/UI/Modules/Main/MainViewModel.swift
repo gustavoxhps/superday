@@ -30,11 +30,11 @@ class MainViewModel : RxViewModel
         self.settingsService = settingsService
         self.appLifecycleService = appLifecycleService
         
-        self.isEditingObservable = self.editStateService.isEditingObservable
-        self.dateObservable = selectedDateService.currentlySelectedDateObservable
-        self.beganEditingObservable = self.editStateService.beganEditingObservable
+        isEditingObservable = editStateService.isEditingObservable
+        dateObservable = selectedDateService.currentlySelectedDateObservable
+        beganEditingObservable = editStateService.beganEditingObservable
         
-        self.categoryProvider = DefaultCategoryProvider(timeSlotService: timeSlotService)
+        categoryProvider = DefaultCategoryProvider(timeSlotService: timeSlotService)
 
     }
     
@@ -75,7 +75,7 @@ class MainViewModel : RxViewModel
     func addNewSlot(withCategory category: Category)
     {
         guard let timeSlot =
-            self.timeSlotService.addTimeSlot(withStartTime: self.timeService.now,
+            timeSlotService.addTimeSlot(withStartTime: timeService.now,
                                              category: category,
                                              categoryWasSetByUser: true,
                                              tryUsingLatestLocation: true)
@@ -83,10 +83,10 @@ class MainViewModel : RxViewModel
         
         if let location = timeSlot.location
         {
-            self.smartGuessService.add(withCategory: timeSlot.category, location: location)
+            smartGuessService.add(withCategory: timeSlot.category, location: location)
         }
         
-        self.metricsService.log(event: .timeSlotManualCreation)
+        metricsService.log(event: .timeSlotManualCreation)
     }
     
     /**
@@ -99,45 +99,45 @@ class MainViewModel : RxViewModel
     {
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
 
-        self.timeSlotService.update(timeSlot: timeSlot, withCategory: category, setByUser: true)
-        self.metricsService.log(event: .timeSlotEditing)
+        timeSlotService.update(timeSlot: timeSlot, withCategory: category, setByUser: true)
+        metricsService.log(event: .timeSlotEditing)
         
         let smartGuessId = timeSlot.smartGuessId
         if !categoryWasOriginallySetByUser && smartGuessId != nil
         {
             //Strike the smart guess if it was wrong
-            self.smartGuessService.strike(withId: smartGuessId!)
+            smartGuessService.strike(withId: smartGuessId!)
         }
         else if smartGuessId == nil, let location = timeSlot.location
         {
-            self.smartGuessService.add(withCategory: category, location: location)
+            smartGuessService.add(withCategory: category, location: location)
         }
         
         timeSlot.category = category
         timeSlot.categoryWasSetByUser = true
         
-        self.editStateService.notifyEditingEnded()
+        editStateService.notifyEditingEnded()
     }
     
-    func notifyEditingEnded() { self.editStateService.notifyEditingEnded() }
+    func notifyEditingEnded() { editStateService.notifyEditingEnded() }
     
     private func shouldShowLocationPermissionRequest() -> Bool
     {
-        if self.settingsService.hasLocationPermission { return false }
+        if settingsService.hasLocationPermission { return false }
         
         //If user doesn't have permissions and we never showed the overlay, do it
-        guard let lastRequestedDate = self.settingsService.lastAskedForLocationPermission else { return true }
+        guard let lastRequestedDate = settingsService.lastAskedForLocationPermission else { return true }
         
         let minimumRequestDate = lastRequestedDate.addingTimeInterval(Constants.timeToWaitBeforeShowingLocationPermissionsAgain)
         
         //If we previously showed the overlay, we must only do it again after timeToWaitBeforeShowingLocationPermissionsAgain
-        return minimumRequestDate < self.timeService.now
+        return minimumRequestDate < timeService.now
     }
     
     private func shouldShowHealthKitPermissionRequest() -> Bool
     {
         guard let installDate = settingsService.installDate else { return false }
         
-        return !settingsService.hasHealthKitPermission && installDate.addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 5) < self.timeService.now
+        return !settingsService.hasHealthKitPermission && installDate.addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 5) < timeService.now
     }
 }

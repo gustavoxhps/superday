@@ -16,13 +16,13 @@ class MaterialButton: UIButton {
     
     private func setup()
     {
-        tapView = UIView(frame: self.bounds)
+        tapView = UIView(frame: bounds)
         tapView.backgroundColor = UIColor.white
         tapView.isHidden = true
-        self.addSubview(tapView)
+        addSubview(tapView)
         
-        self.addTarget(self, action: #selector(MaterialButton.touchDown(sender:withEvent:)), for: UIControlEvents.touchDown)
-        self.addTarget(self, action: #selector(MaterialButton.touchUpInside(sender:withEvent:)), for: UIControlEvents.touchUpInside)
+        addTarget(self, action: #selector(MaterialButton.touchDown(sender:withEvent:)), for: UIControlEvents.touchDown)
+        addTarget(self, action: #selector(MaterialButton.touchUpInside(sender:withEvent:)), for: UIControlEvents.touchUpInside)
     }
     
     func touchDown(sender:UIButton, withEvent event:UIEvent)

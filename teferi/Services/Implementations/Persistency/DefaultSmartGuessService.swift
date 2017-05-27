@@ -30,18 +30,18 @@ class DefaultSmartGuessService : SmartGuessService
     
     @discardableResult func add(withCategory category: Category, location: CLLocation) -> SmartGuess?
     {
-        let id = self.getNextSmartGuessId()
-        let smartGuess = SmartGuess(withId: id, category: category, location: location, lastUsed: self.timeService.now)
+        let id = getNextSmartGuessId()
+        let smartGuess = SmartGuess(withId: id, category: category, location: location, lastUsed: timeService.now)
         
-        guard self.persistencyService.create(smartGuess) else
+        guard persistencyService.create(smartGuess) else
         {
-            self.loggingService.log(withLogLevel: .error, message: "Failed to create new SmartGuess")
+            loggingService.log(withLogLevel: .error, message: "Failed to create new SmartGuess")
             return nil
         }
         
         //Bump the identifier
-        self.incrementSmartGuessId()
-        self.loggingService.log(withLogLevel: .info, message: "New SmartGuess with category \"\(smartGuess.category)\" created")
+        incrementSmartGuessId()
+        loggingService.log(withLogLevel: .info, message: "New SmartGuess with category \"\(smartGuess.category)\" created")
         
         return smartGuess
     }
@@ -51,14 +51,14 @@ class DefaultSmartGuessService : SmartGuessService
         let id = smartGuess.id
         let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
         
-        guard let persistedSmartGuess = self.persistencyService.get(withPredicate: predicate).first else
+        guard let persistedSmartGuess = persistencyService.get(withPredicate: predicate).first else
         {
-            self.loggingService.log(withLogLevel: .warning, message: "Tried updating smart guess with invalid id \(id)")
+            loggingService.log(withLogLevel: .warning, message: "Tried updating smart guess with invalid id \(id)")
             return
         }
         guard time >= persistedSmartGuess.lastUsed else
         {
-            self.loggingService.log(withLogLevel: .debug, message: "Tried updating smart guess with date before the one already set  \(id)")
+            loggingService.log(withLogLevel: .debug, message: "Tried updating smart guess with date before the one already set  \(id)")
             return
         }
         
@@ -67,9 +67,9 @@ class DefaultSmartGuessService : SmartGuessService
             return smartGuess
         }
         
-        if !self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        if !persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
-            self.loggingService.log(withLogLevel: .error, message: "Error trying to update last-used time of SmartGuess with id \(id)")
+            loggingService.log(withLogLevel: .error, message: "Error trying to update last-used time of SmartGuess with id \(id)")
         }
         
         smartGuess.lastUsed = time
@@ -81,16 +81,16 @@ class DefaultSmartGuessService : SmartGuessService
         let predicate = Predicate(parameter: SmartGuessModelAdapter.idKey, equals: id as AnyObject)
         
         // Invalid Ids should be ignore
-        guard let smartGuess = self.persistencyService.get(withPredicate: predicate).first else
+        guard let smartGuess = persistencyService.get(withPredicate: predicate).first else
         {
-            self.loggingService.log(withLogLevel: .warning, message: "Tried striking smart guess with invalid id \(id)")
+            loggingService.log(withLogLevel: .warning, message: "Tried striking smart guess with invalid id \(id)")
             return
         }
         
         // Purge SmartGuess if needed
-        if self.shouldPurge(smartGuess: smartGuess)
+        if shouldPurge(smartGuess: smartGuess)
         {
-            self.persistencyService.delete(withPredicate: predicate)
+            persistencyService.delete(withPredicate: predicate)
             return
         }
         
@@ -100,15 +100,15 @@ class DefaultSmartGuessService : SmartGuessService
             return smartGuess
         }
         
-        if !self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        if !persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
-            self.loggingService.log(withLogLevel: .warning, message: "Error trying to increase errorCount of SmartGuess with id \(id)")
+            loggingService.log(withLogLevel: .warning, message: "Error trying to increase errorCount of SmartGuess with id \(id)")
         }
     }
     
     func get(forLocation location: CLLocation) -> SmartGuess?
     {
-        let bestMatches = self.persistencyService.get()
+        let bestMatches = persistencyService.get()
             .filter(isWithinDistanceThreshold(from: location))
             .filter(isWithinTimeThresholdInNearByWeekDay(from: location))
         
@@ -124,15 +124,15 @@ class DefaultSmartGuessService : SmartGuessService
                 usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
                 with: knnInstances,
                 decisionType: .maxScoreSum,
-                customDistance: self.distance,
+                customDistance: distance,
                 labelAction: { $0.category })
         else
         {
-            self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+            loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
             return nil
         }
         
-        self.loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+        loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
         guard let bestMatch = bestKnnMatch.smartGuess
         else { return nil }
@@ -142,13 +142,13 @@ class DefaultSmartGuessService : SmartGuessService
     
     func purgeEntries(olderThan maxAge: Date)
     {
-        guard let initialDate = self.settingsService.installDate, maxAge > initialDate else { return }
+        guard let initialDate = settingsService.installDate, maxAge > initialDate else { return }
         
         let predicate = Predicate(parameter: "lastUsed",
                                   rangesFromDate: initialDate as NSDate,
                                   toDate: maxAge as NSDate)
         
-        self.persistencyService.delete(withPredicate: predicate)
+        persistencyService.delete(withPredicate: predicate)
     }
     
     private func isWithinDistanceThreshold(from location: CLLocation) -> (SmartGuess) -> Bool
@@ -171,10 +171,10 @@ class DefaultSmartGuessService : SmartGuessService
     {
         var accumulator = 0.0
 
-        let locationDifference = instance1.location.distance(from: instance2.location) / self.distanceThreshold
+        let locationDifference = instance1.location.distance(from: instance2.location) / distanceThreshold
         accumulator += pow(locationDifference, 2)
 
-        let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / self.timeThreshold
+        let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / timeThreshold
         accumulator += pow(timeDifference, 2)
 
         return sqrt(accumulator)
@@ -182,14 +182,14 @@ class DefaultSmartGuessService : SmartGuessService
     
     private func getNextSmartGuessId() -> Int
     {
-        return UserDefaults.standard.integer(forKey: self.smartGuessIdKey)
+        return UserDefaults.standard.integer(forKey: smartGuessIdKey)
     }
     
     private func incrementSmartGuessId()
     {
-        var id = self.getNextSmartGuessId()
+        var id = getNextSmartGuessId()
         id += 1
-        UserDefaults.standard.set(id, forKey: self.smartGuessIdKey)
+        UserDefaults.standard.set(id, forKey: smartGuessIdKey)
     }
     
     private func shouldPurge(smartGuess: SmartGuess) -> Bool

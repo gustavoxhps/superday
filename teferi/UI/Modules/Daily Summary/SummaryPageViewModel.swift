@@ -44,15 +44,15 @@ class SummaryPageViewModel
          timeService: TimeService,
          settingsService: SettingsService)
     {
-        self.selectedDate.value = date
+        selectedDate.value = date
         self.settingsService = settingsService
         self.timeService = timeService
     }
     
     func canScroll(toDate date: Date) -> Bool
     {
-        let minDate = self.settingsService.installDate!.ignoreTimeComponents()
-        let maxDate = self.timeService.now.ignoreTimeComponents()
+        let minDate = settingsService.installDate!.ignoreTimeComponents()
+        let maxDate = timeService.now.ignoreTimeComponents()
         let dateWithNoTime = date.ignoreTimeComponents()
         
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate

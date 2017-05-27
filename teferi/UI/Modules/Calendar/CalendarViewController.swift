@@ -43,30 +43,30 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         super.viewDidLoad()
                 
         //Configures the calendar
-        self.calendarView.dataSource = self
-        self.calendarView.delegate = self
-        self.calendarView.registerCellViewXib(file: self.calendarCell)
-        self.calendarView.cellInset = CGPoint(x: 1.5, y: 2)
-        self.calendarView.scrollToDate(self.viewModel.maxValidDate, animateScroll:false)
+        calendarView.dataSource = self
+        calendarView.delegate = self
+        calendarView.registerCellViewXib(file: calendarCell)
+        calendarView.cellInset = CGPoint(x: 1.5, y: 2)
+        calendarView.scrollToDate(viewModel.maxValidDate, animateScroll:false)
         
-        self.leftButton.rx.tap
-            .subscribe(onNext: self.onLeftClick)
-            .addDisposableTo(self.disposeBag)
+        leftButton.rx.tap
+            .subscribe(onNext: onLeftClick)
+            .addDisposableTo(disposeBag)
         
-        self.rightButton.rx.tap
-            .subscribe(onNext: self.onRightClick)
-            .addDisposableTo(self.disposeBag)
+        rightButton.rx.tap
+            .subscribe(onNext: onRightClick)
+            .addDisposableTo(disposeBag)
         
-        self.viewModel
+        viewModel
             .currentVisibleCalendarDateObservable
-            .subscribe(onNext: self.onCurrentCalendarDateChanged)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: onCurrentCalendarDateChanged)
+            .addDisposableTo(disposeBag)
         
-        self.viewModel.dateObservable.skip(1)
-            .subscribe(onNext: self.onCurrentlySelectedDateChanged)
-            .addDisposableTo(self.disposeBag)
+        viewModel.dateObservable.skip(1)
+            .subscribe(onNext: onCurrentlySelectedDateChanged)
+            .addDisposableTo(disposeBag)
         
-        self.calendarView.reloadData()
+        calendarView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,20 +79,20 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     {
         DelayedSequence
             .start()
-            .then(self.fadeOverlay(fadeIn: false))
-            .then(self.fadeElements(fadeIn: false))
-            .after(0.3, self.dismiss())
+            .then(fadeOverlay(fadeIn: false))
+            .then(fadeElements(fadeIn: false))
+            .after(0.3, dismiss())
     }
 
     private func show()
     {        
-        self.calendarCellsShouldAnimate = true
-        self.calendarView.reloadData()
+        calendarCellsShouldAnimate = true
+        calendarView.reloadData()
         
         DelayedSequence
             .start()
-            .then(self.fadeOverlay(fadeIn: true))
-            .after(0.105, self.fadeElements(fadeIn: true))
+            .then(fadeOverlay(fadeIn: true))
+            .after(0.105, fadeElements(fadeIn: true))
             .then(dissableCalendarCellAnimation())
     }
     
@@ -145,31 +145,31 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     //MARK: Rx methods
     private func onLeftClick()
     {
-        self.calendarView.scrollToPreviousSegment(true, animateScroll: true, completionHandler: nil)
+        calendarView.scrollToPreviousSegment(true, animateScroll: true, completionHandler: nil)
     }
     
     private func onRightClick()
     {
-        self.calendarView.scrollToNextSegment(true, animateScroll: true, completionHandler: nil)
+        calendarView.scrollToNextSegment(true, animateScroll: true, completionHandler: nil)
     }
     
     private func onCurrentCalendarDateChanged(_ date: Date)
     {        
-        self.calendarHeightConstraint.constant = self.calculateCalendarHeight(forDate: date)
+        calendarHeightConstraint.constant = calculateCalendarHeight(forDate: date)
         UIView.animate(withDuration: 0.15) {
             self.view.layoutIfNeeded()
         }
         
-        self.monthLabel.attributedText = self.getHeaderName(forDate: date)
+        monthLabel.attributedText = getHeaderName(forDate: date)
         
-        self.leftButton.alpha = date.month == self.viewModel.minValidDate.month ? 0.2 : 1.0
-        self.rightButton.alpha =  date.month == self.viewModel.maxValidDate.month ? 0.2 : 1.0
+        leftButton.alpha = date.month == viewModel.minValidDate.month ? 0.2 : 1.0
+        rightButton.alpha =  date.month == viewModel.maxValidDate.month ? 0.2 : 1.0
     }
     
     private func onCurrentlySelectedDateChanged(_ date: Date)
     {
-        self.calendarView.selectDates([date])
-        self.hide()
+        calendarView.selectDates([date])
+        hide()
     }
     
     private func calculateCalendarHeight(forDate date: Date) -> CGFloat
@@ -180,9 +180,9 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         
         if (startDay + daysInMonth) % 7 != 0 { numberOfRows += 1 }
         
-        let cellHeight = self.calendarView.bounds.height / 6
+        let cellHeight = calendarView.bounds.height / 6
                 
-        return self.calendarView.frame.origin.y + cellHeight * CGFloat(numberOfRows)
+        return calendarView.frame.origin.y + cellHeight * CGFloat(numberOfRows)
     }
     
     private func getHeaderName(forDate date: Date) -> NSMutableAttributedString
@@ -201,24 +201,24 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
     {
         if let view = touch.view,
-            view.isDescendant(of: self.leftButton) ||
-            view.isDescendant(of: self.rightButton) ||
-            view.isDescendant(of: self.calendarView) ||
-            view.isDescendant(of: self.dayOfWeekLabels) ||
-            view.isDescendant(of: self.calendarBackgroundView)
+            view.isDescendant(of: leftButton) ||
+            view.isDescendant(of: rightButton) ||
+            view.isDescendant(of: calendarView) ||
+            view.isDescendant(of: dayOfWeekLabels) ||
+            view.isDescendant(of: calendarBackgroundView)
         {
             return false
         }
         
-        self.hide()
+        hide()
         return true
     }
     
     //MARK: JTAppleCalendarDelegate implementation
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters
     {
-        let parameters = ConfigurationParameters(startDate: self.viewModel.minValidDate,
-                                                 endDate: self.viewModel.maxValidDate,
+        let parameters = ConfigurationParameters(startDate: viewModel.minValidDate,
+                                                 endDate: viewModel.maxValidDate,
                                                  numberOfRows: 6,
                                                  calendar: nil,
                                                  generateInDates: .forAllMonths,
@@ -231,24 +231,24 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
     {
         guard let calendarCell = cell as? CalendarCell else { return }
         
-        self.update(cell: calendarCell, toDate: date, row: cellState.row(), belongsToMonth: cellState.dateBelongsTo == .thisMonth)
+        update(cell: calendarCell, toDate: date, row: cellState.row(), belongsToMonth: cellState.dateBelongsTo == .thisMonth)
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleDayCellView?, cellState: CellState)
     {
-        self.viewModel.selectedDate = date
+        viewModel.selectedDate = date
         calendar.reloadData()
         
         guard let calendarCell = cell as? CalendarCell else { return }
         
-        self.update(cell: calendarCell, toDate: date, row: cellState.row(), belongsToMonth: cellState.dateBelongsTo == .thisMonth)
+        update(cell: calendarCell, toDate: date, row: cellState.row(), belongsToMonth: cellState.dateBelongsTo == .thisMonth)
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo)
     {
         guard let startDate = visibleDates.monthDates.first else { return }
         
-        self.viewModel.currentVisibleCalendarDate = startDate
+        viewModel.currentVisibleCalendarDate = startDate
     }
     
     private func update(cell: CalendarCell, toDate date: Date, row: Int, belongsToMonth: Bool)
@@ -259,13 +259,13 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
             return
         }
         
-        let canScrollToDate = self.viewModel.canScroll(toDate: date)
-        let activities = self.viewModel.getActivities(forDate: date)
-        let isSelected = Calendar.current.isDate(date, inSameDayAs: self.viewModel.selectedDate)
+        let canScrollToDate = viewModel.canScroll(toDate: date)
+        let activities = viewModel.getActivities(forDate: date)
+        let isSelected = Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate)
         
         cell.bind(toDate: date, isSelected: isSelected, allowsScrollingToDate: canScrollToDate, dailyActivity: activities)
         
-        guard self.calendarCellsShouldAnimate else { return }
+        guard calendarCellsShouldAnimate else { return }
         
         cell.alpha = 0
         cell.transform = CGAffineTransform(translationX: -20, y: 0)

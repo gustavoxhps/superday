@@ -48,7 +48,7 @@ class TimelineCell : UITableViewCell
      */
     func bind(toTimelineItem timelineItem: TimelineItem, index: Int, duration: TimeInterval)
     {
-        self.currentIndex = index
+        currentIndex = index
         
         let timeSlot = timelineItem.timeSlot
         let isRunning = timeSlot.endTime == nil
@@ -57,24 +57,24 @@ class TimelineCell : UITableViewCell
         let categoryColor = timeSlot.category.color
         
         //Updates each one of the cell's components
-        self.layoutLine(withColor: categoryColor, interval: interval, isRunning: isRunning, lastInPastDay: timelineItem.lastInPastDay)
-        self.layoutSlotTime(withTimeSlot: timeSlot, lastInPastDay: timelineItem.lastInPastDay)
-        self.layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
-        self.layoutDescriptionLabel(withTimelineItem: timelineItem)
-        self.layoutCategoryIcon(withAsset: timeSlot.category.icon, color: categoryColor)
+        layoutLine(withColor: categoryColor, interval: interval, isRunning: isRunning, lastInPastDay: timelineItem.lastInPastDay)
+        layoutSlotTime(withTimeSlot: timeSlot, lastInPastDay: timelineItem.lastInPastDay)
+        layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
+        layoutDescriptionLabel(withTimelineItem: timelineItem)
+        layoutCategoryIcon(withAsset: timeSlot.category.icon, color: categoryColor)
     }
     
     func animateIntro()
     {
-        self.categoryCircle.transform = CGAffineTransform(scaleX: 0, y: 0)
+        categoryCircle.transform = CGAffineTransform(scaleX: 0, y: 0)
         UIView.animate(
             withDuration: 0.39,
             options: UIViewAnimationOptions.curveEaseInOut) {
                 self.categoryCircle.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
         
-        self.contentHolder.alpha = 0
-        self.contentHolder.transform = CGAffineTransform(translationX: 0, y: 20)
+        contentHolder.alpha = 0
+        contentHolder.transform = CGAffineTransform(translationX: 0, y: 20)
         UIView.animate(
             withDuration: 0.492,
             options: UIViewAnimationOptions.curveEaseInOut) {
@@ -86,9 +86,9 @@ class TimelineCell : UITableViewCell
     /// Updates the icon that indicates the slot's category
     private func layoutCategoryIcon(withAsset asset: Asset, color: UIColor)
     {
-        self.categoryCircle.backgroundColor = color
+        categoryCircle.backgroundColor = color
         let image = UIImage(asset: asset)!
-        let icon = self.categoryIcon!
+        let icon = categoryIcon!
         icon.image = image
         icon.contentMode = .scaleAspectFit
     }
@@ -99,8 +99,8 @@ class TimelineCell : UITableViewCell
         let timeSlot = timelineItem.timeSlot
         let shouldShowCategory = !timelineItem.shouldDisplayCategoryName || timeSlot.category == .unknown
         let categoryText = shouldShowCategory ? "" : timeSlot.category.description
-        self.slotDescription.text = categoryText
-        self.timeSlotDistanceConstraint.constant = shouldShowCategory ? 0 : 6
+        slotDescription.text = categoryText
+        timeSlotDistanceConstraint.constant = shouldShowCategory ? 0 : 6
     }
     
     /// Updates the label that shows the time the TimeSlot was created
@@ -113,11 +113,11 @@ class TimelineCell : UITableViewCell
         if lastInPastDay, let endTime = timeSlot.endTime
         {
             let endString = formatter.string(from: endTime)
-            self.slotTime.text = startString + " - " + endString
+            slotTime.text = startString + " - " + endString
         }
         else
         {
-            self.slotTime.text = startString
+            slotTime.text = startString
         }
     }
     
@@ -129,12 +129,12 @@ class TimelineCell : UITableViewCell
         
         if shouldShow
         {
-            self.elapsedTime.textColor = color
-            self.elapsedTime.text = hours > 0 ? String(format: hourMask, hours, minutes) : String(format: minuteMask, minutes)
+            elapsedTime.textColor = color
+            elapsedTime.text = hours > 0 ? String(format: hourMask, hours, minutes) : String(format: minuteMask, minutes)
         }
         else
         {
-            self.elapsedTime.text = ""
+            elapsedTime.text = ""
         }
     }
     
@@ -145,19 +145,19 @@ class TimelineCell : UITableViewCell
         let hours = (interval / 3600)
         
         let newHeight = CGFloat(Constants.minLineSize * (1 + (minutes / 15) + (hours * 4)))
-        self.lineHeight.constant = max(newHeight, 18)
+        lineHeight.constant = max(newHeight, 18)
         
-        self.lineView.color = color
-        self.dotsView.color = color
+        lineView.color = color
+        dotsView.color = color
         
-        self.lineView.fading = lastInPastDay
+        lineView.fading = lastInPastDay
         
-        self.lineFadeView?.isHidden = !lastInPastDay
+        lineFadeView?.isHidden = !lastInPastDay
         
-        self.dotsView.isHidden = !isRunning && !lastInPastDay
-        self.bottomMargin.constant = isRunning ? 24 : 0
+        dotsView.isHidden = !isRunning && !lastInPastDay
+        bottomMargin.constant = isRunning ? 24 : 0
         
-        self.lineView.layoutIfNeeded()
+        lineView.layoutIfNeeded()
     }
     
     /// Configure the fade overlay

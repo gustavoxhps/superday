@@ -15,30 +15,30 @@ class HealthKitPermissionViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.timeService = MockTimeService()
-        self.settingsService = MockSettingsService()
-        self.appLifecycleService = MockAppLifecycleService()
-        self.healthKitService = MockHealthKitService()
+        timeService = MockTimeService()
+        settingsService = MockSettingsService()
+        appLifecycleService = MockAppLifecycleService()
+        healthKitService = MockHealthKitService()
         
-        self.viewModel = HealthKitPermissionViewModel(timeService: self.timeService,
-                                                      settingsService: self.settingsService,
-                                                      appLifecycleService: self.appLifecycleService,
-                                                      healthKitService: self.healthKitService)
+        viewModel = HealthKitPermissionViewModel(timeService: timeService,
+                                                      settingsService: settingsService,
+                                                      appLifecycleService: appLifecycleService,
+                                                      healthKitService: healthKitService)
     }
     
     override func tearDown()
     {
-        self.disposable?.dispose()
+        disposable?.dispose()
     }
     
     func testPermissionShouldShowNonBlockingOverlayIfUserAlreadyGavePermission()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = nil
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = nil
         
-        self.viewModel.permissionGiven()
+        viewModel.permissionGiven()
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(self.viewModel.remindMeLater).to(beFalse())
     }

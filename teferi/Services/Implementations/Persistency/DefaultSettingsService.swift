@@ -30,20 +30,20 @@ class DefaultSettingsService : SettingsService
     //MARK: Properties
     var installDate : Date?
     {
-        return self.get(forKey: self.installDateKey)
+        return get(forKey: installDateKey)
     }
     
     var lastLocation : CLLocation?
     {
         var location : CLLocation? = nil
         
-        let possibleTime = self.get(forKey: self.lastLocationDateKey) as Date?
+        let possibleTime = get(forKey: lastLocationDateKey) as Date?
         
         if let time = possibleTime
         {
-            let latitude = self.getDouble(forKey: self.lastLocationLatKey)
-            let longitude = self.getDouble(forKey: self.lastLocationLngKey)
-            let horizontalAccuracy = self.get(forKey: self.lastLocationHorizontalAccuracyKey) as Double? ?? 0.0
+            let latitude = getDouble(forKey: lastLocationLatKey)
+            let longitude = getDouble(forKey: lastLocationLngKey)
+            let horizontalAccuracy = get(forKey: lastLocationHorizontalAccuracyKey) as Double? ?? 0.0
             
             let coord = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             location = CLLocation(coordinate: coord, altitude: 0,
@@ -56,11 +56,11 @@ class DefaultSettingsService : SettingsService
     
     var lastNotificationLocation : CLLocation?
     {
-        guard let time = self.get(forKey: self.lastNotificationLocationDateKey) as Date? else { return nil }
+        guard let time = get(forKey: lastNotificationLocationDateKey) as Date? else { return nil }
 
-        let latitude = self.getDouble(forKey: self.lastNotificationLocationLatKey)
-        let longitude = self.getDouble(forKey: self.lastNotificationLocationLngKey)
-        let horizontalAccuracy = self.get(forKey: self.lastNotificationLocationHorizontalAccuracyKey) as Double? ?? 0.0
+        let latitude = getDouble(forKey: lastNotificationLocationLatKey)
+        let longitude = getDouble(forKey: lastNotificationLocationLngKey)
+        let horizontalAccuracy = get(forKey: lastNotificationLocationHorizontalAccuracyKey) as Double? ?? 0.0
         
         let coord = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let location = CLLocation(coordinate: coord, altitude: 0,
@@ -77,7 +77,7 @@ class DefaultSettingsService : SettingsService
     
     var hasHealthKitPermission : Bool
     {
-        return self.getBool(forKey: self.healthKitPermissionKey)
+        return getBool(forKey: healthKitPermissionKey)
     }
     
     var hasNotificationPermission : Bool
@@ -88,12 +88,12 @@ class DefaultSettingsService : SettingsService
     
     var lastAskedForLocationPermission : Date?
     {
-        return self.get(forKey: self.lastAskedForLocationPermissionKey)
+        return get(forKey: lastAskedForLocationPermissionKey)
     }
     
     var userEverGaveLocationPermission: Bool
     {
-        return self.getBool(forKey: self.userGaveLocationPermissionKey)
+        return getBool(forKey: userGaveLocationPermissionKey)
     }
     
     //MARK: Methods
@@ -120,38 +120,38 @@ class DefaultSettingsService : SettingsService
     
     func setInstallDate(_ date: Date)
     {
-        guard self.installDate == nil else { return }
+        guard installDate == nil else { return }
         
-        self.set(date, forKey: self.installDateKey)
+        set(date, forKey: installDateKey)
     }
     
     func setLastLocation(_ location: CLLocation)
     {
-        self.set(location.timestamp, forKey: self.lastLocationDateKey)
-        self.set(location.coordinate.latitude, forKey: self.lastLocationLatKey)
-        self.set(location.coordinate.longitude, forKey: self.lastLocationLngKey)
-        self.set(location.horizontalAccuracy, forKey: self.lastLocationHorizontalAccuracyKey)
+        set(location.timestamp, forKey: lastLocationDateKey)
+        set(location.coordinate.latitude, forKey: lastLocationLatKey)
+        set(location.coordinate.longitude, forKey: lastLocationLngKey)
+        set(location.horizontalAccuracy, forKey: lastLocationHorizontalAccuracyKey)
     }
     
     func setLastNotificationLocation(_ location: CLLocation)
     {
-        self.set(location.timestamp, forKey: self.lastNotificationLocationDateKey)
-        self.set(location.coordinate.latitude, forKey: self.lastNotificationLocationLatKey)
-        self.set(location.coordinate.longitude, forKey: self.lastNotificationLocationLngKey)
-        self.set(location.horizontalAccuracy, forKey: self.lastNotificationLocationHorizontalAccuracyKey)
+        set(location.timestamp, forKey: lastNotificationLocationDateKey)
+        set(location.coordinate.latitude, forKey: lastNotificationLocationLatKey)
+        set(location.coordinate.longitude, forKey: lastNotificationLocationLngKey)
+        set(location.horizontalAccuracy, forKey: lastNotificationLocationHorizontalAccuracyKey)
     }
     
     func setLastAskedForLocationPermission(_ date: Date)
     {
-        self.set(date, forKey: self.lastAskedForLocationPermissionKey)
+        set(date, forKey: lastAskedForLocationPermissionKey)
     }
     
     func setUserGaveLocationPermission() {
-        self.set(true, forKey: self.userGaveLocationPermissionKey)
+        set(true, forKey: userGaveLocationPermissionKey)
     }
     
     func setUserGaveHealthKitPermission() {
-        self.set(true, forKey: self.healthKitPermissionKey)
+        set(true, forKey: healthKitPermissionKey)
     }
     
     // MARK: Helpers

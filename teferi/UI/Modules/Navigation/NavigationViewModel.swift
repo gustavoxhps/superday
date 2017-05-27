@@ -25,9 +25,9 @@ class NavigationViewModel
         self.selectedDateService = selectedDateService
         self.appLifecycleService = appLifecycleService
         
-        self.dayOfMonthFormatter = DateFormatter()
-        self.dayOfMonthFormatter.timeZone = TimeZone.autoupdatingCurrent
-        self.dayOfMonthFormatter.dateFormat = "EEE, dd MMM"
+        dayOfMonthFormatter = DateFormatter()
+        dayOfMonthFormatter.timeZone = TimeZone.autoupdatingCurrent
+        dayOfMonthFormatter.dateFormat = "EEE, dd MMM"
     }
     
     // MARK: Properties
@@ -35,7 +35,7 @@ class NavigationViewModel
     {
         return self.appLifecycleService.movedToForegroundObservable
             .startWith(())
-            .map {
+            .map { [unowned self] in
                 let currentDay = Calendar.current.component(.day, from: self.timeService.now)
                 return String(format: "%02d", currentDay)
         }
@@ -54,20 +54,20 @@ class NavigationViewModel
     private func titleForDate(date:Date) -> String
     {
         let currentDate = date.ignoreTimeComponents()
-        let today = self.timeService.now.ignoreTimeComponents()
+        let today = timeService.now.ignoreTimeComponents()
         let yesterday = today.yesterday.ignoreTimeComponents()
         
         if currentDate == today
         {
-            return self.currentDayBarTitle
+            return currentDayBarTitle
         }
         else if currentDate == yesterday
         {
-            return self.yesterdayBarTitle
+            return yesterdayBarTitle
         }
         
         return dayOfMonthFormatter.string(from: currentDate)
     }
     
-    func composeFeedback() { self.feedbackService.composeFeedback() }
+    func composeFeedback() { feedbackService.composeFeedback() }
 }

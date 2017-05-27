@@ -28,52 +28,52 @@ class PermissionViewController : UIViewController
     {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.8)
 
-        self.enableButton.rx.tap
+        enableButton.rx.tap
             .flatMapLatest(getUserPermission)
             .subscribe(onNext: onPermissionGiven)
-            .addDisposableTo(self.disposeBag)
+            .addDisposableTo(disposeBag)
         
-        self.remindLaterButton
+        remindLaterButton
             .rx.tap
-            .subscribe(onNext: self.onRemindLaterTapped)
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: onRemindLaterTapped)
+            .addDisposableTo(disposeBag)
         
-        self.initializeBindings()
+        initializeBindings()
     }
     
     private func initializeBindings()
     {
-        self.viewModel.hideOverlayObservable
-            .subscribe(onNext: self.hideOverlay)
-            .addDisposableTo(self.disposeBag)
+        viewModel.hideOverlayObservable
+            .subscribe(onNext: hideOverlay)
+            .addDisposableTo(disposeBag)
         
-        self.titleLabel.text = self.viewModel.titleText
-        self.descriptionLabel.text = self.viewModel.descriptionText
-        self.enableButton.setTitle(self.viewModel.enableButtonTitle, for: .normal)
-        self.remindLaterButton.isHidden = !self.viewModel.remindMeLater
-        self.imageView.image = self.viewModel.image
+        titleLabel.text = viewModel.titleText
+        descriptionLabel.text = viewModel.descriptionText
+        enableButton.setTitle(viewModel.enableButtonTitle, for: .normal)
+        remindLaterButton.isHidden = !viewModel.remindMeLater
+        imageView.image = viewModel.image
         
-        self.mainButtonBottomConstraint.constant = !self.viewModel.remindMeLater ? 32 : 70
-        self.view.setNeedsLayout()
+        mainButtonBottomConstraint.constant = !viewModel.remindMeLater ? 32 : 70
+        view.setNeedsLayout()
     }
     
     private func getUserPermission() -> Observable<Void>
     {
-        self.viewModel.getUserPermission()
-        return self.viewModel.permissionGivenObservable
+        viewModel.getUserPermission()
+        return viewModel.permissionGivenObservable
     }
     
     private func onPermissionGiven()
     {
-        self.viewModel.permissionGiven()
+        viewModel.permissionGiven()
     }
     
     private func onRemindLaterTapped()
     {
-        self.viewModel.permissionDeferred()
-        self.hideOverlay()
+        viewModel.permissionDeferred()
+        hideOverlay()
     }
     
     private func hideOverlay()

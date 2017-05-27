@@ -73,15 +73,15 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     {
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
-        self.alpha = 0
+        alpha = 0
         self.categoryProvider = categoryProvider
-        self.backgroundColor = UIColor.white.withAlphaComponent(0)
+        backgroundColor = UIColor.white.withAlphaComponent(0)
         
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(EditTimeSlotView.handlePan(_:)))
         panGesture.delaysTouchesBegan = false
         addGestureRecognizer(panGesture)
         
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(EditTimeSlotView.handleTap(_:)))
         addGestureRecognizer(tapGesture)
     }
     
@@ -253,14 +253,14 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     func flickBehaviorAction()
     {
-        guard let _ = self.previousFlickPoint
+        guard let _ = previousFlickPoint
         else
         {
-            self.previousFlickPoint = flickView.center
+            previousFlickPoint = flickView.center
             return
         }
         
-        if distance(a: self.previousFlickPoint, b: flickView.center) == 0
+        if distance(a: previousFlickPoint, b: flickView.center) == 0
         {
             isFlicking = false
             resetFlick()
@@ -270,7 +270,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         handle(movement: flickView.center.x - previousFlickPoint.x)
         
-        self.previousFlickPoint = flickView.center
+        previousFlickPoint = flickView.center
     }
     
     // MARK: - UIDynamicAnimatorDelegate
@@ -288,7 +288,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     //MARK: - Methods
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
     {
-        return self.alpha > 0
+        return alpha > 0
     }
     
     func onEditBegan(point: CGPoint, timeSlot: TimeSlot)
@@ -297,9 +297,9 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         layoutIfNeeded()
         
         self.timeSlot = timeSlot
-        self.selectedItem = timeSlot.category
+        selectedItem = timeSlot.category
         
-        self.alpha = 1.0
+        alpha = 1.0
         
         let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
         
@@ -311,7 +311,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
         currentCategoryBackgroundView?.layer.cornerRadius = 16
         
-        self.addSubview(currentCategoryBackgroundView!)
+        addSubview(currentCategoryBackgroundView!)
         currentCategoryBackgroundView?.snp.makeConstraints { make in
             make.width.height.equalTo(32)
             make.top.equalTo(point.y - 24)
@@ -324,7 +324,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
 
         plusImageView?.removeFromSuperview()
         plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
-        plusImageView?.alpha = self.selectedItem != .unknown ? 0.0 : 1.0
+        plusImageView?.alpha = selectedItem != .unknown ? 0.0 : 1.0
         
         UIView.animate({
             self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
@@ -344,7 +344,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     private func show(from point: CGPoint)
     {
-        self.panGesture.isEnabled = true
+        panGesture.isEnabled = true
         
         mainY = point.y
         leftBoundryX = point.x + 32 / 2 + cellSpacing
@@ -486,7 +486,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         imageView.layer.cornerRadius = cornerRadius
         imageView.contentMode = contentMode
         
-        self.addSubview(imageView)
+        addSubview(imageView)
         
         imageView.snp.makeConstraints { make in
             make.width.height.equalTo(15)

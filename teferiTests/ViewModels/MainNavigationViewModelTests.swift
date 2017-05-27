@@ -21,19 +21,19 @@ class MainNavigationViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.timeService = MockTimeService()
-        self.feedbackService = MockFeedbackService()
-        self.selectedDateService = MockSelectedDateService()
-        self.appLifecycleService = MockAppLifecycleService()
+        timeService = MockTimeService()
+        feedbackService = MockFeedbackService()
+        selectedDateService = MockSelectedDateService()
+        appLifecycleService = MockAppLifecycleService()
         
         disposeBag = DisposeBag()
         
-        self.timeService.mockDate = getDate(withDay: 13)
+        timeService.mockDate = getDate(withDay: 13)
         
-        self.viewModel = NavigationViewModel(timeService: self.timeService,
-                                             feedbackService: self.feedbackService,
-                                             selectedDateService: self.selectedDateService,
-                                             appLifecycleService: self.appLifecycleService)
+        viewModel = NavigationViewModel(timeService: timeService,
+                                             feedbackService: feedbackService,
+                                             selectedDateService: selectedDateService,
+                                             appLifecycleService: appLifecycleService)
         
         scheduler = TestScheduler(initialClock:0)
         dateLabelObserver = scheduler.createObserver(String.self)
@@ -50,8 +50,8 @@ class MainNavigationViewModelTests : XCTestCase
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        let today = self.timeService.mockDate!
-        self.selectedDateService.currentlySelectedDate = today
+        let today = timeService.mockDate!
+        selectedDateService.currentlySelectedDate = today
         
         expect(observer.events.last!.value.element!).to(equal(L10n.currentDayBarTitle))
     }
@@ -63,8 +63,8 @@ class MainNavigationViewModelTests : XCTestCase
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        let yesterday = self.timeService.mockDate!.yesterday
-        self.selectedDateService.currentlySelectedDate = yesterday
+        let yesterday = timeService.mockDate!.yesterday
+        selectedDateService.currentlySelectedDate = yesterday
     
         expect(observer.events.last!.value.element!).to(equal(L10n.yesterdayBarTitle))
     }
@@ -77,7 +77,7 @@ class MainNavigationViewModelTests : XCTestCase
             .addDisposableTo(disposeBag)
         
         let olderDate = Date().add(days: -2)
-        self.selectedDateService.currentlySelectedDate = olderDate
+        selectedDateService.currentlySelectedDate = olderDate
         
         let formatter = DateFormatter();
         formatter.timeZone = TimeZone.autoupdatingCurrent;
@@ -96,9 +96,9 @@ class MainNavigationViewModelTests : XCTestCase
     
     func testTheCalendarDayAlwaysHasTwoPositions()
     {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.timeService.mockDate = self.getDate(withDay: 1)
-        self.appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToBackground)
+        timeService.mockDate = getDate(withDay: 1)
+        appLifecycleService.publish(.movedToForeground(fromNotification: false))
         
         let dateText = dateLabelObserver.events.last!.value.element!
         
@@ -107,9 +107,9 @@ class MainNavigationViewModelTests : XCTestCase
     
     func testDateLabelChangesIfDateChangesWhileOnBackground()
     {
-        self.appLifecycleService.publish(.movedToBackground)
-        self.timeService.mockDate = self.getDate(withDay: 14)
-        self.appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToBackground)
+        timeService.mockDate = getDate(withDay: 14)
+        appLifecycleService.publish(.movedToForeground(fromNotification: false))
         
         let dateText = dateLabelObserver.events.last!.value.element!
 
@@ -124,12 +124,12 @@ class MainNavigationViewModelTests : XCTestCase
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        let today = self.timeService.mockDate!
-        self.selectedDateService.currentlySelectedDate = today
+        let today = timeService.mockDate!
+        selectedDateService.currentlySelectedDate = today
 
-        self.appLifecycleService.publish(.movedToBackground)
-        self.timeService.mockDate = today.add(days: 1)
-        self.appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToBackground)
+        timeService.mockDate = today.add(days: 1)
+        appLifecycleService.publish(.movedToForeground(fromNotification: false))
         
         expect(observer.events.last!.value.element!).to(equal(L10n.yesterdayBarTitle))
     }

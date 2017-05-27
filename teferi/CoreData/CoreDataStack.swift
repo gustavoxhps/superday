@@ -78,7 +78,7 @@ class CoreDataStack
             {
                 // Replace this implementation with code to handle the error appropriately.
                 let nsError = error as NSError
-                self.loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
+                loggingService.log(withLogLevel: .error, message: "\(nsError.userInfo)")
             }
         }
     }

@@ -5,27 +5,27 @@ class CalendarDailyActivityView : UIView
 {
     func reset()
     {
-        self.layer.sublayers?.forEach { sublayer in sublayer.removeFromSuperlayer() }
+        layer.sublayers?.forEach { sublayer in sublayer.removeFromSuperlayer() }
         
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 1.0
-        self.backgroundColor = UIColor.clear
+        clipsToBounds = true
+        layer.cornerRadius = 1.0
+        backgroundColor = UIColor.clear
     }
     
     func update(dailyActivity: [ Activity ]?)
     {
-        self.reset()
+        reset()
         
         guard let activities = dailyActivity, activities.count > 0 else
         {
-            self.backgroundColor = Style.Color.calendarNoData
+            backgroundColor = Style.Color.calendarNoData
             return
         }
         
-        self.backgroundColor = UIColor.clear
+        backgroundColor = UIColor.clear
         
         let totalTimeSpent = activities.totalDurations
-        let availableWidth = Double(self.bounds.size.width - CGFloat(activities.count) + 1.0)
+        let availableWidth = Double(bounds.size.width - CGFloat(activities.count) + 1.0)
         
         var startingX = 0.0
         
@@ -39,12 +39,12 @@ class CalendarDailyActivityView : UIView
             let layer = CALayer()
             layer.cornerRadius = 1
             layer.backgroundColor = activity.category.color.cgColor
-            layer.frame = CGRect(x: startingX, y: 0, width: layerWidth, height: Double(self.frame.height))
+            layer.frame = CGRect(x: startingX, y: 0, width: layerWidth, height: Double(frame.height))
             startingX += layerWidth + 1
             
-            self.layer.addSublayer(layer)
+            layer.addSublayer(layer)
         }
         
-        self.layoutIfNeeded()
+        layoutIfNeeded()
     }
 }

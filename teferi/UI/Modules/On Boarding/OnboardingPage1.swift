@@ -26,13 +26,15 @@ class OnboardingPage1 : OnboardingPage
     
     override func viewDidLoad()
     {
-        self.initAnimatedTitleText(self.textView)
-        self.timelineCells = self.initAnimatingTimeline(with: self.timeSlots, in: self.timelineView)
+        super.viewDidLoad()
+        
+        initAnimatedTitleText(textView)
+        timelineCells = initAnimatingTimeline(with: timeSlots, in: timelineView)
     }
     
     override func startAnimations()
     {
-        self.animateTitleText(self.textView, duration: 1, delay: 1)
-        self.animateTimeline(self.timelineCells, delay: 1.3)
+        animateTitleText(textView, duration: 1, delay: 1)
+        animateTimeline(timelineCells, delay: 1.3)
     }
 }

@@ -32,6 +32,6 @@ class MockHealthKitService : HealthKitService
     
     func sendNewTrackEvent(_ sample: HealthSample)
     {
-        self.publishSubject.onNext(.newHealthSample(sample: sample))
+        publishSubject.onNext(.newHealthSample(sample: sample))
     }
 }

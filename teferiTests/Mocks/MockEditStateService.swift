@@ -10,8 +10,8 @@ class MockEditStateService : EditStateService
     //MARK: Initializers
     init()
     {
-        self.isEditingObservable = self.isEditingSubject.asObservable()
-        self.beganEditingObservable = self.beganEditingSubject.asObservable()
+        isEditingObservable = isEditingSubject.asObservable()
+        beganEditingObservable = beganEditingSubject.asObservable()
     }
     
     //MARK: EditStateService implementation
@@ -20,12 +20,12 @@ class MockEditStateService : EditStateService
     
     func notifyEditingBegan(point: CGPoint, timeSlot: TimeSlot)
     {
-        self.isEditingSubject.on(.next(true))
-        self.beganEditingSubject.on(.next((point, timeSlot)))
+        isEditingSubject.on(.next(true))
+        beganEditingSubject.on(.next((point, timeSlot)))
     }
     
     func notifyEditingEnded()
     {
-        self.isEditingSubject.on(.next(false))
+        isEditingSubject.on(.next(false))
     }
 }

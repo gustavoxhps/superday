@@ -20,7 +20,7 @@ class SummaryViewController: UIViewController
     func inject(viewModelLocator: ViewModelLocator)
     {
         self.viewModelLocator = viewModelLocator
-        self.viewModel = viewModelLocator.getSummaryViewModel()
+        viewModel = viewModelLocator.getSummaryViewModel()
     }
     
     override func viewDidLoad()
@@ -32,31 +32,31 @@ class SummaryViewController: UIViewController
         titleLabel.text = L10n.dailySummaryTitle
         
         summaryPageViewModel.dateObservable
-            .bindTo(self.dateLabel.rx.text)
+            .bindTo(dateLabel.rx.text)
             .addDisposableTo(disposableBag)
         
         summaryPageViewController.inject(viewModel: summaryPageViewModel, viewModelLocator: viewModelLocator)
         
-        self.backButton.rx.tap
-            .subscribe(onNext: { self.summaryPageViewController.moveToPreviews() })
+        backButton.rx.tap
+            .subscribe(onNext: { [unowned self] in self.summaryPageViewController.moveToPreviews() })
             .addDisposableTo(disposeBag)
         
-        self.forwardButton.rx.tap
-            .subscribe(onNext: { self.summaryPageViewController.moveToNext() })
+        forwardButton.rx.tap
+            .subscribe(onNext: { [unowned self] in self.summaryPageViewController.moveToNext() })
             .addDisposableTo(disposeBag)
         
-        self.summaryPageViewController
+        summaryPageViewController
             .canMoveForwardObservable
-            .subscribe(onNext: { self.forwardButton.isEnabled = $0 })
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: { [unowned self] in self.forwardButton.isEnabled = $0 })
+            .addDisposableTo(disposeBag)
         
-        self.summaryPageViewController
+        summaryPageViewController
             .canMoveBackwardObservable
-            .subscribe(onNext: { self.backButton.isEnabled = $0 })
-            .addDisposableTo(self.disposeBag)
+            .subscribe(onNext: { [unowned self] in self.backButton.isEnabled = $0 })
+            .addDisposableTo(disposeBag)
         
-        self.closeButton.rx.tap
-            .subscribe(onNext: { self.dismiss(animated: true, completion: nil) } )
-            .addDisposableTo(self.disposeBag)
+        closeButton.rx.tap
+            .subscribe(onNext: { [unowned self] in self.dismiss(animated: true, completion: nil) } )
+            .addDisposableTo(disposeBag)
     }
 }

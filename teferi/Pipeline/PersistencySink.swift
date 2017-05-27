@@ -35,7 +35,7 @@ class PersistencySink : Sink
             let addedTimeSlot : TimeSlot?
             if let smartGuess = temporaryTimeSlot.smartGuess
             {
-                addedTimeSlot = self.timeSlotService.addTimeSlot(withStartTime: temporaryTimeSlot.start,
+                addedTimeSlot = timeSlotService.addTimeSlot(withStartTime: temporaryTimeSlot.start,
                                                                  smartGuess: smartGuess,
                                                                  location: temporaryTimeSlot.location?.toCLLocation())
                 
@@ -43,7 +43,7 @@ class PersistencySink : Sink
             }
             else
             {
-                addedTimeSlot = self.timeSlotService.addTimeSlot(withStartTime: temporaryTimeSlot.start,
+                addedTimeSlot = timeSlotService.addTimeSlot(withStartTime: temporaryTimeSlot.start,
                                                                  category: temporaryTimeSlot.category,
                                                                  categoryWasSetByUser: false,
                                                                  location: temporaryTimeSlot.location?.toCLLocation())
@@ -52,16 +52,16 @@ class PersistencySink : Sink
             lastLocation = addedTimeSlot?.location ?? lastLocation
         }
         
-        self.updateIfNeeded(lastLocation: lastLocation)
+        updateIfNeeded(lastLocation: lastLocation)
         smartGuessesToUpdate.forEach { self.smartGuessService.markAsUsed($0.smartGuess, atTime: $0.time) }
         
-        self.trackEventService.clearAllData()
+        trackEventService.clearAllData()
     }
     
     private func updateIfNeeded(lastLocation: CLLocation?)
     {
         guard let lastLocation = lastLocation else { return }
         
-        self.settingsService.setLastLocation(lastLocation)
+        settingsService.setLastLocation(lastLocation)
     }
 }

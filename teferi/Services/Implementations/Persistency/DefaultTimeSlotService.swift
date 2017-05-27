@@ -25,8 +25,8 @@ class DefaultTimeSlotService : TimeSlotService
         self.locationService = locationService
         self.persistencyService = persistencyService
 
-        self.timeSlotCreatedObservable = timeSlotCreatedSubject.asObservable()
-        self.timeSlotUpdatedObservable = timeSlotUpdatedSubject.asObservable()
+        timeSlotCreatedObservable = timeSlotCreatedSubject.asObservable()
+        timeSlotUpdatedObservable = timeSlotUpdatedSubject.asObservable()
     }
     
     // MARK: Properties
@@ -36,9 +36,9 @@ class DefaultTimeSlotService : TimeSlotService
     // MARK: Methods
     @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
     {
-        let location : CLLocation? = tryUsingLatestLocation ? self.locationService.getLastKnownLocation() : nil
+        let location : CLLocation? = tryUsingLatestLocation ? locationService.getLastKnownLocation() : nil
         
-        return self.addTimeSlot(withStartTime: startTime,
+        return addTimeSlot(withStartTime: startTime,
                                 category: category,
                                 categoryWasSetByUser: categoryWasSetByUser,
                                 location: location)
@@ -51,7 +51,7 @@ class DefaultTimeSlotService : TimeSlotService
                                 categoryWasSetByUser: categoryWasSetByUser,
                                 location: location)
         
-        return self.tryAdd(timeSlot: timeSlot)
+        return tryAdd(timeSlot: timeSlot)
     }
     
     @discardableResult func addTimeSlot(withStartTime startTime: Date, smartGuess: SmartGuess, location: CLLocation?) -> TimeSlot?
@@ -60,21 +60,21 @@ class DefaultTimeSlotService : TimeSlotService
                                 smartGuess: smartGuess,
                                 location: location)
         
-        return self.tryAdd(timeSlot: timeSlot)
+        return tryAdd(timeSlot: timeSlot)
     }
     
     private func tryAdd(timeSlot: TimeSlot) -> TimeSlot?
     {
         //The previous TimeSlot needs to be finished before a new one can start
-        guard self.endPreviousTimeSlot(atDate: timeSlot.startTime) && self.persistencyService.create(timeSlot) else
+        guard endPreviousTimeSlot(atDate: timeSlot.startTime) && persistencyService.create(timeSlot) else
         {
-            self.loggingService.log(withLogLevel: .error, message: "Failed to create new TimeSlot")
+            loggingService.log(withLogLevel: .error, message: "Failed to create new TimeSlot")
             return nil
         }
         
-        self.loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
+        loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
         
-        self.timeSlotCreatedSubject.on(.next(timeSlot))
+        timeSlotCreatedSubject.on(.next(timeSlot))
         
         return timeSlot
     }
@@ -85,25 +85,25 @@ class DefaultTimeSlotService : TimeSlotService
         let endTime = day.tomorrow.ignoreTimeComponents() as NSDate
         let predicate = Predicate(parameter: "startTime", rangesFromDate: startTime, toDate: endTime)
         
-        let timeSlots = self.persistencyService.get(withPredicate: predicate)
+        let timeSlots = persistencyService.get(withPredicate: predicate)
         return timeSlots
     }
     
     func getTimeSlots(sinceDaysAgo days: Int) -> [TimeSlot]
     {
-        let today = self.timeService.now.ignoreTimeComponents()
+        let today = timeService.now.ignoreTimeComponents()
         
         let startTime = today.add(days: -days).ignoreTimeComponents() as NSDate
         let endTime = today.tomorrow.ignoreTimeComponents() as NSDate
         let predicate = Predicate(parameter: "startTime", rangesFromDate: startTime, toDate: endTime)
         
-        let timeSlots = self.persistencyService.get(withPredicate: predicate)
+        let timeSlots = persistencyService.get(withPredicate: predicate)
         return timeSlots
     }
     
     func update(timeSlot: TimeSlot, withCategory category: Category, setByUser: Bool)
     {
-        guard self.canChangeCategory(of: timeSlot, to: category, setByUser: setByUser) else { return }
+        guard canChangeCategory(of: timeSlot, to: category, setByUser: setByUser) else { return }
         
         let predicate = Predicate(parameter: "startTime", equals: timeSlot.startTime as AnyObject)
         let editFunction = { (timeSlot: TimeSlot) -> (TimeSlot) in
@@ -113,14 +113,14 @@ class DefaultTimeSlotService : TimeSlotService
             return timeSlot
         }
         
-        if self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        if persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
             timeSlot.category = category
-            self.timeSlotUpdatedSubject.on(.next(timeSlot))
+            timeSlotUpdatedSubject.on(.next(timeSlot))
         }
         else
         {
-            self.loggingService.log(withLogLevel: .error, message: "Error updating category of TimeSlot created on \(timeSlot.startTime) from \(timeSlot.category) to \(category)")
+            loggingService.log(withLogLevel: .error, message: "Error updating category of TimeSlot created on \(timeSlot.startTime) from \(timeSlot.category) to \(category)")
         }
     }
     
@@ -136,18 +136,18 @@ class DefaultTimeSlotService : TimeSlotService
             return true
         }
         
-        self.loggingService.log(withLogLevel: .warning, message: "Tried automatically updating category of TimeSlot which was set by user")
+        loggingService.log(withLogLevel: .warning, message: "Tried automatically updating category of TimeSlot which was set by user")
         return false
     }
     
     func getLast() -> TimeSlot?
     {
-        return self.persistencyService.getLast()
+        return persistencyService.getLast()
     }
     
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
     {
-        let endTime = self.getEndTime(ofTimeSlot: timeSlot)
+        let endTime = getEndTime(ofTimeSlot: timeSlot)
         
         return endTime.timeIntervalSince(timeSlot.startTime)
     }
@@ -156,7 +156,7 @@ class DefaultTimeSlotService : TimeSlotService
     {
         if let endTime = timeSlot.endTime { return endTime}
         
-        let date = self.timeService.now
+        let date = timeService.now
         let timeEntryLimit = timeSlot.startTime.tomorrow.ignoreTimeComponents()
         let timeEntryLastedOverOneDay = date > timeEntryLimit
         
@@ -167,21 +167,21 @@ class DefaultTimeSlotService : TimeSlotService
     
     private func endPreviousTimeSlot(atDate date: Date) -> Bool
     {
-        guard let timeSlot = self.persistencyService.getLast() else { return true }
+        guard let timeSlot = persistencyService.getLast() else { return true }
         
         let startDate = timeSlot.startTime
         var endDate = date
         
         guard endDate > startDate else
         {
-            self.loggingService.log(withLogLevel: .error, message: "Trying to create a negative duration TimeSlot")
+            loggingService.log(withLogLevel: .error, message: "Trying to create a negative duration TimeSlot")
             return false
         }
         
         //TimeSlot is going for over one day, we should end it at midnight
         if startDate.ignoreTimeComponents() != endDate.ignoreTimeComponents()
         {
-            self.loggingService.log(withLogLevel: .debug, message: "Early ending TimeSlot at midnight")
+            loggingService.log(withLogLevel: .debug, message: "Early ending TimeSlot at midnight")
             endDate = startDate.tomorrow.ignoreTimeComponents()
         }
         
@@ -194,9 +194,9 @@ class DefaultTimeSlotService : TimeSlotService
         
         timeSlot.endTime = endDate
         
-        guard self.persistencyService.update(withPredicate: predicate, updateFunction: editFunction) else
+        guard persistencyService.update(withPredicate: predicate, updateFunction: editFunction) else
         {
-            self.loggingService.log(withLogLevel: .error, message: "Failed to end TimeSlot started at \(timeSlot.startTime) with category \(timeSlot.category)")
+            loggingService.log(withLogLevel: .error, message: "Failed to end TimeSlot started at \(timeSlot.startTime) with category \(timeSlot.category)")
             
             return false
         }

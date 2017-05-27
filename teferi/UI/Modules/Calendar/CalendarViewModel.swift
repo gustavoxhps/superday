@@ -20,11 +20,11 @@ class CalendarViewModel
         self.timeSlotService = timeSlotService
         self.selectedDateService = selectedDateService
         
-        self.minValidDate = settingsService.installDate ?? timeService.now
+        minValidDate = settingsService.installDate ?? timeService.now
         
-        self.currentVisibleCalendarDateVariable = Variable(timeService.now)
-        self.dateObservable = self.selectedDateService.currentlySelectedDateObservable
-        self.currentVisibleCalendarDateObservable = self.currentVisibleCalendarDateVariable.asObservable()
+        currentVisibleCalendarDateVariable = Variable(timeService.now)
+        dateObservable = selectedDateService.currentlySelectedDateObservable
+        currentVisibleCalendarDateObservable = currentVisibleCalendarDateVariable.asObservable()
     }
     
     // MARK: Properties
@@ -50,8 +50,8 @@ class CalendarViewModel
     func canScroll(toDate date: Date) -> Bool
     {
         let cellDate = date.ignoreTimeComponents()
-        let minDate = self.minValidDate.ignoreTimeComponents()
-        let maxDate = self.maxValidDate.ignoreTimeComponents()
+        let minDate = minValidDate.ignoreTimeComponents()
+        let maxDate = maxValidDate.ignoreTimeComponents()
         
         let dateIsWithinInterval = minDate...maxDate ~= cellDate
         return dateIsWithinInterval
@@ -59,10 +59,9 @@ class CalendarViewModel
     
     func getActivities(forDate date: Date) -> [Activity]?
     {
-        guard self.canScroll(toDate: date) else { return nil }
+        guard canScroll(toDate: date) else { return nil }
         
-        let result =
-            self.timeSlotService
+        let result = timeSlotService
                 .getTimeSlots(forDay: date)
                 .groupBy(category)
                 .map(toActivity)

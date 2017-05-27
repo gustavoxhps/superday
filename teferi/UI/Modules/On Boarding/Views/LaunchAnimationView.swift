@@ -16,9 +16,9 @@ class LaunchAnimationView : UIView
     {
         super.init(frame: frame)
         
-        self.background.frame = frame
-        self.background.backgroundColor = UIColor.white.cgColor
-        self.layer.addSublayer(background)
+        background.frame = frame
+        background.backgroundColor = UIColor.white.cgColor
+        layer.addSublayer(background)
         
         let colors = [Style.Color.green, Style.Color.purple, Style.Color.transparentPurple,
                       Style.Color.transparentGreen, Style.Color.yellow, Style.Color.purple,
@@ -49,8 +49,8 @@ class LaunchAnimationView : UIView
             dot.backgroundColor = colors[i].cgColor
             dot.cornerRadius = cornerRadius
             
-            self.dots.append(dot)
-            self.layer.addSublayer(dot)
+            dots.append(dot)
+            layer.addSublayer(dot)
         }
     }
     
@@ -65,10 +65,10 @@ class LaunchAnimationView : UIView
         
         for i in 0..<8
         {
-            self.animateDot(self.dots[animationOrder[i]], duration: duration, delay: Double(i) * interval)
+            animateDot(dots[animationOrder[i]], duration: duration, delay: Double(i) * interval)
         }
         
-        self.animateDot(self.dots[animationOrder[8]], duration: lastDuration, delay: 8 * interval)
+        animateDot(dots[animationOrder[8]], duration: lastDuration, delay: 8 * interval)
 
         Timer.schedule(withDelay: duration * 5) { _ in onCompleted() }
     }

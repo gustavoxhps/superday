@@ -82,20 +82,20 @@ class LocationPermissionViewModel : PermissionViewModel
     
     func permissionGiven()
     {
-        if self.settingsService.userEverGaveLocationPermission {
-            self.settingsService.setLastAskedForLocationPermission(self.timeService.now)
+        if settingsService.userEverGaveLocationPermission {
+            settingsService.setLastAskedForLocationPermission(timeService.now)
         } else {
-            self.settingsService.setUserGaveLocationPermission()
+            settingsService.setUserGaveLocationPermission()
         }
     }
     
     func permissionDeferred()
     {
-        self.settingsService.setLastAskedForLocationPermission(self.timeService.now)
+        settingsService.setLastAskedForLocationPermission(timeService.now)
     }
         
     private func overlayVisibilityState() -> Bool
     {
-        return !self.settingsService.hasLocationPermission
+        return !settingsService.hasLocationPermission
     }
 }

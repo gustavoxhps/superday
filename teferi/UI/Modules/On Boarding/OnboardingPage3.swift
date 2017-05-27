@@ -14,16 +14,16 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
     
     override func startAnimations()
     {
-        self.disposeBag = self.disposeBag ?? DisposeBag()
+        disposeBag = disposeBag ?? DisposeBag()
         
-        self.locationManager = CLLocationManager()
-        self.locationManager.delegate = self
-        self.locationManager.requestAlwaysAuthorization()
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
         
-        self.appLifecycleService
+        appLifecycleService
             .movedToForegroundObservable
-            .subscribe(onNext: self.onMovedToForeground)
-            .addDisposableTo(self.disposeBag!)
+            .subscribe(onNext: onMovedToForeground)
+            .addDisposableTo(disposeBag!)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
@@ -31,26 +31,26 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
         if status == .authorizedAlways || status == .denied
         {
             if status == .authorizedAlways {
-                self.settingsService.setUserGaveLocationPermission()
+                settingsService.setUserGaveLocationPermission()
             }
 
-            self.finish()
+            finish()
         }
     }
     
     override func finish()
     {
-        self.locationManager.delegate = nil
-        self.onboardingPageViewController.goToNextPage(forceNext: true)
-        self.disposeBag = nil
+        locationManager.delegate = nil
+        onboardingPageViewController.goToNextPage(forceNext: true)
+        disposeBag = nil
     }
     
     func onMovedToForeground()
     {
-        if self.onboardingPageViewController.isCurrent(page: self)
-            && !self.settingsService.hasLocationPermission
+        if onboardingPageViewController.isCurrent(page: self)
+            && !settingsService.hasLocationPermission
         {
-            self.locationManager.requestAlwaysAuthorization()
+            locationManager.requestAlwaysAuthorization()
         }
     }
 }

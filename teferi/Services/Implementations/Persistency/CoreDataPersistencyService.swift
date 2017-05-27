@@ -23,7 +23,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         var elementToReturn: T? = nil
         
         managedObjectContext.performAndWait
-        {
+        { [unowned self] in
             let request = NSFetchRequest<NSFetchRequestResult>()
             request.entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)!
             request.fetchLimit = 1
@@ -47,7 +47,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     
     override func get(withPredicate predicate: Predicate? = nil) -> [ T ]
     {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: self.entityName)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         
         if let nsPredicate = predicate?.convertToNSPredicate()
         {
@@ -57,7 +57,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         var elements = [T]()
         
         managedObjectContext.performAndWait
-        {
+        { [unowned self] in
             do
             {
                 let results = try self.managedObjectContext.fetch(fetchRequest) as! [NSManagedObject]
@@ -79,7 +79,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         var boolToReturn = false
         
         managedObjectContext.performAndWait
-        {
+        { [unowned self] in
             let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)!
             let managedObject = NSManagedObject(entity: entity, insertInto: self.managedObjectContext)
             
@@ -105,7 +105,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         var boolToReturn = false
         
         managedObjectContext.performAndWait
-        {
+        { [unowned self] in
             let entity = NSEntityDescription.entity(forEntityName: self.entityName, in: self.managedObjectContext)
             
             let request = NSFetchRequest<NSFetchRequestResult>()
@@ -153,7 +153,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         var boolToReturn = false
         
         managedObjectContext.performAndWait
-        {
+        { [unowned self] in
             do
             {
                 try self.managedObjectContext.execute(batchDeleteRequest)
@@ -172,12 +172,12 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
     //MARK: Methods
     private func setManagedElementProperties(_ element: T, _ managedObject: NSManagedObject)
     {
-        self.modelAdapter.setManagedElementProperties(fromModel: element, managedObject: managedObject)
+        modelAdapter.setManagedElementProperties(fromModel: element, managedObject: managedObject)
     }
     
     private func mapManagedObjectIntoElement(_ managedObject: NSManagedObject) -> T
     {
-        let result = self.modelAdapter.getModel(fromManagedObject: managedObject)
+        let result = modelAdapter.getModel(fromManagedObject: managedObject)
         return result
     }
     

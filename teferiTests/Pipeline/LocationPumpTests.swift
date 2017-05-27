@@ -20,23 +20,23 @@ class LocationPumpTests: XCTestCase {
     
     override func setUp()
     {        
-        self.trackEventService = MockTrackEventService()
-        self.settingsService = MockSettingsService()
-        self.smartGuessService = MockSmartGuessService()
-        self.loggingService = MockLoggingService()
+        trackEventService = MockTrackEventService()
+        settingsService = MockSettingsService()
+        smartGuessService = MockSmartGuessService()
+        loggingService = MockLoggingService()
         
-        self.locationService = MockLocationService()
-        self.timeService = MockTimeService()
-        self.timeSlotService = MockTimeSlotService(
+        locationService = MockLocationService()
+        timeService = MockTimeService()
+        timeSlotService = MockTimeSlotService(
             timeService:timeService,
             locationService:locationService
         )
         
-        self.locationPump = LocationPump(
-            trackEventService:self.trackEventService,
-            settingsService:self.settingsService,
-            smartGuessService:self.smartGuessService,
-            timeSlotService:self.timeSlotService,
+        locationPump = LocationPump(
+            trackEventService:trackEventService,
+            settingsService:settingsService,
+            smartGuessService:smartGuessService,
+            timeSlotService:timeSlotService,
             loggingService: loggingService,
             timeService: timeService
         )
@@ -44,10 +44,10 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmWillNotRunForTheFirstLocationEverReceived()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
-        self.settingsService.lastLocation = nil
+        addStoredTimeSlot(minutesBeforeNoon: 30)
+        settingsService.lastLocation = nil
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent
         ]
         
@@ -58,10 +58,10 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmWillRunForTheSecondLocationEvenIfNotLastLocationExists()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
-        self.settingsService.lastLocation = nil
+        addStoredTimeSlot(minutesBeforeNoon: 30)
+        settingsService.lastLocation = nil
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent,
             TrackEvent.baseMockEvent.delay(hours:20).offset(meters: 300),
         ]
@@ -73,14 +73,14 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmWillNotRunIfTheNewLocationIsOlderThanTheLastLocationReceived()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
 
         let oldLocation = CLLocation.baseLocation.offset(.north, meters: 350, seconds:8*60)
         let newLocation = CLLocation.baseLocation.offset(.north, meters: 650, seconds:-8*60)
         
-        self.settingsService.lastLocation = oldLocation
+        settingsService.lastLocation = oldLocation
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             Location.asTrackEvent(Location(fromCLLocation: newLocation))
         ]
         
@@ -91,12 +91,12 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmIgnoresInvalidLocationsAndKeepsValidOnes()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
-        self.settingsService.lastLocation = nil
+        addStoredTimeSlot(minutesBeforeNoon: 30)
+        settingsService.lastLocation = nil
 
         let locationA = CLLocation.baseLocation.offset(.north, meters: 400).with(accuracy: 50)
         let eventA = Location.asTrackEvent(Location(fromCLLocation: locationA))
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             eventA,
             eventA.delay(minutes: 30).offset(meters: 80), //Should ignore this but keep the 1st (more accurate) and last
             eventA.delay(minutes: 60).offset(meters: 160)
@@ -110,9 +110,9 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDetectsACommuteIfMultipleEntriesHappenInAShortPeriodOfTime()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
 
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.offset(meters: 200),
             TrackEvent.baseMockEvent.delay(minutes: 15).offset(meters: 400),
             TrackEvent.baseMockEvent.delay(hours:1).offset(meters: 600),
@@ -126,11 +126,11 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesChangeTheTimeSlotToCommute()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
 
         let firstEvent = TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 200)
 
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             firstEvent,
             firstEvent.delay(minutes: 15).offset(meters: 400)
         ]
@@ -143,12 +143,12 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmCreatesNewTimeSlotWhenANewUpdateComesAfterAWhile()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
 
         let location = CLLocation.baseLocation.offset(.north, meters: 350)
         let secondEvent = Location.asTrackEvent(Location(fromCLLocation: location))
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             secondEvent
         ]
         
@@ -160,7 +160,7 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesNotCreateNewTimeSlotsUntilItDetectsTheUserBeingIdleForAWhile()
     {
-        self.addStoredTimeSlot()
+        addStoredTimeSlot()
 
         let delays:[Double] = [45, 40, 50, 90, 110, 120]
         
@@ -168,7 +168,7 @@ class LocationPumpTests: XCTestCase {
             return Date.noon.addingTimeInterval($0 * 60.0)
         }
         
-        self.trackEventService.mockEvents = delays.map {
+        trackEventService.mockEvents = delays.map {
             TrackEvent.baseMockEvent.delay(minutes:$0).offset(meters:100*$0)
         }
         
@@ -184,9 +184,9 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesNotCreateTimeSlotsFromLocationUpdatesInSimilarLocation()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
 
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 400),
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 20),
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 30)
@@ -199,9 +199,9 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesNotCreateTimeSlotsFromLocationUpdatesInSimilarLocationToTheStoredOne()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 10)
         ]
         
@@ -212,11 +212,11 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesNotDetectCommuteFromLocationUpdatesInSimilarLocation()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
         
         let firstEvent = TrackEvent.baseMockEvent.delay(hours:1).offset(meters: 200)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             firstEvent,
             firstEvent.delay(minutes: 15).offset(meters: 20)
         ]
@@ -229,17 +229,17 @@ class LocationPumpTests: XCTestCase {
     
     func testTheAlgorithmDoesNotTouchLastKnownLocationFromLocationUpdatesInSimilarLocation()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
-        self.settingsService.setLastLocation(CLLocation.baseLocation)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
+        settingsService.setLastLocation(CLLocation.baseLocation)
         let firstEvent = TrackEvent.baseMockEvent.delay(minutes: 35).offset(meters: 10)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             firstEvent
         ]
         
         let _ = locationPump.run()
         
-        let lastLocation = self.settingsService.lastLocation!
+        let lastLocation = settingsService.lastLocation!
         let baseLocation = CLLocation.baseLocation
         
         expect(lastLocation.coordinate.latitude).to(equal(baseLocation.coordinate.latitude))
@@ -249,11 +249,11 @@ class LocationPumpTests: XCTestCase {
     
     func testAlgorithmAsksForSmartGuessWithCorrectLocation()
     {
-        self.addStoredTimeSlot()
+        addStoredTimeSlot()
 
         let location = CLLocation.baseLocation.offset(.north, meters: 200, seconds: 60*30)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             Location.asTrackEvent(Location(fromCLLocation: location))
         ]
         
@@ -261,7 +261,7 @@ class LocationPumpTests: XCTestCase {
         
         expect(self.smartGuessService.locationsAskedFor.count).to(equal(1))
 
-        let askedForLocation = self.smartGuessService.locationsAskedFor[0]
+        let askedForLocation = smartGuessService.locationsAskedFor[0]
 
         expect(askedForLocation.coordinate.latitude).to(equal(location.coordinate.latitude))
         expect(askedForLocation.coordinate.longitude).to(equal(location.coordinate.longitude))
@@ -271,11 +271,11 @@ class LocationPumpTests: XCTestCase {
     func testTimeSlotGetsUnknownCategoryIfNoSmartGuessExists()
     {
         
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
         
-        self.smartGuessService.smartGuessToReturn = nil
+        smartGuessService.smartGuessToReturn = nil
 
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.offset(meters:200).delay(minutes:30)
         ]
         
@@ -287,12 +287,12 @@ class LocationPumpTests: XCTestCase {
     
     func testTimeSlotGetsCorrectCategoryIfSmartGuessExists()
     {
-        self.addStoredTimeSlot(minutesBeforeNoon: 30)
+        addStoredTimeSlot(minutesBeforeNoon: 30)
         
-        self.smartGuessService.smartGuessToReturn = SmartGuess(
+        smartGuessService.smartGuessToReturn = SmartGuess(
             withId: 0, category: .food, location: CLLocation(), lastUsed: Date.midnight)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 300)
         ]
         
@@ -305,9 +305,9 @@ class LocationPumpTests: XCTestCase {
     
     func testCanCreateUnkownSlotsBetweenCommuteSlots()
     {
-        self.addStoredTimeSlot()
+        addStoredTimeSlot()
 
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.delay(minutes:30).offset(meters: 200),
             TrackEvent.baseMockEvent.delay(minutes:45).offset(meters: 400),
             TrackEvent.baseMockEvent.delay(minutes:75).offset(meters: 800),
@@ -329,16 +329,16 @@ class LocationPumpTests: XCTestCase {
     func testEndsLastTimeSlotIfCommuteAndLongerThanLimit()
     {
         let smartGuess = SmartGuess(withId: 0, category: .food, location: CLLocation(), lastUsed: Date.midnight)
-        self.smartGuessService.smartGuessToReturn = smartGuess
+        smartGuessService.smartGuessToReturn = smartGuess
         
-        self.addStoredTimeSlot(minutesBeforeNoon: 60)
+        addStoredTimeSlot(minutesBeforeNoon: 60)
         
-        self.trackEventService.mockEvents = [
+        trackEventService.mockEvents = [
             TrackEvent.baseMockEvent.offset(meters: 200),
             TrackEvent.baseMockEvent.delay(seconds:15).offset(meters: 400)
         ]
         
-        self.timeService.mockDate = Date.noon.addingTimeInterval(2*60*60)
+        timeService.mockDate = Date.noon.addingTimeInterval(2*60*60)
         
         let timeSlots = locationPump.run()
         
@@ -349,7 +349,7 @@ class LocationPumpTests: XCTestCase {
     private func addStoredTimeSlot(minutesBeforeNoon:TimeInterval = 0)
     {
         let date = Date.noon.addingTimeInterval(-60 * minutesBeforeNoon)
-        self.timeSlotService.addTimeSlot(withStartTime: date,
+        timeSlotService.addTimeSlot(withStartTime: date,
                                          category: .family,
                                          categoryWasSetByUser: false,
                                          tryUsingLatestLocation: false)
@@ -360,7 +360,7 @@ class LocationPumpTests: XCTestCase {
                                        verticalAccuracy: CLLocation.baseLocation.verticalAccuracy,
                                        timestamp: date)
 
-        self.settingsService.setLastLocation(baseLocation)
+        settingsService.setLastLocation(baseLocation)
 
     }
 }

@@ -37,78 +37,78 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     //Initializers
     override init()
     {
-        self.timeService = DefaultTimeService()
-        self.metricsService = FabricMetricsService()
-        self.settingsService = DefaultSettingsService(timeService: timeService)
-        self.loggingService = SwiftyBeaverLoggingService()
-        self.appLifecycleService = DefaultAppLifecycleService()
-        self.editStateService = DefaultEditStateService(timeService: self.timeService)
-        self.locationService = DefaultLocationService(loggingService: self.loggingService)
-        self.healthKitService = DefaultHealthKitService(settingsService: self.settingsService, loggingService: self.loggingService)
-        self.selectedDateService = DefaultSelectedDateService(timeService: self.timeService)
-        self.feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
+        timeService = DefaultTimeService()
+        metricsService = FabricMetricsService()
+        settingsService = DefaultSettingsService(timeService: timeService)
+        loggingService = SwiftyBeaverLoggingService()
+        appLifecycleService = DefaultAppLifecycleService()
+        editStateService = DefaultEditStateService(timeService: timeService)
+        locationService = DefaultLocationService(loggingService: loggingService)
+        healthKitService = DefaultHealthKitService(settingsService: settingsService, loggingService: loggingService)
+        selectedDateService = DefaultSelectedDateService(timeService: timeService)
+        feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
         
-        self.coreDataStack = CoreDataStack(loggingService: loggingService)
-        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: TimeSlotModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
-        let locationPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: LocationModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
-        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: SmartGuessModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
-        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: self.loggingService, modelAdapter: HealthSampleModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        coreDataStack = CoreDataStack(loggingService: loggingService)
+        let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: loggingService, modelAdapter: TimeSlotModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let locationPersistencyService = CoreDataPersistencyService(loggingService: loggingService, modelAdapter: LocationModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let smartGuessPersistencyService = CoreDataPersistencyService(loggingService: loggingService, modelAdapter: SmartGuessModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
+        let healthSamplePersistencyService = CoreDataPersistencyService(loggingService: loggingService, modelAdapter: HealthSampleModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
         
-        self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
-                                                          loggingService: self.loggingService,
-                                                          settingsService: self.settingsService,
+        smartGuessService = DefaultSmartGuessService(timeService: timeService,
+                                                          loggingService: loggingService,
+                                                          settingsService: settingsService,
                                                           persistencyService: smartGuessPersistencyService)
         
-        self.timeSlotService = DefaultTimeSlotService(timeService: self.timeService,
-                                                      loggingService: self.loggingService,
-                                                      locationService: self.locationService,
+        timeSlotService = DefaultTimeSlotService(timeService: timeService,
+                                                      loggingService: loggingService,
+                                                      locationService: locationService,
                                                       persistencyService: timeSlotPersistencyService)
         
         if #available(iOS 10.0, *)
         {
-            self.notificationService = PostiOSTenNotificationService(timeService: self.timeService,
-                                                                     loggingService: self.loggingService,
-                                                                     settingsService: self.settingsService,
-                                                                     timeSlotService: self.timeSlotService)
+            notificationService = PostiOSTenNotificationService(timeService: timeService,
+                                                                     loggingService: loggingService,
+                                                                     settingsService: settingsService,
+                                                                     timeSlotService: timeSlotService)
         }
         else
         {
-            self.notificationService = PreiOSTenNotificationService(loggingService: self.loggingService,
-                                                                    self.notificationAuthorizedSubject.asObservable())
+            notificationService = PreiOSTenNotificationService(loggingService: loggingService,
+                                                                    notificationAuthorizedSubject.asObservable())
         }
         
-        let trackEventServicePersistency = TrackEventPersistencyService(loggingService: self.loggingService,
+        let trackEventServicePersistency = TrackEventPersistencyService(loggingService: loggingService,
                                                                         locationPersistencyService: locationPersistencyService,
                                                                         healthSamplePersistencyService: healthSamplePersistencyService)
         
-        self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
+        trackEventService = DefaultTrackEventService(loggingService: loggingService,
                                                           persistencyService: trackEventServicePersistency,
                                                           withEventSources: locationService, healthKitService)
         
-        let locationPump = LocationPump(trackEventService: self.trackEventService,
-                                        settingsService: self.settingsService,
-                                        smartGuessService: self.smartGuessService,
-                                        timeSlotService: self.timeSlotService,
+        let locationPump = LocationPump(trackEventService: trackEventService,
+                                        settingsService: settingsService,
+                                        smartGuessService: smartGuessService,
+                                        timeSlotService: timeSlotService,
                                         loggingService: loggingService,
                                         timeService: timeService)
         
-        let healthKitPump = HealthKitPump(trackEventService: self.trackEventService, loggingService: loggingService)
+        let healthKitPump = HealthKitPump(trackEventService: trackEventService, loggingService: loggingService)
         
-        self.pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
+        pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
                                 .pipe(to: MergePipe())
-                                .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: self.timeService))
-                                .pipe(to: FirstTimeSlotOfDayPipe(timeService: self.timeService, timeSlotService: self.timeSlotService))
-                                .sink(PersistencySink(settingsService: self.settingsService,
-                                                      timeSlotService: self.timeSlotService,
-                                                      smartGuessService: self.smartGuessService,
-                                                      trackEventService: self.trackEventService,
-                                                      timeService: self.timeService))
+                                .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: timeService))
+                                .pipe(to: FirstTimeSlotOfDayPipe(timeService: timeService, timeSlotService: timeSlotService))
+                                .sink(PersistencySink(settingsService: settingsService,
+                                                      timeSlotService: timeSlotService,
+                                                      smartGuessService: smartGuessService,
+                                                      trackEventService: trackEventService,
+                                                      timeService: timeService))
 
-        self.notificationSchedulingService = NotificationSchedulingService(timeService: self.timeService,
-                                                                           settingsService: self.settingsService,
-                                                                           locationService: self.locationService,
-                                                                           smartGuessService: self.smartGuessService,
-                                                                           notificationService: self.notificationService)
+        notificationSchedulingService = NotificationSchedulingService(timeService: timeService,
+                                                                           settingsService: settingsService,
+                                                                           locationService: locationService,
+                                                                           smartGuessService: smartGuessService,
+                                                                           notificationService: notificationService)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -119,7 +119,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
-        self.logAppStartup(isInBackground)
+        logAppStartup(isInBackground)
 
         if settingsService.hasHealthKitPermission
         {
@@ -135,18 +135,18 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         }
         
         
-        self.appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
+        appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
 
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
         {
-            self.locationService.startLocationTracking()
+            locationService.startLocationTracking()
             return true
         }
         
-        self.initializeWindowIfNeeded()
-        self.smartGuessService.purgeEntries(olderThan: self.timeService.now.add(days: -30))
+        initializeWindowIfNeeded()
+        smartGuessService.purgeEntries(olderThan: timeService.now.add(days: -30))
         
         return true
     }
@@ -173,70 +173,70 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let startedOn = isInBackground ? "background" : "foreground"
         let message = "Application started on \(startedOn). App Version: \(versionNumber) Build: \(buildNumber)"
 
-        self.loggingService.log(withLogLevel: .debug, message: message)
+        loggingService.log(withLogLevel: .debug, message: message)
     }
     
     private func initializeWindowIfNeeded()
     {
-        guard self.window == nil else { return }
+        guard window == nil else { return }
         
-        self.metricsService.initialize()
+        metricsService.initialize()
         
-        self.window = UIWindow(frame: UIScreen.main.bounds)
+        window = UIWindow(frame: UIScreen.main.bounds)
         
-        let viewModelLocator = DefaultViewModelLocator(timeService: self.timeService,
-                                                       metricsService: self.metricsService,
-                                                       feedbackService: self.feedbackService,
-                                                       locationService: self.locationService,
-                                                       settingsService: self.settingsService,
-                                                       timeSlotService: self.timeSlotService,
-                                                       editStateService: self.editStateService,
-                                                       smartGuessService : self.smartGuessService,
-                                                       appLifecycleService: self.appLifecycleService,
-                                                       selectedDateService: self.selectedDateService,
-                                                       loggingService: self.loggingService,
-                                                       healthKitService: self.healthKitService,
-                                                       notificationService: self.notificationService)
+        let viewModelLocator = DefaultViewModelLocator(timeService: timeService,
+                                                       metricsService: metricsService,
+                                                       feedbackService: feedbackService,
+                                                       locationService: locationService,
+                                                       settingsService: settingsService,
+                                                       timeSlotService: timeSlotService,
+                                                       editStateService: editStateService,
+                                                       smartGuessService : smartGuessService,
+                                                       appLifecycleService: appLifecycleService,
+                                                       selectedDateService: selectedDateService,
+                                                       loggingService: loggingService,
+                                                       healthKitService: healthKitService,
+                                                       notificationService: notificationService)
         
         if settingsService.installDate == nil
         {
             notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
         }
         
-        self.window!.rootViewController = IntroPresenter.create(with: viewModelLocator)
-        self.window!.makeKeyAndVisible()
+        window!.rootViewController = IntroPresenter.create(with: viewModelLocator)
+        window!.makeKeyAndVisible()
     }
     
     func applicationWillResignActive(_ application: UIApplication)
     {
-        self.appLifecycleService.publish(.movedToBackground)
+        appLifecycleService.publish(.movedToBackground)
     }
 
     func applicationDidEnterBackground(_ application: UIApplication)
     {
-        self.locationService.startLocationTracking()
+        locationService.startLocationTracking()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication)
     {
-        self.pipeline.run()
+        pipeline.run()
         
-        self.initializeWindowIfNeeded()
+        initializeWindowIfNeeded()
      
-        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
+        notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
-        self.didReceiveCategoryNotification = false
+        appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
+        didReceiveCategoryNotification = false
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
     {
-        self.notificationAuthorizedSubject.on(.next(()))
+        notificationAuthorizedSubject.on(.next(()))
     }
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification)
     {
-        self.didReceiveCategoryNotification = isCategorySelectionNotification(notification)
+        didReceiveCategoryNotification = isCategorySelectionNotification(notification)
     }
     
     private func isCategorySelectionNotification(_ notification:UILocalNotification) -> Bool
@@ -271,7 +271,7 @@ extension AppDelegate:UNUserNotificationCenterDelegate
 {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        self.didReceiveCategoryNotification = isCategorySelectionNotification(response.notification)
+        didReceiveCategoryNotification = isCategorySelectionNotification(response.notification)
         completionHandler()
     }
 }

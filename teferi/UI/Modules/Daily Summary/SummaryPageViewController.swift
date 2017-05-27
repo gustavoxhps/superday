@@ -30,18 +30,18 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
         self.viewModelLocator = viewModelLocator
         self.viewModel = viewModel
         
-        self.canMoveForwardObservable = viewModel.canMoveForwardObservable
-        self.canMoveBackwardObservable = viewModel.canMoveBackwardObservable
+        canMoveForwardObservable = viewModel.canMoveForwardObservable
+        canMoveBackwardObservable = viewModel.canMoveBackwardObservable
     }
     
     func moveToNext()
     {
-        setCurrentViewController(forDate: self.viewModel.currentlySelectedDate.add(days: 1), animated: true)
+        setCurrentViewController(forDate: viewModel.currentlySelectedDate.add(days: 1), animated: true)
     }
     
     func moveToPreviews()
     {
-        setCurrentViewController(forDate: self.viewModel.currentlySelectedDate.add(days: -1), animated: true, moveBackwards: true)
+        setCurrentViewController(forDate: viewModel.currentlySelectedDate.add(days: -1), animated: true, moveBackwards: true)
     }
     
     // MARK: - LifeCycle
@@ -58,7 +58,7 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
-        setCurrentViewController(forDate: self.viewModel.currentlySelectedDate, animated: false)
+        setCurrentViewController(forDate: viewModel.currentlySelectedDate, animated: false)
     }
     
     // MARK: UIPageViewControllerDelegate implementation
@@ -66,9 +66,9 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
     {
         guard completed else { return }
         
-        let dailySummaryViewController = self.viewControllers!.first as! DailySummaryViewController
+        let dailySummaryViewController = viewControllers!.first as! DailySummaryViewController
         
-        self.viewModel.currentlySelectedDate = dailySummaryViewController.date
+        viewModel.currentlySelectedDate = dailySummaryViewController.date
     }
     
     // MARK: UIPageViewControllerDataSource implementation
@@ -77,7 +77,7 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
         let dailySummaryViewController = viewController as! DailySummaryViewController
         let nextDate = dailySummaryViewController.date.yesterday
         
-        guard self.viewModel.canScroll(toDate: nextDate) else { return nil }
+        guard viewModel.canScroll(toDate: nextDate) else { return nil }
         
         return newDailySummaryViewController(forDate: nextDate)
     }
@@ -87,7 +87,7 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
         let dailySummaryViewController = viewController as! DailySummaryViewController
         let nextDate = dailySummaryViewController.date.tomorrow
         
-        guard self.viewModel.canScroll(toDate: nextDate) else { return nil }
+        guard viewModel.canScroll(toDate: nextDate) else { return nil }
         
         return newDailySummaryViewController(forDate: nextDate)
     }
@@ -114,9 +114,9 @@ class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataS
     {
         let viewControllers = [ newDailySummaryViewController(forDate: date) ]
         
-        self.setViewControllers(viewControllers, direction: moveBackwards ? .reverse : .forward, animated: animated, completion: nil)
+        setViewControllers(viewControllers, direction: moveBackwards ? .reverse : .forward, animated: animated, completion: nil)
         
-        self.viewModel.currentlySelectedDate = date
+        viewModel.currentlySelectedDate = date
     }
 
 }

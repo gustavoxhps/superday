@@ -12,26 +12,26 @@ class FirstTimeSlotOfDayPipe : Pipe
     
     func process(timeline: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
     {
-        let now = self.timeService.now
+        let now = timeService.now
 
-        let noTimeSlotsExist = self.timeSlotService.getLast() == nil
+        let noTimeSlotsExist = timeSlotService.getLast() == nil
         if noTimeSlotsExist
         {
             return timeline + [TemporaryTimeSlot(start: now, end: nil, smartGuess: nil, category: .leisure, location: nil)]
         }        
         
-        guard !self.hasTimeSlotsForToday(timeline) && self.timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
+        guard !hasTimeSlotsForToday(timeline) && timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }
         
         return timeline + [ TemporaryTimeSlot(start: now) ]
     }
     
     private func hasTimeSlotsForToday(_ timeline: [TemporaryTimeSlot]) -> Bool
     {
-        return !timeline.isEmpty && timeline.contains(where: self.timeSlotStartsToday)
+        return !timeline.isEmpty && timeline.contains(where: timeSlotStartsToday)
     }
     
     private func timeSlotStartsToday(timeSlot: TemporaryTimeSlot) -> Bool
     {
-        return timeSlot.start.ignoreTimeComponents() == self.timeService.now.ignoreTimeComponents()
+        return timeSlot.start.ignoreTimeComponents() == timeService.now.ignoreTimeComponents()
     }
 }

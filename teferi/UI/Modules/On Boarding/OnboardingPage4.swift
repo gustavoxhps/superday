@@ -10,8 +10,8 @@ class OnboardingPage4 : OnboardingPage
     
     override func startAnimations()
     {
-        self.notificationService.requestNotificationPermission(completed:
-        {
+        notificationService.requestNotificationPermission(completed:
+        { [unowned self] in
             self.finish()
         })
     }

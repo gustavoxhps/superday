@@ -16,9 +16,9 @@ class HealthKitPumpTests : XCTestCase
     
     override func setUp()
     {
-        self.loggingService = MockLoggingService()
-        self.trackEventService = MockTrackEventService()
-        self.healthKitPump = HealthKitPump(trackEventService: trackEventService,
+        loggingService = MockLoggingService()
+        trackEventService = MockTrackEventService()
+        healthKitPump = HealthKitPump(trackEventService: trackEventService,
                                            loggingService: loggingService)
     }
     
@@ -41,7 +41,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -139,7 +139,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -155,7 +155,7 @@ class HealthKitPumpTests : XCTestCase
         let expectedResult = [(start: 00, category: .commute),
                               (start: 10, category: .unknown)].map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -178,7 +178,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
 
@@ -205,7 +205,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -248,7 +248,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -276,7 +276,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
 
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         
@@ -301,7 +301,7 @@ class HealthKitPumpTests : XCTestCase
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
         
-        let generatedTimeslots = self.healthKitPump.run()
+        let generatedTimeslots = healthKitPump.run()
         
         expect(generatedTimeslots.count).to(equal(expectedResult.count))
         

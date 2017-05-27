@@ -21,8 +21,8 @@ class PreiOSTenNotificationService : NotificationService
     {
         let notificationSettings = UIUserNotificationSettings(types: [ .alert, .sound, .badge ], categories: nil)
         
-        self.notificationSubscription =
-            self.notificationAuthorizedObservable
+        notificationSubscription =
+            notificationAuthorizedObservable
                 .subscribe(onNext: completed)
         
         UIApplication.shared.registerUserNotificationSettings(notificationSettings)

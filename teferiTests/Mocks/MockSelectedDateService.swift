@@ -10,8 +10,8 @@ class MockSelectedDateService : SelectedDateService
     // MARK: Initializers
     init()
     {
-        self.currentlySelectedDateObservable =
-            self.currentlySelectedDateVariable
+        currentlySelectedDateObservable =
+            currentlySelectedDateVariable
                 .asObservable()
                 .distinctUntilChanged({ $0.differenceInDays(toDate: $1) == 0 })
     }
@@ -21,6 +21,6 @@ class MockSelectedDateService : SelectedDateService
     var currentlySelectedDate : Date
     {
         get { return self.currentlySelectedDateVariable.value }
-        set(value) { self.currentlySelectedDateVariable.value = value }
+        set(value) { currentlySelectedDateVariable.value = value }
     }
 }

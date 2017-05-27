@@ -36,7 +36,7 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
     
     func with(viewController: UIViewController) -> FeedbackService
     {
-        self.parentViewController = viewController
+        parentViewController = viewController
         return self
     }
     
@@ -48,19 +48,19 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
             let alert = UIAlertController(title: "Oops! Seems like your email account is not set up.", message: "Go to “Settings > Mail > Add Account” to set up an email account or send us your feedback to support@toggl.com", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default)
             alert.addAction(okAction)
-            self.parentViewController.present(alert, animated: true, completion: nil)
+            parentViewController.present(alert, animated: true, completion: nil)
             return
         }
         
         //Set email fields
         let composeVC = MFMailComposeViewController()
         composeVC.mailComposeDelegate = self
-        composeVC.setToRecipients(self.recipients)
-        composeVC.setSubject(self.subject)
-        composeVC.setMessageBody(self.body, isHTML: false)
+        composeVC.setToRecipients(recipients)
+        composeVC.setSubject(subject)
+        composeVC.setMessageBody(body, isHTML: false)
         
         //Attach log file, if it exists
-        if let logURL = self.logURL, let data = try? Data(contentsOf: logURL)
+        if let logURL = logURL, let data = try? Data(contentsOf: logURL)
         {
             composeVC.addAttachmentData(data, mimeType: "text/xml", fileName: "supertoday.log")
         }
@@ -83,7 +83,7 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
             controller.present(alert, animated: true)
         }
         
-        self.completionHandler()
+        completionHandler()
         controller.dismiss(animated: true)
     }
 }

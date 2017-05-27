@@ -35,41 +35,41 @@ class PersistencySinkTests : XCTestCase
     
     override func setUp()
     {
-        self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
-        self.baseSlot = TemporaryTimeSlot(start: noon,
+        noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        baseSlot = TemporaryTimeSlot(start: noon,
                                           end: nil,
                                           smartGuess: nil,
                                           category: Category.unknown,
                                           location: nil)
         
-        self.timeService = MockTimeService()
-        self.timeService.mockDate = noon
+        timeService = MockTimeService()
+        timeService.mockDate = noon
         
-        self.locationService = MockLocationService()
-        self.settingsService = MockSettingsService()
-        self.timeSlotService = MockTimeSlotService(timeService: timeService, locationService: locationService)
-        self.smartGuessService = MockSmartGuessService()
-        self.trackEventService = MockTrackEventService()
+        locationService = MockLocationService()
+        settingsService = MockSettingsService()
+        timeSlotService = MockTimeSlotService(timeService: timeService, locationService: locationService)
+        smartGuessService = MockSmartGuessService()
+        trackEventService = MockTrackEventService()
         
-        self.persistencySink = PersistencySink(settingsService: self.settingsService,
-                                               timeSlotService: self.timeSlotService,
-                                               smartGuessService: self.smartGuessService,
-                                               trackEventService: self.trackEventService,
-                                               timeService: self.timeService)
+        persistencySink = PersistencySink(settingsService: settingsService,
+                                               timeSlotService: timeSlotService,
+                                               smartGuessService: smartGuessService,
+                                               trackEventService: trackEventService,
+                                               timeService: timeService)
     }
     
     func testTheLastUsedLocationIsPersisted()
     {
         var data = getTestData()
         
-        self.settingsService.lastLocation = nil
+        settingsService.lastLocation = nil
         
         let expectedLocation = CLLocation(latitude: 37.628060, longitude: -116.848463)
         
         data[4] = data[4].with(location: Location(fromCLLocation: CLLocation(latitude: 38.628060, longitude: -117.848463)))
         data[5] = data[5].with(location: Location(fromCLLocation: expectedLocation))
         
-        self.persistencySink.execute(timeline: data)
+        persistencySink.execute(timeline: data)
         
         expect(self.settingsService.lastLocation).toNot(beNil())
         expect(self.settingsService.lastLocation!.coordinate.latitude).to(equal(expectedLocation.coordinate.latitude))
@@ -89,26 +89,26 @@ class PersistencySinkTests : XCTestCase
         
         let expectedDate = data[5].start
         
-        self.persistencySink.execute(timeline: data)
+        persistencySink.execute(timeline: data)
         
-        let actualDate = self.smartGuessService.smartGuessUpdates.last!.1
+        let actualDate = smartGuessService.smartGuessUpdates.last!.1
         
         expect(actualDate).to(equal(expectedDate))
     }
     
     func testAllTempDataIsCleared()
     {
-        self.trackEventService.mockEvents = [ TrackEvent.newLocation(location: Location(fromCLLocation: CLLocation())) ]
+        trackEventService.mockEvents = [ TrackEvent.newLocation(location: Location(fromCLLocation: CLLocation())) ]
         
-        self.persistencySink.execute(timeline: self.getTestData())
+        persistencySink.execute(timeline: getTestData())
         
         expect(self.trackEventService.getEventData(ofType: Location.self).count).to(equal(0))
     }
     
     private func toTempTimeSlot(data: TestData) -> TemporaryTimeSlot
     {
-        return self.baseSlot.with(start: self.date(data.startOffset),
-                                  end: data.endOffset != nil ? self.date(data.endOffset!) : nil)
+        return baseSlot.with(start: date(data.startOffset),
+                                  end: data.endOffset != nil ? date(data.endOffset!) : nil)
     }
     
     private func date(_ timeInterval: TimeInterval) -> Date

@@ -43,35 +43,35 @@ class AddTimeSlotView : UIView
     {
         super.awakeFromNib()
         
-        self.backgroundColor = UIColor.clear
+        backgroundColor = UIColor.clear
         
         let cornerRadius = CGFloat(25)
         
-        self.addButton.layer.cornerRadius = cornerRadius
+        addButton.layer.cornerRadius = cornerRadius
         
-        self.wheel = CategoryWheel(frame: self.bounds,
+        wheel = CategoryWheel(frame: bounds,
                                    cellSize: CGSize(width: 50.0, height: 50.0),
-                                   centerPoint: self.addButton.center,
+                                   centerPoint: addButton.center,
                                    radius: 144,
                                    startAngle: CGFloat.pi / 4,
                                    endAngle: CGFloat.pi * 5 / 4,
                                    angleBetweenCells: 0.45,
-                                   attributeSelector: self.toAttributes,
+                                   attributeSelector: toAttributes,
                                    dismissAction: wheelDismissAction)
         
         //Adds some blur to the background of the buttons
-        gradientLayer.frame = self.blur.bounds
+        gradientLayer.frame = blur.bounds
         gradientLayer.colors = [ UIColor(white: 1.0, alpha: 0.0).cgColor, UIColor(white: 1.0, alpha: 0.8).cgColor]
         gradientLayer.locations = [0.0, 0.6]
-        self.blur.layer.addSublayer(gradientLayer)
-        self.blur.alpha = 0
+        blur.layer.addSublayer(gradientLayer)
+        blur.alpha = 0
         
         //Bindings
-        self.categoryObservable
+        categoryObservable
             .subscribe(onNext: onNewCategory)
             .addDisposableTo(disposeBag!)
         
-        self.addButton.rx.tap
+        addButton.rx.tap
             .subscribe(onNext: onAddButtonTapped)
             .addDisposableTo(disposeBag!)
     }
@@ -85,7 +85,7 @@ class AddTimeSlotView : UIView
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
     {
-        for subview in self.subviews
+        for subview in subviews
         {
             if !subview.isHidden && subview.alpha > 0 && subview.isUserInteractionEnabled && subview.point(inside: convert(point, to: subview), with: event)
             {
@@ -104,26 +104,26 @@ class AddTimeSlotView : UIView
     
     func close()
     {
-        guard self.isAdding == true else { return }
+        guard isAdding == true else { return }
         
-        self.isAdding = false
-        self.animateAddButton(isAdding: false)
+        isAdding = false
+        animateAddButton(isAdding: false)
         
         wheel.hide()
     }
     
     private func onNewCategory(category: Category)
     {
-        self.isAdding = false
-        self.animateAddButton(isAdding: false)
+        isAdding = false
+        animateAddButton(isAdding: false)
         
         wheel.hide()
     }
     
     private func onAddButtonTapped()
     {
-        self.isAdding = !self.isAdding
-        self.animateAddButton(isAdding: self.isAdding)
+        isAdding = !isAdding
+        animateAddButton(isAdding: isAdding)
         
         if isAdding
         {
@@ -137,7 +137,7 @@ class AddTimeSlotView : UIView
     
     private func animateAddButton(isAdding: Bool)
     {
-        self.addButton.changeState(isAdding: isAdding)
+        addButton.changeState(isAdding: isAdding)
 
         let alpha = CGFloat(isAdding ? 1.0 : 0.0)
    

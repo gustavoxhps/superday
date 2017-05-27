@@ -81,7 +81,7 @@ func foo(bar: Int) -> Int
 }
 ```
 
-#####  Use `self.` whenever refering to a property/method of the class you're using
+#####  Avoid using `self.` whenever refering to a property/method of the class you're using
 
 ```swift
 class Foo
@@ -91,14 +91,28 @@ class Foo
     //Do
     func baz() -> Int
     {
-        return self.bar + 1
+        return bar + 1
     }
 
     //Don't
     func qux() -> Int
     {
-        return bar + 1
+        return self.bar + 1
     }
+}
+```
+
+Do use it in initializers when a parameter name matches a property name and closures when required
+
+```swift
+class Foo
+{
+  private let bar: Int
+
+  init(bar:Int)
+  {
+    self.bar = bar
+  }
 }
 ```
 
@@ -131,7 +145,7 @@ func foo(bar: Int)
 {
     guard bar > 0 else { return }
 
-    let someValue = self.calculateSomething(bar)
+    let someValue = calculateSomething(bar)
 
     guard someValue > 0 else { return }
 
@@ -143,7 +157,7 @@ func foo(bar: Int)
 {
     if bar > 0
     {
-        let someValue = self.calculateSomething(bar)
+        let someValue = calculateSomething(bar)
         if someValue > 0
         {
             //Magic goes here
@@ -160,7 +174,7 @@ func foo(bar: Int)
 func setupButton()
 {
     let customView = MyCustomView()
-    self.view.addSubview(customView)
+    view.addSubview(customView)
 
     customView.snp.makeConstraints { make in make.edges.equalTo(self.view) }
 }
@@ -168,8 +182,8 @@ func setupButton()
 //Don't
 func setupButton()
 {
-    let customView = MyCustomView(frame: self.view.frame)
-    self.view.addSubview(customView)
+    let customView = MyCustomView(frame: view.frame)
+    view.addSubview(customView)
 }
 
 ```

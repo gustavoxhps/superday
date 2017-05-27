@@ -18,6 +18,6 @@ enum LogLevel : String
     
     func errorDomain(with message: String) -> String
     {
-        return self.rawValue.capitalized + ": " + message
+        return rawValue.capitalized + ": " + message
     }
 }

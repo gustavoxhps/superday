@@ -11,39 +11,39 @@ class CalendarCell : JTAppleDayCellView
     
     func reset(allowScrollingToDate: Bool)
     {
-        self.clipsToBounds = true
-        self.backgroundColor = UIColor.clear
-        self.backgroundView.layer.cornerRadius = 0
-        self.backgroundView.backgroundColor = UIColor.clear
-        self.isUserInteractionEnabled = allowScrollingToDate
+        clipsToBounds = true
+        backgroundColor = UIColor.clear
+        backgroundView.layer.cornerRadius = 0
+        backgroundView.backgroundColor = UIColor.clear
+        isUserInteractionEnabled = allowScrollingToDate
         
-        self.dateLabel.text = ""
-        self.dateLabel.textColor = UIColor.black
-        self.dateLabel.font = UIFont.systemFont(ofSize: fontSize)
+        dateLabel.text = ""
+        dateLabel.textColor = UIColor.black
+        dateLabel.font = UIFont.systemFont(ofSize: fontSize)
         
-        self.activityView.reset()
+        activityView.reset()
     }
     
     func bind(toDate date: Date, isSelected: Bool, allowsScrollingToDate: Bool, dailyActivity: [Activity]?)
     {
-        self.reset(allowScrollingToDate: allowsScrollingToDate)
+        reset(allowScrollingToDate: allowsScrollingToDate)
         
-        self.dateLabel.text = String(date.day)
-        self.dateLabel.textColor = UIColor.black
+        dateLabel.text = String(date.day)
+        dateLabel.textColor = UIColor.black
         
-        self.activityView.update(dailyActivity: dailyActivity)
+        activityView.update(dailyActivity: dailyActivity)
         
-        self.backgroundView.alpha = 1.0
-        self.backgroundView.backgroundColor = UIColor.clear
+        backgroundView.alpha = 1.0
+        backgroundView.backgroundColor = UIColor.clear
         
         if isSelected
         {
-            self.clipsToBounds = true
-            self.backgroundView.alpha = 0.24
-            self.backgroundView.layer.cornerRadius = 14
-            self.backgroundView.backgroundColor = Style.Color.gray
+            clipsToBounds = true
+            backgroundView.alpha = 0.24
+            backgroundView.layer.cornerRadius = 14
+            backgroundView.backgroundColor = Style.Color.gray
 
-            self.dateLabel.font = UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightMedium)
+            dateLabel.font = UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightMedium)
         }
     }
 }

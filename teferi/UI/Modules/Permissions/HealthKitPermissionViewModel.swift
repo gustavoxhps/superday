@@ -88,7 +88,7 @@ class HealthKitPermissionViewModel : PermissionViewModel
     func permissionGiven()
     {
         settingsService.setUserGaveHealthKitPermission()
-        self.visibilitySubject.on(.next(false))
+        visibilitySubject.on(.next(false))
     }
     
     func permissionDeferred() {}

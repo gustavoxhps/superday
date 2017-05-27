@@ -22,24 +22,24 @@ class MainViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.timeService = MockTimeService()
-        self.metricsService = MockMetricsService()
-        self.locationService = MockLocationService()
-        self.settingsService = MockSettingsService()
-        self.feedbackService = MockFeedbackService()
-        self.editStateService = MockEditStateService()
-        self.smartGuessService = MockSmartGuessService()
-        self.appLifecycleService = MockAppLifecycleService()
-        self.selectedDateService = MockSelectedDateService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
-                                                   locationService: self.locationService)
+        timeService = MockTimeService()
+        metricsService = MockMetricsService()
+        locationService = MockLocationService()
+        settingsService = MockSettingsService()
+        feedbackService = MockFeedbackService()
+        editStateService = MockEditStateService()
+        smartGuessService = MockSmartGuessService()
+        appLifecycleService = MockAppLifecycleService()
+        selectedDateService = MockSelectedDateService()
+        timeSlotService = MockTimeSlotService(timeService: timeService,
+                                                   locationService: locationService)
         
-        self.viewModel = MainViewModel(timeService: self.timeService,
-                                       metricsService: self.metricsService,
-                                       timeSlotService: self.timeSlotService,
-                                       editStateService: self.editStateService,
-                                       smartGuessService: self.smartGuessService,
-                                       selectedDateService: self.selectedDateService,
+        viewModel = MainViewModel(timeService: timeService,
+                                       metricsService: metricsService,
+                                       timeSlotService: timeSlotService,
+                                       editStateService: editStateService,
+                                       smartGuessService: smartGuessService,
+                                       selectedDateService: selectedDateService,
                                        settingsService: settingsService,
                                        appLifecycleService: appLifecycleService)
         
@@ -47,37 +47,37 @@ class MainViewModelTests : XCTestCase
     
     override func tearDown()
     {
-        self.disposable?.dispose()
+        disposable?.dispose()
     }
     
     func testTheAddNewSlotsMethodAddsANewSlot()
     {
         var didAdd = false
         
-        self.disposable = self.timeSlotService.timeSlotCreatedObservable.subscribe(onNext: { _ in didAdd = true })
-        self.viewModel.addNewSlot(withCategory: .commute)
+        disposable = timeSlotService.timeSlotCreatedObservable.subscribe(onNext: { _ in didAdd = true })
+        viewModel.addNewSlot(withCategory: .commute)
         
         expect(didAdd).to(beTrue())
     }
     
     func testTheAddNewSlotMethodCallsTheMetricsService()
     {
-        self.viewModel.addNewSlot(withCategory: .commute)
+        viewModel.addNewSlot(withCategory: .commute)
         expect(self.metricsService.didLog(event: .timeSlotManualCreation)).to(beTrue())
     }
     
     func testTheUpdateMethodCallsTheMetricsService()
     {
-        let timeSlot = self.addTimeSlot(withCategory: .work)
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let timeSlot = addTimeSlot(withCategory: .work)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
     }
     
     func testTheUpdateTimeSlotMethodChangesATimeSlotsCategory()
     {
-        let timeSlot = self.addTimeSlot(withCategory: .work)
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let timeSlot = addTimeSlot(withCategory: .work)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(timeSlot.category).to(equal(Category.commute))
     }
@@ -85,22 +85,22 @@ class MainViewModelTests : XCTestCase
     func testTheUpdateTimeSlotMethodEndsTheEditingProcess()
     {
         var editingEnded = false
-        _ = self.editStateService
+        _ = editStateService
             .isEditingObservable
             .subscribe(onNext: { editingEnded = !$0 })
         
-        let timeSlot = self.addTimeSlot(withCategory: .work)
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let timeSlot = addTimeSlot(withCategory: .work)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(editingEnded).to(beTrue())
     }
     
     func testSmartGuessIsAddedIfLocationServiceReturnsKnownLastLocationOnAddNewSlot()
     {
-        self.locationService.sendNewTrackEvent(CLLocation(latitude:43.4211, longitude:4.7562))
-        let previousCount = self.smartGuessService.smartGuesses.count
+        locationService.sendNewTrackEvent(CLLocation(latitude:43.4211, longitude:4.7562))
+        let previousCount = smartGuessService.smartGuesses.count
         
-        self.viewModel.addNewSlot(withCategory: .food)
+        viewModel.addNewSlot(withCategory: .food)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
     }
@@ -109,27 +109,27 @@ class MainViewModelTests : XCTestCase
     {
         let location = CLLocation(latitude:43.4211, longitude:4.7562)
         
-        self.viewModel.addNewSlot(withCategory: .leisure)
+        viewModel.addNewSlot(withCategory: .leisure)
         
-        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(),
+        let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
                                                         smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
                                                         location: location)!
         
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.last?.errorCount).to(equal(1))
     }
     
     func testSmartGuessIsAddedIfUpdatingATimeSlotWithNoSmartGuesses()
     {
-        let previousCount = self.smartGuessService.smartGuesses.count
+        let previousCount = smartGuessService.smartGuesses.count
         
-        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(timeIntervalSinceNow: -100),
+        let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(timeIntervalSinceNow: -100),
                                                         category: .food,
                                                         categoryWasSetByUser: true,
                                                         location: CLLocation(latitude:43.4211, longitude:4.7562))!
         
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
     }
@@ -138,21 +138,21 @@ class MainViewModelTests : XCTestCase
     {
         let location = CLLocation(latitude:43.4211, longitude:4.7562)
         
-        let timeSlot = self.timeSlotService.addTimeSlot(withStartTime: Date(),
+        let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
                                                         smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
                                                         location: location)!
         
-        self.viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(timeSlot.categoryWasSetByUser).to(beTrue())
     }
     
     func testHKPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()
     {
-        self.settingsService.hasHealthKitPermission = true
+        settingsService.hasHealthKitPermission = true
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext:  { _ in wouldShow = true })
         
         expect(wouldShow).to(beFalse())
@@ -160,38 +160,38 @@ class MainViewModelTests : XCTestCase
     
     func testHKPermissionShouldBeShownIfItWasNotShownForTheDurationSpecifiedInConstant()
     {
-        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions)
-        self.settingsService.hasHealthKitPermission = false
+        timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions)
+        settingsService.hasHealthKitPermission = false
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
     
     func testHKPermissionShouldBeNotShownIfItWasNotShownBeforTheDurationSpecifiedInConstant()
     {
-        self.timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 15*60)
-        self.settingsService.hasHealthKitPermission = false
+        timeService.mockDate = Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions - 15*60)
+        settingsService.hasHealthKitPermission = false
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beFalse())
     }
     
     func testLocationPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()
     {
-        self.settingsService.hasLocationPermission = true
+        settingsService.hasLocationPermission = true
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext:  { _ in wouldShow = true })
         
         expect(wouldShow).to(beFalse())
@@ -199,39 +199,39 @@ class MainViewModelTests : XCTestCase
     
     func testIfLocationPermissionWasNeverShownItNeedsToBeShown()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = nil
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = nil
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { type in wouldShow = type == .location })
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
     
     func testLocationPermissionShouldBeShownIfItWasNotShownForSpecifiedTime()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = Date().addingTimeInterval(-(Constants.timeToWaitBeforeShowingLocationPermissionsAgain*2))
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = Date().addingTimeInterval(-(Constants.timeToWaitBeforeShowingLocationPermissionsAgain*2))
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { type in wouldShow = type == .location })
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(wouldShow).to(beTrue())
     }
     
     func testLocationPermissionShouldNotBeShownIfItWasLastShownInTheLastSpecifiedTime()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = Date().ignoreTimeComponents()
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = Date().ignoreTimeComponents()
         
         var wouldShow = false
-        self.disposable = self.viewModel.showPermissionControllerObservable
+        disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
         expect(wouldShow).to(beFalse())
@@ -239,7 +239,7 @@ class MainViewModelTests : XCTestCase
     
     private func addTimeSlot(withCategory category: teferi.Category) -> TimeSlot
     {
-        return self.timeSlotService.addTimeSlot(withStartTime: Date(),
+        return timeSlotService.addTimeSlot(withStartTime: Date(),
                                                 category: category,
                                                 categoryWasSetByUser: false,
                                                 tryUsingLatestLocation: false)!

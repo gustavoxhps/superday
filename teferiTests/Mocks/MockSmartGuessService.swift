@@ -14,14 +14,14 @@ class MockSmartGuessService : SmartGuessService
     
     func get(forLocation location: CLLocation) -> SmartGuess?
     {
-        self.locationsAskedFor.append(location)
-        return self.smartGuessToReturn
+        locationsAskedFor.append(location)
+        return smartGuessToReturn
     }
     
     @discardableResult func add(withCategory category: teferi.Category, location: CLLocation) -> SmartGuess?
     {
         let smartGuess = SmartGuess(withId: id, category: category, location: location, lastUsed: Date())
-        self.smartGuesses.append(smartGuess)
+        smartGuesses.append(smartGuess)
         
         return smartGuess
     }
@@ -34,13 +34,13 @@ class MockSmartGuessService : SmartGuessService
     
     func strike(withId id: Int)
     {
-        guard let smartGuessIndex = self.smartGuesses.index(where: { smartGuess in smartGuess.id == id }) else { return }
+        guard let smartGuessIndex = smartGuesses.index(where: { smartGuess in smartGuess.id == id }) else { return }
         
-        let smartGuess = self.smartGuesses[smartGuessIndex]
+        let smartGuess = smartGuesses[smartGuessIndex]
         
         if smartGuess.errorCount >= 3
         {
-            self.smartGuesses.remove(at: smartGuessIndex)
+            smartGuesses.remove(at: smartGuessIndex)
         }
         else
         {

@@ -25,10 +25,10 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
     {
         super.viewDidLoad()
 
-        self.dataSource = self
-        self.delegate = self
-        self.view.backgroundColor = UIColor.white
-        self.setViewControllers([pages.first!],
+        dataSource = self
+        delegate = self
+        view.backgroundColor = UIColor.white
+        setViewControllers([pages.first!],
                            direction: .forward,
                            animated: true,
                            completion: nil)
@@ -38,60 +38,60 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
         pageControl.currentPageIndicatorTintColor = Style.Color.green
         pageControl.backgroundColor = UIColor.clear
         
-        self.view.addSubview(self.pager)
-        self.pager.snp.makeConstraints { (make) in
+        view.addSubview(pager)
+        pager.snp.makeConstraints { [unowned self] make in
             make.left.right.bottom.equalTo(self.view)
             make.height.equalTo(102)
         }
         
-        self.pager.createPageDots(forPageCount: self.pages.count)
+        pager.createPageDots(forPageCount: pages.count)
         
-        self.onNew(page: self.pages[0])
+        onNew(page: pages[0])
     }
     
     //MARK: Actions
     @IBAction func pagerButtonTouchUpInside()
     {
-        self.goToNextPage(forceNext: false)
+        goToNextPage(forceNext: false)
     }
     
     //MARK: Methods
     func isCurrent(page: OnboardingPage) -> Bool
     {
-        return page == self.viewControllers?.first
+        return page == viewControllers?.first
     }
 
     func goToNextPage(forceNext: Bool)
     {
-        let currentlyVisibleIndex = self.index(of: self.viewControllers!.first!)!
-        let currentPageIndex = forceNext ? self.lastSeenIndex : currentlyVisibleIndex
+        let currentlyVisibleIndex = index(of: viewControllers!.first!)!
+        let currentPageIndex = forceNext ? lastSeenIndex : currentlyVisibleIndex
 
-        guard let nextPage = self.pageAt(index: currentPageIndex + 1) else
+        guard let nextPage = pageAt(index: currentPageIndex + 1) else
         {
             
-            self.viewModel.settingsService.setInstallDate(self.viewModel.timeService.now)
-            self.presenter.showMain()
+            viewModel.settingsService.setInstallDate(viewModel.timeService.now)
+            presenter.showMain()
 
             return
         }
         
-        self.setViewControllers([nextPage],
+        setViewControllers([nextPage],
                                 direction: .forward,
                                 animated: true,
                                 completion: nil)
         
-        self.onNew(page: nextPage)
+        onNew(page: nextPage)
     }
     
     private func pageAt(index : Int) -> OnboardingPage?
     {
-        self.lastSeenIndex = max(self.lastSeenIndex, index)
-        return 0..<self.pages.count ~= index ? self.pages[index] : nil
+        lastSeenIndex = max(lastSeenIndex, index)
+        return 0..<pages.count ~= index ? pages[index] : nil
     }
     
     private func index(of viewController: UIViewController) -> Int?
     {
-        return self.pages.index(of: viewController as! OnboardingPage)
+        return pages.index(of: viewController as! OnboardingPage)
     }
     
     private func page(_ id: String) -> OnboardingPage
@@ -101,11 +101,11 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
                     .storyboard()
                     .instantiateViewController(withIdentifier: "OnboardingScreen\(id)") as! OnboardingPage
         
-        page.inject(self.viewModel.timeService,
-                    self.viewModel.timeSlotService,
-                    self.viewModel.settingsService,
-                    self.viewModel.appLifecycleService,
-                    self.viewModel.notificationService, self)
+        page.inject(viewModel.timeService,
+                    viewModel.timeSlotService,
+                    viewModel.settingsService,
+                    viewModel.appLifecycleService,
+                    viewModel.notificationService, self)
         
         return page
     }
@@ -114,13 +114,13 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
     {
         if let buttonText = page.nextButtonText
         {
-            self.pager.showNextButton(withText: buttonText)
+            pager.showNextButton(withText: buttonText)
         }
         else
         {
-            self.pager.hideNextButton()
+            pager.hideNextButton()
         }
-        self.pager.switchPage(to: self.index(of: page)!)
+        pager.switchPage(to: index(of: page)!)
     }
     
     // MARK: UIPageViewControllerDelegate
@@ -131,19 +131,19 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
         
         if page.nextButtonText != nil
         {
-            self.pager.clearButtonText()
+            pager.clearButtonText()
         }
         else
         {
-            self.pager.hideNextButton()
+            pager.hideNextButton()
         }
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
-        let page = self.viewControllers!.first as! OnboardingPage
-        self.onNew(page: page)
+        let page = viewControllers!.first as! OnboardingPage
+        onNew(page: page)
     }
     
     
@@ -152,17 +152,17 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
                             viewControllerBefore viewController: UIViewController) -> UIViewController?
     {
         guard (viewController as! OnboardingPage).allowPagingSwipe else { return nil }
-        guard let currentPageIndex = self.index(of: viewController) else { return nil }
+        guard let currentPageIndex = index(of: viewController) else { return nil }
         
-        return self.pageAt(index: currentPageIndex - 1)
+        return pageAt(index: currentPageIndex - 1)
     }
     
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController?
     {
         guard (viewController as! OnboardingPage).allowPagingSwipe else { return nil }
-        guard let currentPageIndex = self.index(of: viewController) else { return nil }
+        guard let currentPageIndex = index(of: viewController) else { return nil }
         
-        return self.pageAt(index: currentPageIndex + 1)
+        return pageAt(index: currentPageIndex + 1)
     }
 }

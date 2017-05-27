@@ -38,65 +38,65 @@ class NotificationSchedulingService
     //MARK:  TrackingService implementation
     func onLocation(_ location: CLLocation)
     {
-        guard let previousLocation = self.settingsService.lastNotificationLocation else
+        guard let previousLocation = settingsService.lastNotificationLocation else
         {
-            self.settingsService.setLastNotificationLocation(location)
+            settingsService.setLastNotificationLocation(location)
             return
         }
         
         guard location.timestamp > previousLocation.timestamp else { return }
         
-        guard self.locationsAreSignificantlyDifferent(current: location, previous: previousLocation) else
+        guard locationsAreSignificantlyDifferent(current: location, previous: previousLocation) else
         {
             guard location.isMoreAccurate(than: previousLocation) else { return }
             
-            self.settingsService.setLastNotificationLocation(location)
+            settingsService.setLastNotificationLocation(location)
             return
         }
         
-        self.settingsService.setLastNotificationLocation(location)
+        settingsService.setLastNotificationLocation(location)
         
         let scheduleNotification : Bool
         
-        if self.isCommute(now: location.timestamp, then: previousLocation.timestamp)
+        if isCommute(now: location.timestamp, then: previousLocation.timestamp)
         {
             scheduleNotification = true
         }
         else
         {
             //We should keep the coordinates at the startDate.
-            let guessedCategory = self.smartGuessService.get(forLocation: location)?.category ?? .unknown
+            let guessedCategory = smartGuessService.get(forLocation: location)?.category ?? .unknown
             
             //We only schedule notifications if we couldn't guess any category
             scheduleNotification = guessedCategory == .unknown
         }
         
-        self.cancelNotification(andScheduleNew: scheduleNotification)
+        cancelNotification(andScheduleNew: scheduleNotification)
     }
     
     private func isCommute(now : Date, then : Date) -> Bool
     {
-        return now.timeIntervalSince(then) < self.commuteDetectionLimit
+        return now.timeIntervalSince(then) < commuteDetectionLimit
     }
     
     private func locationsAreSignificantlyDifferent(current: CLLocation, previous: CLLocation) -> Bool
     {
         let distance = current.distance(from: previous)
-        let isSignificantDistance = distance > self.significantDistanceThreshold
+        let isSignificantDistance = distance > significantDistanceThreshold
         
         return isSignificantDistance
     }
     
     private func cancelNotification(andScheduleNew scheduleNew : Bool)
     {
-        self.notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
+        notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
         guard scheduleNew else { return }
         
-        let notificationDate = self.timeService.now.addingTimeInterval(self.commuteDetectionLimit)
-        self.notificationService.scheduleCategorySelectionNotification(date: notificationDate,
-                                                                       title: self.notificationTitle,
-                                                                       message: self.notificationBody,
+        let notificationDate = timeService.now.addingTimeInterval(commuteDetectionLimit)
+        notificationService.scheduleCategorySelectionNotification(date: notificationDate,
+                                                                       title: notificationTitle,
+                                                                       message: notificationBody,
                                                                        possibleFutureSlotStart: nil)
     }
 }

@@ -32,48 +32,50 @@ class OnboardingPage2 : OnboardingPage
     }
     
     override func viewDidLoad()
-    {   
-        let slot = self.timeSlots[self.editIndex]
-        self.editedTimeSlot = TimeSlot(withStartTime: slot.startTime,
-                                       category: self.editTo,
+    {
+        super.viewDidLoad()
+        
+        let slot = timeSlots[editIndex]
+        editedTimeSlot = TimeSlot(withStartTime: slot.startTime,
+                                       category: editTo,
                                        categoryWasSetByUser: false)
-        self.editedTimeSlot.endTime = slot.endTime
+        editedTimeSlot.endTime = slot.endTime
         
-        self.initAnimatedTitleText(self.textView)
-        self.timelineCells = self.initAnimatingTimeline(with: self.timeSlots, in: self.timelineView)
+        initAnimatedTitleText(textView)
+        timelineCells = initAnimatingTimeline(with: timeSlots, in: timelineView)
         
-        self.editView = EditTimeSlotView(categoryProvider: OnboardingCategoryProvider(withFirstCategory: self.editTo))
+        editView = EditTimeSlotView(categoryProvider: OnboardingCategoryProvider(withFirstCategory: editTo))
 
-        self.editView.isUserInteractionEnabled = false
-        self.timelineView.addSubview(self.editView)
-        self.editView.constrainEdges(to: self.timelineView)
+        editView.isUserInteractionEnabled = false
+        timelineView.addSubview(editView)
+        editView.constrainEdges(to: timelineView)
         
-        self.editedCell = self.createTimelineCell(for: self.editedTimeSlot)
-        self.editedCell.alpha = 0
+        editedCell = createTimelineCell(for: editedTimeSlot)
+        editedCell.alpha = 0
         
-        self.touchCursor = UIImageView(image: UIImage(asset: .icCursor))
-        self.touchCursor.alpha = 0
+        touchCursor = UIImageView(image: UIImage(asset: .icCursor))
+        touchCursor.alpha = 0
     }
     
     override func startAnimations()
     {
-        self.timelineCells[self.editIndex].addSubview(self.editedCell)
-        self.timelineView.addSubview(self.touchCursor)
-        self.setCursorPosition(toX: 100, y: 200)
+        timelineCells[editIndex].addSubview(editedCell)
+        timelineView.addSubview(touchCursor)
+        setCursorPosition(toX: 100, y: 200)
         
         DelayedSequence.start()
-            .then {t in self.animateTitleText(self.textView, duration: 0.5, delay: t)}
-            .after(0.3) {t in self.animateTimeline(self.timelineCells, delay: t)}
-            .after(0.9, self.showCursor)
-            .after(0.3, self.moveCursorToCell)
-            .after(0.6, self.tapCursor)
-            .after(0.2, self.openEditView)
-            .after(0.8, self.moveCursorToCategory)
-            .after(0.5, self.tapCursor)
-            .after(0.2, self.onTappedEditCategory)
-            .after(0.3, self.closeEditView)
-            .after(0.15, self.hideCursor)
-            .after(0.5, self.changeTimeSlot)
+            .then {t in animateTitleText(textView, duration: 0.5, delay: t)}
+            .after(0.3) {t in animateTimeline(timelineCells, delay: t)}
+            .after(0.9, showCursor)
+            .after(0.3, moveCursorToCell)
+            .after(0.6, tapCursor)
+            .after(0.2, openEditView)
+            .after(0.8, moveCursorToCategory)
+            .after(0.5, tapCursor)
+            .after(0.2, onTappedEditCategory)
+            .after(0.3, closeEditView)
+            .after(0.15, hideCursor)
+            .after(0.5, changeTimeSlot)
     }
     
     private func openEditView(delay: TimeInterval)
@@ -146,11 +148,11 @@ class OnboardingPage2 : OnboardingPage
     
     private func setCursorPosition(toX x: CGFloat, y: CGFloat)
     {
-        let frame = self.touchCursor.frame.size
+        let frame = touchCursor.frame.size
         let w = frame.width
         let h = frame.height
         
-        self.touchCursor.frame = CGRect(x: x - w / 2, y: y - h / 2, width: w, height: h)
+        touchCursor.frame = CGRect(x: x - w / 2, y: y - h / 2, width: w, height: h)
     }
     
     private func tapCursor(delay : TimeInterval)

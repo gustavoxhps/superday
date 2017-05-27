@@ -101,11 +101,11 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         super.init(frame: frame)
         
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePan(_:)))
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(CategoryWheel.handlePan(_:)))
         panGesture.delaysTouchesBegan = false
         addGestureRecognizer(panGesture)
         
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(CategoryWheel.handleTap(_:)))
         addGestureRecognizer(tapGesture)
     }
     
@@ -215,23 +215,23 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     func flickBehaviorAction()
     {
-        guard let _ = self.lastFlickPoint
+        guard let _ = lastFlickPoint
         else
         {
-            self.lastFlickPoint = flickView.center
+            lastFlickPoint = flickView.center
             return
         }
         
-        let angleToRotate = angle(startPoint: self.lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
+        let angleToRotate = angle(startPoint: lastFlickPoint, endPoint: flickView.center, anchorPoint: centerPoint)
         
-        if distance(a: self.lastFlickPoint, b: flickView.center) == 0
+        if distance(a: lastFlickPoint, b: flickView.center) == 0
         {
             isSpinning = false
         }
         
         handleMovement(angleToRotate: angleToRotate)
         
-        self.lastFlickPoint = flickView.center
+        lastFlickPoint = flickView.center
     }
     
     // MARK: - UIDynamicAnimatorDelegate
@@ -301,9 +301,9 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
 
         view.superview?.insertSubview(self, belowSubview: view)
         
-        self.centerPoint = view.center
+        centerPoint = view.center
         
-        self.panGesture.isEnabled = true
+        panGesture.isEnabled = true
         
         var animationSequence = DelayedSequence.start()
         

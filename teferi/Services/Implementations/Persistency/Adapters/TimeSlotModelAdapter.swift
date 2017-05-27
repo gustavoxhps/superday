@@ -16,20 +16,20 @@ class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
     {
         super.init()
         
-        self.sortDescriptors = [ NSSortDescriptor(key: self.startTimeKey, ascending: false) ]
+        sortDescriptors = [ NSSortDescriptor(key: startTimeKey, ascending: false) ]
     }
     
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> TimeSlot
     {
-        let startTime = managedObject.value(forKey: self.startTimeKey) as! Date
-        let endTime = managedObject.value(forKey: self.endTimeKey) as? Date
-        let category = Category(rawValue: managedObject.value(forKey: self.categoryKey) as! String)!
-        let categoryWasSetByUser = managedObject.value(forKey: self.categoryWasSetByUserKey) as? Bool ?? false
+        let startTime = managedObject.value(forKey: startTimeKey) as! Date
+        let endTime = managedObject.value(forKey: endTimeKey) as? Date
+        let category = Category(rawValue: managedObject.value(forKey: categoryKey) as! String)!
+        let categoryWasSetByUser = managedObject.value(forKey: categoryWasSetByUserKey) as? Bool ?? false
         
         let location = super.getLocation(managedObject,
-                                         timeKey: self.locationTimeKey,
-                                         latKey: self.locationLatitudeKey,
-                                         lngKey: self.locationLongitudeKey)
+                                         timeKey: locationTimeKey,
+                                         latKey: locationLatitudeKey,
+                                         lngKey: locationLongitudeKey)
         
         let timeSlot = TimeSlot(withStartTime: startTime,
                                 category: category,
@@ -42,13 +42,13 @@ class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
     
     override func setManagedElementProperties(fromModel model: TimeSlot, managedObject: NSManagedObject)
     {
-        managedObject.setValue(model.endTime, forKey: self.endTimeKey)
-        managedObject.setValue(model.startTime, forKey: self.startTimeKey)
-        managedObject.setValue(model.category.rawValue, forKey: self.categoryKey)
-        managedObject.setValue(model.categoryWasSetByUser, forKey: self.categoryWasSetByUserKey)
+        managedObject.setValue(model.endTime, forKey: endTimeKey)
+        managedObject.setValue(model.startTime, forKey: startTimeKey)
+        managedObject.setValue(model.category.rawValue, forKey: categoryKey)
+        managedObject.setValue(model.categoryWasSetByUser, forKey: categoryWasSetByUserKey)
         
-        managedObject.setValue(model.location?.timestamp, forKey: self.locationTimeKey)
-        managedObject.setValue(model.location?.coordinate.latitude, forKey: self.locationLatitudeKey)
-        managedObject.setValue(model.location?.coordinate.longitude, forKey: self.locationLongitudeKey)
+        managedObject.setValue(model.location?.timestamp, forKey: locationTimeKey)
+        managedObject.setValue(model.location?.coordinate.latitude, forKey: locationLatitudeKey)
+        managedObject.setValue(model.location?.coordinate.longitude, forKey: locationLongitudeKey)
     }
 }

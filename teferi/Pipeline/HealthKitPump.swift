@@ -47,7 +47,7 @@ class HealthKitPump : Pump
             .splitBy({ $0.category == $1.category && $0.category == .commute })
             .flatMap { $0.first }
 
-        self.loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
+        loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
             self.loggingService.log(withLogLevel: .info, message: "HKTempSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
@@ -96,11 +96,11 @@ class HealthKitPump : Pump
         
         switch first.identifier {
         case HKQuantityTypeIdentifier.distanceWalkingRunning.rawValue:
-            return self.makeSlots(fromWalkingAndRunning: samples)
+            return makeSlots(fromWalkingAndRunning: samples)
         case HKQuantityTypeIdentifier.distanceCycling.rawValue:
-            return self.makeSlots(fromDistanceCycling: samples)
+            return makeSlots(fromDistanceCycling: samples)
         case HKCategoryTypeIdentifier.sleepAnalysis.rawValue:
-            return self.makeSlots(fromSleepAnalysis: samples)
+            return makeSlots(fromSleepAnalysis: samples)
         default:
             return nil
         }

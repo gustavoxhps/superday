@@ -22,10 +22,10 @@ class PagerViewModel
         self.settingsService = settingsService
         self.selectedDateService = selectedDateService
         
-        self.lastRefresh = timeService.now
-        self.selectedDate = timeService.now
+        lastRefresh = timeService.now
+        selectedDate = timeService.now
         
-        self.isEditingObservable = editStateService.isEditingObservable
+        isEditingObservable = editStateService.isEditingObservable
     }
     
     //MARK: Properties
@@ -71,8 +71,8 @@ class PagerViewModel
     //Methods
     func canScroll(toDate date: Date) -> Bool
     {
-        let minDate = self.settingsService.installDate!.ignoreTimeComponents()
-        let maxDate = self.timeService.now.ignoreTimeComponents()
+        let minDate = settingsService.installDate!.ignoreTimeComponents()
+        let maxDate = timeService.now.ignoreTimeComponents()
         let dateWithNoTime = date.ignoreTimeComponents()
         
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
@@ -80,10 +80,10 @@ class PagerViewModel
     
     private func toDateChange(_ date: Date) -> DateChange?
     {
-        if date.ignoreTimeComponents() != self.currentlySelectedDate
+        if date.ignoreTimeComponents() != currentlySelectedDate
         {
-            let dateChange = DateChange(newDate: date, oldDate: self.selectedDate)
-            self.selectedDate = date
+            let dateChange = DateChange(newDate: date, oldDate: selectedDate)
+            selectedDate = date
             
             return dateChange
         }

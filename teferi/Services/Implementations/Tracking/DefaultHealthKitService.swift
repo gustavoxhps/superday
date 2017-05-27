@@ -31,9 +31,9 @@ class DefaultHealthKitService : HealthKitService, EventSource
         self.settingsService = settingsService
         self.loggingService = loggingService
         
-        self.loggingService.log(withLogLevel: .verbose, message: "DefaultHealthKitService Initialized")
+        loggingService.log(withLogLevel: .verbose, message: "DefaultHealthKitService Initialized")
         
-        self.dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     }
     
     private(set) lazy var eventObservable : Observable<TrackEvent> =
@@ -48,7 +48,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
     {
         guard let samples = samples, !samples.isEmpty else { return }
         
-        samples.flatMap(HealthSample.init(fromHKSample:)).forEach(self.sampleSubject.onNext)
+        samples.flatMap(HealthSample.init(fromHKSample:)).forEach(sampleSubject.onNext)
         
         let identifier = samples.first!.sampleType.identifier
         
@@ -63,7 +63,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
             break
         }
         
-        self.settingsService.setLastHealthKitUpdate(for: identifier, date: samples.last!.endDate)
+        settingsService.setLastHealthKitUpdate(for: identifier, date: samples.last!.endDate)
     }
     
     // MARK: - Handling logic per type
@@ -71,7 +71,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
     {
         guard let identifier = samples.first?.sampleType.identifier else { return }
         
-        self.loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
+        loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
@@ -83,7 +83,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
     {
         guard let identifier = samples.first?.sampleType.identifier else { return }
         
-        self.loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
+        loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
@@ -95,7 +95,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
     {
         guard let identifier = samples.first?.sampleType.identifier else { return }
         
-        self.loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
+        loggingService.log(withLogLevel: .info, message: "\(samples.count) new healthKit data for identifier \(identifier)")
         
         samples.forEach({ (sample) in
             var sleepAnalysisType = ""
@@ -143,8 +143,8 @@ class DefaultHealthKitService : HealthKitService, EventSource
     private func backgroundQuery(forSample sample: HKSampleType) -> HKQuery
     {
         return HKObserverQuery(sampleType: sampleTypesToRead[sample.identifier]!,
-                               predicate: self.predicate(from: self.settingsService.lastHealthKitUpdate(for: sample.identifier)),
-                               updateHandler: self.newBackgroundUpdateHandler)
+                               predicate: predicate(from: settingsService.lastHealthKitUpdate(for: sample.identifier)),
+                               updateHandler: newBackgroundUpdateHandler)
     }
     
     private func newBackgroundUpdateHandler(with query: HKObserverQuery, completionHandler: @escaping HKObserverQueryCompletionHandler, error: Error?)
@@ -159,7 +159,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         }
         
         let sampleQuery = HKSampleQuery(sampleType: sampleTypesToRead[objectType.identifier]!,
-                                        predicate: predicate(from: self.settingsService.lastHealthKitUpdate(for: objectType.identifier)),
+                                        predicate: predicate(from: settingsService.lastHealthKitUpdate(for: objectType.identifier)),
                                         limit: HKObjectQueryNoLimit,
                                         sortDescriptors: [NSSortDescriptor(key: "startDate", ascending: true)])
         { (query, results, error) in

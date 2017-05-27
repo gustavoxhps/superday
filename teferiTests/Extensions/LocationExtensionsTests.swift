@@ -9,8 +9,8 @@ class LocationExtensionsTests : XCTestCase
     func testTheOffsetMethodGeneratesSufficientlyAccurateLocations()
     {
         let expectedDistance = 8.0
-        let calculatedLocation = self.baseLocation.offset(.east, meters: expectedDistance)
-        let calculatedDistance = self.baseLocation.distance(from: calculatedLocation)
+        let calculatedLocation = baseLocation.offset(.east, meters: expectedDistance)
+        let calculatedDistance = baseLocation.distance(from: calculatedLocation)
         
         expect(calculatedDistance).to(beCloseTo(expectedDistance, within: expectedDistance * 0.01))
     }
@@ -22,11 +22,11 @@ class LocationExtensionsTests : XCTestCase
         let expectedDistance = sqrt(pow(horizontalOffset, 2) + pow(verticalOffset, 2))
         
         let calculatedLocation =
-            self.baseLocation
+            baseLocation
                 .offset(.south, meters: verticalOffset)
                 .offset(.east, meters: horizontalOffset)
         
-        let calculatedDistance = self.baseLocation.distance(from: calculatedLocation)
+        let calculatedDistance = baseLocation.distance(from: calculatedLocation)
         
         expect(calculatedDistance).to(beCloseTo(expectedDistance, within: expectedDistance * 0.01))
     }
@@ -38,11 +38,11 @@ class LocationExtensionsTests : XCTestCase
         let expectedDistance = sqrt(pow(horizontalOffset, 2) + pow(verticalOffset, 2))
         
         let calculatedLocation =
-            self.baseLocation
+            baseLocation
                 .offset(.north, meters: verticalOffset)
                 .offset(.west, meters: horizontalOffset)
         
-        let calculatedDistance = self.baseLocation.distance(from: calculatedLocation)
+        let calculatedDistance = baseLocation.distance(from: calculatedLocation)
         
         expect(calculatedDistance).to(beCloseTo(expectedDistance, within: expectedDistance * 0.01))
     }

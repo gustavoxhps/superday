@@ -8,10 +8,9 @@ class DefaultAppLifecycleService : AppLifecycleService
     //MARK: Initializers
     init()
     {
-        self.lifecycleEventObservable =
-            self.lifecycleSubject
-                .asObservable()
-                .distinctUntilChanged()
+        lifecycleEventObservable = lifecycleSubject
+                                    .asObservable()
+                                    .distinctUntilChanged()
     }
     
     //MARK: Properties

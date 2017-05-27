@@ -23,22 +23,22 @@ class TimelineViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.disposeBag = DisposeBag()
-        self.timeService = MockTimeService()
-        self.metricsService = MockMetricsService()
-        self.locationService = MockLocationService()
-        self.editStateService = MockEditStateService()
-        self.appLifecycleService = MockAppLifecycleService()
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
-                                                   locationService: self.locationService)
-        self.loggingService = MockLoggingService()
+        disposeBag = DisposeBag()
+        timeService = MockTimeService()
+        metricsService = MockMetricsService()
+        locationService = MockLocationService()
+        editStateService = MockEditStateService()
+        appLifecycleService = MockAppLifecycleService()
+        timeSlotService = MockTimeSlotService(timeService: timeService,
+                                                   locationService: locationService)
+        loggingService = MockLoggingService()
         
-        self.viewModel = TimelineViewModel(date: Date(),
-                                           timeService: self.timeService,
-                                           timeSlotService: self.timeSlotService,
-                                           editStateService: self.editStateService,
-                                           appLifecycleService: self.appLifecycleService,
-                                           loggingService: self.loggingService)
+        viewModel = TimelineViewModel(date: Date(),
+                                           timeService: timeService,
+                                           timeSlotService: timeSlotService,
+                                           editStateService: editStateService,
+                                           appLifecycleService: appLifecycleService,
+                                           loggingService: loggingService)
         
         scheduler = TestScheduler(initialClock:0)
         observer = scheduler.createObserver([TimelineItem].self)
@@ -49,26 +49,26 @@ class TimelineViewModelTests : XCTestCase
     
     override func tearDown()
     {
-        self.disposeBag = DisposeBag()
+        disposeBag = DisposeBag()
     }
     
     func testViewModelsForTheOlderDaysDoNotSubscribeForTimeSlotUpdates()
     {
-        let newMockTimeSlotService = MockTimeSlotService(timeService: self.timeService,
-                                                         locationService: self.locationService)
+        let newMockTimeSlotService = MockTimeSlotService(timeService: timeService,
+                                                         locationService: locationService)
         _ = TimelineViewModel(date: Date().yesterday,
-                              timeService: self.timeService,
+                              timeService: timeService,
                               timeSlotService: newMockTimeSlotService,
-                              editStateService: self.editStateService,
-                              appLifecycleService: self.appLifecycleService,
-                              loggingService: self.loggingService)
+                              editStateService: editStateService,
+                              appLifecycleService: appLifecycleService,
+                              loggingService: loggingService)
         
         expect(newMockTimeSlotService.didSubscribe).to(beFalse())
     }
     
     func testTheNewlyAddedSlotHasNoEndTime()
     {
-        self.addTimeSlot()
+        addTimeSlot()
         
         let lastEvent = observer.events.last!
         let lastItem = lastEvent.value.element!.last!
@@ -79,21 +79,21 @@ class TimelineViewModelTests : XCTestCase
     
     func testTheAddNewSlotsMethodEndsThePreviousTimeSlot()
     {
-        self.addTimeSlot()
+        addTimeSlot()
         
         let lastEvent = observer.events.last!
         let firstItem = lastEvent.value.element!.first!
         let firstSlot = firstItem.timeSlot
         
-        self.addTimeSlot()
+        addTimeSlot()
         
         expect(firstSlot.endTime).toNot(beNil())
     }
     
     func testConsecutiveTimeSlotsShouldNotDisplayTheCategoryText()
     {
-        self.addTimeSlot(minutesAfterNoon: 0)
-        self.addTimeSlot(minutesAfterNoon: 3)
+        addTimeSlot(minutesAfterNoon: 0)
+        addTimeSlot(minutesAfterNoon: 3)
         
         let lastEvent = observer.events.last!
         let lastItem = lastEvent.value.element!.last!
@@ -103,8 +103,8 @@ class TimelineViewModelTests : XCTestCase
     
     func testViewModelNeverMergesUnknownTimeSlots()
     {
-        self.addTimeSlot(minutesAfterNoon: 0, category: .unknown)
-        self.addTimeSlot(minutesAfterNoon: 3, category: .unknown)
+        addTimeSlot(minutesAfterNoon: 0, category: .unknown)
+        addTimeSlot(minutesAfterNoon: 3, category: .unknown)
         
         let lastEvent = observer.events.last!
         let lastItem = lastEvent.value.element!.last!
@@ -114,14 +114,14 @@ class TimelineViewModelTests : XCTestCase
     
     func testUpdatingTheNthTimeSlotShouldRecalculateWhetherTheNPlus1thShouldDisplayTheCategoryTextOrNot()
     {
-        self.addTimeSlot(minutesAfterNoon: 0)
-        self.addTimeSlot(minutesAfterNoon: 3)
-        self.addTimeSlot(minutesAfterNoon: 5)
-        self.addTimeSlot(minutesAfterNoon: 8)
+        addTimeSlot(minutesAfterNoon: 0)
+        addTimeSlot(minutesAfterNoon: 3)
+        addTimeSlot(minutesAfterNoon: 5)
+        addTimeSlot(minutesAfterNoon: 8)
         
         var timelineItems = observer.events.last!.value.element!
         
-        self.timeSlotService.update(timeSlot: timelineItems[2].timeSlot, withCategory: .leisure, setByUser: true)
+        timeSlotService.update(timeSlot: timelineItems[2].timeSlot, withCategory: .leisure, setByUser: true)
         
         timelineItems = observer.events.last!.value.element!
         
@@ -133,13 +133,13 @@ class TimelineViewModelTests : XCTestCase
     
     func testTheViewModelInitializesVerifyingTheShouldDisplayCategoryLogic()
     {
-        self.addTimeSlot()
+        addTimeSlot()
         
-        let timeSlot = self.addTimeSlot()
-        self.timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure, setByUser: true)
+        let timeSlot = addTimeSlot()
+        timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure, setByUser: true)
         
-        self.addTimeSlot()
-        self.addTimeSlot()
+        addTimeSlot()
+        addTimeSlot()
         
         
         var timelineItems = observer.events.last!.value.element!
@@ -151,10 +151,10 @@ class TimelineViewModelTests : XCTestCase
     
     func testViewModelForwardsUpdatesOnCategoriesForToday()
     {
-        let ts = self.addTimeSlot(minutesAfterNoon: 0)
-        self.addTimeSlot(minutesAfterNoon: 3)
+        let ts = addTimeSlot(minutesAfterNoon: 0)
+        addTimeSlot(minutesAfterNoon: 3)
         
-        self.timeSlotService.update(timeSlot: ts, withCategory: .family, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .family, setByUser: true)
         
         let timelineItems = observer.events.last!.value.element!
         
@@ -166,16 +166,16 @@ class TimelineViewModelTests : XCTestCase
     {
         let minutesOffset:TimeInterval = -3*24*60
         
-        let ts = self.addTimeSlot(minutesAfterNoon: Int(0 + minutesOffset))
-        self.addTimeSlot(minutesAfterNoon: Int(3 + minutesOffset))
+        let ts = addTimeSlot(minutesAfterNoon: Int(0 + minutesOffset))
+        addTimeSlot(minutesAfterNoon: Int(3 + minutesOffset))
 
         
-        self.viewModel = TimelineViewModel(date: Date().addingTimeInterval(minutesOffset*60).ignoreTimeComponents(),
-                                           timeService: self.timeService,
-                                           timeSlotService: self.timeSlotService,
-                                           editStateService: self.editStateService,
-                                           appLifecycleService: self.appLifecycleService,
-                                           loggingService: self.loggingService)
+        viewModel = TimelineViewModel(date: Date().addingTimeInterval(minutesOffset*60).ignoreTimeComponents(),
+                                           timeService: timeService,
+                                           timeSlotService: timeSlotService,
+                                           editStateService: editStateService,
+                                           appLifecycleService: appLifecycleService,
+                                           loggingService: loggingService)
         
         observer = scheduler.createObserver([TimelineItem].self)
         viewModel.timelineItemsObservable
@@ -183,7 +183,7 @@ class TimelineViewModelTests : XCTestCase
             .addDisposableTo(disposeBag)
         
         
-        self.timeSlotService.update(timeSlot: ts, withCategory: .leisure, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .leisure, setByUser: true)
         
         let timelineItems = observer.events.last!.value.element!
         
@@ -193,7 +193,7 @@ class TimelineViewModelTests : XCTestCase
     
     func testViewModelForwardsTimeSlotCreationForToday()
     {
-        self.addTimeSlot(minutesAfterNoon: Int(20))
+        addTimeSlot(minutesAfterNoon: Int(20))
         expect(self.observer.events.count).to(equal(2)) //initial one plus new timeslot
     }
     
@@ -201,32 +201,32 @@ class TimelineViewModelTests : XCTestCase
     {
         let dateOffset:TimeInterval = -3*24*60*60
         
-        self.viewModel = TimelineViewModel(date: Date().addingTimeInterval(dateOffset).ignoreTimeComponents(),
-                                           timeService: self.timeService,
-                                           timeSlotService: self.timeSlotService,
-                                           editStateService: self.editStateService,
-                                           appLifecycleService: self.appLifecycleService,
-                                           loggingService: self.loggingService)
+        viewModel = TimelineViewModel(date: Date().addingTimeInterval(dateOffset).ignoreTimeComponents(),
+                                           timeService: timeService,
+                                           timeSlotService: timeSlotService,
+                                           editStateService: editStateService,
+                                           appLifecycleService: appLifecycleService,
+                                           loggingService: loggingService)
         
         observer = scheduler.createObserver([TimelineItem].self)
         viewModel.timelineItemsObservable
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        self.addTimeSlot(minutesAfterNoon: Int(20))
+        addTimeSlot(minutesAfterNoon: Int(20))
         expect(self.observer.events.count).to(equal(1)) //just initial one
     }
     
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
-        return self.addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)
+        return addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)
     }
     
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category) -> TimeSlot
     {
         let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         
-        return self.timeSlotService.addTimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)),
+        return timeSlotService.addTimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)),
                                                 category: category,
                                                 categoryWasSetByUser: false,
                                                 tryUsingLatestLocation: false)!

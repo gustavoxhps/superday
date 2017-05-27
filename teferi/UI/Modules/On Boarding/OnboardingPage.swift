@@ -50,10 +50,11 @@ class OnboardingPage : UIViewController
     
     override func viewDidAppear(_ animated: Bool)
     {
-        guard !self.didAppear else { return }
-        self.didAppear = true
+        super.viewDidAppear(animated)
+        guard !didAppear else { return }
+        didAppear = true
         
-        self.startAnimations()
+        startAnimations()
     }
     
     func finish()
@@ -75,7 +76,7 @@ class OnboardingPage : UIViewController
     
     func getDate(addingHours hours : Int, andMinutes minutes : Int) -> Date
     {
-        return self.timeService.now
+        return timeService.now
             .ignoreTimeComponents()
             .addingTimeInterval(TimeInterval((hours * 60 + minutes) * 60))
     }
@@ -86,7 +87,7 @@ class OnboardingPage : UIViewController
             .loadNibNamed("TimelineCell", owner: self, options: nil)?
             .first as! TimelineCell
         
-        let duration = self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
+        let duration = timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
         let timelineItem = TimelineItem(timeSlot: timeSlot,
                                         durations:[ duration ],
                                         lastInPastDay: false,
@@ -98,13 +99,13 @@ class OnboardingPage : UIViewController
     
     func createTimelineCells(for timeSlots: [TimeSlot]) -> [TimelineCell]
     {
-        return timeSlots.map(self.createTimelineCell)
+        return timeSlots.map(createTimelineCell)
     }
     
     func initAnimatingTimeline(with slots: [TimeSlot], in containingView: UIView) -> [TimelineCell]
     {
         
-        let cells = self.createTimelineCells(for: slots)
+        let cells = createTimelineCells(for: slots)
         
         var previousCell:TimelineCell?
         for cell in cells

@@ -37,13 +37,13 @@ class TimelineViewController : UIViewController
     {
         super.viewDidLoad()
         
-        self.tableView = UITableView(frame: self.view.bounds)
-        self.view.addSubview(self.tableView)
+        tableView = UITableView(frame: view.bounds)
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        self.emptyStateView = EmptyStateView.fromNib()
+        emptyStateView = EmptyStateView.fromNib()
         view.addSubview(emptyStateView!)
         emptyStateView!.snp.makeConstraints{ make in
             make.edges.equalToSuperview()
@@ -51,64 +51,64 @@ class TimelineViewController : UIViewController
         emptyStateView?.isHidden = true
 
         
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 100
-        self.tableView.separatorStyle = .none
-        self.tableView.allowsSelection = false
-        self.tableView.showsVerticalScrollIndicator = false
-        self.tableView.showsHorizontalScrollIndicator = false
-        self.tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
         
         
-        self.viewModel.timeObservable
+        viewModel.timeObservable
             .asDriver(onErrorJustReturn: ())
-            .drive(onNext: self.onTimeTick)
-            .addDisposableTo(self.disposeBag)
+            .drive(onNext: onTimeTick)
+            .addDisposableTo(disposeBag)
         
-        let itemsObservable = self.viewModel.timelineItemsObservable
+        let itemsObservable = viewModel.timelineItemsObservable
             .asDriver(onErrorJustReturn: [])
             
         itemsObservable
-            .drive(self.tableView.rx.items, curriedArgument: constructCell)
-            .addDisposableTo(self.disposeBag)
+            .drive(tableView.rx.items, curriedArgument: constructCell)
+            .addDisposableTo(disposeBag)
         
         itemsObservable
             .drive(onNext: { [unowned self] items in
                 self.emptyStateView.isHidden = items.count != 0
                 self.handleNewItem(items)
             })
-            .addDisposableTo(self.disposeBag)
+            .addDisposableTo(disposeBag)
 
         viewModel.presentEditViewObservable
             .subscribe(onNext: startEditOnLastSlot)
-            .addDisposableTo(self.disposeBag)
+            .addDisposableTo(disposeBag)
         
-        self.tableView.rx.willDisplayCell
-            .subscribe(onNext: { (cell, indexPath) in
+        tableView.rx.willDisplayCell
+            .subscribe(onNext: { [unowned self] (cell, indexPath) in
                 guard self.willDisplayNewCell && indexPath.row == self.tableView.numberOfRows(inSection: 0) - 1 else { return }
                 
                 (cell as! TimelineCell).animateIntro()
                 self.willDisplayNewCell = false
             })
-            .addDisposableTo(self.disposeBag)
+            .addDisposableTo(disposeBag)
     }
     
     private func handleNewItem(_ items:[TimelineItem])
     {
-        let numberOfItems = self.tableView.numberOfRows(inSection: 0)
+        let numberOfItems = tableView.numberOfRows(inSection: 0)
         guard numberOfItems > 0, items.count == numberOfItems + 1 else { return }
         
-        self.willDisplayNewCell = true
+        willDisplayNewCell = true
         let scrollIndexPath = IndexPath(row: numberOfItems - 1, section: 0)
-        self.tableView.scrollToRow(at: scrollIndexPath, at: .bottom, animated: true)
+        tableView.scrollToRow(at: scrollIndexPath, at: .bottom, animated: true)
     }
     
     private func constructCell(forTableView tableView: UITableView, withIndex index: Int, timelineItem:TimelineItem) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: IndexPath(row: index, section: 0)) as! TimelineCell
         
-        let duration = self.viewModel.calculateDuration(ofTimeSlot: timelineItem.timeSlot)
+        let duration = viewModel.calculateDuration(ofTimeSlot: timelineItem.timeSlot)
         cell.bind(toTimelineItem: timelineItem, index: index, duration: duration)
         
         if !cell.isSubscribedToClickObservable
@@ -117,7 +117,7 @@ class TimelineViewController : UIViewController
                 .map{ [unowned self] index in
                     return (self.buttonPosition(forCellIndex: index), index)
                 }
-                .subscribe(onNext: self.viewModel.notifyEditingBegan)
+                .subscribe(onNext: viewModel.notifyEditingBegan)
                 .addDisposableTo(disposeBag)
         }
         
@@ -126,30 +126,30 @@ class TimelineViewController : UIViewController
     
     private func onTimeTick()
     {
-        let indexPath = IndexPath(row: self.tableView.numberOfRows(inSection: 0) - 1, section: 0)
-        self.tableView.reloadRows(at: [indexPath], with: .none)
+        let indexPath = IndexPath(row: tableView.numberOfRows(inSection: 0) - 1, section: 0)
+        tableView.reloadRows(at: [indexPath], with: .none)
     }
     
     func startEditOnLastSlot()
     {
-        let lastRow = self.tableView.numberOfRows(inSection: 0) - 1
+        let lastRow = tableView.numberOfRows(inSection: 0) - 1
         guard lastRow >= 0 else { return }
         
         let indexPath = IndexPath(row: lastRow, section: 0)
         
-        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 
         let centerPoint = buttonPosition(forCellIndex: lastRow)
 
-        self.viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
+        viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
     }
     
     private func buttonPosition(forCellIndex index: Int) -> CGPoint
     {
-        guard let cell = self.tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? TimelineCell else {
+        guard let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? TimelineCell else {
             return CGPoint.zero
         }
         
-        return cell.categoryCircle.convert(cell.categoryCircle.center, to: self.view)
+        return cell.categoryCircle.convert(cell.categoryCircle.center, to: view)
     }
 }

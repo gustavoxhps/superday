@@ -7,7 +7,7 @@ class DailySummaryPieChartActivity: UIView
     {
         didSet
         {
-            self.setNeedsDisplay()
+            setNeedsDisplay()
         }
     }
     
@@ -24,7 +24,7 @@ class DailySummaryPieChartActivity: UIView
     
     override func draw(_ rect: CGRect)
     {
-        guard let activities = self.dailyActivities, activities.count > 0 else { return }
+        guard let activities = dailyActivities, activities.count > 0 else { return }
         
         // This non-generic function dramatically improves compilation times of complex expressions.
         func fastFloor(_ x: CGFloat) -> CGFloat { return floor(x) }

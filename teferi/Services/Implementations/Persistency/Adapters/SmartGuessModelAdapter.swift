@@ -17,20 +17,20 @@ class SmartGuessModelAdapter : CoreDataModelAdapter<SmartGuess>
     {
         super.init()
         
-        self.sortDescriptors = [ NSSortDescriptor(key: self.locationTimeKey, ascending: false) ]
+        sortDescriptors = [ NSSortDescriptor(key: locationTimeKey, ascending: false) ]
     }
     
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> SmartGuess
     {
         let id = managedObject.value(forKey: SmartGuessModelAdapter.idKey) as! Int
-        let lastUsed = managedObject.value(forKey: self.lastUsedKey) as! Date
-        let errorCount = managedObject.value(forKey: self.errorCountKey) as! Int
-        let category = Category(rawValue: managedObject.value(forKey: self.categoryKey) as! String)!
+        let lastUsed = managedObject.value(forKey: lastUsedKey) as! Date
+        let errorCount = managedObject.value(forKey: errorCountKey) as! Int
+        let category = Category(rawValue: managedObject.value(forKey: categoryKey) as! String)!
         
         let location = super.getLocation(managedObject,
-                                         timeKey: self.locationTimeKey,
-                                         latKey: self.locationLatitudeKey,
-                                         lngKey: self.locationLongitudeKey)!
+                                         timeKey: locationTimeKey,
+                                         latKey: locationLatitudeKey,
+                                         lngKey: locationLongitudeKey)!
         
         let smartGuess = SmartGuess(withId: id,
                                     category: category,
@@ -46,12 +46,12 @@ class SmartGuessModelAdapter : CoreDataModelAdapter<SmartGuess>
     override func setManagedElementProperties(fromModel model: SmartGuess, managedObject: NSManagedObject)
     {
         managedObject.setValue(model.id, forKey: SmartGuessModelAdapter.idKey)
-        managedObject.setValue(model.category.rawValue, forKey: self.categoryKey)
-        managedObject.setValue(model.lastUsed, forKey: self.lastUsedKey)
-        managedObject.setValue(model.errorCount, forKey: self.errorCountKey)
+        managedObject.setValue(model.category.rawValue, forKey: categoryKey)
+        managedObject.setValue(model.lastUsed, forKey: lastUsedKey)
+        managedObject.setValue(model.errorCount, forKey: errorCountKey)
         
-        managedObject.setValue(model.location.timestamp, forKey: self.locationTimeKey)
-        managedObject.setValue(model.location.coordinate.latitude, forKey: self.locationLatitudeKey)
-        managedObject.setValue(model.location.coordinate.longitude, forKey: self.locationLongitudeKey)
+        managedObject.setValue(model.location.timestamp, forKey: locationTimeKey)
+        managedObject.setValue(model.location.coordinate.latitude, forKey: locationLatitudeKey)
+        managedObject.setValue(model.location.coordinate.longitude, forKey: locationLongitudeKey)
     }
 }

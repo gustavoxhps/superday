@@ -17,7 +17,7 @@ class TimelineViewModel
     private var timelineItems:Variable<[TimelineItem]> = Variable([])
     
     //MARK: Initializers
-    init(date: Date,
+    init(date completeDate: Date,
          timeService: TimeService,
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
@@ -29,23 +29,23 @@ class TimelineViewModel
         self.editStateService = editStateService
         self.appLifecycleService = appLifecycleService
         self.loggingService = loggingService
-
-        self.isCurrentDay = self.timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents()
-        self.date = date.ignoreTimeComponents()
+        self.date = completeDate.ignoreTimeComponents()
         
-        self.timeObservable = !isCurrentDay ? Observable.empty() : Observable<Int>.timer(1, period: 10, scheduler: MainScheduler.instance).mapTo(())
+        isCurrentDay = timeService.now.ignoreTimeComponents() == date
         
-        let newTimeSlotForThisDate = !isCurrentDay ? Observable.empty() : self.timeSlotService
+        timeObservable = !isCurrentDay ? Observable.empty() : Observable<Int>.timer(1, period: 10, scheduler: MainScheduler.instance).mapTo(())
+        
+        let newTimeSlotForThisDate = !isCurrentDay ? Observable.empty() : timeSlotService
             .timeSlotCreatedObservable
-            .filter(self.timeSlotBelongsToThisDate)
+            .filter(timeSlotBelongsToThisDate)
             .mapTo(())
         
-        let updatedTimeSlotForThisDate = self.timeSlotService
+        let updatedTimeSlotForThisDate = timeSlotService
             .timeSlotUpdatedObservable
-            .filter(self.timeSlotBelongsToThisDate)
+            .filter(timeSlotBelongsToThisDate)
             .mapTo(())
         
-        let movedToForeground = self.appLifecycleService
+        let movedToForeground = appLifecycleService
             .movedToForegroundObservable
             .mapTo(())
         
@@ -55,7 +55,7 @@ class TimelineViewModel
             .startWith(()) // This is a hack I can't remove due to something funky with the view controllery lifecycle. We should fix this in the refactor
             .map(timeSlotsForToday)
             .map(toTimelineItems)
-            .bindTo(self.timelineItems)
+            .bindTo(timelineItems)
             .addDisposableTo(disposeBag)
 
     }
@@ -75,21 +75,21 @@ class TimelineViewModel
     
     func notifyEditingBegan(point: CGPoint, index: Int)
     {
-        self.editStateService
+        editStateService
             .notifyEditingBegan(point: point,
-                                timeSlot: self.timelineItems.value[index].timeSlot)
+                                timeSlot: timelineItems.value[index].timeSlot)
     }
     
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
     {
-        return self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
+        return timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
     }
     
     
     //MARK: Private Methods
     private func timeSlotsForToday() -> [TimeSlot]
     {
-        return self.timeSlotService.getTimeSlots(forDay: self.date)
+        return timeSlotService.getTimeSlots(forDay: date)
     }
     
     
@@ -133,12 +133,12 @@ class TimelineViewModel
     
     private func timeSlotBelongsToThisDate(_ timeSlot: TimeSlot) -> Bool
     {
-        return timeSlot.startTime.ignoreTimeComponents() == self.date
+        return timeSlot.startTime.ignoreTimeComponents() == date
     }
     
     private func isLastInPastDay(_ index: Int, count: Int) -> Bool
     {
-        guard !self.isCurrentDay else { return false }
+        guard !isCurrentDay else { return false }
         
         let isLastEntry = count - 1 == index
         return isLastEntry

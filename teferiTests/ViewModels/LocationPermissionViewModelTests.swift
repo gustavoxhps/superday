@@ -14,36 +14,36 @@ class LocationPermissionViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.timeService = MockTimeService()
-        self.settingsService = MockSettingsService()
-        self.appLifecycleService = MockAppLifecycleService()
+        timeService = MockTimeService()
+        settingsService = MockSettingsService()
+        appLifecycleService = MockAppLifecycleService()
         
-        self.viewModel = LocationPermissionViewModel(timeService: self.timeService,
-                                                     settingsService: self.settingsService,
-                                                     appLifecycleService: self.appLifecycleService)
+        viewModel = LocationPermissionViewModel(timeService: timeService,
+                                                     settingsService: settingsService,
+                                                     appLifecycleService: appLifecycleService)
     }
     
     override func tearDown()
     {
-        self.disposable?.dispose()
+        disposable?.dispose()
     }
     
     func testPermissionShouldShowBlockingOverlayFirstTimeUserOpensTheApp()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = nil
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = nil
         
         expect(self.viewModel.remindMeLater).to(beTrue())
     }
     
     func testPermissionShouldShowNonBlockingOverlayIfUserAlreadyGavePermission()
     {
-        self.settingsService.hasLocationPermission = false
-        self.settingsService.lastAskedForLocationPermission = nil
+        settingsService.hasLocationPermission = false
+        settingsService.lastAskedForLocationPermission = nil
         
-        self.viewModel.permissionGiven()
+        viewModel.permissionGiven()
         
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground(fromNotification:false))
         
         expect(self.viewModel.remindMeLater).to(beFalse())
     }

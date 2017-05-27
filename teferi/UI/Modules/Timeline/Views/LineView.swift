@@ -20,7 +20,7 @@ class LineView: UIView
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.backgroundColor = UIColor.clear
+        backgroundColor = UIColor.clear
     }
     
     override func draw(_ rect: CGRect)

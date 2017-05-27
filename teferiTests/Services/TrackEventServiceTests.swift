@@ -15,30 +15,30 @@ class TrackEventServiceTests : XCTestCase
     
     override func setUp()
     {
-        self.loggingService = MockLoggingService()
-        self.locationService = MockLocationService()
-        self.healthKitService = MockHealthKitService()
-        self.persistencyService = TrackEventPersistencyService(loggingService: self.loggingService,
+        loggingService = MockLoggingService()
+        locationService = MockLocationService()
+        healthKitService = MockHealthKitService()
+        persistencyService = TrackEventPersistencyService(loggingService: loggingService,
                                                                locationPersistencyService: MockPersistencyService<Location>(),
                                                                healthSamplePersistencyService: MockPersistencyService<HealthSample>())
         
-        self.trackEventService = DefaultTrackEventService(loggingService: self.loggingService,
-                                                          persistencyService: self.persistencyService,
-                                                          withEventSources: self.locationService,
-                                                                            self.healthKitService)
+        trackEventService = DefaultTrackEventService(loggingService: loggingService,
+                                                          persistencyService: persistencyService,
+                                                          withEventSources: locationService,
+                                                                            healthKitService)
     }
     
     func testNewEventsGetPersistedByTheTrackEventService()
     {
         let sample = HealthSample(withIdentifier: "something", startTime: Date(), endTime: Date(), value: nil)
         
-        self.locationService.sendNewTrackEvent(CLLocation())
-        self.locationService.sendNewTrackEvent(CLLocation())
-        self.healthKitService.sendNewTrackEvent(sample)
-        self.locationService.sendNewTrackEvent(CLLocation())
-        self.healthKitService.sendNewTrackEvent(sample)
+        locationService.sendNewTrackEvent(CLLocation())
+        locationService.sendNewTrackEvent(CLLocation())
+        healthKitService.sendNewTrackEvent(sample)
+        locationService.sendNewTrackEvent(CLLocation())
+        healthKitService.sendNewTrackEvent(sample)
         
-        let persistedEvents = self.trackEventService.getEventData(ofType: Location.self)
+        let persistedEvents = trackEventService.getEventData(ofType: Location.self)
         expect(persistedEvents.count).to(equal(3))
     }
 }

@@ -68,7 +68,7 @@ class PostiOSTenNotificationService : NotificationService
     
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
-        self.loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
+        loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
         
         var content = notificationContent(title: title, message: message)
         
@@ -84,7 +84,7 @@ class PostiOSTenNotificationService : NotificationService
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
         let request  = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
         
-        self.notificationCenter.add(request) { (error) in
+        notificationCenter.add(request) { [unowned self] (error) in
             if let error = error
             {
                 self.loggingService.log(withLogLevel: .error, message: "Tried to schedule notifications, but could't. Got error: \(error)")
@@ -110,7 +110,7 @@ class PostiOSTenNotificationService : NotificationService
         let content = oldContent
         
         //We shouldn't try guessing which categories the user will pick before we have enough data
-        guard self.appIsBeingUsedForOverAWeek else
+        guard appIsBeingUsedForOverAWeek else
         {
             return content
         }
@@ -118,8 +118,8 @@ class PostiOSTenNotificationService : NotificationService
         let numberOfSlotsForNotification : Int = 3
         
         let latestTimeSlots =
-            self.timeSlotService
-                .getTimeSlots(forDay: self.timeService.now)
+            timeSlotService
+                .getTimeSlots(forDay: timeService.now)
                 .suffix(numberOfSlotsForNotification)
         
         var latestTimeSlotsForNotification = latestTimeSlots.map(toDictionary)
@@ -173,21 +173,21 @@ class PostiOSTenNotificationService : NotificationService
     {
         guard let identifier = identifier, let category = Category(rawValue: identifier) else { return }
         
-        self.actionSubsribers.forEach { action in action(category) }
+        actionSubsribers.forEach { action in action(category) }
     }
     
     func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
     {
-        self.actionSubsribers.append(action)
+        actionSubsribers.append(action)
     }
     
     func setUserNotificationActions()
     {
-        guard self.appIsBeingUsedForOverAWeek else { return }
+        guard appIsBeingUsedForOverAWeek else { return }
 
         let desiredNumberOfCategories = 4
         var mostUsedCategories =
-            self.timeSlotService
+            timeSlotService
                 .getTimeSlots(sinceDaysAgo: 2)
                 .groupBy(category)
                 .sorted(by: count)

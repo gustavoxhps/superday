@@ -12,47 +12,47 @@ class OnboardingViewControllerTests : XCTestCase
     {
         super.setUp()
         
-        self.viewModelLocator = MockLocator()
-        self.onboardingViewController = OnboardingPresenter.create(with: viewModelLocator)
+        viewModelLocator = MockLocator()
+        onboardingViewController = OnboardingPresenter.create(with: viewModelLocator)
         
-        self.onboardingViewController.loadViewIfNeeded()
+        onboardingViewController.loadViewIfNeeded()
         UIApplication.shared.keyWindow!.rootViewController = onboardingViewController
     }
     
     func testTheGoToNextPageMethodNavigatesBetweenPages()
     {
-        let page = self.onboardingViewController.viewControllers!.first!
-        self.onboardingViewController.goToNextPage(forceNext: false)
+        let page = onboardingViewController.viewControllers!.first!
+        onboardingViewController.goToNextPage(forceNext: false)
         
         expect(self.onboardingViewController.viewControllers!.first).toNot(equal(page))
     }
     
     func testTheFirstPageOftheViewControllerAllowsSwipingRight()
     {
-        let page = self.onboardingViewController.pages[0]
+        let page = onboardingViewController.pages[0]
         
-        let nextPage = self.onboardingViewController
-            .pageViewController(self.onboardingViewController, viewControllerBefore: page)
+        let nextPage = onboardingViewController
+            .pageViewController(onboardingViewController, viewControllerBefore: page)
         
         expect(nextPage).to(beNil())
     }
     
     func testTheThirdPageOftheViewControllerDoesNotAllowSwipingRight()
     {
-        let page = self.onboardingViewController.pages[2]
+        let page = onboardingViewController.pages[2]
         
-        let nextPage = self.onboardingViewController
-            .pageViewController(self.onboardingViewController, viewControllerBefore: page)
+        let nextPage = onboardingViewController
+            .pageViewController(onboardingViewController, viewControllerBefore: page)
         
         expect(nextPage).to(beNil())
     }
     
     func testTheThirdPageOftheViewControllerDoesNotAllowSwipingLeft()
     {
-        let page = self.onboardingViewController.pages[2]
+        let page = onboardingViewController.pages[2]
         
-        let previousPage = self.onboardingViewController
-                               .pageViewController(self.onboardingViewController, viewControllerAfter: page)
+        let previousPage = onboardingViewController
+                               .pageViewController(onboardingViewController, viewControllerAfter: page)
 
         expect(previousPage).to(beNil())
     }

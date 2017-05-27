@@ -11,7 +11,7 @@ class MergePipe : CrossPipe
         let timeline = (startTimes + endTimes)
                         .distinct()
                         .sorted(by: <)
-                        .reduce([TemporaryTimeSlot](), self.toSingleTimeline(using: timeline))
+                        .reduce([TemporaryTimeSlot](), toSingleTimeline(using: timeline))
         
         return timeline
     }

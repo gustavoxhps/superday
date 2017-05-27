@@ -17,19 +17,19 @@ class LocationModelAdapter : CoreDataModelAdapter<Location>
     {
         super.init()
         
-        self.sortDescriptors = [ NSSortDescriptor(key: self.timestampKey, ascending: false) ]
+        sortDescriptors = [ NSSortDescriptor(key: timestampKey, ascending: false) ]
     }
     
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> Location
     {
-        let speed = managedObject.value(forKey: self.speedKey) as! Double
-        let course = managedObject.value(forKey: self.courseKey) as! Double
-        let timestamp = managedObject.value(forKey: self.timestampKey) as! Date
-        let altitude = managedObject.value(forKey: self.altitudeKey) as! Double
-        let latitude = managedObject.value(forKey: self.latitudeKey) as! Double
-        let longitude = managedObject.value(forKey: self.longitudeKey) as! Double
-        let verticalAccuracy = managedObject.value(forKey: self.verticalAccuracyKey) as! Double
-        let horizontalAccuracy = managedObject.value(forKey: self.horizontalAccuracyKey) as! Double
+        let speed = managedObject.value(forKey: speedKey) as! Double
+        let course = managedObject.value(forKey: courseKey) as! Double
+        let timestamp = managedObject.value(forKey: timestampKey) as! Date
+        let altitude = managedObject.value(forKey: altitudeKey) as! Double
+        let latitude = managedObject.value(forKey: latitudeKey) as! Double
+        let longitude = managedObject.value(forKey: longitudeKey) as! Double
+        let verticalAccuracy = managedObject.value(forKey: verticalAccuracyKey) as! Double
+        let horizontalAccuracy = managedObject.value(forKey: horizontalAccuracyKey) as! Double
         
         let location =  Location(timestamp: timestamp,
                                  latitude: latitude,
@@ -45,13 +45,13 @@ class LocationModelAdapter : CoreDataModelAdapter<Location>
     
     override func setManagedElementProperties(fromModel model: Location, managedObject: NSManagedObject)
     {
-        managedObject.setValue(model.speed, forKey: self.speedKey)
-        managedObject.setValue(model.course, forKey: self.courseKey)
-        managedObject.setValue(model.altitude, forKey: self.altitudeKey)
-        managedObject.setValue(model.latitude, forKey: self.latitudeKey)
-        managedObject.setValue(model.longitude, forKey: self.longitudeKey)
-        managedObject.setValue(model.timestamp, forKey: self.timestampKey)
-        managedObject.setValue(model.verticalAccuracy, forKey: self.verticalAccuracyKey)
-        managedObject.setValue(model.horizontalAccuracy, forKey: self.horizontalAccuracyKey)
+        managedObject.setValue(model.speed, forKey: speedKey)
+        managedObject.setValue(model.course, forKey: courseKey)
+        managedObject.setValue(model.altitude, forKey: altitudeKey)
+        managedObject.setValue(model.latitude, forKey: latitudeKey)
+        managedObject.setValue(model.longitude, forKey: longitudeKey)
+        managedObject.setValue(model.timestamp, forKey: timestampKey)
+        managedObject.setValue(model.verticalAccuracy, forKey: verticalAccuracyKey)
+        managedObject.setValue(model.horizontalAccuracy, forKey: horizontalAccuracyKey)
     }
 }

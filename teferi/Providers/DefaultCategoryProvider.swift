@@ -9,6 +9,6 @@ class DefaultCategoryProvider : CategoryProvider
     
     func getAll(but categoriesToFilter: Category...) -> [Category]
     {
-        return Category.allSorted(byUsage: self.timeSlotService.getTimeSlots(sinceDaysAgo: 14)).filter { !categoriesToFilter.contains($0) }
+        return Category.allSorted(byUsage: timeSlotService.getTimeSlots(sinceDaysAgo: 14)).filter { !categoriesToFilter.contains($0) }
     }
 }

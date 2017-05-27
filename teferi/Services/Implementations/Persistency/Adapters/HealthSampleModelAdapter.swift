@@ -13,15 +13,15 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
     {
         super.init()
         
-        self.sortDescriptors = [ NSSortDescriptor(key: self.startTimeKey, ascending: false) ]
+        sortDescriptors = [ NSSortDescriptor(key: startTimeKey, ascending: false) ]
     }
     
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> HealthSample
     {
-        let identifier = managedObject.value(forKey: self.identifierKey) as! String
-        let startTime = managedObject.value(forKey: self.startTimeKey) as! Date
-        let endTime = managedObject.value(forKey: self.endTimeKey) as! Date
-        let value = managedObject.value(forKey: self.valueKey)
+        let identifier = managedObject.value(forKey: identifierKey) as! String
+        let startTime = managedObject.value(forKey: startTimeKey) as! Date
+        let endTime = managedObject.value(forKey: endTimeKey) as! Date
+        let value = managedObject.value(forKey: valueKey)
         
         let sample = HealthSample(withIdentifier: identifier,
                                   startTime: startTime,
@@ -33,9 +33,9 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
     
     override func setManagedElementProperties(fromModel model: HealthSample, managedObject: NSManagedObject)
     {
-        managedObject.setValue(model.identifier, forKey: self.identifierKey)
-        managedObject.setValue(model.startTime, forKey: self.startTimeKey)
-        managedObject.setValue(model.endTime, forKey: self.endTimeKey)
-        managedObject.setValue(model.value, forKey: self.valueKey)
+        managedObject.setValue(model.identifier, forKey: identifierKey)
+        managedObject.setValue(model.startTime, forKey: startTimeKey)
+        managedObject.setValue(model.endTime, forKey: endTimeKey)
+        managedObject.setValue(model.value, forKey: valueKey)
     }
 }

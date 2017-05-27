@@ -6,7 +6,7 @@ class ClosureGestureRecognizer : UITapGestureRecognizer
     
     init(withClosure closure: @escaping () -> ())
     {
-        self.target = ClosureGestureRecognizerTarget(withClosure: closure)
+        target = ClosureGestureRecognizerTarget(withClosure: closure)
         
         super.init(target: target, action: #selector(ClosureGestureRecognizerTarget.runClosure))
     }
@@ -25,6 +25,6 @@ class ClosureGestureRecognizerTarget : NSObject
     
     @objc func runClosure()
     {
-        self.closure()
+        closure()
     }
 }
