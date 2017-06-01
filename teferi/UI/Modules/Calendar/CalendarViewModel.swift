@@ -61,11 +61,7 @@ class CalendarViewModel
     {
         guard canScroll(toDate: date) else { return nil }
         
-        let result = timeSlotService
-                .getTimeSlots(forDay: date)
-                .groupBy(category)
-                .map(toActivity)
-                .sorted(by: category)
+        let result = timeSlotService.getActivities(forDate: date).sorted(by: category)
         
         return result
     }
@@ -73,21 +69,6 @@ class CalendarViewModel
     private func categoryIsSet(for timeSlot: TimeSlot) -> Bool
     {
         return timeSlot.category != .unknown
-    }
-    
-    private func category(of timeSlot: TimeSlot) -> Category
-    {
-        return timeSlot.category
-    }
-    
-    private func toActivity(_ timeSlots: [TimeSlot]) -> Activity
-    {
-        let totalTime =
-            timeSlots
-                .map(timeSlotService.calculateDuration)
-                .reduce(0, +)
-        
-        return Activity(category: timeSlots.first!.category, duration: totalTime)
     }
     
     private func category(_ element1: Activity, _ element2: Activity) -> Bool

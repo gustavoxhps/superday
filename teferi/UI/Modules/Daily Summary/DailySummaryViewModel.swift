@@ -11,10 +11,8 @@ class DailySummaryViewModel
     lazy var activities : [Activity] =
     {
         return self.timeSlotService
-            .getTimeSlots(forDay: self.date)
-            .groupBy( { $0.category } )
-            .map(self.toActivity)
-            .sorted(by: { $0.duration > $1.duration } )
+            .getActivities(forDate: self.date)
+            .sorted(by: self.duration)
     }()
     
     // MARK: - Init
@@ -32,13 +30,9 @@ class DailySummaryViewModel
     }
     
     // MARK: - Helper
-    private func toActivity(_ timeSlots: [TimeSlot]) -> Activity
+    
+    private func duration(_ element1: Activity, _ element2: Activity) -> Bool
     {
-        let totalTime =
-            timeSlots
-                .map(timeSlotService.calculateDuration)
-                .reduce(0, +)
-        
-        return Activity(category: timeSlots.first!.category, duration: totalTime)
+        return element1.duration > element2.duration
     }
 }
