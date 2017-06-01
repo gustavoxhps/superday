@@ -36,13 +36,13 @@ class CalendarDailyActivityView : UIView
             //Filters layers too small to be seen
             guard layerWidth > 1 else { continue }
             
-            let layer = CALayer()
-            layer.cornerRadius = 1
-            layer.backgroundColor = activity.category.color.cgColor
-            layer.frame = CGRect(x: startingX, y: 0, width: layerWidth, height: Double(frame.height))
+            let activityLayer = CALayer()
+            activityLayer.cornerRadius = 1
+            activityLayer.backgroundColor = activity.category.color.cgColor
+            activityLayer.frame = CGRect(x: startingX, y: 0, width: layerWidth, height: Double(frame.height))
             startingX += layerWidth + 1
             
-            layer.addSublayer(layer)
+            layer.addSublayer(activityLayer)
         }
         
         layoutIfNeeded()
