@@ -173,7 +173,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         let startedOn = isInBackground ? "background" : "foreground"
         let message = "Application started on \(startedOn). App Version: \(versionNumber) Build: \(buildNumber)"
 
-        loggingService.log(withLogLevel: .debug, message: message)
+
+        loggingService.log(withLogLevel: .info, message: message)
     }
     
     private func initializeWindowIfNeeded()

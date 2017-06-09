@@ -34,7 +34,7 @@ class DefaultLocationService : NSObject, LocationService
         
         dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        loggingService.log(withLogLevel: .verbose, message: "DefaultLocationService Initialized")
+        loggingService.log(withLogLevel: .info, message: "DefaultLocationService Initialized")
         
         _ = locationManager.rx.didUpdateLocations
             .do(onNext: { [unowned self] locations in
@@ -66,7 +66,7 @@ class DefaultLocationService : NSObject, LocationService
     
     func startLocationTracking()
     {
-        loggingService.log(withLogLevel: .debug, message: "Location Service started")
+        loggingService.log(withLogLevel: .info, message: "Location Service started")
         locationManager.startMonitoringSignificantLocationChanges()
     }
     
@@ -82,13 +82,13 @@ class DefaultLocationService : NSObject, LocationService
     // MARK: Private Methods
     private func startGPSTracking()
     {
-        loggingService.log(withLogLevel: .debug, message: "Accurate Location Service started")
+        loggingService.log(withLogLevel: .info, message: "Accurate Location Service started")
         accurateLocationManager.startUpdatingLocation()
     }
     
     private func stopGPSTracking()
     {
-        loggingService.log(withLogLevel: .debug, message: "Accurate Location Service stopped")
+        loggingService.log(withLogLevel: .info, message: "Accurate Location Service stopped")
         accurateLocationManager.stopUpdatingLocation()
     }
     

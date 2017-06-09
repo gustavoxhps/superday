@@ -68,7 +68,7 @@ class DefaultTimeSlotService : TimeSlotService
         //The previous TimeSlot needs to be finished before a new one can start
         guard endPreviousTimeSlot(atDate: timeSlot.startTime) && persistencyService.create(timeSlot) else
         {
-            loggingService.log(withLogLevel: .error, message: "Failed to create new TimeSlot")
+            loggingService.log(withLogLevel: .warning, message: "Failed to create new TimeSlot")
             return nil
         }
         
@@ -120,7 +120,7 @@ class DefaultTimeSlotService : TimeSlotService
         }
         else
         {
-            loggingService.log(withLogLevel: .error, message: "Error updating category of TimeSlot created on \(timeSlot.startTime) from \(timeSlot.category) to \(category)")
+            loggingService.log(withLogLevel: .warning, message: "Error updating category of TimeSlot created on \(timeSlot.startTime) from \(timeSlot.category) to \(category)")
         }
     }
     
@@ -174,14 +174,14 @@ class DefaultTimeSlotService : TimeSlotService
         
         guard endDate > startDate else
         {
-            loggingService.log(withLogLevel: .error, message: "Trying to create a negative duration TimeSlot")
+            loggingService.log(withLogLevel: .warning, message: "Trying to create a negative duration TimeSlot")
             return false
         }
         
         //TimeSlot is going for over one day, we should end it at midnight
         if startDate.ignoreTimeComponents() != endDate.ignoreTimeComponents()
         {
-            loggingService.log(withLogLevel: .debug, message: "Early ending TimeSlot at midnight")
+            loggingService.log(withLogLevel: .info, message: "Early ending TimeSlot at midnight")
             endDate = startDate.tomorrow.ignoreTimeComponents()
         }
         
@@ -196,8 +196,7 @@ class DefaultTimeSlotService : TimeSlotService
         
         guard persistencyService.update(withPredicate: predicate, updateFunction: editFunction) else
         {
-            loggingService.log(withLogLevel: .error, message: "Failed to end TimeSlot started at \(timeSlot.startTime) with category \(timeSlot.category)")
-            
+            loggingService.log(withLogLevel: .warning, message: "Failed to end TimeSlot started at \(timeSlot.startTime) with category \(timeSlot.category)")
             return false
         }
         

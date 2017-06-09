@@ -28,7 +28,7 @@ You can find more information on our workflows and guidelines in the general [To
 
 Specifically there are:
 - [Pull Request Etiquette](https://github.com/toggl/mobile-docs/blob/develop/pull-request-etiquette.md "Pull Request Etiquette")
-- [Commit Guidelines](https://github.com/toggl/mobile-docs/blob/develop/commit-guidelines.md "Commit Guidelines") 
+- [Commit Guidelines](https://github.com/toggl/mobile-docs/blob/develop/commit-guidelines.md "Commit Guidelines")
 - [SuperFlow](https://github.com/toggl/mobile-docs/blob/develop/superflow.md "SuperFlow: Toggl Mobile's branching work flow") - our branching and release model
 
 ## Superday specific guidelines
@@ -37,3 +37,6 @@ Specifically there are:
 
 Please refer to [this document](https://github.com/toggl/superday/blob/develop/docs/SwiftStyleGuide.md).
 
+### Logging guide
+
+Please refer to [this document](https://github.com/toggl/superday/blob/develop/docs/Logging.md).

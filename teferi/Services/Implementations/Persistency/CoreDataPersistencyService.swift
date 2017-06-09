@@ -38,7 +38,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             }
             catch
             {
-                self.loggingService.log(withLogLevel: .error, message: "No \(self.entityName)s found")
+                self.loggingService.log(withLogLevel: .warning, message: "No \(self.entityName)s found")
             }
         }
         
@@ -93,7 +93,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             }
             catch
             {
-                self.loggingService.log(withLogLevel: .error, message: "Error creating \(self.entityName)")
+                self.loggingService.log(withLogLevel: .warning, message: "Error creating \(self.entityName)")
             }
         }
         

@@ -40,7 +40,7 @@ class PreiOSTenNotificationService : NotificationService
     
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
-        loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
+        loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
         
         let notification = UILocalNotification()
         notification.userInfo = ["id": type.rawValue]

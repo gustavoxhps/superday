@@ -66,7 +66,7 @@ class LocationPump : Pump
         
         loggingService.log(withLogLevel: .info, message: "Location pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
-            self.loggingService.log(withLogLevel: .info, message: "LocationSlot start: \(slot.start) category: \(slot.category.rawValue)")
+            self.loggingService.log(withLogLevel: .debug, message: "LocationSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
         return temporaryTimeSlotsToReturn.withEndSetToStartOfNext()

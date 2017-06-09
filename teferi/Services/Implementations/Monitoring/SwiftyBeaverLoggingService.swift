@@ -20,8 +20,6 @@ class SwiftyBeaverLoggingService : LoggingService
     {
         switch logLevel
         {
-            case .verbose:
-                swiftBeaver.verbose(message)
             case .debug:
                 swiftBeaver.debug(message)
             case .info:

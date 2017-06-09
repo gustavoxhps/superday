@@ -31,7 +31,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         self.settingsService = settingsService
         self.loggingService = loggingService
         
-        loggingService.log(withLogLevel: .verbose, message: "DefaultHealthKitService Initialized")
+        loggingService.log(withLogLevel: .info, message: "DefaultHealthKitService Initialized")
         
         dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     }
@@ -75,7 +75,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
+            self.loggingService.log(withLogLevel: .debug, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     
@@ -87,7 +87,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         
         samples.forEach({ (sample) in
             let quantity = sample.quantity.doubleValue(for: HKUnit.meter())
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
+            self.loggingService.log(withLogLevel: .debug, message: "⌞ \(quantity)m start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     
@@ -120,7 +120,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
                 }
             }
             
-            self.loggingService.log(withLogLevel: .info, message: "⌞ \(sleepAnalysisType) start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
+            self.loggingService.log(withLogLevel: .debug, message: "⌞ \(sleepAnalysisType) start \(self.dateTimeFormatter.string(from: sample.startDate)) end \(self.dateTimeFormatter.string(from: sample.endDate)) metadata: \(String(describing: sample.metadata))")
         })
     }
     
@@ -193,7 +193,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
                     
                     if let error = error
                     {
-                        self.loggingService.log(withLogLevel: .error, message: "Error trying to enable background delivery in health kit: \(error.localizedDescription)")
+                        self.loggingService.log(withLogLevel: .warning, message: "Error trying to enable background delivery in health kit: \(error.localizedDescription)")
                     }
                 })
             })
@@ -213,7 +213,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
                 
                 if let error = error
                 {
-                    self.loggingService.log(withLogLevel: .error, message: "Error trying to disable background delivery in health kit: \(error.localizedDescription)")
+                    self.loggingService.log(withLogLevel: .warning, message: "Error trying to disable background delivery in health kit: \(error.localizedDescription)")
                 }
                 
                 self.sampleTypesToRead.values.forEach({ (sample) in
@@ -228,7 +228,7 @@ class DefaultHealthKitService : HealthKitService, EventSource
         healthStore?.requestAuthorization(toShare: nil, read: Set(sampleTypesToRead.values), completion: { (success, error) in
             if let error = error
             {
-                self.loggingService.log(withLogLevel: .error, message: "Error trying to authorize health kit: \(error.localizedDescription)")
+                self.loggingService.log(withLogLevel: .warning, message: "Error trying to authorize health kit: \(error.localizedDescription)")
             }
             completion?(success)
         })

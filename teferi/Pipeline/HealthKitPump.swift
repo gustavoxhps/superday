@@ -49,7 +49,7 @@ class HealthKitPump : Pump
 
         loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
-            self.loggingService.log(withLogLevel: .info, message: "HKTempSlot start: \(slot.start) category: \(slot.category.rawValue)")
+            self.loggingService.log(withLogLevel: .debug, message: "HKTempSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
         return temporaryTimeSlotsToReturn.withEndSetToStartOfNext()

@@ -106,7 +106,7 @@ class TimelineViewModel
                 let isLastInPastDay = self.isLastInPastDay(n, count: count)
                 
                 if isLastInPastDay && timeSlot.endTime == nil {
-                    loggingService.log(withLogLevel: .error, message: "Timeslot error: Can't be last in past day and still running")
+                    loggingService.log(withLogLevel: .warning, message: "Timeslot error: Can't be last in past day and still running")
                 }
                 
                 if timeSlot.category != .unknown,

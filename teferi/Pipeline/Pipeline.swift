@@ -46,7 +46,7 @@ class Pipeline
         
         loggingService.log(withLogLevel: .info, message: "Merge temporary timeline:")
         timeline.forEach { (slot) in
-            self.loggingService.log(withLogLevel: .info, message: "MergedSlot start: \(slot.start) category: \(slot.category.rawValue)")
+            self.loggingService.log(withLogLevel: .debug, message: "MergedSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
         sinks.forEach { sink in sink.execute(timeline: timeline) }

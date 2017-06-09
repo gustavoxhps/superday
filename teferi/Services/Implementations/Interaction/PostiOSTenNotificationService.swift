@@ -68,7 +68,7 @@ class PostiOSTenNotificationService : NotificationService
     
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
-        loggingService.log(withLogLevel: .debug, message: "Scheduling message for date: \(date)")
+        loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
         
         var content = notificationContent(title: title, message: message)
         
@@ -87,7 +87,7 @@ class PostiOSTenNotificationService : NotificationService
         notificationCenter.add(request) { [unowned self] (error) in
             if let error = error
             {
-                self.loggingService.log(withLogLevel: .error, message: "Tried to schedule notifications, but could't. Got error: \(error)")
+                self.loggingService.log(withLogLevel: .warning, message: "Tried to schedule notifications, but could't. Got error: \(error)")
             }
             else
             {

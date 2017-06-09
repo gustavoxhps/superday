@@ -38,6 +38,6 @@ class DefaultTrackEventService : TrackEventService
     {
         if persistencyService.create(event) { return }
             
-        loggingService.log(withLogLevel: .error, message: "Failed to log event data \(event)")
+        loggingService.log(withLogLevel: .warning, message: "Failed to log event data \(event)")
     }
 }

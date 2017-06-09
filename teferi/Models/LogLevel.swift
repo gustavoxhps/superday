@@ -10,7 +10,6 @@ import Foundation
  */
 enum LogLevel : String
 {
-    case verbose
     case debug
     case info
     case warning

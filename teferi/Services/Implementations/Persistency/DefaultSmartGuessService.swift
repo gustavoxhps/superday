@@ -35,7 +35,7 @@ class DefaultSmartGuessService : SmartGuessService
         
         guard persistencyService.create(smartGuess) else
         {
-            loggingService.log(withLogLevel: .error, message: "Failed to create new SmartGuess")
+            loggingService.log(withLogLevel: .warning, message: "Failed to create new SmartGuess")
             return nil
         }
         
@@ -58,7 +58,7 @@ class DefaultSmartGuessService : SmartGuessService
         }
         guard time >= persistedSmartGuess.lastUsed else
         {
-            loggingService.log(withLogLevel: .debug, message: "Tried updating smart guess with date before the one already set  \(id)")
+            loggingService.log(withLogLevel: .warning, message: "Tried updating smart guess with date before the one already set  \(id)")
             return
         }
         
@@ -69,7 +69,7 @@ class DefaultSmartGuessService : SmartGuessService
         
         if !persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
-            loggingService.log(withLogLevel: .error, message: "Error trying to update last-used time of SmartGuess with id \(id)")
+            loggingService.log(withLogLevel: .warning, message: "Error trying to update last-used time of SmartGuess with id \(id)")
         }
         
         smartGuess.lastUsed = time
@@ -128,11 +128,11 @@ class DefaultSmartGuessService : SmartGuessService
                 labelAction: { $0.category })
         else
         {
-            loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+            loggingService.log(withLogLevel: .debug, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
             return nil
         }
         
-        loggingService.log(withLogLevel: .info, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
+        loggingService.log(withLogLevel: .debug, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
         guard let bestMatch = bestKnnMatch.smartGuess
         else { return nil }
