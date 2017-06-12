@@ -50,14 +50,8 @@ class AddTimeSlotView : UIView
         addButton.layer.cornerRadius = cornerRadius
         
         wheel = CategoryWheel(frame: bounds,
-                                   cellSize: CGSize(width: 50.0, height: 50.0),
-                                   centerPoint: addButton.center,
-                                   radius: 144,
-                                   startAngle: CGFloat.pi / 4,
-                                   endAngle: CGFloat.pi * 5 / 4,
-                                   angleBetweenCells: 0.45,
-                                   attributeSelector: toAttributes,
-                                   dismissAction: wheelDismissAction)
+                              attributeSelector: toAttributes,
+                              dismissAction: wheelDismissAction)
         
         //Adds some blur to the background of the buttons
         gradientLayer.frame = blur.bounds

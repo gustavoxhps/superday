@@ -1,19 +1,36 @@
 import UIKit
 
-class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, CategoryButtonDelegate
+class CategoryWheel : UIControl, TrigonometryHelper
 {
     typealias DismissType = ((CategoryWheel) -> ())
     
-    var categoryProvider : CategoryProvider?
+    // MARK: Constants
     
-    // MARK: - Flick components
+    private let cellSize : CGSize = CGSize(width: 50.0, height: 50.0)
+    private let radius : CGFloat = 144
+    private let startAngle : CGFloat = CGFloat.pi / 4
+    private let endAngle : CGFloat = CGFloat.pi * 5 / 4
+    private let angleBetweenCells : CGFloat = 0.45
+    private let animationDuration = TimeInterval(0.225)
+    private var cellDiagonalDistance: CGFloat
+    {
+        return sqrt(pow(cellSize.width, 2) + pow(cellSize.height, 2))
+    }
+
+    // MARK: - Public Properties
+    
+    var categoryProvider : CategoryProvider?
+    fileprivate(set) var selectedItem : Category?
+    
+    // MARK: - Private Properties
+    
     private var flickBehavior : UIDynamicItemBehavior!
     private var flickAnimator : UIDynamicAnimator!
     private var lastFlickPoint : CGPoint!
     private var flickView : UIView!
     private var flickViewAttachment : UIAttachmentBehavior!
     
-    private var isSpinning : Bool = false
+    fileprivate var isSpinning : Bool = false
     {
         didSet
         {
@@ -29,74 +46,20 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private var panGesture : UIPanGestureRecognizer!
     private var lastPanPoint : CGPoint!
     
-    // MARK: - Tap gesture components
-    private var tapGesture : UITapGestureRecognizer!
-
     private var viewHandler : CategoryButtonsHandler?
     
-    private(set) var selectedItem : Category?
-    
-    private let cellSize : CGSize
-    private let radius : CGFloat
-    private let startAngle : CGFloat
-    private let endAngle : CGFloat
-    private var centerPoint : CGPoint
-    private let angleBetweenCells : CGFloat
     private let dismissAction : DismissType?
     
-    private var measurementStartPoint : CGPoint
+    private var centerPoint : CGPoint = CGPoint.zero
+    private var measurementStartPoint : CGPoint = CGPoint.zero
+    private var allowedPath : UIBezierPath = UIBezierPath()
+    
+    // MARK: Initializer
+    
+    init(frame : CGRect,
+         attributeSelector: @escaping ((Category) -> (UIImage, UIColor)),
+         dismissAction: DismissType?)
     {
-        return CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
-    }
-    
-    private var cellDiagonalDistance: CGFloat
-    {
-        return sqrt(pow(cellSize.width, 2) + pow(cellSize.height, 2))
-    }
-    
-    private let animationDuration = TimeInterval(0.225)
-    
-    private lazy var startAnglePoint : CGPoint = {
-        return self.rotatePoint(target: self.measurementStartPoint, aroundOrigin: self.centerPoint, by: self.startAngle)
-    }()
-    
-    private lazy var endAnglePoint : CGPoint = {
-        return self.rotatePoint(target: self.measurementStartPoint, aroundOrigin: self.centerPoint, by: self.endAngle)
-    }()
-    
-    private lazy var allowedPath : UIBezierPath = {
-        let ovalRect = CGRect(origin: CGPoint(x: self.centerPoint.x - self.radius, y: self.centerPoint.y - self.radius), size: CGSize(width: self.radius * 2, height: self.radius * 2))
-        let ovalPath = UIBezierPath()
-        ovalPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -self.endAngle, endAngle: -self.startAngle, clockwise: true)
-        ovalPath.addLine(to: CGPoint(x: ovalRect.midX, y: ovalRect.midY))
-        ovalPath.close()
-        return ovalPath
-    }()
-    
-    // MARK: - Init
-    
-    init(
-        frame : CGRect,
-        cellSize: CGSize,
-        centerPoint: CGPoint,
-        radius: CGFloat,
-        startAngle: CGFloat,
-        endAngle: CGFloat,
-        angleBetweenCells: CGFloat,
-        attributeSelector: @escaping ((Category) -> (UIImage, UIColor)),
-        dismissAction: DismissType?)
-    {
-        if startAngle >= endAngle
-        {
-            fatalError("startAngle should be smaller than endAngle")
-        }
-        
-        self.startAngle = startAngle
-        self.endAngle = endAngle
-        self.angleBetweenCells = angleBetweenCells
-        self.radius = radius
-        self.centerPoint = centerPoint
-        self.cellSize = cellSize
         self.dismissAction = dismissAction
         
         super.init(frame: frame)
@@ -105,7 +68,7 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         panGesture.delaysTouchesBegan = false
         addGestureRecognizer(panGesture)
         
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(CategoryWheel.handleTap(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(CategoryWheel.handleTap(_:)))
         addGestureRecognizer(tapGesture)
     }
     
@@ -114,7 +77,65 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Tap gesture logic
+    // MARK: Public Methods
+    
+    func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
+    {
+        guard let categoryProvider = categoryProvider else { return }
+        
+        viewHandler = CategoryButtonsHandler(items: categoryProvider.getAll(but: .unknown))
+        
+        view.superview?.insertSubview(self, belowSubview: view)
+        
+        centerPoint = view.center
+        measurementStartPoint =  CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
+        
+        let ovalRect = CGRect(origin: CGPoint(x: self.centerPoint.x - self.radius, y: self.centerPoint.y - self.radius), size: CGSize(width: self.radius * 2, height: self.radius * 2))
+        allowedPath = UIBezierPath()
+        allowedPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -self.endAngle, endAngle: -self.startAngle, clockwise: true)
+        allowedPath.addLine(to: CGPoint(x: ovalRect.midX, y: ovalRect.midY))
+        allowedPath.close()
+        
+        panGesture.isEnabled = true
+        
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = TimeInterval(0.04)
+        var previousCell : CategoryButton?
+
+        for index in 0..<numberToShow
+        {
+            let cell = viewHandler!.cell(before: previousCell, forward: true, cellSize: cellSize)
+            cell.delegate = self
+            let center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
+            positionAndRotateCell(cell, center: center)
+            cell.isHidden = true
+            
+            addSubview(cell)
+            
+            animationSequence = animationSequence.after(delay, animate(cell, presenting: true))
+            
+            previousCell = cell
+        }
+    }
+    
+    func hide()
+    {
+        guard let viewHandler = viewHandler else { return }
+        
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = TimeInterval(0.02)
+        
+        for cell in viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) })
+        {
+            animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
+        }
+        
+        animationSequence.after(animationDuration, cleanupAfterHide())
+    }
+    
+    // MARK: Private Methods
     
     @objc private func handleTap(_ sender: UITapGestureRecognizer)
     {
@@ -127,8 +148,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
             dismissAction?(self)
         }
     }
-    
-    // MARK: - Pan gesture logic
     
     @objc private func handlePan(_ sender: UIPanGestureRecognizer)
     {
@@ -175,8 +194,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         }
     }
     
-    // MARK: - Flick logic
-    
     private func flick(with velocity: CGPoint, from point: CGPoint)
     {
         resetFlick()
@@ -213,7 +230,7 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         lastFlickPoint = nil
     }
     
-    func flickBehaviorAction()
+    private func flickBehaviorAction()
     {
         guard let _ = lastFlickPoint
         else
@@ -233,20 +250,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         
         lastFlickPoint = flickView.center
     }
-    
-    // MARK: - UIDynamicAnimatorDelegate
-    
-    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
-    {
-        isSpinning = true
-    }
-    
-    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
-    {
-        isSpinning = false
-    }
-    
-    // MARK: - Rotation logic
     
     private func handleMovement(angleToRotate: CGFloat)
     {
@@ -289,57 +292,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
             lastCellBasedOnRotationDirection = newCell
             angleOfLastPoint = positiveAngle(startPoint: measurementStartPoint, endPoint: lastCellBasedOnRotationDirection.center, anchorPoint: centerPoint)
         }
-    }
-    
-    // MARK: - Presentation and dismissal logic
-    
-    func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
-    {
-        guard let categoryProvider = categoryProvider else { return }
-        
-        viewHandler = CategoryButtonsHandler(items: categoryProvider.getAll(but: .unknown))
-
-        view.superview?.insertSubview(self, belowSubview: view)
-        
-        centerPoint = view.center
-        
-        panGesture.isEnabled = true
-        
-        var animationSequence = DelayedSequence.start()
-        
-        let delay = TimeInterval(0.04)
-        var previousCell : CategoryButton?
-        
-        for index in 0..<numberToShow
-        {
-            let cell = viewHandler!.cell(before: previousCell, forward: true, cellSize: cellSize)
-            cell.delegate = self
-            let center = rotatePoint(target: measurementStartPoint, aroundOrigin: centerPoint, by: toPositive(angle: startingAngle + CGFloat(index) * angleBetweenCells))
-            positionAndRotateCell(cell, center: center)
-            cell.isHidden = true
-
-            addSubview(cell)
-            
-            animationSequence = animationSequence.after(delay, animate(cell, presenting: true))
-            
-            previousCell = cell
-        }
-    }
-    
-    func hide()
-    {
-        guard let viewHandler = viewHandler else { return }
-        
-        var animationSequence = DelayedSequence.start()
-        
-        let delay = TimeInterval(0.02)
-        
-        for cell in viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) })
-        {
-            animationSequence = animationSequence.after(delay, animate(cell, presenting: false))
-        }
-        
-        animationSequence.after(animationDuration, cleanupAfterHide())
     }
     
     private func cleanupAfterHide() -> (TimeInterval) -> ()
@@ -400,14 +352,6 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         cell.center = center
         cell.angle = angle(from: cell.center, to: centerPoint)
     }
-
-    
-    // MARK: - SelectionHandling
-    func categorySelected(category: Category)
-    {
-        selectedItem = category
-        sendActions(for: .valueChanged)
-    }
     
     // MARK: - Math functions
     
@@ -419,5 +363,27 @@ class CategoryWheel : UIControl, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private func shouldFlick(for velocity: CGPoint) -> Bool
     {
         return max( abs( velocity.x ), abs( velocity.y ) ) > 200
+    }
+}
+
+extension CategoryWheel: CategoryButtonDelegate
+{
+    func categorySelected(category: Category)
+    {
+        selectedItem = category
+        sendActions(for: .valueChanged)
+    }
+}
+
+extension CategoryWheel: UIDynamicAnimatorDelegate
+{
+    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
+    {
+        isSpinning = true
+    }
+    
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
+    {
+        isSpinning = false
     }
 }
