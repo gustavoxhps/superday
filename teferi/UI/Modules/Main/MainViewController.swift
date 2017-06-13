@@ -9,18 +9,19 @@ import SnapKit
 
 class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
 {
-    private var viewModel : MainViewModel!
-    private var presenter : MainPresenter!
+    // MARK: Public Properties
     var viewModelLocator : ViewModelLocator!
 
-    // MARK: Fields
+    // MARK: Private Properties
+    private var viewModel : MainViewModel!
+    private var presenter : MainPresenter!
+    
     private let animationDuration = 0.08
     
     private let disposeBag = DisposeBag()
     
     private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
     
-    //Dependencies
     private var editView : EditTimeSlotView!
     private var addButton : AddTimeSlotView!
     
@@ -64,6 +65,20 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         createBindings()
     }
     
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        viewModel.active = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool)
+    {
+        super.viewDidDisappear(animated)
+        viewModel.active = false
+    }
+    
+    // MARK: Private Methods
+    
     private func createBindings()
     {
         editView.dismissAction = { [unowned self] in self.viewModel.notifyEditingEnded() }
@@ -100,7 +115,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
             .addDisposableTo(disposeBag)
     }
     
-    // MARK: Methods
     private func onDateChanged(date: Date)
     {
         let today = viewModel.currentDate
@@ -125,7 +139,6 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         editView.isEditing = isEditing
     }
     
-    //Configure overlay
     private func fadeOverlay(startColor: UIColor, endColor: UIColor) -> CAGradientLayer
     {
         let fadeOverlay = CAGradientLayer()
@@ -134,17 +147,5 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         fadeOverlay.startPoint = CGPoint(x: 0.0, y: 1.0)
         fadeOverlay.endPoint = CGPoint(x: 0.0, y: 0.0)
         return fadeOverlay
-    }
-    
-    override func viewWillAppear(_ animated: Bool)
-    {
-        super.viewWillAppear(animated)
-        viewModel.active = true
-    }
-    
-    override func viewDidDisappear(_ animated: Bool)
-    {
-        super.viewDidDisappear(animated)
-        viewModel.active = false
     }
 }

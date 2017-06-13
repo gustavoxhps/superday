@@ -4,30 +4,8 @@ import CoreLocation
 
 class DefaultSettingsService : SettingsService
 {
-    private let timeService : TimeService
-
-    //MARK: Fields
-    private let installDateKey = "installDate"
-    private let lastLocationLatKey = "lastLocationLat"
-    private let lastLocationLngKey = "lastLocationLng"
-    private let lastLocationDateKey = "lastLocationDate"
-    private let lastLocationHorizontalAccuracyKey = "lastLocationHorizongalAccuracy"
-    private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
-    private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
-    private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
-    private let healthKitPermissionKey = "healthKitPermission"
+    //MARK: Public Properties
     
-    private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
-    private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
-    private let lastNotificationLocationDateKey = "lastNotificationLocationDate"
-    private let lastNotificationLocationHorizontalAccuracyKey = "lastNotificationLocationHorizontalAccuracy"
-    
-    init (timeService : TimeService)
-    {
-        self.timeService = timeService
-    }
-
-    //MARK: Properties
     var installDate : Date?
     {
         return get(forKey: installDateKey)
@@ -57,7 +35,7 @@ class DefaultSettingsService : SettingsService
     var lastNotificationLocation : CLLocation?
     {
         guard let time = get(forKey: lastNotificationLocationDateKey) as Date? else { return nil }
-
+        
         let latitude = getDouble(forKey: lastNotificationLocationLatKey)
         let longitude = getDouble(forKey: lastNotificationLocationLngKey)
         let horizontalAccuracy = get(forKey: lastNotificationLocationHorizontalAccuracyKey) as Double? ?? 0.0
@@ -96,7 +74,32 @@ class DefaultSettingsService : SettingsService
         return getBool(forKey: userGaveLocationPermissionKey)
     }
     
-    //MARK: Methods
+    //MARK: Private Properties
+    
+    private let timeService : TimeService
+    
+    private let installDateKey = "installDate"
+    private let lastLocationLatKey = "lastLocationLat"
+    private let lastLocationLngKey = "lastLocationLng"
+    private let lastLocationDateKey = "lastLocationDate"
+    private let lastLocationHorizontalAccuracyKey = "lastLocationHorizongalAccuracy"
+    private let lastAskedForLocationPermissionKey = "lastAskedForLocationPermission"
+    private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
+    private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
+    private let healthKitPermissionKey = "healthKitPermission"
+    
+    private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
+    private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
+    private let lastNotificationLocationDateKey = "lastNotificationLocationDate"
+    private let lastNotificationLocationHorizontalAccuracyKey = "lastNotificationLocationHorizontalAccuracy"
+    
+    //MARK: Initialiazers
+    init (timeService : TimeService)
+    {
+        self.timeService = timeService
+    }
+
+    //MARK: Public Methods
     func lastHealthKitUpdate(for identifier: String) -> Date
     {
         let key = lastHealthKitUpdateKey + identifier
@@ -154,7 +157,7 @@ class DefaultSettingsService : SettingsService
         set(true, forKey: healthKitPermissionKey)
     }
     
-    // MARK: Helpers
+    // MARK: Private Methods
     private func get<T>(forKey key: String) -> T?
     {
         return UserDefaults.standard.object(forKey: key) as? T

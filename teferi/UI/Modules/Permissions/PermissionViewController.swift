@@ -4,10 +4,11 @@ import Foundation
 
 class PermissionViewController : UIViewController
 {
+    // MARK: Private Properties
+    
     private var viewModel : PermissionViewModel!
     private var presenter : PermissionPresenter!
     
-    //MARK: Fields
     private let disposeBag = DisposeBag()
     
     @IBOutlet private weak var titleLabel : UILabel!
@@ -17,7 +18,7 @@ class PermissionViewController : UIViewController
     @IBOutlet private weak var mainButtonBottomConstraint : NSLayoutConstraint!
     @IBOutlet private weak var imageView: UIImageView!
     
-    // MARK: Methods
+    // MARK: Public Methods
     func inject(presenter:PermissionPresenter, viewModel: PermissionViewModel)
     {
         self.presenter = presenter
@@ -42,6 +43,8 @@ class PermissionViewController : UIViewController
         
         initializeBindings()
     }
+    
+    // MARK: Private Methods
     
     private func initializeBindings()
     {

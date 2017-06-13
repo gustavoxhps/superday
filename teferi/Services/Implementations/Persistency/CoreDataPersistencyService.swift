@@ -4,10 +4,24 @@ import UIKit
 ///Implementation that uses CoreData to persist information on disk.
 class CoreDataPersistencyService<T> : BasePersistencyService<T>
 {
-    //MARK: Fields
-    let loggingService : LoggingService
-    let modelAdapter : CoreDataModelAdapter<T>
-    let managedObjectContext : NSManagedObjectContext
+    //MARK: Private Properties
+    private let loggingService : LoggingService
+    private let modelAdapter : CoreDataModelAdapter<T>
+    private let managedObjectContext : NSManagedObjectContext
+    
+    private lazy var entityName : String =
+    {
+        let fullName = String(describing: T.self)
+        let range = fullName.range(of: ".", options: .backwards)
+        if let range = range
+        {
+            return fullName.substring(from: range.upperBound)
+        }
+        else
+        {
+            return fullName
+        }
+    }()
     
     //MARK: Initializers
     init(loggingService: LoggingService, modelAdapter: CoreDataModelAdapter<T>, managedObjectContext: NSManagedObjectContext)
@@ -17,7 +31,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         self.managedObjectContext = managedObjectContext
     }
     
-    //MARK: PersistencyService implementation
+    //MARK: Public Mehods
     override func getLast() -> T?
     {
         var elementToReturn: T? = nil
@@ -169,7 +183,8 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         return boolToReturn
     }
     
-    //MARK: Methods
+    //MARK: Private Methods
+    
     private func setManagedElementProperties(_ element: T, _ managedObject: NSManagedObject)
     {
         modelAdapter.setManagedElementProperties(fromModel: element, managedObject: managedObject)
@@ -180,18 +195,4 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         let result = modelAdapter.getModel(fromManagedObject: managedObject)
         return result
     }
-    
-    private lazy var entityName : String =
-    {
-        let fullName = String(describing: T.self)
-        let range = fullName.range(of: ".", options: .backwards)
-        if let range = range
-        {
-            return fullName.substring(from: range.upperBound)
-        }
-        else
-        {
-            return fullName
-        }
-    }()
 }

@@ -3,32 +3,7 @@ import Foundation
 
 class PagerViewModel
 {
-    //MARK: Fields
-    private var lastRefresh : Date
-    
-    private let timeService : TimeService
-    private let settingsService : SettingsService
-    private let appLifecycleService : AppLifecycleService
-    private var selectedDateService : SelectedDateService
-    
-    init(timeService: TimeService,
-         settingsService: SettingsService,
-         editStateService: EditStateService,
-         appLifecycleService: AppLifecycleService,
-         selectedDateService: SelectedDateService)
-    {
-        self.timeService = timeService
-        self.appLifecycleService = appLifecycleService
-        self.settingsService = settingsService
-        self.selectedDateService = selectedDateService
-        
-        lastRefresh = timeService.now
-        selectedDate = timeService.now
-        
-        isEditingObservable = editStateService.isEditingObservable
-    }
-    
-    //MARK: Properties
+    //MARK: Public Properties
     private(set) lazy var dateObservable : Observable<DateChange> =
     {
         return self.selectedDateService
@@ -57,7 +32,6 @@ class PagerViewModel
         return self.appLifecycleService.startedOnNotificationObservable
     }()
     
-    private var selectedDate : Date
     var currentlySelectedDate : Date
     {
         get { return self.selectedDate.ignoreTimeComponents() }
@@ -68,7 +42,35 @@ class PagerViewModel
         }
     }
     
-    //Methods
+    //MARK: Private Properties
+    private var lastRefresh : Date
+    
+    private let timeService : TimeService
+    private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
+    private var selectedDateService : SelectedDateService
+    
+    private var selectedDate : Date
+
+    //MARK: Initializers
+    init(timeService: TimeService,
+         settingsService: SettingsService,
+         editStateService: EditStateService,
+         appLifecycleService: AppLifecycleService,
+         selectedDateService: SelectedDateService)
+    {
+        self.timeService = timeService
+        self.appLifecycleService = appLifecycleService
+        self.settingsService = settingsService
+        self.selectedDateService = selectedDateService
+        
+        lastRefresh = timeService.now
+        selectedDate = timeService.now
+        
+        isEditingObservable = editStateService.isEditingObservable
+    }
+    
+    //MARK: Public Methods
     func canScroll(toDate date: Date) -> Bool
     {
         let minDate = settingsService.installDate!.ignoreTimeComponents()
@@ -78,6 +80,7 @@ class PagerViewModel
         return dateWithNoTime >= minDate && dateWithNoTime <= maxDate
     }
     
+    //MARK: Private Methods
     private func toDateChange(_ date: Date) -> DateChange?
     {
         if date.ignoreTimeComponents() != currentlySelectedDate

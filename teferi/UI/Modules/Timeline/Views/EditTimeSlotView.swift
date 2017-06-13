@@ -1,12 +1,29 @@
 import UIKit
 import RxSwift
 
-class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, CategoryButtonDelegate
+class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
 {
     typealias DismissType = (() -> ())
     typealias TimeSlotEdit = (TimeSlot, Category)
     
-    // MARK: Fields
+    // MARK: Public Properties
+    var dismissAction : DismissType?
+    private(set) lazy var editEndedObservable : Observable<TimeSlotEdit> =
+    {
+        return self.editEndedSubject.asObservable()
+    }()
+    
+    var isEditing : Bool = false
+    {
+        didSet
+        {
+            guard !isEditing else { return }
+            
+            hide()
+        }
+    }
+    
+    // MARK: Private Properties
     // MARK: - Flick components
     private var flickBehavior : UIDynamicItemBehavior!
     private var flickAnimator : UIDynamicAnimator!
@@ -14,7 +31,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private var firstFlickPoint : CGPoint!
     private var flickView : UIView!
     
-    private var isFlicking : Bool = false
+    fileprivate var isFlicking : Bool = false
     {
         didSet
         {
@@ -43,13 +60,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private var pageWidth : CGFloat { return cellSize.width + cellSpacing }
     private let animationDuration = TimeInterval(0.225)
     
-    // MARK: Properties
-    var dismissAction : DismissType?
-    private(set) lazy var editEndedObservable : Observable<TimeSlotEdit> =
-    {
-        return self.editEndedSubject.asObservable()
-    }()
-    
     // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
     private var previousPanPoint : CGPoint!
@@ -57,16 +67,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     
     // MARK: - Tap gesture components
     private var tapGesture : UITapGestureRecognizer!
-    
-    var isEditing : Bool = false
-    {
-        didSet
-        {
-            guard !isEditing else { return }
-
-            hide()
-        }
-    }
     
     //MARK: - Initializers
     init(categoryProvider: CategoryProvider)
@@ -90,14 +90,123 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - SelectionHandling
+    // MARK: Public Methods
     func categorySelected(category: Category)
     {
         selectedItem = category
         editEndedSubject.onNext((timeSlot, category))
     }
     
-    // MARK: - Tap gesture logic
+    func onEditBegan(point: CGPoint, timeSlot: TimeSlot)
+    {
+        guard point.x != 0 && point.y != 0 else { return }
+        layoutIfNeeded()
+        
+        self.timeSlot = timeSlot
+        selectedItem = timeSlot.category
+        
+        alpha = 1.0
+        
+        let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
+        
+        viewHandler?.cleanAll()
+        viewHandler = CategoryButtonsHandler(items: items)
+        
+        currentCategoryBackgroundView?.removeFromSuperview()
+        currentCategoryBackgroundView = UIView()
+        currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
+        currentCategoryBackgroundView?.layer.cornerRadius = 16
+        
+        addSubview(currentCategoryBackgroundView!)
+        currentCategoryBackgroundView?.snp.makeConstraints { make in
+            make.width.height.equalTo(32)
+            make.top.equalTo(point.y - 24)
+            make.left.equalTo(point.x - 32)
+        }
+        
+        currentCategoryImageView?.removeFromSuperview()
+        currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
+        currentCategoryImageView?.isHidden = timeSlot.category == .unknown
+        
+        plusImageView?.removeFromSuperview()
+        plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
+        plusImageView?.alpha = selectedItem != .unknown ? 0.0 : 1.0
+        
+        UIView.animate({
+            self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        }, duration: Constants.editAnimationDuration * 3)
+        
+        UIView.animate({
+            self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
+            self.plusImageView?.alpha = 1.0
+        }, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1)
+        
+        UIView.animate({
+            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        }, duration: 0.102, withControlPoints: 0.4, 0.0, 1, 1)
+        
+        show(from: CGPoint(x: point.x - 16, y: point.y - 9))
+    }
+    
+    
+    func hide()
+    {
+        guard viewHandler != nil else { return }
+        
+        let firstSetpOfAnimation = {
+            self.plusImageView!.transform = .identity
+            
+            if let selectedItem = self.selectedItem, selectedItem != .unknown
+            {
+                self.plusImageView!.alpha = 0
+                self.currentCategoryBackgroundView?.backgroundColor = selectedItem.color
+                self.currentCategoryImageView?.image = UIImage(asset: selectedItem.icon)
+                self.currentCategoryImageView?.isHidden = false
+            }
+            
+            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        }
+        
+        let secondStepOfAnimation = {
+            self.currentCategoryImageView!.transform = .identity
+        }
+        
+        let cleanupAfterAnimation = {
+            self.plusImageView!.removeFromSuperview()
+            self.currentCategoryImageView?.removeFromSuperview()
+            self.currentCategoryBackgroundView!.removeFromSuperview()
+        }
+        
+        UIView.animate(firstSetpOfAnimation, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1) {
+            UIView.animate(secondStepOfAnimation, duration: 0.09, withControlPoints: 0.0, 0.0, 0.2, 1, completion: cleanupAfterAnimation)
+        }
+        
+        UIView.animate({
+            self.backgroundColor = UIColor.white.withAlphaComponent(0)
+        }, duration: animationDuration, options: [.curveLinear])
+        
+        var animationSequence = DelayedSequence.start()
+        
+        let delay = TimeInterval(0.02)
+        let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
+        
+        for cell in cellsToAnimate
+        {
+            cell.layer.removeAllAnimations()
+            animationSequence = animationSequence.after(delay, animateCell(cell, presenting: false))
+        }
+        
+        animationSequence.after(animationDuration, cleanupAfterHide())
+    }
+    
+    //for hacky onboarding animations
+    func getIcon(forCategory category: Category) -> UIImageView?
+    {
+        guard let cell = viewHandler.visibleCells.first(where: { $0.category == category }) else { return nil }
+        return UIImageView(frame: cell.frame)
+    }
+
+    // MARK: Private Methods
     @objc private func handleTap(_ sender: UITapGestureRecognizer)
     {
         resetFlick()
@@ -251,7 +360,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         firstFlickPoint = nil
     }
     
-    func flickBehaviorAction()
+    private func flickBehaviorAction()
     {
         guard let _ = previousFlickPoint
         else
@@ -273,73 +382,9 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         previousFlickPoint = flickView.center
     }
     
-    // MARK: - UIDynamicAnimatorDelegate
-    
-    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
-    {
-        isFlicking = true
-    }
-    
-    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
-    {
-        isFlicking = false
-    }
-    
-    //MARK: - Methods
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool
     {
         return alpha > 0
-    }
-    
-    func onEditBegan(point: CGPoint, timeSlot: TimeSlot)
-    {
-        guard point.x != 0 && point.y != 0 else { return }
-        layoutIfNeeded()
-        
-        self.timeSlot = timeSlot
-        selectedItem = timeSlot.category
-        
-        alpha = 1.0
-        
-        let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
-        
-        viewHandler?.cleanAll()
-        viewHandler = CategoryButtonsHandler(items: items)
-        
-        currentCategoryBackgroundView?.removeFromSuperview()
-        currentCategoryBackgroundView = UIView()
-        currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
-        currentCategoryBackgroundView?.layer.cornerRadius = 16
-        
-        addSubview(currentCategoryBackgroundView!)
-        currentCategoryBackgroundView?.snp.makeConstraints { make in
-            make.width.height.equalTo(32)
-            make.top.equalTo(point.y - 24)
-            make.left.equalTo(point.x - 32)
-        }
-        
-        currentCategoryImageView?.removeFromSuperview()
-        currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
-        currentCategoryImageView?.isHidden = timeSlot.category == .unknown
-
-        plusImageView?.removeFromSuperview()
-        plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
-        plusImageView?.alpha = selectedItem != .unknown ? 0.0 : 1.0
-        
-        UIView.animate({
-            self.backgroundColor = UIColor.white.withAlphaComponent(0.8)
-        }, duration: Constants.editAnimationDuration * 3)
-        
-        UIView.animate({
-            self.plusImageView?.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
-            self.plusImageView?.alpha = 1.0
-        }, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1)
-        
-        UIView.animate({
-            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-        }, duration: 0.102, withControlPoints: 0.4, 0.0, 1, 1)
-        
-        show(from: CGPoint(x: point.x - 16, y: point.y - 9))
     }
     
     private func show(from point: CGPoint)
@@ -369,56 +414,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
             previousCell = cell
             index += 1
         }
-    }
-    
-    func hide()
-    {
-        guard viewHandler != nil else { return }
-        
-        let firstSetpOfAnimation = {
-            self.plusImageView!.transform = .identity
-            
-            if let selectedItem = self.selectedItem, selectedItem != .unknown
-            {
-                self.plusImageView!.alpha = 0
-                self.currentCategoryBackgroundView?.backgroundColor = selectedItem.color
-                self.currentCategoryImageView?.image = UIImage(asset: selectedItem.icon)
-                self.currentCategoryImageView?.isHidden = false
-            }
-            
-            self.currentCategoryImageView?.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-        }
-        
-        let secondStepOfAnimation = {
-            self.currentCategoryImageView!.transform = .identity
-        }
-        
-        let cleanupAfterAnimation = {
-            self.plusImageView!.removeFromSuperview()
-            self.currentCategoryImageView?.removeFromSuperview()
-            self.currentCategoryBackgroundView!.removeFromSuperview()
-        }
-        
-        UIView.animate(firstSetpOfAnimation, duration: 0.192, withControlPoints: 0.0, 0.0, 0.2, 1) {
-            UIView.animate(secondStepOfAnimation, duration: 0.09, withControlPoints: 0.0, 0.0, 0.2, 1, completion: cleanupAfterAnimation)
-        }
-        
-        UIView.animate({
-            self.backgroundColor = UIColor.white.withAlphaComponent(0)
-        }, duration: animationDuration, options: [.curveLinear])
-        
-        var animationSequence = DelayedSequence.start()
-        
-        let delay = TimeInterval(0.02)
-        let cellsToAnimate = viewHandler.visibleCells.filter({ $0.frame.intersects(bounds) }).reversed()
-        
-        for cell in cellsToAnimate
-        {
-            cell.layer.removeAllAnimations()
-            animationSequence = animationSequence.after(delay, animateCell(cell, presenting: false))
-        }
-        
-        animationSequence.after(animationDuration, cleanupAfterHide())
     }
     
     private func cleanupAfterHide() -> (TimeInterval) -> ()
@@ -497,13 +492,6 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
         return imageView
     }
     
-    // MARK: - for hacky onboarding animations
-    func getIcon(forCategory category: Category) -> UIImageView?
-    {
-        guard let cell = viewHandler.visibleCells.first(where: { $0.category == category }) else { return nil }
-        return UIImageView(frame: cell.frame)
-    }
-    
     // MARK: - Math functions
     private func isInAllowedRange(_ cell: CategoryButton) -> Bool
     {
@@ -513,5 +501,20 @@ class EditTimeSlotView : UIView, TrigonometryHelper, UIDynamicAnimatorDelegate, 
     private func shouldFlick(for velocity: CGPoint) -> Bool
     {
         return abs( velocity.x ) > 200
+    }
+}
+
+extension EditTimeSlotView: UIDynamicAnimatorDelegate
+{
+    // MARK: - UIDynamicAnimatorDelegate
+    
+    func dynamicAnimatorWillResume(_ animator: UIDynamicAnimator)
+    {
+        isFlicking = true
+    }
+    
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator)
+    {
+        isFlicking = false
     }
 }

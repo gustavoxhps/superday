@@ -5,7 +5,10 @@ import CoreGraphics
 
 class TimelineViewController : UIViewController
 {
-    // MARK: Fields
+    // MARK: Public Properties
+    var date : Date { return self.viewModel.date }
+
+    // MARK: Private Properties
     private let disposeBag = DisposeBag()
     private let viewModel : TimelineViewModel
     private var tableView : UITableView!
@@ -28,9 +31,6 @@ class TimelineViewController : UIViewController
     {
         fatalError("NSCoder init is not supported for this ViewController")
     }
-    
-    // MARK: Properties
-    var date : Date { return self.viewModel.date }
     
     // MARK: UIViewController lifecycle
     override func viewDidLoad()
@@ -94,6 +94,8 @@ class TimelineViewController : UIViewController
             .addDisposableTo(disposeBag)
     }
     
+    // MARK: Private Methods
+
     private func handleNewItem(_ items:[TimelineItem])
     {
         let numberOfItems = tableView.numberOfRows(inSection: 0)
@@ -130,7 +132,7 @@ class TimelineViewController : UIViewController
         tableView.reloadRows(at: [indexPath], with: .none)
     }
     
-    func startEditOnLastSlot()
+    private func startEditOnLastSlot()
     {
         let lastRow = tableView.numberOfRows(inSection: 0) - 1
         guard lastRow >= 0 else { return }

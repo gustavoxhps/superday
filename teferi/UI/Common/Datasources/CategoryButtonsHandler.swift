@@ -14,17 +14,6 @@ class CategoryButtonsHandler
         self.items = items
     }
     
-    private func itemIndex(before index: Int?, forward: Bool) -> Int
-    {
-        guard let index = index else { return 0 }
-        
-        guard items.count != 1 else { return 0 }
-        
-        let beforeIndex = index + (forward ? 1 : -1)
-        
-        return (beforeIndex + items.count) % items.count
-    }
-    
     func lastVisibleCell(forward: Bool) -> CategoryButton?
     {
         guard !visibleCells.isEmpty else { return nil }
@@ -71,5 +60,15 @@ class CategoryButtonsHandler
         }
         
         reusableCells.removeAll()
-    }    
+    }
+    
+    private func itemIndex(before index: Int?, forward: Bool) -> Int
+    {
+        guard let index = index else { return 0 }
+        guard items.count != 1 else { return 0 }
+        
+        let beforeIndex = index + (forward ? 1 : -1)
+        
+        return (beforeIndex + items.count) % items.count
+    }
 }

@@ -5,7 +5,7 @@ class DefaultSmartGuessService : SmartGuessService
 {
     typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category, smartGuess: SmartGuess?)
     
-    //MARK: Fields
+    //MARK: Private Properties
     private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
     private let timeThreshold : TimeInterval = 5*60*60 //5h
     private let kNeighbors = 3
@@ -17,6 +17,7 @@ class DefaultSmartGuessService : SmartGuessService
     private let settingsService: SettingsService
     private let persistencyService : BasePersistencyService<SmartGuess>
     
+    //MARK: Initializers
     init(timeService: TimeService,
          loggingService: LoggingService,
          settingsService: SettingsService,
@@ -27,6 +28,8 @@ class DefaultSmartGuessService : SmartGuessService
         self.settingsService = settingsService
         self.persistencyService = persistencyService
     }
+    
+    //MARK: Public Methods
     
     @discardableResult func add(withCategory category: Category, location: CLLocation) -> SmartGuess?
     {
@@ -150,6 +153,8 @@ class DefaultSmartGuessService : SmartGuessService
         
         persistencyService.delete(withPredicate: predicate)
     }
+    
+    //MARK: Private Methods
     
     private func isWithinDistanceThreshold(from location: CLLocation) -> (SmartGuess) -> Bool
     {

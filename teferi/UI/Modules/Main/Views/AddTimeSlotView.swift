@@ -5,16 +5,7 @@ import CoreGraphics
 
 class AddTimeSlotView : UIView
 {
-    //MARK: Fields
-    private let isAddingVariable = Variable(false)
-    private var disposeBag : DisposeBag? = DisposeBag()
-    
-    @IBOutlet private weak var blur : UIView!
-    @IBOutlet private weak var addButton : AddTimeSlotButton!
-    private var wheel : CategoryWheel!
-    private let gradientLayer = CAGradientLayer()
-
-    //MARK: Properties
+    //MARK: Public Properties
     var isAdding : Bool
     {
         get { return self.isAddingVariable.value }
@@ -37,6 +28,15 @@ class AddTimeSlotView : UIView
             self.wheel.categoryProvider = categoryProvider
         }
     }
+    
+    //MARK: Private Properties
+    private let isAddingVariable = Variable(false)
+    private var disposeBag : DisposeBag? = DisposeBag()
+    
+    @IBOutlet private weak var blur : UIView!
+    @IBOutlet private weak var addButton : AddTimeSlotButton!
+    private var wheel : CategoryWheel!
+    private let gradientLayer = CAGradientLayer()
     
     //MARK: Lifecycle methods
     override func awakeFromNib()

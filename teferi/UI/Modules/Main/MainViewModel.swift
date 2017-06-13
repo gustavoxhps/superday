@@ -4,7 +4,34 @@ import RxSwift
 ///ViewModel for the MainViewController.
 class MainViewModel : RxViewModel
 {
-    // MARK: Fields
+    // MARK: Public Properties
+    let dateObservable : Observable<Date>
+    let isEditingObservable : Observable<Bool>
+    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+    let categoryProvider : CategoryProvider
+    
+    var currentDate : Date { return self.timeService.now }
+    
+    var showPermissionControllerObservable : Observable<PermissionRequestType>
+    {
+        return Observable.of(
+            self.appLifecycleService.movedToForegroundObservable,
+            self.didBecomeActive)
+            .merge()
+            .map { [unowned self] () -> PermissionRequestType? in
+                if self.shouldShowLocationPermissionRequest() {
+                    return PermissionRequestType.location
+                } else if self.shouldShowHealthKitPermissionRequest() {
+                    return PermissionRequestType.health
+                }
+                
+                return nil
+            }
+            .filterNil()
+    }
+    
+    
+    // MARK: Private Properties
     private let timeService : TimeService
     private let metricsService : MetricsService
     private let timeSlotService : TimeSlotService
@@ -13,6 +40,7 @@ class MainViewModel : RxViewModel
     private let settingsService : SettingsService
     private let appLifecycleService : AppLifecycleService
     
+    // MARK: Initializer
     init(timeService: TimeService,
          metricsService: MetricsService,
          timeSlotService: TimeSlotService,
@@ -38,40 +66,8 @@ class MainViewModel : RxViewModel
 
     }
     
-    // MARK: Properties
-    let dateObservable : Observable<Date>
-    let isEditingObservable : Observable<Bool>
-    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
-    let categoryProvider : CategoryProvider
+    //MARK: Public Methods
     
-    // MARK: Properties
-    var currentDate : Date { return self.timeService.now }
-    
-    var showPermissionControllerObservable : Observable<PermissionRequestType>
-    {
-        return Observable.of(
-            self.appLifecycleService.movedToForegroundObservable,
-            self.didBecomeActive)
-            .merge()
-            .map { [unowned self] () -> PermissionRequestType? in
-                if self.shouldShowLocationPermissionRequest() {
-                    return PermissionRequestType.location
-                } else if self.shouldShowHealthKitPermissionRequest() {
-                    return PermissionRequestType.health
-                }
-                
-                return nil
-            }
-            .filterNil()
-    }
-    
-    //MARK: Methods
-    
-    /**
-     Adds and persists a new TimeSlot to this Timeline.
-     
-     - Parameter category: Category of the newly created TimeSlot.
-     */
     func addNewSlot(withCategory category: Category)
     {
         guard let timeSlot =
@@ -88,13 +84,7 @@ class MainViewModel : RxViewModel
         
         metricsService.log(event: .timeSlotManualCreation)
     }
-    
-    /**
-     Updates a TimeSlot's category.
-     
-     - Parameter timeSlot: TimeSlot to be updated.
-     - Parameter category: Category of the newly created TimeSlot.
-     */
+        
     func updateTimeSlot(_ timeSlot: TimeSlot, withCategory category: Category)
     {
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
@@ -120,6 +110,8 @@ class MainViewModel : RxViewModel
     }
     
     func notifyEditingEnded() { editStateService.notifyEditingEnded() }
+    
+    //MARK: Private Methods
     
     private func shouldShowLocationPermissionRequest() -> Bool
     {

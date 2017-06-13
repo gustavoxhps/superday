@@ -6,7 +6,19 @@ import CoreMotion
 
 class DefaultLocationService : NSObject, LocationService
 {
-    //MARK: Fields
+    var eventObservable : Observable<TrackEvent> { return
+        self.locationVariable
+            .asObservable()
+            .filterNil()
+            .do(
+                onNext: { [unowned self] location in
+                    self.logLocationUpdate(location, "Received a valid location")
+                }
+            )
+            .map(Location.init(fromCLLocation:))
+            .map(Location.asTrackEvent)
+    }
+    
     private let loggingService : LoggingService
     private let timeoutScheduler : SchedulerType
     private let locationManager : CLLocationManager
@@ -15,7 +27,6 @@ class DefaultLocationService : NSObject, LocationService
     private let locationVariable = Variable<CLLocation?>(nil)
     
     private let dateTimeFormatter = DateFormatter()
-    
     
     //MARK: Initializers
     init(loggingService: LoggingService,
@@ -47,23 +58,8 @@ class DefaultLocationService : NSObject, LocationService
             .bindTo(locationVariable)
     }
     
-    // MARK: Public Properties
     
-    var eventObservable : Observable<TrackEvent> { return
-        self.locationVariable
-            .asObservable()
-            .filterNil()
-            .do(
-                onNext: { [unowned self] location in
-                    self.logLocationUpdate(location, "Received a valid location")
-                }
-            )
-            .map(Location.init(fromCLLocation:))
-            .map(Location.asTrackEvent)
-    }
-    
-    // MARK: Public Methods
-    
+    // MARK: Public Methods    
     func startLocationTracking()
     {
         loggingService.log(withLogLevel: .info, message: "Location Service started")

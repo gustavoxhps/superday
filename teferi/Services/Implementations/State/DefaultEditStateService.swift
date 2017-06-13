@@ -2,7 +2,9 @@ import RxSwift
 
 class DefaultEditStateService : EditStateService
 {
-    //MARK: Fields
+    let isEditingObservable : Observable<Bool>
+    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+
     private let isEditingSubject = PublishSubject<Bool>()
     private let beganEditingSubject = PublishSubject<(CGPoint, TimeSlot)>()
     
@@ -12,10 +14,6 @@ class DefaultEditStateService : EditStateService
         isEditingObservable = isEditingSubject.asObservable()
         beganEditingObservable = beganEditingSubject.asObservable()
     }
-    
-    //MARK: EditStateService implementation
-    let isEditingObservable : Observable<Bool>
-    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
     
     func notifyEditingBegan(point: CGPoint, timeSlot: TimeSlot)
     {

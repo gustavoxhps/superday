@@ -4,7 +4,7 @@ import UIKit
 
 class PreiOSTenNotificationService : NotificationService
 {
-    //MARK: Fields
+    //MARK: Private Properties
     private let loggingService : LoggingService
     private var notificationSubscription : Disposable?
     private let notificationAuthorizedObservable : Observable<Void>
@@ -16,7 +16,7 @@ class PreiOSTenNotificationService : NotificationService
         self.notificationAuthorizedObservable = notificationAuthorizedObservable
     }
     
-    //MARK: NotificationService implementation
+    //MARK: Public Methods
     func requestNotificationPermission(completed: @escaping () -> ())
     {
         let notificationSettings = UIUserNotificationSettings(types: [ .alert, .sound, .badge ], categories: nil)
@@ -38,6 +38,20 @@ class PreiOSTenNotificationService : NotificationService
         scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
     }
     
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
+    {
+        UIApplication.shared.cancelAllLocalNotifications()
+    }
+    
+    func handleNotificationAction(withIdentifier identifier: String?)
+    {
+    }
+    
+    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
+    {
+    }
+    
+    //MARK: Private Methods
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
@@ -51,18 +65,5 @@ class PreiOSTenNotificationService : NotificationService
         notification.soundName = UILocalNotificationDefaultSoundName
         
         UIApplication.shared.scheduleLocalNotification(notification)
-    }
-    
-    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
-    {
-        UIApplication.shared.cancelAllLocalNotifications()
-    }
-    
-    func handleNotificationAction(withIdentifier identifier: String?)
-    {
-    }
-    
-    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
-    {
     }
 }

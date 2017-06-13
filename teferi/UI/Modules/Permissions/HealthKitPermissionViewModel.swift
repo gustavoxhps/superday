@@ -3,29 +3,7 @@ import Foundation
 
 class HealthKitPermissionViewModel : PermissionViewModel
 {
-    // MARK: Fields
-    private let timeService : TimeService
-    private let settingsService : SettingsService
-    private let appLifecycleService : AppLifecycleService
-    private let healthKitService : HealthKitService
-    
-    private let visibilitySubject = PublishSubject<Bool>()
-    
-    private let disposeBag = DisposeBag()
-    
-    // MARK: Initializers
-    init(timeService: TimeService,
-         settingsService: SettingsService,
-         appLifecycleService : AppLifecycleService,
-         healthKitService : HealthKitService)
-    {
-        self.timeService = timeService
-        self.settingsService = settingsService
-        self.appLifecycleService = appLifecycleService
-        self.healthKitService = healthKitService
-    }
-    
-    // MARK: Properties
+    // MARK: Public Properties
     
     var remindMeLater : Bool
     {
@@ -59,7 +37,7 @@ class HealthKitPermissionViewModel : PermissionViewModel
             observer.on(.completed)
             return Disposables.create()
         })
-        .shareReplayLatestWhileConnected()
+            .shareReplayLatestWhileConnected()
     }
     
     private(set) lazy var hideOverlayObservable : Observable<Void> =
@@ -80,6 +58,32 @@ class HealthKitPermissionViewModel : PermissionViewModel
             .mapTo(())
     }()
     
+    // MARK: Private Properties
+    
+    private let timeService : TimeService
+    private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
+    private let healthKitService : HealthKitService
+    
+    private let visibilitySubject = PublishSubject<Bool>()
+    
+    private let disposeBag = DisposeBag()
+    
+    // MARK: Initializers
+    
+    init(timeService: TimeService,
+         settingsService: SettingsService,
+         appLifecycleService : AppLifecycleService,
+         healthKitService : HealthKitService)
+    {
+        self.timeService = timeService
+        self.settingsService = settingsService
+        self.appLifecycleService = appLifecycleService
+        self.healthKitService = healthKitService
+    }
+    
+    // MARK: Public Methods
+    
     func getUserPermission()
     {
         healthKitService.startHealthKitTracking()
@@ -92,6 +96,8 @@ class HealthKitPermissionViewModel : PermissionViewModel
     }
     
     func permissionDeferred() {}
+    
+    // MARK: Private Methods
     
     private func overlayVisibilityState() -> Bool
     {

@@ -5,7 +5,11 @@ import CoreLocation
 
 class DefaultTimeSlotService : TimeSlotService
 {
-    // MARK: Fields
+    // MARK: Public Properties
+    let timeSlotCreatedObservable : Observable<TimeSlot>
+    let timeSlotUpdatedObservable : Observable<TimeSlot>
+    
+    // MARK: Private Properties
     private let timeService : TimeService
     private let loggingService : LoggingService
     private let locationService : LocationService
@@ -14,7 +18,7 @@ class DefaultTimeSlotService : TimeSlotService
     private let timeSlotCreatedSubject = PublishSubject<TimeSlot>()
     private let timeSlotUpdatedSubject = PublishSubject<TimeSlot>()
     
-    // MARK: Properties
+    // MARK: Initializer
     init(timeService: TimeService,
          loggingService: LoggingService,
          locationService: LocationService,
@@ -28,12 +32,8 @@ class DefaultTimeSlotService : TimeSlotService
         timeSlotCreatedObservable = timeSlotCreatedSubject.asObservable()
         timeSlotUpdatedObservable = timeSlotUpdatedSubject.asObservable()
     }
-    
-    // MARK: Properties
-    let timeSlotCreatedObservable : Observable<TimeSlot>
-    let timeSlotUpdatedObservable : Observable<TimeSlot>
 
-    // MARK: Methods
+    // MARK: Public Methods
     @discardableResult func addTimeSlot(withStartTime startTime: Date, category: Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
     {
         let location : CLLocation? = tryUsingLatestLocation ? locationService.getLastKnownLocation() : nil
@@ -61,22 +61,6 @@ class DefaultTimeSlotService : TimeSlotService
                                 location: location)
         
         return tryAdd(timeSlot: timeSlot)
-    }
-    
-    private func tryAdd(timeSlot: TimeSlot) -> TimeSlot?
-    {
-        //The previous TimeSlot needs to be finished before a new one can start
-        guard endPreviousTimeSlot(atDate: timeSlot.startTime) && persistencyService.create(timeSlot) else
-        {
-            loggingService.log(withLogLevel: .warning, message: "Failed to create new TimeSlot")
-            return nil
-        }
-        
-        loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
-        
-        timeSlotCreatedSubject.on(.next(timeSlot))
-        
-        return timeSlot
     }
     
     func getTimeSlots(forDay day: Date) -> [TimeSlot]
@@ -124,6 +108,35 @@ class DefaultTimeSlotService : TimeSlotService
         }
     }
     
+    func getLast() -> TimeSlot?
+    {
+        return persistencyService.getLast()
+    }
+    
+    func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
+    {
+        let endTime = getEndTime(ofTimeSlot: timeSlot)
+        
+        return endTime.timeIntervalSince(timeSlot.startTime)
+    }
+    
+    // MARK: Private Methods
+    private func tryAdd(timeSlot: TimeSlot) -> TimeSlot?
+    {
+        //The previous TimeSlot needs to be finished before a new one can start
+        guard endPreviousTimeSlot(atDate: timeSlot.startTime) && persistencyService.create(timeSlot) else
+        {
+            loggingService.log(withLogLevel: .warning, message: "Failed to create new TimeSlot")
+            return nil
+        }
+        
+        loggingService.log(withLogLevel: .info, message: "New TimeSlot with category \"\(timeSlot.category)\" created")
+        
+        timeSlotCreatedSubject.on(.next(timeSlot))
+        
+        return timeSlot
+    }
+    
     private func canChangeCategory(of timeSlot : TimeSlot, to category : Category, setByUser : Bool) -> Bool
     {
         if setByUser == timeSlot.categoryWasSetByUser
@@ -138,18 +151,6 @@ class DefaultTimeSlotService : TimeSlotService
         
         loggingService.log(withLogLevel: .warning, message: "Tried automatically updating category of TimeSlot which was set by user")
         return false
-    }
-    
-    func getLast() -> TimeSlot?
-    {
-        return persistencyService.getLast()
-    }
-    
-    func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
-    {
-        let endTime = getEndTime(ofTimeSlot: timeSlot)
-        
-        return endTime.timeIntervalSince(timeSlot.startTime)
     }
     
     private func getEndTime(ofTimeSlot timeSlot: TimeSlot) -> Date

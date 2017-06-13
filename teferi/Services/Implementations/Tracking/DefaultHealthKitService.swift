@@ -25,6 +25,14 @@ class DefaultHealthKitService : HealthKitService, EventSource
     
     private let dateTimeFormatter = DateFormatter()
     
+    private(set) lazy var eventObservable : Observable<TrackEvent> =
+    {
+        return self.sampleSubject
+            .asObservable()
+            .map(HealthSample.asTrackEvent)
+    }()
+    
+    
     // MARK: - Init
     init(settingsService: SettingsService, loggingService: LoggingService)
     {
@@ -36,12 +44,64 @@ class DefaultHealthKitService : HealthKitService, EventSource
         dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     }
     
-    private(set) lazy var eventObservable : Observable<TrackEvent> =
+    // MARK: - Protocol implementation
+    func startHealthKitTracking()
     {
-        return self.sampleSubject
-                   .asObservable()
-                   .map(HealthSample.asTrackEvent)
-    }()
+        requestAuthorization { (success) in
+            guard success else { return }
+            
+            self.sampleTypesToRead.values.forEach({ (sample) in
+                
+                self.healthStore?.execute(self.backgroundQuery(forSample: sample))
+                
+                self.healthStore?.enableBackgroundDelivery(for: sample, frequency: .immediate, withCompletion: { (success, error) in
+                    if success
+                    {
+                        self.loggingService.log(withLogLevel: .info, message: "Success enable of background delivery in health kit for quantityType: \(sample.identifier)")
+                    }
+                    
+                    if let error = error
+                    {
+                        self.loggingService.log(withLogLevel: .warning, message: "Error trying to enable background delivery in health kit: \(error.localizedDescription)")
+                    }
+                })
+            })
+        }
+    }
+    
+    func stopHealthKitTracking()
+    {
+        requestAuthorization { (success) in
+            guard success else { return }
+            
+            self.healthStore?.disableAllBackgroundDelivery(completion: { (success, error) in
+                if success
+                {
+                    self.loggingService.log(withLogLevel: .info, message: "Success disable of background delivery in health kit")
+                }
+                
+                if let error = error
+                {
+                    self.loggingService.log(withLogLevel: .warning, message: "Error trying to disable background delivery in health kit: \(error.localizedDescription)")
+                }
+                
+                self.sampleTypesToRead.values.forEach({ (sample) in
+                    self.healthStore?.stop(self.backgroundQuery(forSample: sample))
+                })
+            })
+        }
+    }
+    
+    func requestAuthorization(completion: ((Bool)->())?)
+    {
+        healthStore?.requestAuthorization(toShare: nil, read: Set(sampleTypesToRead.values), completion: { (success, error) in
+            if let error = error
+            {
+                self.loggingService.log(withLogLevel: .warning, message: "Error trying to authorize health kit: \(error.localizedDescription)")
+            }
+            completion?(success)
+        })
+    }
     
     // MARK: - New Sample Handler
     private func handle(samples: [HKSample]?)
@@ -173,64 +233,5 @@ class DefaultHealthKitService : HealthKitService, EventSource
     private func predicate(from date: Date) -> NSPredicate
     {
         return NSPredicate(format: "startDate >= %@", argumentArray: [date])
-    }
-    
-    // MARK: - Protocol implementation
-    func startHealthKitTracking()
-    {
-        requestAuthorization { (success) in
-            guard success else { return }
-            
-            self.sampleTypesToRead.values.forEach({ (sample) in
-                
-                self.healthStore?.execute(self.backgroundQuery(forSample: sample))
-                
-                self.healthStore?.enableBackgroundDelivery(for: sample, frequency: .immediate, withCompletion: { (success, error) in
-                    if success
-                    {
-                        self.loggingService.log(withLogLevel: .info, message: "Success enable of background delivery in health kit for quantityType: \(sample.identifier)")
-                    }
-                    
-                    if let error = error
-                    {
-                        self.loggingService.log(withLogLevel: .warning, message: "Error trying to enable background delivery in health kit: \(error.localizedDescription)")
-                    }
-                })
-            })
-        }
-    }
-    
-    func stopHealthKitTracking()
-    {
-        requestAuthorization { (success) in
-            guard success else { return }
-            
-            self.healthStore?.disableAllBackgroundDelivery(completion: { (success, error) in
-                if success
-                {
-                    self.loggingService.log(withLogLevel: .info, message: "Success disable of background delivery in health kit")
-                }
-                
-                if let error = error
-                {
-                    self.loggingService.log(withLogLevel: .warning, message: "Error trying to disable background delivery in health kit: \(error.localizedDescription)")
-                }
-                
-                self.sampleTypesToRead.values.forEach({ (sample) in
-                    self.healthStore?.stop(self.backgroundQuery(forSample: sample))
-                })
-            })
-        }
-    }
-    
-    func requestAuthorization(completion: ((Bool)->())?)
-    {
-        healthStore?.requestAuthorization(toShare: nil, read: Set(sampleTypesToRead.values), completion: { (success, error) in
-            if let error = error
-            {
-                self.loggingService.log(withLogLevel: .warning, message: "Error trying to authorize health kit: \(error.localizedDescription)")
-            }
-            completion?(success)
-        })
     }
 }

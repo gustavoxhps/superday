@@ -2,15 +2,15 @@ import UIKit
 import RxSwift
 import SnapKit
 
-class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate
+class OnboardingViewController: UIPageViewController
 {
+    //MARK: Private Properties
+    internal lazy var pages : [OnboardingPage] = { return (1...4).map { i in self.page("\(i)") } } ()
+    
     private var viewModel : OnboardingViewModel!
     private var presenter : OnboardingPresenter!
     
-    //MARK: Fields
-    internal lazy var pages : [OnboardingPage] = { return (1...4).map { i in self.page("\(i)") } } ()
-    
-    @IBOutlet var pager: OnboardingPager!
+    @IBOutlet fileprivate var pager: OnboardingPager!
     
     private var lastSeenIndex = 0
     
@@ -83,13 +83,15 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
         onNew(page: nextPage)
     }
     
-    private func pageAt(index : Int) -> OnboardingPage?
+    //MARK: Private Methods
+    
+    fileprivate func pageAt(index : Int) -> OnboardingPage?
     {
         lastSeenIndex = max(lastSeenIndex, index)
         return 0..<pages.count ~= index ? pages[index] : nil
     }
     
-    private func index(of viewController: UIViewController) -> Int?
+    fileprivate func index(of viewController: UIViewController) -> Int?
     {
         return pages.index(of: viewController as! OnboardingPage)
     }
@@ -110,7 +112,7 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
         return page
     }
     
-    private func onNew(page: OnboardingPage)
+    fileprivate func onNew(page: OnboardingPage)
     {
         if let buttonText = page.nextButtonText
         {
@@ -122,9 +124,10 @@ class OnboardingViewController: UIPageViewController, UIPageViewControllerDataSo
         }
         pager.switchPage(to: index(of: page)!)
     }
-    
-    // MARK: UIPageViewControllerDelegate
-    
+}
+
+extension OnboardingViewController: UIPageViewControllerDelegate, UIPageViewControllerDataSource
+{
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController])
     {
         let page = pendingViewControllers.first as! OnboardingPage

@@ -4,14 +4,7 @@ import MessageUI
 
 class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControllerDelegate
 {
-    //MARK: Fields
-    private let recipients : [String]
-    private let subject : String
-    private let body : String
-    private var completionHandler: () -> ()
-    private var parentViewController : UIViewController!
-    
-    //MARK: Properties
+    //MARK: Public Properties
     var logURL : URL?
     {
         let fileManager = FileManager.default
@@ -24,6 +17,14 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
         return logURL
     }
     
+    //MARK: Private Properties
+    private let recipients : [String]
+    private let subject : String
+    private let body : String
+    private var completionHandler: () -> ()
+    private var parentViewController : UIViewController!
+    
+    //MARK: Initializers
     init(recipients: [String], subject: String, body: String)
     {
         self.recipients = recipients
@@ -34,6 +35,7 @@ class MailFeedbackService: NSObject, FeedbackService, MFMailComposeViewControlle
         super.init()
     }
     
+    //MARK: Public Methods
     func with(viewController: UIViewController) -> FeedbackService
     {
         parentViewController = viewController

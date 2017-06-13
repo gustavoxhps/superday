@@ -3,10 +3,15 @@ import Foundation
 
 class DefaultSelectedDateService : SelectedDateService
 {
-    //MARK: Fields
-    private let currentlySelectedDateVariable : Variable<Date>
+    let currentlySelectedDateObservable : Observable<Date>
+    var currentlySelectedDate : Date
+    {
+        get { return currentlySelectedDateVariable.value }
+        set(value) { currentlySelectedDateVariable.value = value }
+    }
     
-    //MARK: Initializers
+    private let currentlySelectedDateVariable : Variable<Date>
+        
     init(timeService: TimeService)
     {
         currentlySelectedDateVariable = Variable(timeService.now)
@@ -15,13 +20,5 @@ class DefaultSelectedDateService : SelectedDateService
             currentlySelectedDateVariable
                 .asObservable()
                 .distinctUntilChanged({ $0.differenceInDays(toDate: $1) == 0 })
-    }
-    
-    //MARK: Properties
-    let currentlySelectedDateObservable : Observable<Date>
-    var currentlySelectedDate : Date
-    {
-        get { return currentlySelectedDateVariable.value }
-        set(value) { currentlySelectedDateVariable.value = value }
     }
 }

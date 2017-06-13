@@ -2,20 +2,19 @@ import UIKit
 import JTAppleCalendar
 import RxSwift
 
-class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource
+class CalendarViewController : UIViewController
 {
-    private var viewModel : CalendarViewModel!
+    fileprivate var viewModel : CalendarViewModel!
     private var presenter : CalendarPresenter!
     
-    // MARK: Fields
     private let calendarCell = "CalendarCell"
     
     @IBOutlet weak private var monthLabel : UILabel!
-    @IBOutlet weak private var leftButton : UIButton!
-    @IBOutlet weak private var rightButton : UIButton!
-    @IBOutlet weak private var dayOfWeekLabels : UIStackView!
-    @IBOutlet weak private var calendarBackgroundView : UIView!
-    @IBOutlet weak private var calendarView : JTAppleCalendarView!
+    @IBOutlet weak fileprivate var leftButton : UIButton!
+    @IBOutlet weak fileprivate var rightButton : UIButton!
+    @IBOutlet weak fileprivate var dayOfWeekLabels : UIStackView!
+    @IBOutlet weak fileprivate var calendarBackgroundView : UIView!
+    @IBOutlet weak fileprivate var calendarView : JTAppleCalendarView!
     @IBOutlet weak private var calendarHeightConstraint : NSLayoutConstraint!
     
     private lazy var viewsToAnimate : [UIView] =
@@ -197,23 +196,35 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         return result
     }
     
-    //MARK: UIGestureRecognizerDelegate implementation
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
+    fileprivate func update(cell: CalendarCell, toDate date: Date, row: Int, belongsToMonth: Bool)
     {
-        if let view = touch.view,
-            view.isDescendant(of: leftButton) ||
-            view.isDescendant(of: rightButton) ||
-            view.isDescendant(of: calendarView) ||
-            view.isDescendant(of: dayOfWeekLabels) ||
-            view.isDescendant(of: calendarBackgroundView)
+        guard belongsToMonth else
         {
-            return false
+            cell.reset(allowScrollingToDate: false)
+            return
         }
         
-        hide()
-        return true
+        let canScrollToDate = viewModel.canScroll(toDate: date)
+        let activities = viewModel.getActivities(forDate: date)
+        let isSelected = Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate)
+        
+        cell.bind(toDate: date, isSelected: isSelected, allowsScrollingToDate: canScrollToDate, dailyActivity: activities)
+        
+        guard calendarCellsShouldAnimate else { return }
+        
+        cell.alpha = 0
+        cell.transform = CGAffineTransform(translationX: -20, y: 0)
+        
+        UIView.animate(withDuration: 0.225, delay: 0.05 + (Double(row) / 20.0))
+        {
+            cell.alpha = 1
+            cell.transform = CGAffineTransform(translationX: 0, y: 0)
+        }
     }
-    
+}
+
+extension CalendarViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource
+{
     //MARK: JTAppleCalendarDelegate implementation
     func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters
     {
@@ -250,30 +261,23 @@ class CalendarViewController : UIViewController, UIGestureRecognizerDelegate, JT
         
         viewModel.currentVisibleCalendarDate = startDate
     }
-    
-    private func update(cell: CalendarCell, toDate date: Date, row: Int, belongsToMonth: Bool)
+}
+
+extension CalendarViewController: UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
     {
-        guard belongsToMonth else
+        if let view = touch.view,
+            view.isDescendant(of: leftButton) ||
+                view.isDescendant(of: rightButton) ||
+                view.isDescendant(of: calendarView) ||
+                view.isDescendant(of: dayOfWeekLabels) ||
+                view.isDescendant(of: calendarBackgroundView)
         {
-            cell.reset(allowScrollingToDate: false)
-            return
+            return false
         }
         
-        let canScrollToDate = viewModel.canScroll(toDate: date)
-        let activities = viewModel.getActivities(forDate: date)
-        let isSelected = Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate)
-        
-        cell.bind(toDate: date, isSelected: isSelected, allowsScrollingToDate: canScrollToDate, dailyActivity: activities)
-        
-        guard calendarCellsShouldAnimate else { return }
-        
-        cell.alpha = 0
-        cell.transform = CGAffineTransform(translationX: -20, y: 0)
-        
-        UIView.animate(withDuration: 0.225, delay: 0.05 + (Double(row) / 20.0))
-        {
-            cell.alpha = 1
-            cell.transform = CGAffineTransform(translationX: 0, y: 0)
-        }
+        hide()
+        return true
     }
 }

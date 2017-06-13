@@ -3,7 +3,7 @@ import RxSwift
 
 class PagerViewController : UIPageViewController
 {
-    // MARK: Fields
+    // MARK: Private Properties
     private let disposeBag = DisposeBag()
     fileprivate var viewModel : PagerViewModel!
     private var viewModelLocator : ViewModelLocator!
@@ -55,6 +55,8 @@ class PagerViewController : UIPageViewController
         viewControllersDictionary = [Date : UIViewController]()
     }
     
+    // MARK: Private Methods
+    
     private func createBindings()
     {
         viewModel.dateObservable
@@ -78,7 +80,6 @@ class PagerViewController : UIPageViewController
             .addDisposableTo(disposeBag)
     }
     
-    // MARK: Methods
     private func onEditChanged(_ isEditing: Bool)
     {
         view.subviews

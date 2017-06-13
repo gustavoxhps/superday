@@ -5,7 +5,7 @@ import UserNotifications
 @available(iOS 10.0, *)
 class PostiOSTenNotificationService : NotificationService
 {
-    //MARK: Fields
+    //MARK: Private Properties
     private let timeService : TimeService
     private let loggingService : LoggingService
     private let settingsService : SettingsService
@@ -27,7 +27,7 @@ class PostiOSTenNotificationService : NotificationService
         return daysSinceInstallDate >= 7
     }
     
-    let formatter : DateFormatter =
+    private let formatter : DateFormatter =
     {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
@@ -49,7 +49,7 @@ class PostiOSTenNotificationService : NotificationService
         self.timeSlotService = timeSlotService
     }
     
-    //MARK: NotificationService implementation
+    //MARK: Public Methods
     func requestNotificationPermission(completed: @escaping () -> ())
     {
         notificationCenter.requestAuthorization(options: [.alert, .sound, .badge],
@@ -66,6 +66,62 @@ class PostiOSTenNotificationService : NotificationService
         scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
     }
     
+    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
+    {
+        let giveTypes = types.flatMap { $0 }
+        
+        if giveTypes.isEmpty
+        {
+            notificationCenter.removeAllDeliveredNotifications()
+            notificationCenter.removeAllPendingNotificationRequests()
+            return
+        }
+        
+        notificationCenter.removeDeliveredNotifications(withIdentifiers: giveTypes.map { $0.rawValue })
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: giveTypes.map { $0.rawValue })
+    }
+    
+    func handleNotificationAction(withIdentifier identifier: String?)
+    {
+        guard let identifier = identifier, let category = Category(rawValue: identifier) else { return }
+        
+        actionSubsribers.forEach { action in action(category) }
+    }
+    
+    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
+    {
+        actionSubsribers.append(action)
+    }
+    
+    func setUserNotificationActions()
+    {
+        guard appIsBeingUsedForOverAWeek else { return }
+        
+        let desiredNumberOfCategories = 4
+        var mostUsedCategories =
+            timeSlotService
+                .getTimeSlots(sinceDaysAgo: 2)
+                .groupBy(category)
+                .sorted(by: count)
+                .flatMap(intoCategory)
+                .prefix(4)
+        
+        if mostUsedCategories.count != desiredNumberOfCategories
+        {
+            let defaultCategories : [ Category ] = [ .work, .food, .leisure, .friends ].filter { !mostUsedCategories.contains($0) }
+            let missingCategoryCount = desiredNumberOfCategories - mostUsedCategories.count
+            
+            mostUsedCategories = mostUsedCategories + defaultCategories.prefix(missingCategoryCount)
+        }
+        
+        let notificationCategory = UNNotificationCategory(identifier: Constants.notificationCategoryId,
+                                                          actions: mostUsedCategories.map(toNotificationAction),
+                                                          intentIdentifiers: [])
+        
+        notificationCenter.setNotificationCategories([notificationCategory])
+    }
+    
+    //MARK: Private Methods
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
@@ -152,61 +208,6 @@ class PostiOSTenNotificationService : NotificationService
         }
     
         return timeSlotDictionary
-    }
-    
-    func unscheduleAllNotifications(ofTypes types: NotificationType?...)
-    {
-        let giveTypes = types.flatMap { $0 }
-        
-        if giveTypes.isEmpty
-        {
-            notificationCenter.removeAllDeliveredNotifications()
-            notificationCenter.removeAllPendingNotificationRequests()
-            return
-        }
-        
-        notificationCenter.removeDeliveredNotifications(withIdentifiers: giveTypes.map { $0.rawValue })
-        notificationCenter.removePendingNotificationRequests(withIdentifiers: giveTypes.map { $0.rawValue })
-    }
-    
-    func handleNotificationAction(withIdentifier identifier: String?)
-    {
-        guard let identifier = identifier, let category = Category(rawValue: identifier) else { return }
-        
-        actionSubsribers.forEach { action in action(category) }
-    }
-    
-    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
-    {
-        actionSubsribers.append(action)
-    }
-    
-    func setUserNotificationActions()
-    {
-        guard appIsBeingUsedForOverAWeek else { return }
-
-        let desiredNumberOfCategories = 4
-        var mostUsedCategories =
-            timeSlotService
-                .getTimeSlots(sinceDaysAgo: 2)
-                .groupBy(category)
-                .sorted(by: count)
-                .flatMap(intoCategory)
-                .prefix(4)
-        
-        if mostUsedCategories.count != desiredNumberOfCategories
-        {
-            let defaultCategories : [ Category ] = [ .work, .food, .leisure, .friends ].filter { !mostUsedCategories.contains($0) }
-            let missingCategoryCount = desiredNumberOfCategories - mostUsedCategories.count
-            
-            mostUsedCategories = mostUsedCategories + defaultCategories.prefix(missingCategoryCount)
-        }
-        
-        let notificationCategory = UNNotificationCategory(identifier: Constants.notificationCategoryId,
-                                                          actions: mostUsedCategories.map(toNotificationAction),
-                                                          intentIdentifiers: [])
-   
-        notificationCenter.setNotificationCategories([notificationCategory])
     }
     
     private func category(_ timeSlot: TimeSlot) -> Category

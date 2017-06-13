@@ -2,8 +2,10 @@ import UIKit
 
 class MaterialButton: UIButton {
     
-    var tapView:UIView!
+    // MARK: Private Properties
+    private var tapView:UIView!
 
+    // MARK: Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -13,7 +15,8 @@ class MaterialButton: UIButton {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
+    // MARK: Private Methods
     private func setup()
     {
         tapView = UIView(frame: bounds)
@@ -25,7 +28,7 @@ class MaterialButton: UIButton {
         addTarget(self, action: #selector(MaterialButton.touchUpInside(sender:withEvent:)), for: UIControlEvents.touchUpInside)
     }
     
-    func touchDown(sender:UIButton, withEvent event:UIEvent)
+    @objc private func touchDown(sender:UIButton, withEvent event:UIEvent)
     {
         guard let touch = event.allTouches?.first else { return }
         tapView.layer.removeAllAnimations()
@@ -51,7 +54,7 @@ class MaterialButton: UIButton {
             })
     }
     
-    func touchUpInside(sender:UIButton, withEvent event:UIEvent)
+    @objc private func touchUpInside(sender:UIButton, withEvent event:UIEvent)
     {
         UIView.animate(
             withDuration: 0.6,

@@ -3,7 +3,7 @@ import UIKit
 class CategoryWheel : UIControl, TrigonometryHelper
 {
     typealias DismissType = ((CategoryWheel) -> ())
-    
+
     // MARK: Constants
     
     private let cellSize : CGSize = CGSize(width: 50.0, height: 50.0)
@@ -42,7 +42,6 @@ class CategoryWheel : UIControl, TrigonometryHelper
         }
     }
     
-    // MARK: - Pan gesture components
     private var panGesture : UIPanGestureRecognizer!
     private var lastPanPoint : CGPoint!
     
@@ -78,7 +77,6 @@ class CategoryWheel : UIControl, TrigonometryHelper
     }
     
     // MARK: Public Methods
-    
     func show(below view: UIView, showing numberToShow: Int = 5, startingAngle: CGFloat = CGFloat.pi / 2)
     {
         guard let categoryProvider = categoryProvider else { return }
@@ -88,6 +86,7 @@ class CategoryWheel : UIControl, TrigonometryHelper
         view.superview?.insertSubview(self, belowSubview: view)
         
         centerPoint = view.center
+
         measurementStartPoint =  CGPoint(x: centerPoint.x + radius, y: centerPoint.y)
         
         let ovalRect = CGRect(origin: CGPoint(x: self.centerPoint.x - self.radius, y: self.centerPoint.y - self.radius), size: CGSize(width: self.radius * 2, height: self.radius * 2))

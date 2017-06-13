@@ -2,7 +2,7 @@ import RxSwift
 
 class DefaultAppLifecycleService : AppLifecycleService
 {
-    //MARK: Fields
+    let lifecycleEventObservable : Observable<LifecycleEvent>
     private let lifecycleSubject = PublishSubject<LifecycleEvent>()
 
     //MARK: Initializers
@@ -12,9 +12,6 @@ class DefaultAppLifecycleService : AppLifecycleService
                                     .asObservable()
                                     .distinctUntilChanged()
     }
-    
-    //MARK: Properties
-    let lifecycleEventObservable : Observable<LifecycleEvent>
     
     func publish(_ event: LifecycleEvent)
     {

@@ -3,7 +3,7 @@ import CoreData
 
 class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
 {
-    //MARK: Fields
+    //MARK: Private Properties
     private let endTimeKey = "endTime"
     private let categoryKey = "category"
     private let startTimeKey = "startTime"
@@ -12,6 +12,7 @@ class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
     private let locationLongitudeKey = "locationLongitude"
     private let categoryWasSetByUserKey = "categoryWasSetByUser"
     
+    //MARK: Initializers
     override init()
     {
         super.init()
@@ -19,6 +20,7 @@ class TimeSlotModelAdapter : CoreDataModelAdapter<TimeSlot>
         sortDescriptors = [ NSSortDescriptor(key: startTimeKey, ascending: false) ]
     }
     
+    //MARK: Public Methods
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> TimeSlot
     {
         let startTime = managedObject.value(forKey: startTimeKey) as! Date

@@ -3,37 +3,12 @@ import Foundation
 
 class LocationPermissionViewModel : PermissionViewModel
 {
-    // MARK: Fields
-    private let title = L10n.locationDisabledTitle
-    private let titleFirstUse = L10n.locationDisabledTitleFirstUse
-    private let disabledDescription = L10n.locationDisabledDescription
-    private let disabledDescriptionFirstUse = L10n.locationDisabledDescriptionFirstUse
-    
-    private let timeService : TimeService
-    private let settingsService : SettingsService
-    private let appLifecycleService : AppLifecycleService
-    
-    private let disposeBag = DisposeBag()
-    
-    // MARK: Initializers
-    init(timeService: TimeService,
-         settingsService: SettingsService,
-         appLifecycleService : AppLifecycleService)
-    {
-        self.timeService = timeService
-        self.settingsService = settingsService
-        self.appLifecycleService = appLifecycleService
-    }
-    
-    // MARK: Properties
-    
+    // MARK: Public Properties
     var remindMeLater : Bool
     {
         return isFirstTimeUser
     }
-    
-    private var isFirstTimeUser : Bool { return !self.settingsService.userEverGaveLocationPermission }
-    
+
     var titleText : String?
     {
         return self.isFirstTimeUser ? self.titleFirstUse : self.title
@@ -74,6 +49,32 @@ class LocationPermissionViewModel : PermissionViewModel
             .debug()
     }()
     
+    // MARK: Private Properties
+    private let title = L10n.locationDisabledTitle
+    private let titleFirstUse = L10n.locationDisabledTitleFirstUse
+    private let disabledDescription = L10n.locationDisabledDescription
+    private let disabledDescriptionFirstUse = L10n.locationDisabledDescriptionFirstUse
+    
+    private let timeService : TimeService
+    private let settingsService : SettingsService
+    private let appLifecycleService : AppLifecycleService
+    
+    private let disposeBag = DisposeBag()
+    
+    private var isFirstTimeUser : Bool { return !self.settingsService.userEverGaveLocationPermission }
+    
+    // MARK: Initializers
+    init(timeService: TimeService,
+         settingsService: SettingsService,
+         appLifecycleService : AppLifecycleService)
+    {
+        self.timeService = timeService
+        self.settingsService = settingsService
+        self.appLifecycleService = appLifecycleService
+    }
+    
+    // MARK: Public Methods
+    
     func getUserPermission()
     {
         let url = URL(string: UIApplicationOpenSettingsURLString)!
@@ -93,6 +94,8 @@ class LocationPermissionViewModel : PermissionViewModel
     {
         settingsService.setLastAskedForLocationPermission(timeService.now)
     }
+    
+    // MARK: Private Methods
         
     private func overlayVisibilityState() -> Bool
     {

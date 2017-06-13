@@ -4,7 +4,18 @@ import RxSwift
 ///ViewModel for the TimelineViewController.
 class TimelineViewModel
 {
-    //MARK: Fields
+    //MARK: Public Properties
+    let date : Date
+    let timeObservable : Observable<Void>
+    var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
+    
+    var presentEditViewObservable : Observable<Void>
+    {
+        return self.appLifecycleService.startedOnNotificationObservable
+            .filter({ [unowned self] in self.isCurrentDay })
+    }
+
+    //MARK: Private Properties
     private var isCurrentDay : Bool
     private let disposeBag = DisposeBag()
     
@@ -58,17 +69,6 @@ class TimelineViewModel
             .bindTo(timelineItems)
             .addDisposableTo(disposeBag)
 
-    }
-    
-    //MARK: Properties
-    let date : Date
-    let timeObservable : Observable<Void>
-    var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
-    
-    var presentEditViewObservable : Observable<Void>
-    {
-        return self.appLifecycleService.startedOnNotificationObservable
-            .filter({ [unowned self] in self.isCurrentDay })            
     }
     
     //MARK: Public methods

@@ -3,6 +3,9 @@ import RxSwift
 
 class OnboardingPage : UIViewController
 {
+    //MARK: Public Properties
+    var allowPagingSwipe : Bool { return self.nextButtonText != nil }
+
     private(set) var didAppear = false
     private(set) var nextButtonText : String?
     
@@ -12,10 +15,9 @@ class OnboardingPage : UIViewController
     private(set) var appLifecycleService : AppLifecycleService!
     private(set) var notificationService : NotificationService!
     
-    var allowPagingSwipe : Bool { return self.nextButtonText != nil }
-    
     private(set) var onboardingPageViewController : OnboardingViewController!
     
+    //MARK: Initializers
     init?(coder aDecoder: NSCoder, nextButtonText: String?)
     {
         super.init(coder: aDecoder)
@@ -33,6 +35,8 @@ class OnboardingPage : UIViewController
         NotificationCenter.default.removeObserver(self)
     }
     
+    //MARK: Public Methods
+    
     func inject(_ timeService: TimeService,
                 _ timeSlotService: TimeSlotService,
                 _ settingsService: SettingsService,
@@ -48,40 +52,32 @@ class OnboardingPage : UIViewController
         self.onboardingPageViewController = onboardingPageViewController
     }
     
-    override func viewDidAppear(_ animated: Bool)
-    {
-        super.viewDidAppear(animated)
-        guard !didAppear else { return }
-        didAppear = true
-        
-        startAnimations()
-    }
-    
-    func finish()
+    //MARK: Private Methods
+    internal func finish()
     {
         DispatchQueue.main.async {
             self.onboardingPageViewController.goToNextPage(forceNext: false)
         }
     }
-    
-    func startAnimations()
+
+    internal func startAnimations()
     {
         // override in page
     }
-    
-    @objc func appBecameActive()
+
+    @objc internal func appBecameActive()
     {
         // override in page
     }
-    
-    func getDate(addingHours hours : Int, andMinutes minutes : Int) -> Date
+
+    internal func getDate(addingHours hours : Int, andMinutes minutes : Int) -> Date
     {
         return timeService.now
             .ignoreTimeComponents()
             .addingTimeInterval(TimeInterval((hours * 60 + minutes) * 60))
     }
-    
-    func createTimelineCell(for timeSlot: TimeSlot) -> TimelineCell
+
+    internal func createTimelineCell(for timeSlot: TimeSlot) -> TimelineCell
     {
         let cell = Bundle.main
             .loadNibNamed("TimelineCell", owner: self, options: nil)?
@@ -96,13 +92,22 @@ class OnboardingPage : UIViewController
         cell.bind(toTimelineItem: timelineItem, index: 0, duration: duration)
         return cell
     }
-    
-    func createTimelineCells(for timeSlots: [TimeSlot]) -> [TimelineCell]
+
+    internal func initAnimatedTitleText(_ view: UIView)
     {
-        return timeSlots.map(createTimelineCell)
+        view.transform = CGAffineTransform(translationX: 100, y: 0)
+    }
+
+    internal func animateTitleText(_ view: UIView, duration: TimeInterval, delay: TimeInterval)
+    {
+        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseOut, animations:
+            {
+                view.transform = CGAffineTransform(translationX: 0, y: 0)
+        },
+                       completion: nil)
     }
     
-    func initAnimatingTimeline(with slots: [TimeSlot], in containingView: UIView) -> [TimelineCell]
+    internal func initAnimatingTimeline(with slots: [TimeSlot], in containingView: UIView) -> [TimelineCell]
     {
         
         let cells = createTimelineCells(for: slots)
@@ -132,7 +137,7 @@ class OnboardingPage : UIViewController
         return cells
     }
     
-    func animateTimeline(_ cells: [TimelineCell], delay initialDelay: TimeInterval)
+    internal func animateTimeline(_ cells: [TimelineCell], delay initialDelay: TimeInterval)
     {
         var delay = initialDelay
         
@@ -149,21 +154,7 @@ class OnboardingPage : UIViewController
         }
     }
     
-    func initAnimatedTitleText(_ view: UIView)
-    {
-        view.transform = CGAffineTransform(translationX: 100, y: 0)
-    }
-    
-    func animateTitleText(_ view: UIView, duration: TimeInterval, delay: TimeInterval)
-    {
-        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseOut, animations:
-            {
-                view.transform = CGAffineTransform(translationX: 0, y: 0)
-        },
-                       completion: nil)
-    }
-    
-    func getTimeSlot(withStartTime startTime: Date, endTime: Date, category: Category) -> TimeSlot
+    internal func getTimeSlot(withStartTime startTime: Date, endTime: Date, category: Category) -> TimeSlot
     {
         let timeSlot = TimeSlot(withStartTime: startTime,
                                 category: category,
@@ -171,5 +162,22 @@ class OnboardingPage : UIViewController
         timeSlot.endTime = endTime
         
         return timeSlot
+    }
+
+    private func createTimelineCells(for timeSlots: [TimeSlot]) -> [TimelineCell]
+    {
+        return timeSlots.map(createTimelineCell)
+    }
+
+    
+    //MARK: ViewController lifecycle
+
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        guard !didAppear else { return }
+        didAppear = true
+        
+        startAnimations()
     }
 }

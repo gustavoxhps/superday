@@ -4,7 +4,26 @@ import RxSwift
 ///ViewModel for the CalendardViewModel.
 class CalendarViewModel
 {
-    // MARK: Fields
+    // MARK: Public Properties
+    let minValidDate : Date
+    var maxValidDate : Date { return self.timeService.now }
+    
+    let dateObservable : Observable<Date>
+    let currentVisibleCalendarDateObservable : Observable<Date>
+    
+    var selectedDate : Date
+    {
+        get { return self.selectedDateService.currentlySelectedDate }
+        set(value) { self.selectedDateService.currentlySelectedDate = value }
+    }
+    
+    var currentVisibleCalendarDate : Date
+    {
+        get { return self.currentVisibleCalendarDateVariable.value }
+        set(value) { self.currentVisibleCalendarDateVariable.value = value }
+    }
+
+    // MARK: Private Properties
     private let timeService : TimeService
     private let timeSlotService : TimeSlotService
     private var selectedDateService : SelectedDateService
@@ -27,26 +46,8 @@ class CalendarViewModel
         currentVisibleCalendarDateObservable = currentVisibleCalendarDateVariable.asObservable()
     }
     
-    // MARK: Properties
-    let minValidDate : Date
-    var maxValidDate : Date { return self.timeService.now }
     
-    let dateObservable : Observable<Date>
-    let currentVisibleCalendarDateObservable : Observable<Date>
-    
-    var selectedDate : Date
-    {
-        get { return self.selectedDateService.currentlySelectedDate }
-        set(value) { self.selectedDateService.currentlySelectedDate = value }
-    }
-    
-    var currentVisibleCalendarDate : Date
-    {
-        get { return self.currentVisibleCalendarDateVariable.value }
-        set(value) { self.currentVisibleCalendarDateVariable.value = value }
-    }
-    
-    // MARK: Methods
+    // MARK: Public Methods
     func canScroll(toDate date: Date) -> Bool
     {
         let cellDate = date.ignoreTimeComponents()
@@ -66,6 +67,7 @@ class CalendarViewModel
         return result
     }
     
+    // MARK: Private Methods
     private func categoryIsSet(for timeSlot: TimeSlot) -> Bool
     {
         return timeSlot.category != .unknown

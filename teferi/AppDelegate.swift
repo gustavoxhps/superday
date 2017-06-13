@@ -6,8 +6,11 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate : UIResponder, UIApplicationDelegate
-{   
-    //MARK: Fields
+{
+    //MARK: Public Properties
+    var window: UIWindow?
+
+    //MARK: Private Properties
     fileprivate var didReceiveCategoryNotification = false
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
@@ -31,10 +34,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     
     private let coreDataStack : CoreDataStack
     
-    //MARK: Properties
-    var window: UIWindow?
-    
-    //Initializers
+    //MARK: Initializers
     override init()
     {
         timeService = DefaultTimeService()

@@ -2,10 +2,11 @@ import Foundation
 
 class OnboardingPresenter
 {
+    //MARK: Private Properties
     private weak var viewController : OnboardingViewController!
-    
     private let viewModelLocator : ViewModelLocator
     
+    //MARK: Initializer
     private init(viewModelLocator: ViewModelLocator)
     {
         self.viewModelLocator = viewModelLocator
@@ -23,6 +24,7 @@ class OnboardingPresenter
         return viewController
     }
     
+    //MARK: Public Methods
     func showMain()
     {
         let nav = NavigationPresenter.create(with: viewModelLocator)

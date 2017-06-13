@@ -60,7 +60,6 @@ class NavigationController: UINavigationController {
         
     }
     
-    
     private func bindViewModel()
     {
         viewModel.calendarDay

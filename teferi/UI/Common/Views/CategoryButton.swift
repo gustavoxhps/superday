@@ -32,7 +32,6 @@ class CategoryButton : UIView
         }
     }
 
-
     weak var delegate:CategoryButtonDelegate?
     
     private let button : UIButton
@@ -73,24 +72,6 @@ class CategoryButton : UIView
 
     }
     
-    private func positionLabel()
-    {
-        let radius = frame.width / 2 + 12
-        let x = button.center.x + radius * cos(angle - CGFloat.pi)
-        let y = button.center.y + radius * sin(angle - CGFloat.pi)
-        
-        labelHolder.center = CGPoint(x: x, y: y)
-        
-        let labelOffset = -cos(angle)
-        label.center = CGPoint(x: labelOffset * (label.frame.width / 2 - label.frame.height / 2), y: 0)
-    }
-    
-    @objc private func buttonTap()
-    {
-        guard let category = category, let delegate = delegate else { return }
-        
-        delegate.categorySelected(category: category)
-    }
     
     func show()
     {
@@ -111,7 +92,7 @@ class CategoryButton : UIView
             self.label.alpha = 1
             self.label.transform = CGAffineTransform.identity
         }
- 
+        
         UIView.animate(changesToAnimate, duration: animationDuration, withControlPoints: 0.23, 1, 0.32, 1)
         {
             UIView.animate(
@@ -135,7 +116,26 @@ class CategoryButton : UIView
             self.layer.removeAllAnimations()
             self.transform = scaleTransform
         }
-
+        
         UIView.animate(changesToAnimate, duration: animationDuration, withControlPoints: 0.175, 0.885, 0.32, 1)
+    }
+    
+    private func positionLabel()
+    {
+        let radius = frame.width / 2 + 12
+        let x = button.center.x + radius * cos(angle - CGFloat.pi)
+        let y = button.center.y + radius * sin(angle - CGFloat.pi)
+        
+        labelHolder.center = CGPoint(x: x, y: y)
+        
+        let labelOffset = -cos(angle)
+        label.center = CGPoint(x: labelOffset * (label.frame.width / 2 - label.frame.height / 2), y: 0)
+    }
+    
+    @objc private func buttonTap()
+    {
+        guard let category = category, let delegate = delegate else { return }
+        
+        delegate.categorySelected(category: category)
     }
 }

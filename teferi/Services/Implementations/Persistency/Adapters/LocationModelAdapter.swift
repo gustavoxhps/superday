@@ -3,7 +3,7 @@ import CoreData
 
 class LocationModelAdapter : CoreDataModelAdapter<Location>
 {
-    //MARK: Fields
+    //MARK: Private Properties
     private let speedKey = "speed"
     private let courseKey = "course"
     private let altitudeKey = "altitude"
@@ -13,6 +13,7 @@ class LocationModelAdapter : CoreDataModelAdapter<Location>
     private let verticalAccuracyKey = "verticalAccuracy"
     private let horizontalAccuracyKey = "horizontalAccuracy"
     
+    //MARK: Initilizers
     override init()
     {
         super.init()
@@ -20,6 +21,7 @@ class LocationModelAdapter : CoreDataModelAdapter<Location>
         sortDescriptors = [ NSSortDescriptor(key: timestampKey, ascending: false) ]
     }
     
+    //MARK: Public Methods
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> Location
     {
         let speed = managedObject.value(forKey: speedKey) as! Double

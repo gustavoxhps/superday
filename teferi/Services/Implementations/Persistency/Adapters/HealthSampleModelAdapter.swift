@@ -3,12 +3,13 @@ import CoreData
 
 class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
 {
-    //MARK: Fields
+    //MARK: Private Properties
     private let valueKey = "value"
     private let endTimeKey = "endTime"
     private let startTimeKey = "startTime"
     private let identifierKey = "identifier"
     
+    //MARK: Initializers
     override init()
     {
         super.init()
@@ -16,6 +17,7 @@ class HealthSampleModelAdapter : CoreDataModelAdapter<HealthSample>
         sortDescriptors = [ NSSortDescriptor(key: startTimeKey, ascending: false) ]
     }
     
+    //MARK: Public Methods
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> HealthSample
     {
         let identifier = managedObject.value(forKey: identifierKey) as! String

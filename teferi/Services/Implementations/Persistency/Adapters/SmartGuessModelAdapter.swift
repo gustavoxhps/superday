@@ -3,9 +3,9 @@ import CoreLocation
 
 class SmartGuessModelAdapter : CoreDataModelAdapter<SmartGuess>
 {
-    //MARK: Fields
     static let idKey = "id"
     
+    //MARK: Private Properties
     private let lastUsedKey = "lastUsed"
     private let categoryKey = "category"
     private let errorCountKey = "errorCount"
@@ -13,6 +13,7 @@ class SmartGuessModelAdapter : CoreDataModelAdapter<SmartGuess>
     private let locationLatitudeKey = "locationLatitude"
     private let locationLongitudeKey = "locationLongitude"
     
+    //MARK: Initializers
     override init()
     {
         super.init()
@@ -20,6 +21,7 @@ class SmartGuessModelAdapter : CoreDataModelAdapter<SmartGuess>
         sortDescriptors = [ NSSortDescriptor(key: locationTimeKey, ascending: false) ]
     }
     
+    //MARK: Public Methods
     override func getModel(fromManagedObject managedObject: NSManagedObject) -> SmartGuess
     {
         let id = managedObject.value(forKey: SmartGuessModelAdapter.idKey) as! Int
