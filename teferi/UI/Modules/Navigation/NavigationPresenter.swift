@@ -45,12 +45,8 @@ class NavigationPresenter : NSObject
     
     func showSummary()
     {
-        let vc = SummaryPresenter.create(with: viewModelLocator)
-        vc.modalPresentationStyle = .custom
-        vc.transitioningDelegate = self
+        let vc = WeeklySummaryPresenter.create(with: viewModelLocator)
         viewController.present(vc, animated: true, completion: nil)
-        
-        swipeInteractionController.wireToViewController(viewController: vc)
     }
     
     private func showCalendar()

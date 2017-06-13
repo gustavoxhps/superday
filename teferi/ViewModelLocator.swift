@@ -18,9 +18,7 @@ protocol ViewModelLocator
     
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
     
-    func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
-    func getSummaryViewModel() -> SummaryViewModel
-    func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
+    func getWeeklySummaryViewModel() -> WeeklySummaryViewModel
 }
 
 class DefaultViewModelLocator : ViewModelLocator
@@ -155,25 +153,12 @@ class DefaultViewModelLocator : ViewModelLocator
         return viewModel
     }
     
-    func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
+    func getWeeklySummaryViewModel() -> WeeklySummaryViewModel
     {
-        let viewModel = DailySummaryViewModel(date: date,
-                                              timeService: self.timeService,
-                                              timeSlotService: self.timeSlotService,
-                                              appLifecycleService: self.appLifecycleService,
-                                              loggingService: self.loggingService)
-        return viewModel
-    }
-    
-    func getSummaryViewModel() -> SummaryViewModel
-    {
-        return SummaryViewModel(selectedDateService: self.selectedDateService)
-    }
-    
-    func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
-    {
-        return SummaryPageViewModel(date: date,
-                                    timeService: self.timeService,
-                                    settingsService: self.settingsService)
+        return WeeklySummaryViewModel(
+            timeService: timeService,
+            timeSlotService: timeSlotService,
+            settingsService: settingsService
+        )
     }
 }

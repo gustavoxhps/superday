@@ -85,6 +85,16 @@ class DefaultTimeSlotService : TimeSlotService
         return timeSlots
     }
     
+    func getTimeSlots(betweenDate firstDate: Date, andDate secondDate: Date) -> [TimeSlot]
+    {
+        let date1 = firstDate.ignoreTimeComponents() as NSDate
+        let date2 = secondDate.add(days: 1).ignoreTimeComponents() as NSDate
+        let predicate = Predicate(parameter: "startTime", rangesFromDate: date1, toDate: date2)
+        
+        let timeSlots = persistencyService.get(withPredicate: predicate)
+        return timeSlots
+    }
+    
     func update(timeSlot: TimeSlot, withCategory category: Category, setByUser: Bool)
     {
         guard canChangeCategory(of: timeSlot, to: category, setByUser: setByUser) else { return }

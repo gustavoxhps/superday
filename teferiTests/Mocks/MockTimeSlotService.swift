@@ -81,6 +81,11 @@ class MockTimeSlotService : TimeSlotService
         return timeSlots.filter { t in t.startTime > startDate && t.startTime < endDate }
     }
     
+    func getTimeSlots(betweenDate firstDate: Date, andDate secondDate: Date) -> [TimeSlot]
+    {
+        return timeSlots.filter { t in t.startTime > firstDate && t.startTime < secondDate }
+    }
+    
     @discardableResult func addTimeSlot(withStartTime startTime: Date, category: teferi.Category, categoryWasSetByUser: Bool, tryUsingLatestLocation: Bool) -> TimeSlot?
     {
         let location : CLLocation? = tryUsingLatestLocation ? locationService.getLastKnownLocation() : nil
@@ -112,7 +117,7 @@ class MockTimeSlotService : TimeSlotService
         return timeSlot
     }
     
-    @discardableResult func update(timeSlot: TimeSlot, withCategory category: teferi.Category, setByUser: Bool)
+    func update(timeSlot: TimeSlot, withCategory category: teferi.Category, setByUser: Bool)
     {
         timeSlot.category = category
         timeSlot.categoryWasSetByUser = setByUser

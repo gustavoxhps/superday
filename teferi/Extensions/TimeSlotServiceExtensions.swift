@@ -11,6 +11,13 @@ extension TimeSlotService
         return result
     }
     
+    func getActivities(fromDate startDate:Date, untilDate endDate:Date) -> [Activity]
+    {
+        return getTimeSlots(betweenDate: startDate, andDate: endDate)
+            .groupBy(category)
+            .map(toActivity)
+    }
+    
     private func category(of timeSlot: TimeSlot) -> Category
     {
         return timeSlot.category

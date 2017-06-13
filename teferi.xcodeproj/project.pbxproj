@@ -139,6 +139,10 @@
 		8C26A1781ECAEAD800EFE509 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */; };
 		8C26A17A1ECAED7300EFE509 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1791ECAED7300EFE509 /* FadeTransition.swift */; };
 		8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C44B01ECD878C008131D7 /* RxViewModel.swift */; };
+		8C460E831EE704500002D70B /* ButtonsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E821EE704500002D70B /* ButtonsCollectionView.swift */; };
+		8C460E851EE705200002D70B /* ButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */; };
+		8C460E8B1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */; };
+		8C460E8D1EE7EE3F0002D70B /* WeeklySummaryCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E8C1EE7EE3F0002D70B /* WeeklySummaryCategoryTableViewCell.swift */; };
 		8C4C5B5D1ECEEC34003239BE /* CalendarPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4C5B5C1ECEEC34003239BE /* CalendarPresenter.swift */; };
 		8C5B88751EBCCDA00096AE5B /* CategoryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5B88741EBCCDA00096AE5B /* CategoryExtensions.swift */; };
 		8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */; };
@@ -148,8 +152,6 @@
 		8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */; };
 		8C7CDCA41EC45E320079F48D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7CDCA31EC45E320079F48D /* CoreDataStack.swift */; };
 		8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8C7E11091E9B6E79009AAF49 /* Settings.bundle */; };
-		8C8F2C901EADE8B10073D93D /* DailySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */; };
-		8C8F2C921EADE8C30073D93D /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */; };
 		8C9C25671ED3397E00B10187 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C25661ED3397E00B10187 /* NavigationController.swift */; };
 		8C9C25691ED3398D00B10187 /* NavigationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C25681ED3398D00B10187 /* NavigationPresenter.swift */; };
 		8C9C256B1ED348EE00B10187 /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9C256A1ED348EE00B10187 /* NavigationViewModel.swift */; };
@@ -165,7 +167,15 @@
 		8CDCC5F61ECB156F00A3D25D /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDCC5F51ECB156F00A3D25D /* OnboardingViewModel.swift */; };
 		8CE6BDE11E7D4BF5003B852C /* TrackEventExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */; };
 		8CF0255A1EAFA2FF00BF0A42 /* SwipeInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF025591EAFA2FF00BF0A42 /* SwipeInteractionController.swift */; };
+		8CF8C0911EDED6DC00EA2C77 /* WeeklySummarPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8C0901EDED6DC00EA2C77 /* WeeklySummarPresenter.swift */; };
+		8CF8C0931EDED70100EA2C77 /* WeeklySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8C0921EDED70100EA2C77 /* WeeklySummaryViewModel.swift */; };
+		8CF8C0951EDED72000EA2C77 /* WeeklySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8C0941EDED72000EA2C77 /* WeeklySummaryViewController.swift */; };
+		8CF8C0991EDED99300EA2C77 /* WeeklySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CF8C0981EDED99300EA2C77 /* WeeklySummary.storyboard */; };
+		8CF8C09D1EDEFEE900EA2C77 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8C09C1EDEFEE900EA2C77 /* ChartView.swift */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
+		AC1085361EEE971700E5F03B /* ActivityPieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085341EEE971700E5F03B /* ActivityPieChartView.swift */; };
+		AC1085371EEE971700E5F03B /* PieSliceLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085351EEE971700E5F03B /* PieSliceLayer.swift */; };
+		AC1085391EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085381EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift */; };
 		AC14E7F11E7BDB5C0034A1BA /* HealthKitPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */; };
 		AC14E7F41E7BE31D0034A1BA /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */; };
 		AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1E70F01E3F4C490090D474 /* KNN.swift */; };
@@ -175,14 +185,6 @@
 		AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */; };
 		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
 		AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */; };
-		AC654B7E1EAF846F00F28DC9 /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */; };
-		AC654B801EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */; };
-		AC654B821EB0842B00F28DC9 /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */; };
-		AC654B881EB1F2CA00F28DC9 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */; };
-		AC654B8A1EB1F2EB00F28DC9 /* SummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */; };
-		AC654B8C1EB1F31F00F28DC9 /* SummaryPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */; };
-		AC654B8E1EB1F34000F28DC9 /* SummaryPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */; };
-		AC654B901EB2489300F28DC9 /* SummaryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCAFD241E8BDF490097F037 /* NotificationType.swift */; };
 		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
@@ -416,6 +418,10 @@
 		8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		8C26A1791ECAED7300EFE509 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
 		8C2C44B01ECD878C008131D7 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = ViewModels/RxViewModel.swift; sourceTree = "<group>"; };
+		8C460E821EE704500002D70B /* ButtonsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonsCollectionView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonsCollectionView.swift"; sourceTree = SOURCE_ROOT; };
+		8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonCollectionViewCell.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonCollectionViewCell.swift"; sourceTree = SOURCE_ROOT; };
+		8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterAlignedCollectionViewFlowLayout.swift; path = "teferi/UI/Modules/Weekly Summary/Views/CenterAlignedCollectionViewFlowLayout.swift"; sourceTree = SOURCE_ROOT; };
+		8C460E8C1EE7EE3F0002D70B /* WeeklySummaryCategoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummaryCategoryTableViewCell.swift; path = "teferi/UI/Modules/Weekly Summary/Views/WeeklySummaryCategoryTableViewCell.swift"; sourceTree = SOURCE_ROOT; };
 		8C4C5B5C1ECEEC34003239BE /* CalendarPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarPresenter.swift; sourceTree = "<group>"; };
 		8C5B88741EBCCDA00096AE5B /* CategoryExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryExtensions.swift; sourceTree = "<group>"; };
 		8C6417001EAE02B700B893D7 /* ModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalPresentationController.swift; sourceTree = "<group>"; };
@@ -425,8 +431,6 @@
 		8C7CCB4E1E9D1D1F00315BF7 /* AddTimeSlotButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTimeSlotButton.swift; sourceTree = "<group>"; };
 		8C7CDCA31EC45E320079F48D /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		8C7E11091E9B6E79009AAF49 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewController.swift; sourceTree = "<group>"; };
-		8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
 		8C9C25661ED3397E00B10187 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationController.swift; path = Navigation/NavigationController.swift; sourceTree = "<group>"; };
 		8C9C25681ED3398D00B10187 /* NavigationPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationPresenter.swift; path = Navigation/NavigationPresenter.swift; sourceTree = "<group>"; };
 		8C9C256A1ED348EE00B10187 /* NavigationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationViewModel.swift; path = Navigation/NavigationViewModel.swift; sourceTree = "<group>"; };
@@ -439,9 +443,17 @@
 		8CDCC5F51ECB156F00A3D25D /* OnboardingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackEventExtensions.swift; sourceTree = "<group>"; };
 		8CF025591EAFA2FF00BF0A42 /* SwipeInteractionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeInteractionController.swift; sourceTree = "<group>"; };
+		8CF8C0901EDED6DC00EA2C77 /* WeeklySummarPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummarPresenter.swift; path = "teferi/UI/Modules/Weekly Summary/WeeklySummarPresenter.swift"; sourceTree = SOURCE_ROOT; };
+		8CF8C0921EDED70100EA2C77 /* WeeklySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummaryViewModel.swift; path = "teferi/UI/Modules/Weekly Summary/WeeklySummaryViewModel.swift"; sourceTree = SOURCE_ROOT; };
+		8CF8C0941EDED72000EA2C77 /* WeeklySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummaryViewController.swift; path = "teferi/UI/Modules/Weekly Summary/WeeklySummaryViewController.swift"; sourceTree = SOURCE_ROOT; };
+		8CF8C0981EDED99300EA2C77 /* WeeklySummary.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = WeeklySummary.storyboard; sourceTree = "<group>"; };
+		8CF8C09C1EDEFEE900EA2C77 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChartView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ChartView.swift"; sourceTree = SOURCE_ROOT; };
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrigonometryHelper.swift; sourceTree = "<group>"; };
 		AC0A632B1E548FE800D56433 /* CategoryWheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryWheel.swift; sourceTree = "<group>"; };
+		AC1085341EEE971700E5F03B /* ActivityPieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityPieChartView.swift; sourceTree = "<group>"; };
+		AC1085351EEE971700E5F03B /* PieSliceLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieSliceLayer.swift; sourceTree = "<group>"; };
+		AC1085381EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummaryEmptyEtateView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/WeeklySummaryEmptyEtateView.swift"; sourceTree = SOURCE_ROOT; };
 		AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPump.swift; sourceTree = "<group>"; };
 		AC14E7F21E7BE31D0034A1BA /* teferi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teferi.entitlements; sourceTree = "<group>"; };
 		AC14E7F31E7BE31D0034A1BA /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -452,14 +464,6 @@
 		AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionViewModel.swift; sourceTree = "<group>"; };
 		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionViewModelTests.swift; sourceTree = "<group>"; };
-		AC654B7D1EAF846F00F28DC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
-		AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryPieChartActivity.swift; sourceTree = "<group>"; };
-		AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
-		AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryViewController.swift; sourceTree = "<group>"; };
-		AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryViewModel.swift; sourceTree = "<group>"; };
-		AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryPageViewController.swift; sourceTree = "<group>"; };
-		AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryPageViewModel.swift; sourceTree = "<group>"; };
-		AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryPresenter.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		ACCAFD241E8BDF490097F037 /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationType.swift; sourceTree = "<group>"; };
 		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthSampleExtensions.swift; sourceTree = "<group>"; };
@@ -778,10 +782,10 @@
 		24D99F681D74B92C00E68163 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
-				AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */,
 				2407A98D1D9D54DB00066889 /* LaunchScreen.storyboard */,
 				240AC71B1D748C8800F21F4F /* Main.storyboard */,
 				513535D11DA26E3B00A365A9 /* Onboarding.storyboard */,
+				8CF8C0981EDED99300EA2C77 /* WeeklySummary.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1062,7 +1066,7 @@
 				8C9C25651ED3394E00B10187 /* Navigation */,
 				8C26A16F1ECAE64A00EFE509 /* Intro */,
 				8CA4613A1EC9A30100587399 /* Calendar */,
-				8CA4613D1EC9A33C00587399 /* Daily Summary */,
+				8CF8C08F1EDED6BE00EA2C77 /* Weekly Summary */,
 				8CA4613B1EC9A30C00587399 /* Main */,
 				8CA461391EC9A2E700587399 /* Onboarding */,
 				8CA4613E1EC9A35100587399 /* Permissions */,
@@ -1122,21 +1126,6 @@
 			path = Timeline;
 			sourceTree = "<group>";
 		};
-		8CA4613D1EC9A33C00587399 /* Daily Summary */ = {
-			isa = PBXGroup;
-			children = (
-				8CA461431EC9A3F200587399 /* Views */,
-				8C8F2C8F1EADE8B10073D93D /* DailySummaryViewController.swift */,
-				8C8F2C911EADE8C30073D93D /* DailySummaryViewModel.swift */,
-				AC654B8B1EB1F31F00F28DC9 /* SummaryPageViewController.swift */,
-				AC654B8D1EB1F34000F28DC9 /* SummaryPageViewModel.swift */,
-				AC654B8F1EB2489300F28DC9 /* SummaryPresenter.swift */,
-				AC654B871EB1F2CA00F28DC9 /* SummaryViewController.swift */,
-				AC654B891EB1F2EB00F28DC9 /* SummaryViewModel.swift */,
-			);
-			path = "Daily Summary";
-			sourceTree = "<group>";
-		};
 		8CA4613E1EC9A35100587399 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1189,15 +1178,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		8CA461431EC9A3F200587399 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				AC654B7F1EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift */,
-				AC654B811EB0842B00F28DC9 /* DailySummaryTableViewCell.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		8CA461441EC9A40C00587399 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1209,6 +1189,33 @@
 				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8CF8C08F1EDED6BE00EA2C77 /* Weekly Summary */ = {
+			isa = PBXGroup;
+			children = (
+				8CF8C0961EDED76800EA2C77 /* Views */,
+				8CF8C0901EDED6DC00EA2C77 /* WeeklySummarPresenter.swift */,
+				8CF8C0921EDED70100EA2C77 /* WeeklySummaryViewModel.swift */,
+				8CF8C0941EDED72000EA2C77 /* WeeklySummaryViewController.swift */,
+			);
+			name = "Weekly Summary";
+			path = "Daily Summary";
+			sourceTree = "<group>";
+		};
+		8CF8C0961EDED76800EA2C77 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AC1085341EEE971700E5F03B /* ActivityPieChartView.swift */,
+				AC1085351EEE971700E5F03B /* PieSliceLayer.swift */,
+				8CF8C09C1EDEFEE900EA2C77 /* ChartView.swift */,
+				8C460E821EE704500002D70B /* ButtonsCollectionView.swift */,
+				8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */,
+				8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */,
+				8C460E8C1EE7EE3F0002D70B /* WeeklySummaryCategoryTableViewCell.swift */,
+				AC1085381EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		AC1E70EF1E3F4C120090D474 /* Algorithm */ = {
@@ -1412,13 +1419,13 @@
 				24564F571D83254E00D9A8AE /* TimelineCell.xib in Resources */,
 				24564F771D837FBE00D9A8AE /* Localizable.strings in Resources */,
 				8C7E110A1E9B6E79009AAF49 /* Settings.bundle in Resources */,
-				AC654B7E1EAF846F00F28DC9 /* DailySummary.storyboard in Resources */,
 				240AC7221D748C8800F21F4F /* Assets.xcassets in Resources */,
 				24B03B671DA3866400452D16 /* AddTimeSlotView.xib in Resources */,
 				2407A98F1D9D54DB00066889 /* LaunchScreen.storyboard in Resources */,
 				240AC71D1D748C8800F21F4F /* Main.storyboard in Resources */,
 				2420A8681DB56B6800C0478C /* EmptyStateView.xib in Resources */,
 				513535D31DA26E3B00A365A9 /* Onboarding.storyboard in Resources */,
+				8CF8C0991EDED99300EA2C77 /* WeeklySummary.storyboard in Resources */,
 				24DE23ED1E1BB3180089B49E /* CalendarCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1593,17 +1600,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC1085391EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift in Sources */,
 				8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */,
 				8C9D25E31E97FC9100D39119 /* LocationPermissionViewModel.swift in Sources */,
 				8C7CDCA41EC45E320079F48D /* CoreDataStack.swift in Sources */,
 				BEF8AB1C1E84064400B4F289 /* Sink.swift in Sources */,
 				8CBE30A21ECC5385007C8F6F /* PermissionPresenter.swift in Sources */,
 				24EB96791DE7080F0040C211 /* CoreDataModelAdapter.swift in Sources */,
+				8CF8C0911EDED6DC00EA2C77 /* WeeklySummarPresenter.swift in Sources */,
 				8C7CCB4F1E9D1D1F00315BF7 /* AddTimeSlotButton.swift in Sources */,
 				24564F651D83265900D9A8AE /* DateExtensions.swift in Sources */,
-				8C8F2C921EADE8C30073D93D /* DailySummaryViewModel.swift in Sources */,
 				2407A98C1D9D534B00066889 /* TimerExtensions.swift in Sources */,
-				AC654B801EAF8CE800F28DC9 /* DailySummaryPieChartActivity.swift in Sources */,
 				246531741DA7DDF10066DFE0 /* FabricMetricsServices.swift in Sources */,
 				24564F561D83254E00D9A8AE /* TimelineCell.swift in Sources */,
 				24564F721D832A4F00D9A8AE /* PagerViewController.swift in Sources */,
@@ -1615,10 +1622,11 @@
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
 				BEF8AB1F1E840C7400B4F289 /* Pipeline.swift in Sources */,
-				AC654B8A1EB1F2EB00F28DC9 /* SummaryViewModel.swift in Sources */,
 				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
 				8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */,
+				AC1085361EEE971700E5F03B /* ActivityPieChartView.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
+				8C460E831EE704500002D70B /* ButtonsCollectionView.swift in Sources */,
 				246531701DA7B4150066DFE0 /* NotificationService.swift in Sources */,
 				24B03B5D1D9E4DA300452D16 /* DefaultSettingsService.swift in Sources */,
 				24564F511D8320FC00D9A8AE /* MainViewController.swift in Sources */,
@@ -1627,13 +1635,14 @@
 				6AC29DA71E4269FB000A99EF /* ViewModelLocator.swift in Sources */,
 				24EB96721DE7080F0040C211 /* DefaultEditStateService.swift in Sources */,
 				BEAFC0AC1E8A878F0050CE70 /* NotificationSchedulingService.swift in Sources */,
-				AC654B8E1EB1F34000F28DC9 /* SummaryPageViewModel.swift in Sources */,
 				7E3C06981E30B7CA00859747 /* Assets.swift in Sources */,
 				BEAFC0AE1E8AA2690050CE70 /* FirstTimeSlotOfDayPipe.swift in Sources */,
 				24526A771D92D99F00DA3FA0 /* MetricsService.swift in Sources */,
 				BEF8AB171E8403D900B4F289 /* Pump.swift in Sources */,
 				BEF8AB211E8413AA00B4F289 /* PersistencySink.swift in Sources */,
+				8C460E851EE705200002D70B /* ButtonCollectionViewCell.swift in Sources */,
 				AC449C311E92BC8C00847957 /* PermissionViewModelProtocol.swift in Sources */,
+				8C460E8D1EE7EE3F0002D70B /* WeeklySummaryCategoryTableViewCell.swift in Sources */,
 				24D213AF1DB8CB8300E429CA /* DefaultAppLifecycleService.swift in Sources */,
 				51DDF7181DB4DBC200F9B672 /* OnboardingPage.swift in Sources */,
 				2421F8C51D9BB4C600AF8857 /* SwiftyBeaverLoggingService.swift in Sources */,
@@ -1641,8 +1650,9 @@
 				24C72AAA1D90731C00DABAC3 /* LoggingService.swift in Sources */,
 				24DE23FE1E1BB38C0089B49E /* TimeService.swift in Sources */,
 				BE24B8821E76C9D8005DF5B3 /* TrackEventPersistencyService.swift in Sources */,
-				8C8F2C901EADE8B10073D93D /* DailySummaryViewController.swift in Sources */,
+				8C460E8B1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift in Sources */,
 				BEA783611E6DB4A400D44603 /* CategoryProvider.swift in Sources */,
+				8CF8C09D1EDEFEE900EA2C77 /* ChartView.swift in Sources */,
 				24DE24011E1BB3A40089B49E /* DefaultSelectedDateService.swift in Sources */,
 				8C26A17A1ECAED7300EFE509 /* FadeTransition.swift in Sources */,
 				AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */,
@@ -1654,6 +1664,7 @@
 				24224B081E28E37700AD7575 /* TimelineItem.swift in Sources */,
 				8C9C256B1ED348EE00B10187 /* NavigationViewModel.swift in Sources */,
 				24EB96761DE7080F0040C211 /* TimeSlotService.swift in Sources */,
+				AC1085371EEE971700E5F03B /* PieSliceLayer.swift in Sources */,
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
 				2420A86A1DB6271000C0478C /* EditTimeSlotView.swift in Sources */,
 				24B03B651DA3864500452D16 /* AddTimeSlotView.swift in Sources */,
@@ -1665,7 +1676,6 @@
 				BEF8AB1A1E84060B00B4F289 /* Pipe.swift in Sources */,
 				24DE23EE1E1BB3180089B49E /* CalendarDailyActivityView.swift in Sources */,
 				BE55CED71E7AD70F006B851E /* MergePipe.swift in Sources */,
-				AC654B821EB0842B00F28DC9 /* DailySummaryTableViewCell.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
 				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */,
@@ -1724,14 +1734,14 @@
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
 				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,
-				AC654B901EB2489300F28DC9 /* SummaryPresenter.swift in Sources */,
+				8CF8C0931EDED70100EA2C77 /* WeeklySummaryViewModel.swift in Sources */,
 				24D213AB1DB8CA4600E429CA /* AppLifecycleService.swift in Sources */,
 				243E37AE1DC8FABC0074032D /* PostiOSTenNotificationService.swift in Sources */,
 				51DB18761E26144F00E0182D /* CLLocationExtensions.swift in Sources */,
-				AC654B8C1EB1F31F00F28DC9 /* SummaryPageViewController.swift in Sources */,
 				240AC7201D748C8800F21F4F /* teferi.xcdatamodeld in Sources */,
 				24DE23FD1E1BB38C0089B49E /* SelectedDateService.swift in Sources */,
 				24EB967F1DE708570040C211 /* Predicate.swift in Sources */,
+				8CF8C0951EDED72000EA2C77 /* WeeklySummaryViewController.swift in Sources */,
 				BE55CED11E7AC994006B851E /* TemporaryTimeSlot.swift in Sources */,
 				BEA024341E41137D0061FE53 /* Category.swift in Sources */,
 				7E3C06991E30B7CA00859747 /* Strings.swift in Sources */,
@@ -1749,7 +1759,6 @@
 				24564F641D83265900D9A8AE /* UIColorExtensions.swift in Sources */,
 				BE24B8851E76E560005DF5B3 /* HealthKitService.swift in Sources */,
 				2420A8661DB56B5500C0478C /* EmptyStateView.swift in Sources */,
-				AC654B881EB1F2CA00F28DC9 /* SummaryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1873,15 +1882,6 @@
 				51BED8FE1DD26FA800455EF6 /* Base */,
 			);
 			name = MainInterface.storyboard;
-			path = .;
-			sourceTree = "<group>";
-		};
-		AC654B7C1EAF846F00F28DC9 /* DailySummary.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AC654B7D1EAF846F00F28DC9 /* Base */,
-			);
-			name = DailySummary.storyboard;
 			path = .;
 			sourceTree = "<group>";
 		};
