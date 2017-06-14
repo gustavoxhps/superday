@@ -2,17 +2,15 @@ import UIKit
 
 class DailySummaryViewController: UIViewController, UITableViewDataSource
 {
-    // MARK: Public Properties
-    var date : Date { return self.viewModel.date }
-    
-    // MARK: Private Properties
-    @IBOutlet weak private var chartView: DailySummaryPieChartActivity!
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet weak var chartView: DailySummaryPieChartActivity!
+    @IBOutlet weak var tableView: UITableView!
     
     private var viewModel: DailySummaryViewModel!
     private let cellIdentifier = "dailySummaryCell"
+    
+    var date : Date { return self.viewModel.date }
 
-    // MARK: Public Methods
+    // MARK: Methods
     func inject(viewModel: DailySummaryViewModel)
     {
         self.viewModel = viewModel

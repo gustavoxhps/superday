@@ -8,7 +8,7 @@ class TimelineViewModel
     let date : Date
     let timeObservable : Observable<Void>
     var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
-    
+
     var presentEditViewObservable : Observable<Void>
     {
         return self.appLifecycleService.startedOnNotificationObservable
@@ -25,7 +25,8 @@ class TimelineViewModel
     private let appLifecycleService : AppLifecycleService
     private let loggingService : LoggingService
     
-    private var timelineItems:Variable<[TimelineItem]> = Variable([])
+    private var activities : Variable<[Activity]> = Variable([])
+    private var timelineItems : Variable<[TimelineItem]> = Variable([])
     
     //MARK: Initializers
     init(date completeDate: Date,
@@ -60,10 +61,12 @@ class TimelineViewModel
             .movedToForegroundObservable
             .mapTo(())
         
-        let refreshObservable = Observable.of(newTimeSlotForThisDate, updatedTimeSlotForThisDate, movedToForeground).merge()
-        
+        let refreshObservable =
+            Observable.of(newTimeSlotForThisDate, updatedTimeSlotForThisDate, movedToForeground)
+                      .merge()
+                      .startWith(()) // This is a hack I can't remove due to something funky with the view controllery lifecycle. We should fix this in the refactor
+                
         refreshObservable
-            .startWith(()) // This is a hack I can't remove due to something funky with the view controllery lifecycle. We should fix this in the refactor
             .map(timeSlotsForToday)
             .map(toTimelineItems)
             .bindTo(timelineItems)

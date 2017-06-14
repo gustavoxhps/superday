@@ -13,6 +13,7 @@ class PagerViewModelTests : XCTestCase
     
     private var disposable : Disposable!
     private var timeService : MockTimeService!
+    private var timeSlotService : MockTimeSlotService!
     private var settingsService : MockSettingsService!
     private var editStateService : MockEditStateService!
     private var appLifecycleService : MockAppLifecycleService!
@@ -24,6 +25,7 @@ class PagerViewModelTests : XCTestCase
         
         disposeBag = DisposeBag()
         timeService = MockTimeService()
+        timeSlotService = MockTimeSlotService(timeService: timeService, locationService: MockLocationService())
         settingsService = MockSettingsService()
         editStateService = MockEditStateService()
         selectedDateService = MockSelectedDateService()
@@ -32,10 +34,11 @@ class PagerViewModelTests : XCTestCase
         timeService.mockDate = noon
         
         viewModel = PagerViewModel(timeService: timeService,
-                                        settingsService: settingsService,
-                                        editStateService: editStateService,
-                                        appLifecycleService: appLifecycleService,
-                                        selectedDateService: selectedDateService)
+                                   timeSlotService: timeSlotService,
+                                   settingsService: settingsService,
+                                   editStateService: editStateService,
+                                   appLifecycleService: appLifecycleService,
+                                   selectedDateService: selectedDateService)
         
     }
     
@@ -58,10 +61,11 @@ class PagerViewModelTests : XCTestCase
         timeService.mockDate = noon
         
         viewModel = PagerViewModel(timeService: timeService,
-                                        settingsService: settingsService,
-                                        editStateService: editStateService,
-                                        appLifecycleService: appLifecycleService,
-                                        selectedDateService: selectedDateService)
+                                   timeSlotService: timeSlotService,
+                                   settingsService: settingsService,
+                                   editStateService: editStateService,
+                                   appLifecycleService: appLifecycleService,
+                                   selectedDateService: selectedDateService)
         
         var value = false
         disposable = viewModel.dateObservable.subscribe(onNext: { _ in value = true })

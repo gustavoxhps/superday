@@ -1,4 +1,5 @@
 import RxSwift
+import RxCocoa
 import Foundation
 
 class PagerViewModel
@@ -42,10 +43,30 @@ class PagerViewModel
         }
     }
     
+    var activitiesObservable : Driver<[Activity]>
+    {
+        let addedTimeSlot = timeSlotService.timeSlotCreatedObservable
+            .mapTo(())
+        
+        let updatedTimeSlot = timeSlotService.timeSlotUpdatedObservable
+            .mapTo(())
+        
+        let dateChage = selectedDateService.currentlySelectedDateObservable
+            .mapTo(())
+        
+        let movedToForeground = appLifecycleService.movedToForegroundObservable
+        
+        return Observable.of(addedTimeSlot, updatedTimeSlot, dateChage, movedToForeground).merge()
+            .startWith(())
+            .map(activitiesForCurrentDate)
+            .asDriver(onErrorJustReturn: [])
+    }
+    
     //MARK: Private Properties
     private var lastRefresh : Date
     
     private let timeService : TimeService
+    private let timeSlotService : TimeSlotService
     private let settingsService : SettingsService
     private let appLifecycleService : AppLifecycleService
     private var selectedDateService : SelectedDateService
@@ -54,12 +75,14 @@ class PagerViewModel
 
     //MARK: Initializers
     init(timeService: TimeService,
+         timeSlotService: TimeSlotService,
          settingsService: SettingsService,
          editStateService: EditStateService,
          appLifecycleService: AppLifecycleService,
          selectedDateService: SelectedDateService)
     {
         self.timeService = timeService
+        self.timeSlotService = timeSlotService
         self.appLifecycleService = appLifecycleService
         self.settingsService = settingsService
         self.selectedDateService = selectedDateService
@@ -92,5 +115,12 @@ class PagerViewModel
         }
         
         return nil
+    }
+    
+    private func activitiesForCurrentDate() -> [Activity]
+    {
+        return self.timeSlotService
+            .getActivities(forDate: selectedDate)
+            .sorted(by: { $0.duration > $1.duration })
     }
 }

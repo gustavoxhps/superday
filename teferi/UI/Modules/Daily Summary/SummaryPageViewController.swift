@@ -3,13 +3,10 @@ import RxSwift
 
 class SummaryPageViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate
 {
-    // MARK: Public Properties
-    var canMoveForwardObservable : Observable<Bool>!
-    var canMoveBackwardObservable : Observable<Bool>!
-    
-    // MARK: Private Properties
     private var viewModel : SummaryPageViewModel!
     private var viewModelLocator : ViewModelLocator!
+    var canMoveForwardObservable : Observable<Bool>!
+    var canMoveBackwardObservable : Observable<Bool>!
     
     // MARK: Initializers
     override init(transitionStyle style: UIPageViewControllerTransitionStyle, navigationOrientation: UIPageViewControllerNavigationOrientation, options: [String : Any]?)

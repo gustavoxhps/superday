@@ -40,7 +40,7 @@ class NavigationController: UINavigationController {
         summaryButton.setBackgroundImage(Image(asset: Asset.icChart), for: .normal)
         summaryButton.rx.tap
             .subscribe(onNext: { [unowned self] in
-                self.presenter.showSummary()
+                self.presenter.showWeeklySummary()
             })
             .addDisposableTo(disposeBag)
         

@@ -3,7 +3,13 @@ import RxCocoa
 import UIKit
 import CoreGraphics
 
-class TimelineViewController : UIViewController
+protocol TimelineDelegate: class
+{
+    func resizeHeader(size:CGFloat)
+    func chageShadow(opacity:Float)
+}
+
+class TimelineViewController : UIViewController, UITableViewDelegate
 {
     // MARK: Public Properties
     var date : Date { return self.viewModel.date }
@@ -11,17 +17,22 @@ class TimelineViewController : UIViewController
     // MARK: Private Properties
     private let disposeBag = DisposeBag()
     private let viewModel : TimelineViewModel
+    private let presenter : TimelinePresenter
+    
     private var tableView : UITableView!
     
     private let cellIdentifier = "timelineCell"
     
     private var willDisplayNewCell:Bool = false
     
-    private var emptyStateView:EmptyStateView!
+    private var emptyStateView: EmptyStateView!
+    
+    weak var delegate: TimelineDelegate?
     
     // MARK: Initializers
-    init(viewModel: TimelineViewModel)
+    init(presenter: TimelinePresenter, viewModel: TimelineViewModel)
     {
+        self.presenter = presenter
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -50,7 +61,6 @@ class TimelineViewController : UIViewController
         }
         emptyStateView?.isHidden = true
 
-        
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
@@ -59,7 +69,7 @@ class TimelineViewController : UIViewController
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
         tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
-        
+        tableView.contentInset = UIEdgeInsets(top: 34, left: 0, bottom: 0, right: 0)        
         
         viewModel.timeObservable
             .asDriver(onErrorJustReturn: ())
@@ -84,6 +94,7 @@ class TimelineViewController : UIViewController
             .subscribe(onNext: startEditOnLastSlot)
             .addDisposableTo(disposeBag)
         
+        tableView.rx.setDelegate(self).addDisposableTo(disposeBag)
         tableView.rx.willDisplayCell
             .subscribe(onNext: { [unowned self] (cell, indexPath) in
                 guard self.willDisplayNewCell && indexPath.row == self.tableView.numberOfRows(inSection: 0) - 1 else { return }
@@ -92,8 +103,36 @@ class TimelineViewController : UIViewController
                 self.willDisplayNewCell = false
             })
             .addDisposableTo(disposeBag)
+        
+        let currentY = tableView.rx.contentOffset.map({ $0.y })
+        let nextY = tableView.rx.contentOffset.skip(1).map({ $0.y })
+        
+        Observable<(CGFloat, CGFloat)>.zip(currentY, nextY) { ($0, $1) }
+            .map { [unowned self] current, next in
+                let distance = next - current
+                let maxScroll = self.tableView.contentSize.height - self.tableView.frame.height
+                
+                if next > maxScroll - 10 && distance < 0 { return 0 }
+                if next < 10 && distance > 0 { return 0 }
+                
+                return distance
+            }
+            .subscribe(onNext: {
+                self.delegate?.resizeHeader(size: $0)
+            })
+            .addDisposableTo(disposeBag)
+        
+        tableView.rx.contentOffset
+            .map{ $0.y }
+            .map {
+                $0 > 50 ? 1.0 : $0/50
+            }
+            .subscribe(onNext: { [unowned self] opacity in
+                self.delegate?.chageShadow(opacity: Float(opacity))
+            })
+            .addDisposableTo(disposeBag)
     }
-    
+
     // MARK: Private Methods
 
     private func handleNewItem(_ items:[TimelineItem])

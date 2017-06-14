@@ -4,11 +4,14 @@ import RxSwift
 class PagerViewController : UIPageViewController
 {
     // MARK: Private Properties
+    fileprivate var viewModel: PagerViewModel!
+    private var presenter: PagerPresenter!
+    
     private let disposeBag = DisposeBag()
-    fileprivate var viewModel : PagerViewModel!
-    private var viewModelLocator : ViewModelLocator!
     
     private var viewControllersDictionary = [Date : UIViewController]()
+    
+    fileprivate var headerView : DailySummaryBarView = DailySummaryBarView()
     
     // MARK: Initializers
     override init(transitionStyle style: UIPageViewControllerTransitionStyle, navigationOrientation: UIPageViewControllerNavigationOrientation, options: [String : Any]?)
@@ -27,10 +30,10 @@ class PagerViewController : UIPageViewController
     
     // MARK: UIViewController lifecycle
     
-    func inject(viewModelLocator: ViewModelLocator)
+    func inject(presenter: PagerPresenter, viewModel: PagerViewModel)
     {
-        self.viewModelLocator = viewModelLocator
-        viewModel = viewModelLocator.getPagerViewModel()
+        self.presenter = presenter
+        self.viewModel = viewModel        
         
         createBindings()
     }
@@ -42,6 +45,17 @@ class PagerViewController : UIPageViewController
         delegate = self
         dataSource = self
         view.backgroundColor = UIColor.white
+        
+        view.addSubview(headerView)
+        headerView.createConstraints()
+        headerView.addGestureRecognizer(ClosureGestureRecognizer(withClosure: { [unowned self] in
+            self.presenter.showDailySummary()
+        }))
+        
+        headerView.layer.shadowColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        headerView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        headerView.layer.shadowOpacity = 0.0
+        headerView.layer.shadowRadius = 4.0
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -53,6 +67,12 @@ class PagerViewController : UIPageViewController
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         viewControllersDictionary = [Date : UIViewController]()
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
+        headerView.layer.shadowPath = UIBezierPath(rect: headerView.bounds).cgPath
     }
     
     // MARK: Private Methods
@@ -78,8 +98,12 @@ class PagerViewController : UIPageViewController
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: newDay)
             .addDisposableTo(disposeBag)
+                
+        viewModel.activitiesObservable
+            .drive(onNext: headerView.setActivities)
+            .addDisposableTo(disposeBag)
     }
-    
+
     private func onEditChanged(_ isEditing: Bool)
     {
         view.subviews
@@ -116,8 +140,9 @@ class PagerViewController : UIPageViewController
     {
         guard let vc = viewControllersDictionary[date.ignoreTimeComponents()] else
         {
-            let newVc = TimelineViewController(viewModel: viewModelLocator.getTimelineViewModel(forDate: date))
+            let newVc =  presenter.createTimeline(forDate: date)
             viewControllersDictionary[date.ignoreTimeComponents()] = newVc
+            newVc.delegate = self
             return newVc
         }
         
@@ -156,5 +181,18 @@ extension PagerViewController : UIPageViewControllerDelegate, UIPageViewControll
         guard viewModel.canScroll(toDate: nextDate) else { return nil }
         
         return viewControllerForDate(date: nextDate)
+    }
+}
+
+extension PagerViewController: TimelineDelegate
+{
+    func resizeHeader(size: CGFloat)
+    {
+        self.headerView.resize(by: size)
+    }
+    
+    func chageShadow(opacity: Float)
+    {
+        self.headerView.layer.shadowOpacity = opacity
     }
 }

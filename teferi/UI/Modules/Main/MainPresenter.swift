@@ -16,7 +16,6 @@ class MainPresenter
         
         let viewController = StoryboardScene.Main.instantiateMain()
         viewController.inject(presenter: presenter, viewModel: viewModelLocator.getMainViewModel())
-        viewController.viewModelLocator = viewModelLocator
         
         presenter.viewController = viewController
         
@@ -29,5 +28,10 @@ class MainPresenter
         vc.modalPresentationStyle = .custom
         vc.modalTransitionStyle = .crossDissolve
         viewController.present(vc, animated: true)
+    }
+    
+    func setupPagerViewController(vc:PagerViewController) -> PagerViewController
+    {
+        return PagerPresenter.create(with: viewModelLocator, fromViewController: vc)
     }
 }

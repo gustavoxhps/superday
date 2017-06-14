@@ -15,8 +15,7 @@ class PagerViewControllerTests : XCTestCase
         locator.timeSlotService = PagerMockTimeSlotService(timeService: locator.timeService, locationService: locator.locationService)
         locator.timeService.mockDate = nil
         
-        pagerViewController = PagerViewController(coder: NSCoder())!
-        pagerViewController.inject(viewModelLocator: locator)
+        pagerViewController = PagerPresenter.create(with: locator, fromViewController: PagerViewController(coder: NSCoder())!)
         
         pagerViewController.loadViewIfNeeded()
         UIApplication.shared.keyWindow!.rootViewController = pagerViewController

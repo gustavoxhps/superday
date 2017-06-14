@@ -3,23 +3,20 @@ import RxSwift
 
 class SummaryViewController: UIViewController
 {
-
-    // MARK: Private Properties
     private var disposeBag : DisposeBag = DisposeBag()
     
-    @IBOutlet weak private var titleLabel: UILabel!
-    @IBOutlet weak private var dateLabel: UILabel!
-    @IBOutlet weak private var backButton: UIButton!
-    @IBOutlet weak private var forwardButton: UIButton!
-    @IBOutlet weak private var closeButton: UIButton!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var forwardButton: UIButton!
+    @IBOutlet weak var closeButton: UIButton!
     private var summaryPageViewController : SummaryPageViewController { return self.childViewControllers.firstOfType() }
     
     private var viewModel: SummaryViewModel!
     private var viewModelLocator: ViewModelLocator!
     
-    private var disposableBag = DisposeBag()
+    var disposableBag = DisposeBag()
     
-    // MARK: Methods
     func inject(viewModelLocator: ViewModelLocator)
     {
         self.viewModelLocator = viewModelLocator

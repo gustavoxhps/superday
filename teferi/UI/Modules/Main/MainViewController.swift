@@ -9,18 +9,13 @@ import SnapKit
 
 class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
 {
-    // MARK: Public Properties
-    var viewModelLocator : ViewModelLocator!
-
     // MARK: Private Properties
     private var viewModel : MainViewModel!
     private var presenter : MainPresenter!
-    
-    private let animationDuration = 0.08
+
+    private var pagerViewController : PagerViewController!
     
     private let disposeBag = DisposeBag()
-    
-    private var pagerViewController : PagerViewController { return self.childViewControllers.firstOfType() }
     
     private var editView : EditTimeSlotView!
     private var addButton : AddTimeSlotView!
@@ -29,6 +24,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     {
         self.presenter = presenter
         self.viewModel = viewModel
+        
     }
     
     // MARK: UIViewController lifecycle
@@ -36,8 +32,7 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     {
         super.viewDidLoad()
         
-        //Injecting child ViewController's dependencies
-        pagerViewController.inject(viewModelLocator: viewModelLocator)
+        pagerViewController = presenter.setupPagerViewController(vc: self.childViewControllers.firstOfType())
         
         //Edit View
         editView = EditTimeSlotView(categoryProvider: viewModel.categoryProvider)

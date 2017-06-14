@@ -1,6 +1,6 @@
 import UIKit
 
-class EmptyStateView : UITableViewCell
+class EmptyStateView : UIView
 {
     @IBOutlet private weak var topLeftImage : UIImageView!
     @IBOutlet private weak var topRightImage : UIImageView!
@@ -17,7 +17,7 @@ class EmptyStateView : UITableViewCell
     override func awakeFromNib()
     {
         super.awakeFromNib()
-        
+                
         for (index, imageView) in [ topLeftImage!, topRightImage!, bottomLeftImage!, bottomRightImage! ].enumerated()
         {
             let category = self.categories[index]

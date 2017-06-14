@@ -19,6 +19,10 @@ protocol ViewModelLocator
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
     
     func getWeeklySummaryViewModel() -> WeeklySummaryViewModel
+    
+    func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
+    func getSummaryViewModel() -> SummaryViewModel
+    func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
 }
 
 class DefaultViewModelLocator : ViewModelLocator
@@ -106,6 +110,7 @@ class DefaultViewModelLocator : ViewModelLocator
     func getPagerViewModel() -> PagerViewModel
     {
         let viewModel = PagerViewModel(timeService: self.timeService,
+                                       timeSlotService: self.timeSlotService,
                                        settingsService: self.settingsService,
                                        editStateService: self.editStateService,
                                        appLifecycleService: self.appLifecycleService,
@@ -160,5 +165,27 @@ class DefaultViewModelLocator : ViewModelLocator
             timeSlotService: timeSlotService,
             settingsService: settingsService
         )
+    }
+    
+    func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
+    {
+        let viewModel = DailySummaryViewModel(date: date,
+                                              timeService: self.timeService,
+                                              timeSlotService: self.timeSlotService,
+                                              appLifecycleService: self.appLifecycleService,
+                                              loggingService: self.loggingService)
+        return viewModel
+    }
+    
+    func getSummaryViewModel() -> SummaryViewModel
+    {
+        return SummaryViewModel(selectedDateService: self.selectedDateService)
+    }
+    
+    func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
+    {
+        return SummaryPageViewModel(date: date,
+                                    timeService: self.timeService,
+                                    settingsService: self.settingsService)
     }
 }

@@ -2,20 +2,18 @@ import Foundation
 
 class DailySummaryViewModel
 {
-    // MARK: Public Properties
-    let date : Date
-    lazy var activities : [Activity] =
-        {
-            return self.timeSlotService
-                .getActivities(forDate: self.date)
-                .sorted(by: self.duration)
-    }()
-    
-    // MARK: Private Properties
     private let timeService : TimeService
     private let timeSlotService : TimeSlotService
     private let appLifecycleService : AppLifecycleService
     private let loggingService : LoggingService
+    
+    let date : Date
+    lazy var activities : [Activity] =
+    {
+        return self.timeSlotService
+            .getActivities(forDate: self.date)
+            .sorted(by: self.duration)
+    }()
     
     // MARK: - Init
     init(date: Date,
@@ -31,7 +29,8 @@ class DailySummaryViewModel
         self.date = date.ignoreTimeComponents()
     }
     
-    // MARK: - Helper    
+    // MARK: - Helper
+    
     private func duration(_ element1: Activity, _ element2: Activity) -> Bool
     {
         return element1.duration > element2.duration
