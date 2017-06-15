@@ -46,7 +46,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         locationService = DefaultLocationService(loggingService: loggingService)
         healthKitService = DefaultHealthKitService(settingsService: settingsService, loggingService: loggingService)
         selectedDateService = DefaultSelectedDateService(timeService: timeService)
-        feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Supertoday feedback", body: "")
+        feedbackService = MailFeedbackService(recipients: ["support@toggl.com"], subject: "Superday feedback", body: "")
         
         coreDataStack = CoreDataStack(loggingService: loggingService)
         let timeSlotPersistencyService = CoreDataPersistencyService(loggingService: loggingService, modelAdapter: TimeSlotModelAdapter(), managedObjectContext: coreDataStack.managedObjectContext)
