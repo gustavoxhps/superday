@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -88,11 +88,12 @@
                                                     <constraint firstAttribute="height" constant="240" id="C64-vm-tXQ"/>
                                                 </constraints>
                                             </view>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="S5S-3Y-WGR" customClass="ButtonsCollectionView" customModule="teferi" customModuleProvider="target">
-                                                <rect key="frame" x="38" y="265" width="300" height="69"/>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="S5S-3Y-WGR" customClass="ButtonsCollectionView" customModule="teferi" customModuleProvider="target">
+                                                <rect key="frame" x="53.5" y="265" width="270" height="69"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="69" id="deG-wp-VzM"/>
+                                                    <constraint firstAttribute="width" constant="270" id="yjZ-Ce-9ag"/>
                                                 </constraints>
                                                 <collectionViewLayout key="collectionViewLayout" id="OKB-1B-8hL" customClass="CenterAlignedCollectionViewFlowLayout" customModule="teferi" customModuleProvider="target"/>
                                                 <cells>
@@ -167,7 +168,7 @@
                                                         <rect key="frame" x="0.0" y="28" width="375" height="48"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r6K-ax-f88" id="PGV-ya-5fQ">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="47.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="47"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6fG-RT-91I">
@@ -252,7 +253,6 @@
                                             <constraint firstAttribute="trailing" secondItem="eWB-PO-TUK" secondAttribute="trailing" id="dVY-o2-vpQ"/>
                                             <constraint firstItem="SVy-cJ-rOf" firstAttribute="top" secondItem="jFt-lZ-lFI" secondAttribute="bottom" constant="20" id="e8z-nM-a8a"/>
                                             <constraint firstAttribute="bottom" secondItem="SVy-cJ-rOf" secondAttribute="bottom" id="elZ-oB-Xci"/>
-                                            <constraint firstItem="S5S-3Y-WGR" firstAttribute="width" secondItem="jbX-q0-HBc" secondAttribute="width" multiplier="0.8" id="qai-93-0OZ"/>
                                             <constraint firstItem="SVy-cJ-rOf" firstAttribute="leading" secondItem="jbX-q0-HBc" secondAttribute="leading" id="vFf-ia-HB5"/>
                                             <constraint firstItem="jFt-lZ-lFI" firstAttribute="top" secondItem="S5S-3Y-WGR" secondAttribute="bottom" constant="40" id="zvF-Hu-jk8"/>
                                         </constraints>

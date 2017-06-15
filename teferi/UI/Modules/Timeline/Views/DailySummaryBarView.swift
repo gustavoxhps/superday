@@ -57,6 +57,14 @@ class DailySummaryBarView : UIView
         setNeedsUpdateConstraints()
     }
     
+    func reset()
+    {
+        barHeight = 10
+        height = 34
+        
+        setNeedsUpdateConstraints()
+    }
+    
     override func updateConstraints()
     {
         snp.updateConstraints { make in

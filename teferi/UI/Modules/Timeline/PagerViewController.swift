@@ -195,4 +195,9 @@ extension PagerViewController: TimelineDelegate
     {
         self.headerView.layer.shadowOpacity = opacity
     }
+    
+    func resetHeaderSize()
+    {
+        self.headerView.reset()
+    }
 }

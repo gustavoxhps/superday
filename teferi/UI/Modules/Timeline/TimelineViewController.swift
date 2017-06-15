@@ -7,6 +7,7 @@ protocol TimelineDelegate: class
 {
     func resizeHeader(size:CGFloat)
     func chageShadow(opacity:Float)
+    func resetHeaderSize()
 }
 
 class TimelineViewController : UIViewController, UITableViewDelegate
@@ -61,7 +62,6 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         }
         emptyStateView?.isHidden = true
 
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
         tableView.separatorStyle = .none
@@ -69,7 +69,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
         tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
-        tableView.contentInset = UIEdgeInsets(top: 34, left: 0, bottom: 0, right: 0)        
+        tableView.contentInset = UIEdgeInsets(top: 34, left: 0, bottom: 120, right: 0)
         
         viewModel.timeObservable
             .asDriver(onErrorJustReturn: ())
@@ -110,10 +110,11 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         Observable<(CGFloat, CGFloat)>.zip(currentY, nextY) { ($0, $1) }
             .map { [unowned self] current, next in
                 let distance = next - current
-                let maxScroll = self.tableView.contentSize.height - self.tableView.frame.height
+                let maxScroll = self.tableView.contentSize.height - self.tableView.frame.height + self.tableView.contentInset.bottom
+                let minScroll = -self.tableView.contentInset.top
                 
-                if next > maxScroll - 10 && distance < 0 { return 0 }
-                if next < 10 && distance > 0 { return 0 }
+                if next < minScroll || current < minScroll { return 0 }
+                if next > maxScroll || current > maxScroll { return 0 }
                 
                 return distance
             }
@@ -131,6 +132,16 @@ class TimelineViewController : UIViewController, UITableViewDelegate
                 self.delegate?.chageShadow(opacity: Float(opacity))
             })
             .addDisposableTo(disposeBag)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.delegate?.resetHeaderSize()
+        
+        let offset = Float(tableView.contentOffset.y)
+        self.delegate?.chageShadow(opacity: offset > 50 ? 1.0 : offset / 50)
+
     }
 
     // MARK: Private Methods

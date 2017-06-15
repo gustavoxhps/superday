@@ -42,7 +42,6 @@ class ChartView: UIView
     // Private Properties
     private var topYValue: TimeInterval?
     private var nextTopYValue: TimeInterval = 0
-    fileprivate var currentPage:Int = 0
     fileprivate var offset: CGFloat = 0
     fileprivate var pageWidth: CGFloat = 0
 
@@ -58,11 +57,7 @@ class ChartView: UIView
     {
         didSet
         {
-            guard let datasource = datasource else { return }
-            
-            let numberOfXPoints = CGFloat(datasource.totalNumberOfEntries())
-            scrollView.contentSize = CGSize(width: pageWidth * numberOfXPoints, height: frame.height)
-            scrollView.contentOffset = CGPoint(x: scrollView.contentSize.width - frame.width, y: 0)
+            setNeedsDisplay()
         }
     }
     
@@ -86,7 +81,18 @@ class ChartView: UIView
         scrollView.decelerationRate = UIScrollViewDecelerationRateFast
         addSubview(scrollView)
         
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard let datasource = datasource else { return }
+        
         pageWidth = (frame.width - insets.left - insets.right) / 6
+        let numberOfXPoints = CGFloat(datasource.totalNumberOfEntries())
+        scrollView.contentSize = CGSize(width: pageWidth * numberOfXPoints, height: frame.height)
+        scrollView.contentOffset = CGPoint(x: scrollView.contentSize.width - frame.width, y: 0)
+
     }
     
     // Public Methods
@@ -159,6 +165,7 @@ class ChartView: UIView
             drawLine(l, inRect:rect)
             drawPoints(l, inRect: rect)
         }
+
         ctx.restoreGState()
     }
     
@@ -172,6 +179,7 @@ class ChartView: UIView
         var category:Category? = nil
         
         var hasAnyValue = false
+        let currentPage = max(Int(offset / pageWidth), 0)
         
         for page in currentPage...(currentPage + 7)
         {
@@ -211,7 +219,8 @@ class ChartView: UIView
         var category:Category? = nil
         
         var hasAnyValue = false
-
+        let currentPage = max(Int(offset / pageWidth), 0)
+        
         for page in currentPage...(currentPage + 7)
         {
             guard case let CachedDataPoint.data(activity: dataPoint) = dataPoint(ofLine: line, withIndex: page) else { continue }
@@ -240,7 +249,12 @@ class ChartView: UIView
     
     private func drawLabels(inRect rect: CGRect)
     {
-        guard let datasource = datasource else { return }
+        guard let ctx = UIGraphicsGetCurrentContext(), let datasource = datasource else { return }
+        
+        ctx.saveGState()
+        ctx.clip(to: rect.insetBy(dx: -15, dy: -insets.bottom-1))
+        
+        let currentPage = max(Int(offset / pageWidth), 0)
         
         for page in currentPage...(currentPage + 7)
         {
@@ -263,6 +277,8 @@ class ChartView: UIView
                                  width: 30,
                                  height: 36))
         }
+        
+        ctx.restoreGState()
     }
     
     private func dataPoint(ofLine line:Int, withIndex p:Int) -> CachedDataPoint
@@ -286,6 +302,7 @@ class ChartView: UIView
     {
         let page = Int(round((scrollView.contentSize.width - frame.width - scrollView.contentOffset.x) / pageWidth))
         self.scrollView.setContentOffset(CGPoint(x:scrollView.contentSize.width - frame.width - CGFloat(page) * self.pageWidth, y:0), animated: true)
+
         delegate?.pageChange(index: page)
     }
     
@@ -318,8 +335,10 @@ class ChartView: UIView
     
     private func getHigherValue() -> TimeInterval
     {
-        guard let datasource = datasource else { return 0 }
+        guard let datasource = datasource, pageWidth > 0 else { return 0 }
         
+        let currentPage = max(Int(offset / pageWidth), 0)
+
         var higherValue: TimeInterval = 0
         for page in currentPage...(currentPage + 7)
         {
@@ -339,7 +358,6 @@ extension ChartView : UIScrollViewDelegate
     {
         offset = scrollView.contentSize.width - scrollView.contentOffset.x - frame.width
         
-        currentPage = max(Int(offset / pageWidth), 0)
         setNeedsDisplay()
     }
     
