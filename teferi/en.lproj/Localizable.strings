@@ -1,6 +1,6 @@
-"AppName" = "Supertoday";
+"AppName" = "Superday";
 
-"CurrentDayBarTitle" = "Supertoday";
+"CurrentDayBarTitle" = "Superday";
 "YesterdayBarTitle" = "Superyesterday";
 
 "LocationDisabledTitleFirstUse" = "You're almost done!";
@@ -18,7 +18,7 @@
 "NotificationBody" = "What are you doing right now?";
 "NotificationTitle" = "Howdy!";
 
-"NotificationHealthKitAccessBody" = "Supertoday needs access to the Health app for more accurate tracking. 🙏";
+"NotificationHealthKitAccessBody" = "Superday needs access to the Health app for more accurate tracking. 🙏";
 
 "DailySummaryTitle" = "Daily Summary";
 

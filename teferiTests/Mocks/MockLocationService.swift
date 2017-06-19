@@ -18,17 +18,17 @@ class MockLocationService : LocationService
     
     func startLocationTracking()
     {
-        self.locationStarted = true
+        locationStarted = true
     }
     
     func stopLocationTracking()
     {
-        self.locationStarted = false
+        locationStarted = false
     }
     
     func getLastKnownLocation() -> CLLocation?
     {
-        return self.useNilOnLastKnownLocation ? nil : self.lastLocation
+        return useNilOnLastKnownLocation ? nil : lastLocation
     }
     
     var eventObservable : Observable<TrackEvent>
@@ -42,7 +42,7 @@ class MockLocationService : LocationService
     //MARK: Methods
     func sendNewTrackEvent(_ location: CLLocation)
     {
-        self.lastLocation = location
-        self.eventSubject.onNext(location)
+        lastLocation = location
+        eventSubject.onNext(location)
     }
 }

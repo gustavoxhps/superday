@@ -5,7 +5,7 @@ extension HealthSample
 {
     func categoryBasedOnSpeed(using fastMovingSpeedThreshold: Double) -> Category
     {
-        return self.speed > fastMovingSpeedThreshold ?
+        return speed > fastMovingSpeedThreshold ?
             .commute :
             .unknown
     }

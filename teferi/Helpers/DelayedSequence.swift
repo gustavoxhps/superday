@@ -15,20 +15,20 @@ class DelayedSequence
     
     @discardableResult func wait(_ time: TimeInterval) -> DelayedSequence
     {
-        self.delay += time
+        delay += time
         return self
     }
     
     @discardableResult func after(_ time: TimeInterval, _ action: (Double) -> ()) -> DelayedSequence
     {
-        self.delay += time
-        action(self.delay)
+        delay += time
+        action(delay)
         return self
     }
     
     @discardableResult func then(_ action: (Double) -> ()) -> DelayedSequence
     {
-        action(self.delay)
+        action(delay)
         return self
     }
 }

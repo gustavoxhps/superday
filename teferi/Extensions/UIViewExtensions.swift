@@ -59,6 +59,6 @@ extension UIView
     
     func constrainEdges(to view: UIView)
     {
-        self.snp.makeConstraints { make in make.edges.equalTo(view) }
+        snp.makeConstraints { make in make.edges.equalTo(view) }
     }
 }

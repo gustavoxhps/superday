@@ -25,17 +25,17 @@ class LocationServiceTests: XCTestCase {
     {
         super.setUp()
         
-        self.logginService = MockLoggingService()
-        self.settingsService = MockSettingsService()
-        self.locationManager = MockCLLocationManager()
-        self.accurateLocationManager = MockCLLocationManager()
+        logginService = MockLoggingService()
+        settingsService = MockSettingsService()
+        locationManager = MockCLLocationManager()
+        accurateLocationManager = MockCLLocationManager()
         
         scheduler = TestScheduler(initialClock:0)
         
         locationService = DefaultLocationService(
-            loggingService: self.logginService,
-            locationManager: self.locationManager,
-            accurateLocationManager: self.accurateLocationManager,
+            loggingService: logginService,
+            locationManager: locationManager,
+            accurateLocationManager: accurateLocationManager,
             timeoutScheduler:scheduler)
      
         observer = scheduler.createObserver(TrackEvent.self)
@@ -47,11 +47,11 @@ class LocationServiceTests: XCTestCase {
     
     override func tearDown()
     {
-        self.logginService = nil
-        self.locationManager = nil
-        self.accurateLocationManager = nil
+        logginService = nil
+        locationManager = nil
+        accurateLocationManager = nil
         
-        self.locationService = nil
+        locationService = nil
         
         super.tearDown()
     }
@@ -154,7 +154,7 @@ class LocationServiceTests: XCTestCase {
             CLLocation(latitude: 0, longitude: 0) // And this one
         ]
         
-        locations.forEach { [unowned self] location in
+        locations.forEach { location in
             self.locationManager.sendLocations(locations)
             self.accurateLocationManager.sendLocations([self.baseLocation.randomOffset(withAccuracy:4000)]) //GPS won't replace SLC
         }

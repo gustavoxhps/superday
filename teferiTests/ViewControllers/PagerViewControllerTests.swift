@@ -11,29 +11,28 @@ class PagerViewControllerTests : XCTestCase
     {
         super.setUp()
  
-        self.locator = MockLocator()
-        self.locator.timeSlotService = PagerMockTimeSlotService(timeService: self.locator.timeService, locationService: self.locator.locationService)
-        self.locator.timeService.mockDate = nil
+        locator = MockLocator()
+        locator.timeSlotService = PagerMockTimeSlotService(timeService: locator.timeService, locationService: locator.locationService)
+        locator.timeService.mockDate = nil
         
-        self.pagerViewController = PagerViewController(coder: NSCoder())!
-        self.pagerViewController.inject(viewModelLocator: self.locator)
+        pagerViewController = PagerPresenter.create(with: locator, fromViewController: PagerViewController(coder: NSCoder())!)
         
-        self.pagerViewController.loadViewIfNeeded()
-        UIApplication.shared.keyWindow!.rootViewController = self.pagerViewController
+        pagerViewController.loadViewIfNeeded()
+        UIApplication.shared.keyWindow!.rootViewController = pagerViewController
     }
     
     override func tearDown()
     {
-        self.pagerViewController.viewWillDisappear(false)
-        self.pagerViewController = nil
+        pagerViewController.viewWillDisappear(false)
+        pagerViewController = nil
     }
     
     func testScrollingIsDisabledWhenEnteringEditMode()
     {
-        self.locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: self.createEmptyTimeSlot());
+        locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: createEmptyTimeSlot());
         
         let scrollViews =
-            self.pagerViewController
+            pagerViewController
                 .view
                 .subviews
                 .flatMap { v in v as? UIScrollView }
@@ -43,11 +42,11 @@ class PagerViewControllerTests : XCTestCase
     
     func testScrollingIsEnabledWhenExitingEditMode()
     {
-        self.locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: self.createEmptyTimeSlot());
-        self.locator.editStateService.notifyEditingEnded();
+        locator.editStateService.notifyEditingBegan(point: CGPoint(), timeSlot: createEmptyTimeSlot());
+        locator.editStateService.notifyEditingEnded();
         
         let scrollViews =
-            self.pagerViewController
+            pagerViewController
                 .view
                 .subviews
                 .flatMap { v in v as? UIScrollView }
@@ -59,66 +58,66 @@ class PagerViewControllerTests : XCTestCase
     {
         var didNotify = false
         
-        _ = self.locator
+        _ = locator
             .selectedDateService
             .currentlySelectedDateObservable
             .subscribe(onNext: { _ in didNotify = true })
         
-        self.pagerViewController.pageViewController(self.pagerViewController, didFinishAnimating: true, previousViewControllers: self.pagerViewController.viewControllers!, transitionCompleted: true)
+        pagerViewController.pageViewController(pagerViewController, didFinishAnimating: true, previousViewControllers: pagerViewController.viewControllers!, transitionCompleted: true)
         
         expect(didNotify).to(beTrue())
     }
     
     func testTheViewControllerDoesNotAllowScrollingAfterTheCurrentDate()
     {
-        let nextViewController = self.scrollForward()
+        let nextViewController = scrollForward()
         
         expect(nextViewController).to(beNil())
     }
     
     func testTheViewControllerDoesNotAllowScrollingBeforeTheInstallDate()
     {
-        self.locator.settingsService.setInstallDate(Date())
+        locator.settingsService.setInstallDate(Date())
         
-        let previousViewController = self.scrollBack()
+        let previousViewController = scrollBack()
         
         expect(previousViewController).to(beNil())
     }
     
     func testTheViewControllerScrollsBackOneDayAtATime()
     {
-        self.locator.settingsService.setInstallDate(Date().add(days: -10))
+        locator.settingsService.setInstallDate(Date().add(days: -10))
         
-        let previousViewController = self.scrollBack()!
+        let previousViewController = scrollBack()!
         
         expect(previousViewController.date.ignoreTimeComponents()).to(equal(Date().yesterday.ignoreTimeComponents()))
     }
     
     func testTheViewControllerScrollsForwardOneDayAtATime()
     {
-        self.locator.settingsService.setInstallDate(Date().add(days: -10))
+        locator.settingsService.setInstallDate(Date().add(days: -10))
         
-        var previous = self.scrollBack(from: nil)
-        previous = self.scrollBack(from: previous)
+        var previous = scrollBack(from: nil)
+        previous = scrollBack(from: previous)
         
-        let nextViewController = self.scrollForward(from: previous)!
+        let nextViewController = scrollForward(from: previous)!
         
         expect(nextViewController.date.ignoreTimeComponents()).to(equal(Date().yesterday.ignoreTimeComponents()))
     }
     
     @discardableResult func scrollBack(from viewController: UIViewController? = nil) -> TimelineViewController?
     {
-        let targetViewController = viewController ?? self.pagerViewController.viewControllers!.last!
+        let targetViewController = viewController ?? pagerViewController.viewControllers!.last!
         
-        return self.pagerViewController
-            .pageViewController(self.pagerViewController, viewControllerBefore: targetViewController) as? TimelineViewController
+        return pagerViewController
+            .pageViewController(pagerViewController, viewControllerBefore: targetViewController) as? TimelineViewController
     }
     
     @discardableResult func scrollForward(from viewController: UIViewController? = nil) -> TimelineViewController?
     {
-        let targetViewController = viewController ?? self.pagerViewController.viewControllers!.last!
+        let targetViewController = viewController ?? pagerViewController.viewControllers!.last!
         
-        return self.pagerViewController.pageViewController(self.pagerViewController, viewControllerAfter: targetViewController) as? TimelineViewController
+        return pagerViewController.pageViewController(pagerViewController, viewControllerAfter: targetViewController) as? TimelineViewController
     }
     
     private func createEmptyTimeSlot() -> TimeSlot

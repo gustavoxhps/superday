@@ -31,7 +31,7 @@ extension Array
     
     func safeGetElement(at index: Int) -> Element?
     {
-        let element : Element? = self.indices.contains(index) ? self[index] : nil
+        let element : Element? = indices.contains(index) ? self[index] : nil
         return element
     }
     
@@ -84,12 +84,12 @@ extension Array where Element == TemporaryTimeSlot
     {
         var updated = [TemporaryTimeSlot]()
         
-        for (currentIndex, slot) in self.enumerated()
+        for (currentIndex, slot) in enumerated()
         {
-            let nextIndex = self.index(after: currentIndex)
+            let nextIndex = index(after: currentIndex)
             
             guard
-                nextIndex < self.endIndex
+                nextIndex < endIndex
             else {
                 updated.append(slot)
                 continue

@@ -19,16 +19,16 @@ class SmartGuessServiceTests : XCTestCase
     
     override func setUp()
     {
-        self.timeService = MockTimeService()
-        self.loggingService = MockLoggingService()
-        self.settingsService = MockSettingsService()
-        self.persistencyService = MockSmartGuessPersistencyService()
+        timeService = MockTimeService()
+        loggingService = MockLoggingService()
+        settingsService = MockSettingsService()
+        persistencyService = MockSmartGuessPersistencyService()
         
         
-        self.smartGuessService = DefaultSmartGuessService(timeService: self.timeService,
-                                                          loggingService: self.loggingService,
-                                                          settingsService: self.settingsService,
-                                                          persistencyService: self.persistencyService)
+        smartGuessService = DefaultSmartGuessService(timeService: timeService,
+                                                          loggingService: loggingService,
+                                                          settingsService: settingsService,
+                                                          persistencyService: persistencyService)
     }
     
     func testGuessesAreReturnedWithTimestampsWithinThresholdFromLocation()
@@ -52,12 +52,12 @@ class SmartGuessServiceTests : XCTestCase
             (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)
         
         expect(smartGuess?.category).to(equal(teferi.Category.leisure))
     }
@@ -83,12 +83,12 @@ class SmartGuessServiceTests : XCTestCase
                 (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)
         
         expect(smartGuess?.category).to(beNil())
     }
@@ -106,12 +106,12 @@ class SmartGuessServiceTests : XCTestCase
                 (distanceFromTarget: 66, category: .work, date: date)
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.work))
     }
@@ -130,12 +130,12 @@ class SmartGuessServiceTests : XCTestCase
             (distanceFromTarget: 66, category: .work, date: date)
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.leisure))
     }
@@ -153,12 +153,12 @@ class SmartGuessServiceTests : XCTestCase
             (distanceFromTarget: 76, category: .work, date: date)
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.leisure))
     }
@@ -176,12 +176,12 @@ class SmartGuessServiceTests : XCTestCase
             (distanceFromTarget: 66, category: .work, date: date)
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.work))
     }
@@ -200,12 +200,12 @@ class SmartGuessServiceTests : XCTestCase
             (distanceFromTarget: 56, category: .work, date: date)
         ]
         
-        self.persistencyService.smartGuesses =
+        persistencyService.smartGuesses =
             testInput
                 .map(toLocation(offsetFrom: targetLocation))
                 .map(toSmartGuess)
         
-        let smartGuess = self.smartGuessService.get(forLocation: targetLocation)!
+        let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.work))
     }

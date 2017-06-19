@@ -24,26 +24,26 @@ class NotificationSchedulingServiceTests : XCTestCase
     
     override func setUp()
     {
-        self.midnight = Date().ignoreTimeComponents()
-        self.noon = self.midnight.addingTimeInterval(12 * 60 * 60)
+        midnight = Date().ignoreTimeComponents()
+        noon = midnight.addingTimeInterval(12 * 60 * 60)
         
-        self.timeService = MockTimeService()
-        self.loggingService = MockLoggingService()
-        self.settingsService = MockSettingsService()
-        self.locationService = MockLocationService()
-        self.smartGuessService = MockSmartGuessService()
-        self.appLifecycleService = MockAppLifecycleService()
-        self.notificationService = MockNotificationService()
+        timeService = MockTimeService()
+        loggingService = MockLoggingService()
+        settingsService = MockSettingsService()
+        locationService = MockLocationService()
+        smartGuessService = MockSmartGuessService()
+        appLifecycleService = MockAppLifecycleService()
+        notificationService = MockNotificationService()
         
-        self.timeService.mockDate = noon
+        timeService.mockDate = noon
         
-        self.schedulingService = NotificationSchedulingService(timeService: self.timeService,
-                                                               settingsService: self.settingsService,
-                                                               locationService: self.locationService,
-                                                               smartGuessService: self.smartGuessService,
-                                                               notificationService: self.notificationService)
+        schedulingService = NotificationSchedulingService(timeService: timeService,
+                                                               settingsService: settingsService,
+                                                               locationService: locationService,
+                                                               smartGuessService: smartGuessService,
+                                                               notificationService: notificationService)
         
-        self.appLifecycleService.publish(.movedToBackground)
+        appLifecycleService.publish(.movedToBackground)
     }
     
     func testTheTestHelpersCalculateLocationDifferencesCorrectly()
@@ -52,10 +52,10 @@ class NotificationSchedulingServiceTests : XCTestCase
         let far = 123_456.0
         let expectedAccuracy = 1.0 / 1000.0
         
-        let baseLocation = self.getLocation(withTimestamp: self.noon, metersFromOrigin: 0)
-        let closeLocation = self.getLocation(withTimestamp: self.noon, metersFromOrigin: close)
-        let farLocation = self.getLocation(withTimestamp: self.noon, metersFromOrigin: far)
-        let oppositeLocation = self.getLocation(withTimestamp: self.noon, metersFromOrigin: -far)
+        let baseLocation = getLocation(withTimestamp: noon, metersFromOrigin: 0)
+        let closeLocation = getLocation(withTimestamp: noon, metersFromOrigin: close)
+        let farLocation = getLocation(withTimestamp: noon, metersFromOrigin: far)
+        let oppositeLocation = getLocation(withTimestamp: noon, metersFromOrigin: -far)
         
         expect(closeLocation.distance(from: baseLocation)).to(beCloseTo(close, within: close * expectedAccuracy))
         expect(farLocation.distance(from: baseLocation)).to(beCloseTo(far, within: far * expectedAccuracy))
@@ -65,21 +65,21 @@ class NotificationSchedulingServiceTests : XCTestCase
     func testTheTestHelpersCreateLocationsBasedOnDefaultSpeed()
     {
         let minutes = 20
-        let meters = Double(minutes) * self.defaultMovementSpeed
+        let meters = Double(minutes) * defaultMovementSpeed
         let accuracy = 1.0 / 1000.0
         
-        let baseLocation = self.getLocation(withTimestamp: self.noon)
-        let futureLocation = self.getLocation(withTimestamp: self.getDate(minutesPastNoon: minutes))
+        let baseLocation = getLocation(withTimestamp: noon)
+        let futureLocation = getLocation(withTimestamp: getDate(minutesPastNoon: minutes))
         
         expect(futureLocation.distance(from: baseLocation)).to(beCloseTo(meters, within: meters * accuracy))
     }
     
     func testTheAlgorithmReschedulesNotificationsOnCommute()
     {
-        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 15)
+        setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 15)
         
-        let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.sendNewTrackEvent(location)
+        let location = getLocation(withTimestamp: noon)
+        locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(1))
@@ -88,10 +88,10 @@ class NotificationSchedulingServiceTests : XCTestCase
     
     func testTheAlgorithmReeschedulesNotificationsOnNonCommute()
     {
-        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
+        setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
         
-        let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.sendNewTrackEvent(location)
+        let location = getLocation(withTimestamp: noon)
+        locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(1))
@@ -100,10 +100,10 @@ class NotificationSchedulingServiceTests : XCTestCase
     
     func testTheAlgorithmDoesNotTouchNotificationsFromLocationUpdatesInSimilarLocation()
     {
-        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 0)
+        setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 0)
         
-        let location = self.getLocation(withTimestamp: self.getDate(minutesPastNoon: 30), metersFromOrigin: 20)
-        self.locationService.sendNewTrackEvent(location)
+        let location = getLocation(withTimestamp: getDate(minutesPastNoon: 30), metersFromOrigin: 20)
+        locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(0))
         expect(self.notificationService.schedulings).to(equal(0))
@@ -111,24 +111,24 @@ class NotificationSchedulingServiceTests : XCTestCase
     
     func testTheAlgorithmDoesNotTouchLastKnownLocationFromLocationUpdatesInSimilarLocation()
     {
-        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 0)
+        setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 0)
         
-        let initialLastLocation = self.settingsService.lastNotificationLocation!
+        let initialLastLocation = settingsService.lastNotificationLocation!
         
-        let location = self.getLocation(withTimestamp: self.getDate(minutesPastNoon: 30), metersFromOrigin: 20)
-        self.locationService.sendNewTrackEvent(location)
+        let location = getLocation(withTimestamp: getDate(minutesPastNoon: 30), metersFromOrigin: 20)
+        locationService.sendNewTrackEvent(location)
         
         expect(self.settingsService.lastNotificationLocation).to(equal(initialLastLocation))
     }
     
     func testNotificationIsCancelledIfSmartGuessExists()
     {
-        self.setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
-        self.smartGuessService.smartGuessToReturn = SmartGuess(
-            withId: 0, category: .food, location: CLLocation(), lastUsed: self.midnight)
+        setupFirstTimeSlotAndLastLocation(minutesBeforeNoon: 30)
+        smartGuessService.smartGuessToReturn = SmartGuess(
+            withId: 0, category: .food, location: CLLocation(), lastUsed: midnight)
         
-        let location = self.getLocation(withTimestamp: self.noon)
-        self.locationService.sendNewTrackEvent(location)
+        let location = getLocation(withTimestamp: noon)
+        locationService.sendNewTrackEvent(location)
         
         expect(self.notificationService.cancellations).to(equal(1))
         expect(self.notificationService.schedulings).to(equal(0))
@@ -139,44 +139,44 @@ class NotificationSchedulingServiceTests : XCTestCase
                                                               metersFromOrigin: Double? = nil,
                                                               horizontalAccuracy: Double = 20)
     {
-        let date = self.getDate(minutesPastNoon: -minutesBeforeNoon)
-        let location = self.getLocation(withTimestamp: date, metersFromOrigin: metersFromOrigin, horizontalAccuracy: horizontalAccuracy)
-        self.settingsService.setLastNotificationLocation(location)
+        let date = getDate(minutesPastNoon: -minutesBeforeNoon)
+        let location = getLocation(withTimestamp: date, metersFromOrigin: metersFromOrigin, horizontalAccuracy: horizontalAccuracy)
+        settingsService.setLastNotificationLocation(location)
     }
     
     func getDate(minutesPastNoon minutes: Int) -> Date
     {
-        return self.noon
+        return noon
             .addingTimeInterval(Double(minutes * 60))
     }
     
     func getLocation(withTimestamp date: Date) -> CLLocation
     {
-        return self.getLocation(withTimestamp: date, horizontalAccuracy: 0)
+        return getLocation(withTimestamp: date, horizontalAccuracy: 0)
     }
     
     func getLocation(withTimestamp date: Date, metersFromOrigin: Double?, horizontalAccuracy: Double) -> CLLocation
     {
         guard let meters = metersFromOrigin else
         {
-            return self.getLocation(withTimestamp: date, horizontalAccuracy: horizontalAccuracy)
+            return getLocation(withTimestamp: date, horizontalAccuracy: horizontalAccuracy)
         }
         
-        return self.getLocation(withTimestamp: date, metersFromOrigin: meters, horizontalAccuracy: horizontalAccuracy)
+        return getLocation(withTimestamp: date, metersFromOrigin: meters, horizontalAccuracy: horizontalAccuracy)
     }
     
     func getLocation(withTimestamp date: Date, horizontalAccuracy: Double) -> CLLocation
     {
-        let metersPerSecond = self.defaultMovementSpeed / 60.0
-        let secondsSinceNoon = date.timeIntervalSince(self.noon)
+        let metersPerSecond = defaultMovementSpeed / 60.0
+        let secondsSinceNoon = date.timeIntervalSince(noon)
         let metersOffset = secondsSinceNoon * metersPerSecond
         
-        return self.getLocation(withTimestamp: date, metersFromOrigin: metersOffset, horizontalAccuracy: horizontalAccuracy)
+        return getLocation(withTimestamp: date, metersFromOrigin: metersOffset, horizontalAccuracy: horizontalAccuracy)
     }
     
     func getLocation(withTimestamp date: Date, metersFromOrigin distance: Double, horizontalAccuracy: Double = 20) -> CLLocation
     {
-        let coordinates = self.baseCoordinates.offset(.north, meters: distance)
+        let coordinates = baseCoordinates.offset(.north, meters: distance)
         
         return CLLocation(coordinate: coordinates,
                           altitude: 0,

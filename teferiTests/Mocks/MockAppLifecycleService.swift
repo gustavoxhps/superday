@@ -9,7 +9,7 @@ class MockAppLifecycleService : AppLifecycleService
     //MARK: Initializers
     init()
     {
-        self.lifecycleEventObservable = self.lifecycleEventSubject.asObservable()
+        lifecycleEventObservable = lifecycleEventSubject.asObservable()
     }
     
     //MARK: Properties

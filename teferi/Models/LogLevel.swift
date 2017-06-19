@@ -10,7 +10,6 @@ import Foundation
  */
 enum LogLevel : String
 {
-    case verbose
     case debug
     case info
     case warning
@@ -18,6 +17,6 @@ enum LogLevel : String
     
     func errorDomain(with message: String) -> String
     {
-        return self.rawValue.capitalized + ": " + message
+        return rawValue.capitalized + ": " + message
     }
 }

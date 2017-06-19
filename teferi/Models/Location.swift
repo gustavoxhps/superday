@@ -47,17 +47,17 @@ final class Location : EventData
     // MARK: Methods
     func isCommute(fromLocation previousLocation:Location) -> Bool
     {
-        return self.timestamp.timeIntervalSince(previousLocation.timestamp) < Constants.commuteDetectionLimit
+        return timestamp.timeIntervalSince(previousLocation.timestamp) < Constants.commuteDetectionLimit
     }
     
     func isMoreAccurate(than other: Location) -> Bool
     {
-        return self.horizontalAccuracy < other.horizontalAccuracy
+        return horizontalAccuracy < other.horizontalAccuracy
     }
     
     func isSignificantlyDifferent(fromLocation other: Location) -> Bool
     {
-        let clLocation = self.toCLLocation()
+        let clLocation = toCLLocation()
         let otherCLLocation = other.toCLLocation()
         
         let distance = clLocation.distance(from: otherCLLocation)
@@ -67,7 +67,7 @@ final class Location : EventData
     func toCLLocation() -> CLLocation
     {
         let coordinate = CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-        return CLLocation(coordinate: coordinate,                          altitude: self.altitude,
+        return CLLocation(coordinate: coordinate, altitude: self.altitude,
                           horizontalAccuracy: self.horizontalAccuracy,
                           verticalAccuracy: self.verticalAccuracy,
                           timestamp: self.timestamp)

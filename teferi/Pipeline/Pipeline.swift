@@ -37,21 +37,21 @@ class Pipeline
     func run()
     {
         let pipelineStartTime = Date()
-        self.loggingService.log(withLogLevel: .info, message: "Pipeline started running")
+        loggingService.log(withLogLevel: .info, message: "Pipeline started running")
         
         let pumpData = self.pumps.map { $0.run() }
         let timeline = pipes.reduce(crossPipe.process(timeline: pumpData)) { timeline, pipe in
             return pipe.process(timeline: timeline)
         }
         
-        self.loggingService.log(withLogLevel: .info, message: "Merge temporary timeline:")
+        loggingService.log(withLogLevel: .info, message: "Merge temporary timeline:")
         timeline.forEach { (slot) in
-            self.loggingService.log(withLogLevel: .info, message: "MergedSlot start: \(slot.start) category: \(slot.category.rawValue)")
+            self.loggingService.log(withLogLevel: .debug, message: "MergedSlot start: \(slot.start) category: \(slot.category.rawValue)")
         }
         
-        self.sinks.forEach { sink in sink.execute(timeline: timeline) }
+        sinks.forEach { sink in sink.execute(timeline: timeline) }
         
-        self.loggingService.log(withLogLevel: .info, message: "Pipeline ended running (execution time: \(Date().timeIntervalSince(pipelineStartTime)))")
+        loggingService.log(withLogLevel: .info, message: "Pipeline ended running (execution time: \(Date().timeIntervalSince(pipelineStartTime)))")
     }
     
     static func with(loggingService: LoggingService, pumps: Pump...) -> Pipeline

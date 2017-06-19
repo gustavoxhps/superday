@@ -16,97 +16,121 @@ class MockLocator : ViewModelLocator
     var appLifecycleService = MockAppLifecycleService()
     var loggingService = MockLoggingService()
     var healthKitService = MockHealthKitService()
+    var notificationService  = MockNotificationService()
     
     init()
     {
-        self.timeSlotService = MockTimeSlotService(timeService: self.timeService,
-                                                   locationService: self.locationService)
+        timeSlotService = MockTimeSlotService(timeService: timeService,
+                                                   locationService: locationService)
     }
 
+    func getNavigationViewModel(forViewController viewController: UIViewController) -> NavigationViewModel
+    {
+        let feedbackService = (self.feedbackService as! MailFeedbackService).with(viewController: viewController)
+        
+        return NavigationViewModel(timeService: timeService,
+                                       feedbackService: feedbackService,
+                                       selectedDateService: selectedDateService,
+                                       appLifecycleService: appLifecycleService)
+    }
+    
+    func getIntroViewModel() -> IntroViewModel {
+        return IntroViewModel(settingsService: settingsService)
+    }
+    
+    func getOnboardingViewModel() -> OnboardingViewModel
+    {
+        return OnboardingViewModel(timeService: timeService,
+                                   timeSlotService: timeSlotService,
+                                   settingsService: settingsService,
+                                   appLifecycleService: appLifecycleService,
+                                   notificationService: notificationService)
+    }
+    
     func getMainViewModel() -> MainViewModel
     {
-        return MainViewModel(timeService: self.timeService,
-                             metricsService: self.metricsService,
-                             timeSlotService: self.timeSlotService,
-                             editStateService: self.editStateService,
-                             smartGuessService: self.smartGuessService,
-                             selectedDateService: self.selectedDateService,
-                             settingsService: self.settingsService)
+        return MainViewModel(timeService: timeService,
+                             metricsService: metricsService,
+                             timeSlotService: timeSlotService,
+                             editStateService: editStateService,
+                             smartGuessService: smartGuessService,
+                             selectedDateService: selectedDateService,
+                             settingsService: settingsService,
+                             appLifecycleService: appLifecycleService)
     }
     
     func getPagerViewModel() -> PagerViewModel
     {
-        return PagerViewModel(timeService: self.timeService,
-                              settingsService: self.settingsService,
-                              editStateService: self.editStateService,
-                              appLifecycleService: self.appLifecycleService,
-                              selectedDateService: self.selectedDateService)
+        return PagerViewModel(timeService: timeService,
+                              timeSlotService: timeSlotService,
+                              settingsService: settingsService,
+                              editStateService: editStateService,
+                              appLifecycleService: appLifecycleService,
+                              selectedDateService: selectedDateService)
     }
     
     func getTimelineViewModel(forDate date: Date) -> TimelineViewModel
     {
         return TimelineViewModel(date: date,
-                                 timeService: self.timeService,
-                                 timeSlotService: self.timeSlotService,
-                                 editStateService: self.editStateService,
-                                 appLifecycleService: self.appLifecycleService,
-                                 loggingService: self.loggingService)
+                                 timeService: timeService,
+                                 timeSlotService: timeSlotService,
+                                 editStateService: editStateService,
+                                 appLifecycleService: appLifecycleService,
+                                 loggingService: loggingService)
     }
     
     func getLocationPermissionViewModel() -> PermissionViewModel
     {
-        let viewModel = LocationPermissionViewModel(timeService: self.timeService,
-                                                    settingsService: self.settingsService,
-                                                    appLifecycleService: self.appLifecycleService)
+        let viewModel = LocationPermissionViewModel(timeService: timeService,
+                                                    settingsService: settingsService,
+                                                    appLifecycleService: appLifecycleService)
         
         return viewModel
     }
     
     func getHealthKitPermissionViewModel() -> PermissionViewModel
     {
-        let viewModel = HealthKitPermissionViewModel(timeService: self.timeService,
-                                                    settingsService: self.settingsService,
-                                                    appLifecycleService: self.appLifecycleService,
-                                                    healthKitService: self.healthKitService)
+        let viewModel = HealthKitPermissionViewModel(timeService: timeService,
+                                                    settingsService: settingsService,
+                                                    appLifecycleService: appLifecycleService,
+                                                    healthKitService: healthKitService)
         
         return viewModel
     }
     
     func getCalendarViewModel() -> CalendarViewModel
     {
-        return CalendarViewModel(timeService: self.timeService,
-                                 settingsService: self.settingsService,
-                                 timeSlotService: self.timeSlotService,
-                                 selectedDateService: self.selectedDateService)
+        return CalendarViewModel(timeService: timeService,
+                                 settingsService: settingsService,
+                                 timeSlotService: timeSlotService,
+                                 selectedDateService: selectedDateService)
     }
     
-    func getTopBarViewModel(forViewController viewController: UIViewController) -> TopBarViewModel
+    func getWeeklySummaryViewModel() -> WeeklySummaryViewModel
     {
-        return TopBarViewModel(timeService: self.timeService,
-                               feedbackService: self.feedbackService,
-                               selectedDateService: self.selectedDateService,
-                               appLifecycleService: self.appLifecycleService)
+        return WeeklySummaryViewModel(timeService: timeService,
+                                      timeSlotService: timeSlotService,
+                                      settingsService: settingsService)
     }
     
     func getDailySummaryViewModel(forDate date: Date) -> DailySummaryViewModel
     {
-        let viewModel = DailySummaryViewModel(date: date,
-                                              timeService: self.timeService,
-                                              timeSlotService: self.timeSlotService,
-                                              appLifecycleService: self.appLifecycleService,
-                                              loggingService: self.loggingService)
-        return viewModel
+        return DailySummaryViewModel(date: date,
+                                     timeService: timeService,
+                                     timeSlotService: timeSlotService,
+                                     appLifecycleService: appLifecycleService,
+                                     loggingService: loggingService)
     }
     
     func getSummaryViewModel() -> SummaryViewModel
     {
-        return SummaryViewModel(selectedDateService: self.selectedDateService)
+        return SummaryViewModel(selectedDateService: selectedDateService)
     }
     
     func getSummaryPageViewModel(forDate date: Date) -> SummaryPageViewModel
     {
         return SummaryPageViewModel(date: date,
-                                    timeService: self.timeService,
-                                    settingsService: self.settingsService)
+                                    timeService: timeService,
+                                    settingsService: settingsService)
     }
 }

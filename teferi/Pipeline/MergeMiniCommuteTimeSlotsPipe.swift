@@ -33,7 +33,7 @@ class MergeMiniCommuteTimeSlotsPipe : Pipe
         
             let currentTimeSlot = enumeration.element
             
-            guard currentTimeSlot.category == .commute && self.durationIsBelowThreshold(currentTimeSlot) else
+            guard currentTimeSlot.category == .commute && durationIsBelowThreshold(currentTimeSlot) else
             {
                 return newTimeline + [currentTimeSlot]
             }
@@ -41,14 +41,14 @@ class MergeMiniCommuteTimeSlotsPipe : Pipe
             let previousTimeSlot = newTimeline.last
             let nextTimeSlot = timeline.safeGetElement(at: enumeration.offset + 1)
             
-            switch self.selectTimeSlotToMerge(previousTimeSlot, nextTimeSlot)
+            switch selectTimeSlotToMerge(previousTimeSlot, nextTimeSlot)
             {
                 case .usePrevious(let previousTimeSlot):
-                    return newTimeline.dropLast(1) + [ self.mergeSlots(previousTimeSlot, currentTimeSlot) ]
+                    return newTimeline.dropLast(1) + [ mergeSlots(previousTimeSlot, currentTimeSlot) ]
                 
                 case .useNext(let nextTimeSlot):
                     shouldSkip = true
-                    return newTimeline + [ self.mergeSlots(currentTimeSlot, nextTimeSlot) ]
+                    return newTimeline + [ mergeSlots(currentTimeSlot, nextTimeSlot) ]
                 
                 case .dontMerge:
                     return newTimeline + [ currentTimeSlot ]
@@ -60,7 +60,7 @@ class MergeMiniCommuteTimeSlotsPipe : Pipe
     
     private func durationIsBelowThreshold(_ timeSlot: TemporaryTimeSlot) -> Bool
     {
-        let timeSlotDuration = timeSlot.duration ?? self.timeService.now.timeIntervalSince(timeSlot.start)
+        let timeSlotDuration = timeSlot.duration ?? timeService.now.timeIntervalSince(timeSlot.start)
         return timeSlotDuration <= smallTimeSlotThreshold
     }
     
@@ -78,13 +78,13 @@ class MergeMiniCommuteTimeSlotsPipe : Pipe
             return .usePrevious(timeSlot: previousTimeSlot)
         }
         
-        return self.getSmallerDuration(previousTimeSlot, nextTimeSlot)
+        return getSmallerDuration(previousTimeSlot, nextTimeSlot)
     }
     
     private func getSmallerDuration(_ previousTimeSlot: TemporaryTimeSlot, _ nextTimeSlot: TemporaryTimeSlot) -> SlotToMerge
     {
-        let previousTimeSlotDuration = previousTimeSlot.duration ?? self.timeService.now.timeIntervalSince(previousTimeSlot.start)
-        let nextTimeSlotDuration = nextTimeSlot.duration ?? self.timeService.now.timeIntervalSince(nextTimeSlot.start)
+        let previousTimeSlotDuration = previousTimeSlot.duration ?? timeService.now.timeIntervalSince(previousTimeSlot.start)
+        let nextTimeSlotDuration = nextTimeSlot.duration ?? timeService.now.timeIntervalSince(nextTimeSlot.start)
         
         return previousTimeSlotDuration >= nextTimeSlotDuration ? .usePrevious(timeSlot: previousTimeSlot) : .useNext(timeSlot: nextTimeSlot)
     }

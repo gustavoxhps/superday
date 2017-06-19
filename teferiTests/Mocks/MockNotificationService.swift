@@ -27,15 +27,15 @@ class MockNotificationService : NotificationService
     
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
-        self.shouldShowFakeTimeSlot = possibleFutureSlotStart != nil
-        self.schedulings += 1
-        self.scheduledNotifications += 1
+        shouldShowFakeTimeSlot = possibleFutureSlotStart != nil
+        schedulings += 1
+        scheduledNotifications += 1
     }
     
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
-        self.cancellations += 1
-        self.scheduledNotifications = 0
+        cancellations += 1
+        scheduledNotifications = 0
     }
     
     func handleNotificationAction(withIdentifier identifier: String?)
@@ -45,12 +45,12 @@ class MockNotificationService : NotificationService
     
     func subscribeToCategoryAction(_ action : @escaping (teferi.Category) -> ())
     {
-        self.subscriptions.append(action)
+        subscriptions.append(action)
     }
     
     
     func sendAction(withCategory category : teferi.Category)
     {
-        self.subscriptions.forEach { $0(category) }
+        subscriptions.forEach { $0(category) }
     }
 }

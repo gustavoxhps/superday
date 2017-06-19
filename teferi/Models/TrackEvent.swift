@@ -4,6 +4,9 @@ import CoreLocation
 
 enum TrackEvent : Equatable
 {
+    case newLocation(location: Location)
+    case newHealthSample(sample: HealthSample)
+    
     public static func ==(lhs: TrackEvent, rhs: TrackEvent) -> Bool
     {
         //Don't try "optimizing" this with `case(_, _) return false`
@@ -16,9 +19,6 @@ enum TrackEvent : Equatable
             case (.newHealthSample, _): return false
         }
     }
-    
-    case newLocation(location: Location)
-    case newHealthSample(sample: HealthSample)
 }
 
 protocol EventData : Equatable

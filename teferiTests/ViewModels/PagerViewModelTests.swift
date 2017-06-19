@@ -13,6 +13,7 @@ class PagerViewModelTests : XCTestCase
     
     private var disposable : Disposable!
     private var timeService : MockTimeService!
+    private var timeSlotService : MockTimeSlotService!
     private var settingsService : MockSettingsService!
     private var editStateService : MockEditStateService!
     private var appLifecycleService : MockAppLifecycleService!
@@ -20,22 +21,24 @@ class PagerViewModelTests : XCTestCase
     
     override func setUp()
     {
-        self.noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         
-        self.disposeBag = DisposeBag()
-        self.timeService = MockTimeService()
-        self.settingsService = MockSettingsService()
-        self.editStateService = MockEditStateService()
-        self.selectedDateService = MockSelectedDateService()
-        self.appLifecycleService = MockAppLifecycleService()
+        disposeBag = DisposeBag()
+        timeService = MockTimeService()
+        timeSlotService = MockTimeSlotService(timeService: timeService, locationService: MockLocationService())
+        settingsService = MockSettingsService()
+        editStateService = MockEditStateService()
+        selectedDateService = MockSelectedDateService()
+        appLifecycleService = MockAppLifecycleService()
         
-        self.timeService.mockDate = self.noon
+        timeService.mockDate = noon
         
-        self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        settingsService: self.settingsService,
-                                        editStateService: self.editStateService,
-                                        appLifecycleService: self.appLifecycleService,
-                                        selectedDateService: self.selectedDateService)
+        viewModel = PagerViewModel(timeService: timeService,
+                                   timeSlotService: timeSlotService,
+                                   settingsService: settingsService,
+                                   editStateService: editStateService,
+                                   appLifecycleService: appLifecycleService,
+                                   selectedDateService: selectedDateService)
         
     }
     
@@ -55,16 +58,17 @@ class PagerViewModelTests : XCTestCase
     func testTheCurrentDateObservableDoesNotPumpEventsForSameDayDates()
     {
         let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
-        self.timeService.mockDate = noon
+        timeService.mockDate = noon
         
-        self.viewModel = PagerViewModel(timeService: self.timeService,
-                                        settingsService: self.settingsService,
-                                        editStateService: self.editStateService,
-                                        appLifecycleService: self.appLifecycleService,
-                                        selectedDateService: self.selectedDateService)
+        viewModel = PagerViewModel(timeService: timeService,
+                                   timeSlotService: timeSlotService,
+                                   settingsService: settingsService,
+                                   editStateService: editStateService,
+                                   appLifecycleService: appLifecycleService,
+                                   selectedDateService: selectedDateService)
         
         var value = false
-        self.disposable = self.viewModel.dateObservable.subscribe(onNext: { _ in value = true })
+        disposable = viewModel.dateObservable.subscribe(onNext: { _ in value = true })
         
         let otherDate = noon.addingTimeInterval(60)
         viewModel.currentlySelectedDate = otherDate
@@ -75,7 +79,7 @@ class PagerViewModelTests : XCTestCase
     func testTheViewModelCanNotAllowScrollsToDatesBeforeTheAppInstall()
     {
         let appInstallDate = Date().yesterday
-        self.settingsService.setInstallDate(appInstallDate)
+        settingsService.setInstallDate(appInstallDate)
         
         let theDayBeforeInstallDate = appInstallDate.yesterday
         
@@ -85,7 +89,7 @@ class PagerViewModelTests : XCTestCase
     func testTheViewModelAllowsScrollsToDatesAfterTheAppWasInstalledAndBeforeTheCurrentDate()
     {
         let appInstallDate = Date().add(days: -3)
-        self.settingsService.setInstallDate(appInstallDate)
+        settingsService.setInstallDate(appInstallDate)
         
         let theDayAfterInstallDate = appInstallDate.tomorrow
         
@@ -95,9 +99,9 @@ class PagerViewModelTests : XCTestCase
     func testWhenTheAppWakesFromANotificationItShouldShowEdit()
     {
         var editLastRow = false
-        _ = self.viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
+        _ = viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
 
-        self.appLifecycleService.publish(.movedToForeground(fromNotification:true))
+        appLifecycleService.publish(.movedToForeground(fromNotification:true))
         
         expect(editLastRow).to(beTrue())
     }

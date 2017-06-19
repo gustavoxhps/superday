@@ -88,7 +88,7 @@ extension Date
         let calendar = Calendar.current
         let units = Set<Calendar.Component>([ .day]);
         
-        let components = calendar.dateComponents(units, from: self.ignoreTimeComponents(), to: date.ignoreTimeComponents())
+        let components = calendar.dateComponents(units, from: ignoreTimeComponents(), to: date.ignoreTimeComponents())
 
         return components.day!
     }
@@ -110,7 +110,7 @@ extension Date
     
     func timeIntervalBasedOnWeekDaySince(_ date: Date) -> TimeInterval
     {
-        let dayDifference = self.dayOfWeek - date.dayOfWeek
-        return self.timeIntervalSince(date.convert(calendarUnits: [ .year, .month, .day], sameAs: self).add(days: -dayDifference))
+        let dayDifference = dayOfWeek - date.dayOfWeek
+        return timeIntervalSince(date.convert(calendarUnits: [ .year, .month, .day], sameAs: self).add(days: -dayDifference))
     }
 }

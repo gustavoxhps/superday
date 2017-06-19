@@ -38,37 +38,37 @@ class MockSettingsService : SettingsService
     
     func setInstallDate(_ date: Date)
     {
-        self.installDate = date
+        installDate = date
     }
     
     func setLastLocation(_ location: CLLocation)
     {
-        self.lastLocation = location
+        lastLocation = location
     }
     
     func setLastNotificationLocation(_ location: CLLocation)
     {
-        self.lastNotificationLocation = location
+        lastNotificationLocation = location
     }
     
     func setLastAskedForLocationPermission(_ date: Date)
     {
-        self.lastAskedForLocationPermission = date
+        lastAskedForLocationPermission = date
     }
     
     func getNextSmartGuessId() -> Int
     {
-        return self.nextSmartGuessId
+        return nextSmartGuessId
     }
     
     func incrementSmartGuessId()
     {
-        self.nextSmartGuessId += 1
+        nextSmartGuessId += 1
     }
     
     func setUserGaveLocationPermission()
     {
-        self.userEverGaveLocationPermission = true
+        userEverGaveLocationPermission = true
     }
     
     func setUserGaveHealthKitPermission()
