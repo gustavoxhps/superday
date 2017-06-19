@@ -217,6 +217,52 @@ class TimelineViewModelTests : XCTestCase
         expect(self.observer.events.count).to(equal(1)) //just initial one
     }
     
+    func testNotifyEditingBeganGetsTheCorrectlyIndexedItem()
+    {
+        addTimeSlot(minutesAfterNoon: 0, category: .work)
+        addTimeSlot(minutesAfterNoon: 3, category: .work)
+        addTimeSlot(minutesAfterNoon: 5, category: .work)
+        addTimeSlot(minutesAfterNoon: 8, category: .work)
+        
+        let observer:TestableObserver<(CGPoint, TimeSlot)> = scheduler.createObserver((CGPoint, TimeSlot).self)
+        editStateService.beganEditingObservable
+            .subscribe(observer)
+            .addDisposableTo(disposeBag)
+        
+        viewModel.notifyEditingBegan(point: .zero, index: 2)
+        expect(observer.events.last!.value.element!.1.startTime).to(equal(Date.noon.addingTimeInterval(TimeInterval(5 * 60))))
+    }
+    
+    func testOnlyTheLastOfMultipleTimeslotsShowsTheDuration()
+    {
+        addTimeSlot(minutesAfterNoon: 0, category: .work)
+        addTimeSlot(minutesAfterNoon: 3, category: .work)
+        addTimeSlot(minutesAfterNoon: 5, category: .work)
+        addTimeSlot(minutesAfterNoon: 8, category: .work)
+        
+        var timelineItems = observer.events.last!.value.element!
+        
+        [ true, true, true, false ]
+            .enumerated()
+            .forEach { i, result in expect(timelineItems[i].durations.isEmpty).to(equal(result)) }
+    }
+    
+    func testTheLastSlotContainsTheDurationsOfAllPreviousMergedSlots()
+    {
+        addTimeSlot(minutesAfterNoon: 0, category: .work)
+        addTimeSlot(minutesAfterNoon: 3, category: .work)
+        addTimeSlot(minutesAfterNoon: 5, category: .work)
+        addTimeSlot(minutesAfterNoon: 8, category: .work)
+        
+        let timelineItems = observer.events.last!.value.element!
+        
+        ([ 3*60, 2*60, 3*60, -8*60 ] as [TimeInterval])
+            .enumerated()
+            .forEach { index, result in
+                expect(timelineItems.last!.durations[index]).to(equal(result))
+        }
+    }
+    
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
         return addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)
@@ -224,7 +270,7 @@ class TimelineViewModelTests : XCTestCase
     
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category) -> TimeSlot
     {
-        let noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
+        let noon = Date.noon
         
         return timeSlotService.addTimeSlot(withStartTime: noon.addingTimeInterval(TimeInterval(minutesAfterNoon * 60)),
                                                 category: category,
