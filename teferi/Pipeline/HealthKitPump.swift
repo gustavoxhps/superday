@@ -208,7 +208,7 @@ class HealthKitPump : Pump
             slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
                                                    end: nil,
                                                    smartGuess: nil,
-                                                   category: .unknown,
+                                                   category: .sleep,
                                                    location: nil))
         })
         
