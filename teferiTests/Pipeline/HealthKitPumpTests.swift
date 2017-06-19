@@ -132,7 +132,6 @@ class HealthKitPumpTests : XCTestCase
                                                           (start: minutes("17:01:38"), category: .unknown),
                                                           (start: minutes("17:37:53"), category: .commute),
                                                           (start: minutes("18:22:07"), category: .unknown),
-                                                          (start: minutes("19:40:25"), category: .commute),
                                                           (start: minutes("19:40:30"), category: .unknown),
                                                           (start: minutes("21:27:26"), category: .commute),
                                                           (start: minutes("21:49:02"), category: .unknown)]

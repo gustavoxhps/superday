@@ -3,9 +3,13 @@ import HealthKit
 
 class HealthKitPump : Pump
 {
+    typealias Seconds = Double
+    typealias MetersPerSecond = Double
+    
     private let trackEventService : TrackEventService
-    private let fastMovingSpeedThreshold : Double
-    private let minGapAllowedDuration : Double
+    private let fastMovingSpeedThreshold : MetersPerSecond
+    private let minGapAllowedDuration : Seconds
+    private let minimumAllowedCommuteDuration : Seconds
     private let loggingService : LoggingService
     
     // MARK: - Init
@@ -18,12 +22,14 @@ class HealthKitPump : Pump
     ///   - minGapAllowedDuration: Used to filter out temporaryTimeSlots with duration smaller than this value (mesured in sec). Default: 300
     init(trackEventService: TrackEventService,
          fastMovingSpeedThreshold: Double = 0.3,
-         minGapAllowedDuration: Double = 900,
+         minGapAllowedDuration: Seconds = 15 * 60,
+         minimumAllowedCommuteDuration: Seconds = 5 * 60,
          loggingService: LoggingService)
     {
         self.trackEventService = trackEventService
         self.fastMovingSpeedThreshold = fastMovingSpeedThreshold
         self.minGapAllowedDuration = minGapAllowedDuration
+        self.minimumAllowedCommuteDuration = minimumAllowedCommuteDuration
         self.loggingService = loggingService
     }
     
@@ -43,9 +49,11 @@ class HealthKitPump : Pump
                 
         let temporaryTimeSlotsWithRemovedSmallSlots = removeSmallUnknownTimeSlots(from: temporaryTimeSlots)
         
-        let temporaryTimeSlotsToReturn = temporaryTimeSlotsWithRemovedSmallSlots
+        var temporaryTimeSlotsToReturn = temporaryTimeSlotsWithRemovedSmallSlots
             .splitBy({ $0.category == $1.category && $0.category == .commute })
             .flatMap { $0.first }
+        
+        temporaryTimeSlotsToReturn = removeSmallCommutesTimeSlots(from: temporaryTimeSlotsToReturn)
 
         loggingService.log(withLogLevel: .info, message: "HealthKit pump temporary timeline:")
         temporaryTimeSlotsToReturn.forEach { (slot) in
@@ -82,6 +90,27 @@ class HealthKitPump : Pump
                 let nextTimeSlot = timeSlots[nextIndex]
                 
                 if timeSlot.category == .unknown && nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minGapAllowedDuration
+                {
+                    return false
+                }
+                return true
+            }
+            .map({ $0.element })
+    }
+    
+    private func removeSmallCommutesTimeSlots(from timeSlots: [TemporaryTimeSlot]) -> [TemporaryTimeSlot]
+    {
+        return timeSlots.enumerated().filter
+            { currentIndex, timeSlot in
+                guard timeSlot.category == .commute else { return true }
+                
+                let nextIndex = timeSlots.index(after: currentIndex)
+                
+                guard nextIndex < timeSlots.endIndex else { return true }
+                
+                let nextTimeSlot = timeSlots[nextIndex]
+                
+                if timeSlot.category == .commute && nextTimeSlot.start.timeIntervalSince(timeSlot.start) < minimumAllowedCommuteDuration
                 {
                     return false
                 }
