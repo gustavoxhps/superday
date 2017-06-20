@@ -204,13 +204,11 @@ class HealthKitPump : Pump
         
         var slotsToReturn = [TemporaryTimeSlot]()
         
-        sleepAnalysis.forEach({ (sample) in
-            slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
-                                                   end: nil,
-                                                   smartGuess: nil,
-                                                   category: .sleep,
-                                                   location: nil))
-        })
+        slotsToReturn.append(TemporaryTimeSlot(start: sleepAnalysis.first!.startTime,
+                                               end: sleepAnalysis.last!.endTime,
+                                               smartGuess: nil,
+                                               category: .sleep,
+                                               location: nil))
         
         let lastSample = sleepAnalysis.last!
         

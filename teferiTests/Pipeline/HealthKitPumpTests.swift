@@ -267,10 +267,6 @@ class HealthKitPumpTests : XCTestCase
         trackEventService.mockEvents = sampleTuples.map(toTrackEvent)
         
         let expectedResultTuples : [TupleTempTimeSlot] = [(start: 00, category: .sleep),
-                                                          (start: 2*60, category: .sleep),
-                                                          (start: 3*60, category: .sleep),
-                                                          (start: 4*60, category: .sleep),
-                                                          (start: 11*60, category: .sleep),
                                                           (start: 12*60, category: .unknown)]
         
         let expectedResult = expectedResultTuples.map(toTempTimeSlot)
