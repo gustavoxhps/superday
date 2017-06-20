@@ -141,11 +141,8 @@ class TimelineCell : UITableViewCell
     /// Updates the line that displays shows how long the TimeSlot lasted
     private func layoutLine(withColor color: UIColor, interval: Int, isRunning: Bool, lastInPastDay: Bool = false)
     {
-        let minutes = (interval / 60) % 60
-        let hours = (interval / 3600)
-        
-        let newHeight = CGFloat(Constants.minLineSize * (1 + (minutes / 15) + (hours * 4)))
-        lineHeight.constant = max(newHeight, 18)
+        let newHeight = Constants.minLineHeight + Constants.timelineSlope * (CGFloat(interval) - Constants.minTimelineInterval)
+        lineHeight.constant = max(min(newHeight, Constants.maxLineHeight), Constants.minLineHeight)
         
         lineView.color = color
         dotsView.color = color
