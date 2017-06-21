@@ -6,17 +6,8 @@ import CoreMotion
 
 class DefaultLocationService : NSObject, LocationService
 {
-    var eventObservable : Observable<TrackEvent> { return
-        self.locationVariable
-            .asObservable()
-            .filterNil()
-            .do(
-                onNext: { [unowned self] location in
-                    self.logLocationUpdate(location, "Received a valid location")
-                }
-            )
-            .map(Location.init(fromCLLocation:))
-            .map(Location.asTrackEvent)
+    var eventObservable : Observable<TrackEvent> {
+        return self.eventSubject.asObservable()
     }
     
     private let loggingService : LoggingService
@@ -24,7 +15,7 @@ class DefaultLocationService : NSObject, LocationService
     private let locationManager : CLLocationManager
     private var accurateLocationManager : CLLocationManager
     
-    private let locationVariable = Variable<CLLocation?>(nil)
+    private let eventSubject = PublishSubject<TrackEvent>()
     
     private let dateTimeFormatter = DateFormatter()
     
@@ -55,7 +46,14 @@ class DefaultLocationService : NSObject, LocationService
             .flatMapLatest(improveWithGPS)
             .flatMap{ Observable.from($0) } // Transform the Observable<[CLLocation]> into Observable<CLLocation>
             .filter(filterLocations)
-            .bindTo(locationVariable)
+            .do(
+                onNext: { [unowned self] location in
+                    self.logLocationUpdate(location, "Received a valid location")
+                }
+            )
+            .map(Location.init(fromCLLocation:))
+            .map(Location.asTrackEvent)
+            .bindTo(eventSubject)
     }
     
     
