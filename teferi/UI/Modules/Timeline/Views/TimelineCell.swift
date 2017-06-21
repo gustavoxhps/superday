@@ -55,7 +55,7 @@ class TimelineCell : UITableViewCell
         let categoryColor = timeSlot.category.color
         
         //Updates each one of the cell's components
-        layoutLine(withColor: categoryColor, interval: interval, isRunning: isRunning, lastInPastDay: timelineItem.lastInPastDay)
+        layoutLine(withCategory: timeSlot.category, interval: interval, isRunning: isRunning, lastInPastDay: timelineItem.lastInPastDay)
         layoutSlotTime(withTimeSlot: timeSlot, lastInPastDay: timelineItem.lastInPastDay)
         layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
         layoutDescriptionLabel(withTimelineItem: timelineItem)
@@ -139,16 +139,23 @@ class TimelineCell : UITableViewCell
     }
     
     /// Updates the line that displays shows how long the TimeSlot lasted
-    private func layoutLine(withColor color: UIColor, interval: Int, isRunning: Bool, lastInPastDay: Bool = false)
+    private func layoutLine(withCategory category: Category, interval: Int, isRunning: Bool, lastInPastDay: Bool = false)
     {
         let minutes = (interval / 60) % 60
         let hours = (interval / 3600)
         
-        let newHeight = CGFloat(Constants.minLineSize * (1 + (minutes / 15) + (hours * 4)))
-        lineHeight.constant = max(newHeight, 18)
+        if category == .sleep
+        {
+            lineHeight.constant = 20.0
+        }
+        else
+        {
+            let newHeight = CGFloat(Constants.minLineSize * (1 + (minutes / 15) + (hours * 4)))
+            lineHeight.constant = max(newHeight, 18)
+        }
         
-        lineView.color = color
-        dotsView.color = color
+        lineView.color = category.color
+        dotsView.color = category.color
         
         lineView.fading = lastInPastDay
         
