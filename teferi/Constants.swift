@@ -4,9 +4,17 @@ import Foundation
 ///Contains the app's constants.
 class Constants
 {
-    ///Minimum size of the cosmetic line that appears on a TimeSlot cell.
-    static let minLineSize = 12
+    ///Minimum and maxium size of the TimeSlot cell line.
+    static let minLineHeight: CGFloat = 20
+    static let maxLineHeight: CGFloat = 72
     
+    ///Minimum and maxium represenable time intervals for the TimeSlot cell line.
+    static let minTimelineInterval: CGFloat = 10 * 60
+    static let maxTimelineInterval: CGFloat = 60 * 60
+    
+    ///Timeline height slope to calculate the Timeslot cell line height.
+    static let timelineSlope = (Constants.maxLineHeight - Constants.minLineHeight) / (Constants.maxTimelineInterval - Constants.minTimelineInterval)
+
     ///Key used for the preference that indicates whether the user is currently traveling or not.
     static let isTravelingKey = "isTravelingKey"
     
