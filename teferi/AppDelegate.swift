@@ -117,6 +117,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         setVersionInSettings()
         setAppearance()
         
+        smartGuessService.purgeEntries(olderThan: timeService.now.add(days: -30))
+        
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         logAppStartup(isInBackground)
@@ -134,9 +136,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             }
         }
         
-        
         appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
-
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -146,7 +146,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         }
         
         initializeWindowIfNeeded()
-        smartGuessService.purgeEntries(olderThan: timeService.now.add(days: -30))
         
         return true
     }
