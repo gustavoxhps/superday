@@ -5,9 +5,7 @@ import CoreGraphics
 
 protocol TimelineDelegate: class
 {
-    func resizeHeader(size:CGFloat)
-    func chageShadow(opacity:Float)
-    func resetHeaderSize()
+    func didScroll(oldOffset: CGFloat, newOffset: CGFloat)
 }
 
 class TimelineViewController : UIViewController, UITableViewDelegate
@@ -29,6 +27,14 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     private var emptyStateView: EmptyStateView!
     
     weak var delegate: TimelineDelegate?
+    {
+        didSet
+        {
+            let topInset = tableView.contentInset.top
+            let offset = tableView.contentOffset.y
+            delegate?.didScroll(oldOffset: offset + topInset, newOffset: offset + topInset)
+        }
+    }
     
     // MARK: Initializers
     init(presenter: TimelinePresenter, viewModel: TimelineViewModel)
@@ -104,44 +110,26 @@ class TimelineViewController : UIViewController, UITableViewDelegate
             })
             .addDisposableTo(disposeBag)
         
-        let currentY = tableView.rx.contentOffset.map({ $0.y })
-        let nextY = tableView.rx.contentOffset.skip(1).map({ $0.y })
-        
-        Observable<(CGFloat, CGFloat)>.zip(currentY, nextY) { ($0, $1) }
-            .map { [unowned self] current, next in
-                let distance = next - current
-                let maxScroll = self.tableView.contentSize.height - self.tableView.frame.height + self.tableView.contentInset.bottom
-                let minScroll = -self.tableView.contentInset.top
-                
-                if next < minScroll || current < minScroll { return 0 }
-                if next > maxScroll || current > maxScroll { return 0 }
-                
-                return distance
-            }
-            .subscribe(onNext: {
-                self.delegate?.resizeHeader(size: $0)
-            })
-            .addDisposableTo(disposeBag)
-        
-        tableView.rx.contentOffset
-            .map{ $0.y }
-            .map {
-                $0 > 50 ? 1.0 : $0/50
-            }
-            .subscribe(onNext: { [unowned self] opacity in
-                self.delegate?.chageShadow(opacity: Float(opacity))
-            })
-            .addDisposableTo(disposeBag)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        self.delegate?.resetHeaderSize()
-        
-        let offset = Float(tableView.contentOffset.y)
-        self.delegate?.chageShadow(opacity: offset > 50 ? 1.0 : offset / 50)
+        let oldOffset = tableView.rx.contentOffset.map({ $0.y })
+        let newOffset = tableView.rx.contentOffset.skip(1).map({ $0.y })
 
+        Observable<(CGFloat, CGFloat)>.zip(oldOffset, newOffset)
+        { [unowned self] old, new -> (CGFloat, CGFloat) in
+            // This closure prevents the header to change height when the scroll is bouncing
+            
+            let maxScroll = self.tableView.contentSize.height - self.tableView.frame.height + self.tableView.contentInset.bottom
+            let minScroll = -self.tableView.contentInset.top
+            
+            if new < minScroll || old < minScroll { return (old, old) }
+            if new > maxScroll || old > maxScroll { return (old, old) }
+            
+            return (old, new)
+        }
+        .subscribe(onNext: { [unowned self] (old, new) in
+            let topInset = self.tableView.contentInset.top
+            self.delegate?.didScroll(oldOffset: old + topInset, newOffset: new + topInset)
+        })
+        .addDisposableTo(disposeBag)
     }
 
     // MARK: Private Methods

@@ -4,6 +4,8 @@ import UIKit
 class DailySummaryBarView : UIView
 {
     private let barView = BarView()
+    private let containerView = UIView()
+    private let shadowView = UIView()
     
     private var barHeight = CGFloat(10)
     private let minBarHeight = CGFloat(4)
@@ -17,9 +19,21 @@ class DailySummaryBarView : UIView
     {
         super.init(frame: frame)
         
-        backgroundColor = UIColor.white
+        backgroundColor = UIColor.clear
+        clipsToBounds = false
+        containerView.frame = frame
+        containerView.backgroundColor = UIColor.white
         
-        addSubview(barView)
+        shadowView.layer.shadowColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        shadowView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowView.layer.shadowOpacity = 0.0
+        shadowView.layer.shadowRadius = 4.0
+
+        addSubview(shadowView)
+        addSubview(containerView)
+        containerView.addSubview(barView)
+        
+        createConstraints()
     }
     
     required init?(coder aDecoder: NSCoder)
@@ -27,47 +41,47 @@ class DailySummaryBarView : UIView
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createConstraints()
-    {
-        snp.makeConstraints { make in
-            make.height.equalTo(maxHeight)
-            make.top.left.right.equalToSuperview()
-        }
-        
-        barView.snp.makeConstraints { make in
-            make.height.equalTo(barHeight)
-            make.centerX.centerY.equalToSuperview()
-            make.left.right.equalToSuperview().inset(16)
-        }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        shadowView.layer.shadowPath = UIBezierPath(rect: shadowView.bounds).cgPath
     }
     
-    func resize(by size: CGFloat)
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        return containerView.hitTest(point, with:event)
+    }
+    
+    func resize(by newHeight: CGFloat)
     {
-        let isGrowing = size > 0
+        guard newHeight != 0 else { return }
+        
+        let isGrowing = newHeight > 0
         
         height = isGrowing
-               ? max(minHeight, height - size)
-               : min(maxHeight, height + abs(size))
+               ? max(minHeight, height - newHeight)
+               : min(maxHeight, height + abs(newHeight))
         
         barHeight = isGrowing
-               ? max(minBarHeight, barHeight - size)
-               : min(maxBarHeight, barHeight + abs(size))
-        
-        
+               ? max(minBarHeight, barHeight - newHeight)
+               : min(maxBarHeight, barHeight + abs(newHeight))
+                
         setNeedsUpdateConstraints()
     }
     
-    func reset()
+    func setShadowOpacity(opacity: Float)
     {
-        barHeight = 10
-        height = 34
+        shadowView.layer.removeAllAnimations()
+        let anim = CABasicAnimation(keyPath: "shadowOpacity")
+        anim.fromValue = shadowView.layer.shadowOpacity
+        anim.toValue = opacity
+        anim.duration = 0.3
+        shadowView.layer.add(anim, forKey: "shadowOpacity")
         
-        setNeedsUpdateConstraints()
+        shadowView.layer.shadowOpacity = opacity
     }
     
     override func updateConstraints()
     {
-        snp.updateConstraints { make in
+        containerView.snp.updateConstraints { make in
             make.height.equalTo(height)
         }
 
@@ -81,6 +95,43 @@ class DailySummaryBarView : UIView
     func setActivities(activities:[Activity])
     {
         barView.activities = activities
+        resetHeight()
+    }
+    
+    private func createConstraints()
+    {
+        shadowView.snp.makeConstraints { make in
+            make.edges.equalTo(containerView)
+        }
+        
+        containerView.snp.makeConstraints { make in
+            make.height.equalTo(maxHeight)
+            make.top.left.right.equalToSuperview()
+        }
+        
+        barView.snp.makeConstraints { make in
+            make.height.equalTo(barHeight)
+            make.centerX.centerY.equalToSuperview()
+            make.left.right.equalToSuperview().inset(16)
+        }
+    }
+    
+    private func resetHeight()
+    {
+        barHeight = 10
+        height = 34
+
+        containerView.snp.updateConstraints { make in
+            make.height.equalTo(height)
+        }
+        
+        barView.snp.updateConstraints { make in
+            make.height.equalTo(barHeight)
+        }
+        
+        UIView.animate({
+            self.layoutIfNeeded()
+        }, duration: 0.15)
     }
 }
 
