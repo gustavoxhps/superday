@@ -153,6 +153,13 @@ extension PagerViewController : UIPageViewControllerDelegate, UIPageViewControll
         
         let timelineController = viewControllers!.first as! TimelineViewController
         
+        if timelineController.date > viewModel.currentlySelectedDate
+        {
+            headerView.animationDirection = .right
+        } else {
+            headerView.animationDirection = .left
+        }
+        
         viewModel.currentlySelectedDate = timelineController.date
         
         (previousViewControllers[0] as! TimelineViewController).delegate = nil

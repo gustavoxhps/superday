@@ -1,8 +1,16 @@
 import Foundation
 import UIKit
 
+enum DailySummaryBarAnimationDirection
+{
+    case left
+    case right
+}
+
 class DailySummaryBarView : UIView
 {
+    var animationDirection: DailySummaryBarAnimationDirection? = nil
+
     private let barView = BarView()
     private let containerView = UIView()
     private let shadowView = UIView()
@@ -94,8 +102,9 @@ class DailySummaryBarView : UIView
     
     func setActivities(activities:[Activity])
     {
-        barView.activities = activities
+        barView.setActivities(activities, animationDirection: animationDirection)
         resetHeight()
+        animationDirection = nil
     }
     
     private func createConstraints()
@@ -137,18 +146,21 @@ class DailySummaryBarView : UIView
 
 class BarView: UIView
 {
-    var activities: [Activity]?
-    {
-        didSet
-        {
-            setNeedsDisplay()
+    private var displayLink: CADisplayLink? = nil
+    private var offset: Double = 0
+    private var nextOffset: Double = 0
+
+    private var activities: [Activity]? {
+        didSet {
+            old_activities = oldValue
         }
     }
+    private var old_activities: [Activity]?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = UIColor.white
+        backgroundColor = Style.Color.lightGray
         clipsToBounds = true
         layer.cornerRadius = frame.height / 2
     }
@@ -161,23 +173,43 @@ class BarView: UIView
         super.layoutSubviews()
         layer.cornerRadius = frame.height / 2
     }
+    
+    func setActivities(_ activities: [Activity], animationDirection: DailySummaryBarAnimationDirection?)
+    {
+        self.activities = activities
+        
+        guard let direction = animationDirection else {
+            self.setNeedsDisplay()
+            return
+        }
+        
+        animateTransition(direction)
+    }
 
     override func draw(_ rect: CGRect)
     {
-        guard let ctx = UIGraphicsGetCurrentContext(),
-            let activities = activities, activities.count > 0 else { return }
+        guard let activities = activities, activities.count > 0 else { return }
         
-        let totalTimeSpent = activities.totalDurations
-        let availableWidth = Double(rect.size.width)
-        
-        var startingX = 0.0
-        let lastItem = activities.count - 1
-        
-        for (index, activity) in activities.enumerated()
+        if old_activities != nil
         {
-            let layerWidth = lastItem != index
-                ? availableWidth * (activity.duration / totalTimeSpent)
-                : availableWidth - startingX
+            drawActivities(activitiesToDraw: old_activities!, rect: rect, start: 0)
+        }
+        
+        drawActivities(activitiesToDraw: activities, rect: rect, start: offset)
+    }
+    
+    private func drawActivities(activitiesToDraw: [Activity], rect: CGRect, start:Double)
+    {
+        guard let ctx = UIGraphicsGetCurrentContext(), activitiesToDraw.count > 0 else { return }
+
+        let totalTimeSpent = activitiesToDraw.totalDurations
+        let availableWidth = Double(rect.size.width)
+
+        var startingX:Double = start
+        
+        for activity in activitiesToDraw
+        {
+            let layerWidth = availableWidth * (activity.duration / totalTimeSpent)
             
             ctx.addRect(CGRect(x: startingX, y: 0, width: layerWidth, height: Double(rect.height)))
             activity.category.color.setFill()
@@ -185,5 +217,27 @@ class BarView: UIView
             
             startingX += layerWidth
         }
+    }
+    
+    private func animateTransition(_ direction: DailySummaryBarAnimationDirection)
+    {
+        offset = direction == .right ? Double(frame.width) : Double(-frame.width)
+        nextOffset = 0
+        self.displayLink = CADisplayLink(target: self, selector: #selector(BarView.animateOffset))
+        self.displayLink?.add(to: .current, forMode: .commonModes)
+    }
+    
+    @objc private func animateOffset()
+    {
+        let newOffset = offset + (nextOffset - offset) / 10
+        if abs(newOffset - nextOffset) < 0.0001
+        {
+            displayLink?.invalidate()
+            displayLink?.remove(from: .current, forMode: .commonModes)
+            displayLink = nil
+        }
+        
+        offset = newOffset
+        setNeedsDisplay()
     }
 }
