@@ -11,12 +11,12 @@ struct TemporaryTimeSlot
 
 extension TemporaryTimeSlot
 {
-    init(start: Date)
+    init(start: Date, category: Category = .unknown)
     {
         self.start = start
         self.end = nil
         self.smartGuess = nil
-        self.category = .unknown
+        self.category = category
         self.location = nil
     }
     

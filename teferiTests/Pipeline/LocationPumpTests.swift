@@ -9,7 +9,6 @@ class LocationPumpTests: XCTestCase {
     
     private var trackEventService:MockTrackEventService!
     private var settingsService:MockSettingsService!
-    private var smartGuessService:MockSmartGuessService!
     private var timeSlotService:MockTimeSlotService!
     private var loggingService:MockLoggingService!
     
@@ -22,7 +21,6 @@ class LocationPumpTests: XCTestCase {
     {        
         trackEventService = MockTrackEventService()
         settingsService = MockSettingsService()
-        smartGuessService = MockSmartGuessService()
         loggingService = MockLoggingService()
         
         locationService = MockLocationService()
@@ -35,7 +33,6 @@ class LocationPumpTests: XCTestCase {
         locationPump = LocationPump(
             trackEventService:trackEventService,
             settingsService:settingsService,
-            smartGuessService:smartGuessService,
             timeSlotService:timeSlotService,
             loggingService: loggingService,
             timeService: timeService
@@ -247,62 +244,6 @@ class LocationPumpTests: XCTestCase {
         expect(lastLocation.timestamp).to(equal(baseLocation.timestamp))
     }
     
-    func testAlgorithmAsksForSmartGuessWithCorrectLocation()
-    {
-        addStoredTimeSlot()
-
-        let location = CLLocation.baseLocation.offset(.north, meters: 200, seconds: 60*30)
-        
-        trackEventService.mockEvents = [
-            Location.asTrackEvent(Location(fromCLLocation: location))
-        ]
-        
-        let _ = locationPump.run()
-        
-        expect(self.smartGuessService.locationsAskedFor.count).to(equal(1))
-
-        let askedForLocation = smartGuessService.locationsAskedFor[0]
-
-        expect(askedForLocation.coordinate.latitude).to(equal(location.coordinate.latitude))
-        expect(askedForLocation.coordinate.longitude).to(equal(location.coordinate.longitude))
-        expect(askedForLocation.timestamp).to(equal(location.timestamp))
-    }
-    
-    func testTimeSlotGetsUnknownCategoryIfNoSmartGuessExists()
-    {
-        
-        addStoredTimeSlot(minutesBeforeNoon: 30)
-        
-        smartGuessService.smartGuessToReturn = nil
-
-        trackEventService.mockEvents = [
-            TrackEvent.baseMockEvent.offset(meters:200).delay(minutes:30)
-        ]
-        
-        let timeSlots = locationPump.run()
-        
-        expect(timeSlots.count).to(equal(1))
-        expect(timeSlots[0].category).to(equal(Category.unknown))
-    }
-    
-    func testTimeSlotGetsCorrectCategoryIfSmartGuessExists()
-    {
-        addStoredTimeSlot(minutesBeforeNoon: 30)
-        
-        smartGuessService.smartGuessToReturn = SmartGuess(
-            withId: 0, category: .food, location: CLLocation(), lastUsed: Date.midnight)
-        
-        trackEventService.mockEvents = [
-            TrackEvent.baseMockEvent.delay(hours: 1).offset(meters: 300)
-        ]
-        
-        let timeSlots = locationPump.run()
-        
-        expect(timeSlots.count).to(equal(1))
-        expect(timeSlots[0].category).to(equal(Category.food))
-        
-    }
-    
     func testCanCreateUnkownSlotsBetweenCommuteSlots()
     {
         addStoredTimeSlot()
@@ -328,9 +269,6 @@ class LocationPumpTests: XCTestCase {
     
     func testEndsLastTimeSlotIfCommuteAndLongerThanLimit()
     {
-        let smartGuess = SmartGuess(withId: 0, category: .food, location: CLLocation(), lastUsed: Date.midnight)
-        smartGuessService.smartGuessToReturn = smartGuess
-        
         addStoredTimeSlot(minutesBeforeNoon: 60)
         
         trackEventService.mockEvents = [
@@ -343,7 +281,7 @@ class LocationPumpTests: XCTestCase {
         let timeSlots = locationPump.run()
         
         expect(timeSlots.count).to(equal(2))
-        expect(timeSlots[1].category).to(equal(smartGuess.category))
+        expect(timeSlots[1].category).to(equal(Category.unknown))
     }
     
     private func addStoredTimeSlot(minutesBeforeNoon:TimeInterval = 0)

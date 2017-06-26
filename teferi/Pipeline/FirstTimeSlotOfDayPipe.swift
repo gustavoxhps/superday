@@ -17,7 +17,7 @@ class FirstTimeSlotOfDayPipe : Pipe
         let noTimeSlotsExist = timeSlotService.getLast() == nil
         if noTimeSlotsExist
         {
-            return timeline + [TemporaryTimeSlot(start: now, end: nil, smartGuess: nil, category: .leisure, location: nil)]
+            return timeline + [TemporaryTimeSlot(start: now, category: .leisure)]
         }        
         
         guard !hasTimeSlotsForToday(timeline) && timeSlotService.getTimeSlots(forDay: now).isEmpty else { return timeline }

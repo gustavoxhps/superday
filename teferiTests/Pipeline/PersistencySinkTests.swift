@@ -36,11 +36,7 @@ class PersistencySinkTests : XCTestCase
     override func setUp()
     {
         noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
-        baseSlot = TemporaryTimeSlot(start: noon,
-                                          end: nil,
-                                          smartGuess: nil,
-                                          category: Category.unknown,
-                                          location: nil)
+        baseSlot = TemporaryTimeSlot(start: noon, category: Category.unknown)
         
         timeService = MockTimeService()
         timeService.mockDate = noon

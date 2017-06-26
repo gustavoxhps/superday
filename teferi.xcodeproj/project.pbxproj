@@ -132,6 +132,7 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C028DA81EF8296500CABCE9 /* SmartGuessPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */; };
 		8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* CategoryWheel.swift */; };
 		8C1728FC1EF02D9A002ABDDA /* DailySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728F01EF02D9A002ABDDA /* DailySummaryViewController.swift */; };
 		8C1728FD1EF02D9A002ABDDA /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728F11EF02D9A002ABDDA /* DailySummaryViewModel.swift */; };
@@ -150,6 +151,7 @@
 		8C26A1781ECAEAD800EFE509 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */; };
 		8C26A17A1ECAED7300EFE509 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1791ECAED7300EFE509 /* FadeTransition.swift */; };
 		8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C44B01ECD878C008131D7 /* RxViewModel.swift */; };
+		8C3B2D6E1EF9436800350488 /* SmartGuessPipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */; };
 		8C460E831EE704500002D70B /* ButtonsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E821EE704500002D70B /* ButtonsCollectionView.swift */; };
 		8C460E851EE705200002D70B /* ButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */; };
 		8C460E8B1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */; };
@@ -425,6 +427,7 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationExtensions.swift; sourceTree = "<group>"; };
+		8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmartGuessPipe.swift; sourceTree = "<group>"; };
 		8C1728EF1EF02D9A002ABDDA /* ActivityPieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityPieChartView.swift; sourceTree = "<group>"; };
 		8C1728F01EF02D9A002ABDDA /* DailySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewController.swift; sourceTree = "<group>"; };
 		8C1728F11EF02D9A002ABDDA /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -444,6 +447,7 @@
 		8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		8C26A1791ECAED7300EFE509 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
 		8C2C44B01ECD878C008131D7 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = ViewModels/RxViewModel.swift; sourceTree = "<group>"; };
+		8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmartGuessPipeTests.swift; sourceTree = "<group>"; };
 		8C460E821EE704500002D70B /* ButtonsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonsCollectionView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonsCollectionView.swift"; sourceTree = SOURCE_ROOT; };
 		8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonCollectionViewCell.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonCollectionViewCell.swift"; sourceTree = SOURCE_ROOT; };
 		8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterAlignedCollectionViewFlowLayout.swift; path = "teferi/UI/Modules/Weekly Summary/Views/CenterAlignedCollectionViewFlowLayout.swift"; sourceTree = SOURCE_ROOT; };
@@ -1307,6 +1311,7 @@
 				BE55CED61E7AD70F006B851E /* MergePipe.swift */,
 				BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */,
 				BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */,
+				8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */,
 			);
 			path = Pipeline;
 			sourceTree = "<group>";
@@ -1330,6 +1335,7 @@
 				BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */,
 				BE1AC7AE1E858346007485B0 /* MergePipeTests.swift */,
 				BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */,
+				8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */,
 			);
 			path = Pipeline;
 			sourceTree = "<group>";
@@ -1687,6 +1693,7 @@
 				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
 				BE0A5B771EE03F0A00200939 /* DailySummaryBarView.swift in Sources */,
 				8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */,
+				8C028DA81EF8296500CABCE9 /* SmartGuessPipe.swift in Sources */,
 				AC1085361EEE971700E5F03B /* ActivityPieChartView.swift in Sources */,
 				8C1729021EF02D9A002ABDDA /* SummaryViewController.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
@@ -1843,6 +1850,7 @@
 				BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */,
 				BE8AD9341E84448B002704A9 /* TempTimelineTestHelper.swift in Sources */,
 				BE1BDFB11E79BFAB0077D694 /* LocationServiceTests.swift in Sources */,
+				8C3B2D6E1EF9436800350488 /* SmartGuessPipeTests.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				8CAFC16D1E7C66CC009D17F0 /* LocationPumpTests.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,

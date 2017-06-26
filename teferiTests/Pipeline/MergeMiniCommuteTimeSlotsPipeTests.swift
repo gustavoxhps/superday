@@ -19,11 +19,7 @@ class MergeMiniCommuteTimeSlotsPipeTests : XCTestCase
     {
         noon = Date().ignoreTimeComponents().addingTimeInterval(12 * 60 * 60)
         timeService = MockTimeService()
-        baseSlot = TemporaryTimeSlot(start: noon,
-                                          end: nil,
-                                          smartGuess: nil,
-                                          category: Category.commute,
-                                          location: nil)
+        baseSlot = TemporaryTimeSlot(start: noon, category: Category.commute)
         
         timeService.mockDate = noon
         

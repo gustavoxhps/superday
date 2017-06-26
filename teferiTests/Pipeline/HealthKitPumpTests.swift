@@ -308,7 +308,7 @@ class HealthKitPumpTests : XCTestCase
     // MARK: - Helper
     private func toTempTimeSlot(tuple: TupleTempTimeSlot) -> TemporaryTimeSlot
     {
-        return TemporaryTimeSlot(start: date(tuple.start), end: nil, smartGuess: nil, category: tuple.category, location: nil)
+        return TemporaryTimeSlot(start: date(tuple.start), category: tuple.category)
     }
     
     private func toTrackEvent(tuple: TupleHKSample) -> TrackEvent

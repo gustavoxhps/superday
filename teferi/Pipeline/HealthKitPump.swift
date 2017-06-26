@@ -149,20 +149,14 @@ class HealthKitPump : Pump
             else
             {
                 slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
-                                                       end: nil,
-                                                       smartGuess: nil,
-                                                       category: sampleCategory,
-                                                       location: nil))
+                                                       category: sampleCategory))
                 continue
             }
             
             if lastTimeSlot.category != sampleCategory
             {
                 slotsToReturn.append(TemporaryTimeSlot(start: sample.startTime,
-                                                       end: nil,
-                                                       smartGuess: nil,
-                                                       category: sampleCategory,
-                                                       location: nil))
+                                                       category: sampleCategory))
             }
         }
         
@@ -170,10 +164,7 @@ class HealthKitPump : Pump
         if let lastSample = walkingAndRunning.last
         {
             slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
-                                                   end: nil,
-                                                   smartGuess: nil,
-                                                   category: .unknown,
-                                                   location: nil))
+                                                   category: .unknown))
         }
         
         return slotsToReturn
@@ -187,15 +178,9 @@ class HealthKitPump : Pump
             else { return nil }
         
         return [ TemporaryTimeSlot(start: firstSample.startTime,
-                                   end: nil,
-                                   smartGuess: nil,
-                                   category: .commute,
-                                   location: nil),
+                                   category: .commute),
                  TemporaryTimeSlot(start: lastSample.endTime,
-                                   end: nil,
-                                   smartGuess: nil,
-                                   category: .unknown,
-                                   location: nil) ]
+                                   category: .unknown) ]
     }
     
     private func makeSlots(fromSleepAnalysis sleepAnalysis: [HealthSample]) -> [TemporaryTimeSlot]?
@@ -213,10 +198,7 @@ class HealthKitPump : Pump
         let lastSample = sleepAnalysis.last!
         
         slotsToReturn.append(TemporaryTimeSlot(start: lastSample.endTime,
-                                               end: nil,
-                                               smartGuess: nil,
-                                               category: .unknown,
-                                               location: nil))
+                                               category: .unknown))
         
         return slotsToReturn
     }

@@ -121,7 +121,7 @@ class DefaultSmartGuessService : SmartGuessService
         
         let startTimeForKNN = Date()
         
-        guard let bestKnnMatch = KNN<KNNInstance, Category>
+        let bestKnnMatch = KNN<KNNInstance, Category>
             .prediction(
                 for: (location: location, timeStamp: location.timestamp, category: Category.unknown, smartGuess: nil),
                 usingK: knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count,
@@ -129,17 +129,12 @@ class DefaultSmartGuessService : SmartGuessService
                 decisionType: .maxScoreSum,
                 customDistance: distance,
                 labelAction: { $0.category })
-        else
-        {
-            loggingService.log(withLogLevel: .debug, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
-            return nil
-        }
         
         loggingService.log(withLogLevel: .debug, message: "KNN executed in \(Date().timeIntervalSince(startTimeForKNN)) with k = \(knnInstances.count >= kNeighbors ? kNeighbors : knnInstances.count) on a dataset of \(knnInstances.count)")
         
-        guard let bestMatch = bestKnnMatch.smartGuess
-        else { return nil }
+        guard let bestMatch = bestKnnMatch?.smartGuess else { return nil }
         
+        loggingService.log(withLogLevel: .debug, message: "SmartGuess found for location: \(location.coordinate.latitude),\(location.coordinate.longitude) -> \(bestMatch.category)")
         return bestMatch
     }
     
@@ -181,7 +176,7 @@ class DefaultSmartGuessService : SmartGuessService
 
         let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / timeThreshold
         accumulator += pow(timeDifference, 2)
-
+        
         return sqrt(accumulator)
     }
     
