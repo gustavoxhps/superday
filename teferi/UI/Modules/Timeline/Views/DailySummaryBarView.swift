@@ -221,10 +221,14 @@ class BarView: UIView
     
     private func animateTransition(_ direction: DailySummaryBarAnimationDirection)
     {
+        displayLink?.invalidate()
+        displayLink = nil
+        
         offset = direction == .right ? Double(frame.width) : Double(-frame.width)
         nextOffset = 0
-        self.displayLink = CADisplayLink(target: self, selector: #selector(BarView.animateOffset))
-        self.displayLink?.add(to: .current, forMode: .commonModes)
+        
+        displayLink = CADisplayLink(target: self, selector: #selector(BarView.animateOffset))
+        displayLink?.add(to: .current, forMode: .commonModes)
     }
     
     @objc private func animateOffset()
@@ -233,7 +237,6 @@ class BarView: UIView
         if abs(newOffset - nextOffset) < 0.0001
         {
             displayLink?.invalidate()
-            displayLink?.remove(from: .current, forMode: .commonModes)
             displayLink = nil
         }
         
