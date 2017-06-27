@@ -448,7 +448,8 @@ class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
     {
         let cells = viewHandler.visibleCells
         
-        let firstCell = cells.first!
+        guard let firstCell = cells.first else { return }
+        
         let tempTransform = firstCell.transform
         firstCell.transform = .identity
         
