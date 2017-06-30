@@ -111,12 +111,15 @@ class MainViewModelTests : XCTestCase
         
         viewModel.addNewSlot(withCategory: .leisure)
         
+        let smartguess = smartGuessService.add(withCategory: .food, location: location)!
+        
         let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
-                                                        smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
+                                                        smartGuess: smartguess,
                                                         location: location)!
         
         viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
+        expect(self.smartGuessService.smartGuesses.last?.category).to(equal(Category.food))
         expect(self.smartGuessService.smartGuesses.last?.errorCount).to(equal(1))
     }
     
@@ -141,6 +144,8 @@ class MainViewModelTests : XCTestCase
         let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
                                                         smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
                                                         location: location)!
+        
+        expect(timeSlot.categoryWasSetByUser).to(beFalse())
         
         viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         

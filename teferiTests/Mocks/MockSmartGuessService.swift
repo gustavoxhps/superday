@@ -4,7 +4,7 @@ import CoreLocation
 class MockSmartGuessService : SmartGuessService
 {
     //MARK: Properties
-    private var id = 0    
+    private var smartGuessId = 0
     
     var addShouldWork = true
     var smartGuessToReturn : SmartGuess? = nil
@@ -20,8 +20,10 @@ class MockSmartGuessService : SmartGuessService
     
     @discardableResult func add(withCategory category: teferi.Category, location: CLLocation) -> SmartGuess?
     {
-        let smartGuess = SmartGuess(withId: id, category: category, location: location, lastUsed: Date())
+        let smartGuess = SmartGuess(withId: smartGuessId, category: category, location: location, lastUsed: Date())
         smartGuesses.append(smartGuess)
+        
+        smartGuessId += 1
         
         return smartGuess
     }
