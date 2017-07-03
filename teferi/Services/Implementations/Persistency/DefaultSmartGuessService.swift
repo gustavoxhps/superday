@@ -11,6 +11,7 @@ class DefaultSmartGuessService : SmartGuessService
     private let kNeighbors = 3
     private let smartGuessErrorThreshold = 3
     private let smartGuessIdKey = "smartGuessId"
+    private let categoriesToSkip : [Category] = [.commute]
     
     private let timeService : TimeService
     private let loggingService: LoggingService
@@ -33,6 +34,8 @@ class DefaultSmartGuessService : SmartGuessService
     
     @discardableResult func add(withCategory category: Category, location: CLLocation) -> SmartGuess?
     {
+        guard !categoriesToSkip.contains(category) else { return nil }
+        
         let id = getNextSmartGuessId()
         let smartGuess = SmartGuess(withId: id, category: category, location: location, lastUsed: timeService.now)
         
