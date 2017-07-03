@@ -145,6 +145,7 @@
 		8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */; };
 		8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C1729061EF02DB5002ABDDA /* DailySummary.storyboard */; };
 		8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1729091EF119E5002ABDDA /* PagerPresenter.swift */; };
+		8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */; };
 		8C26A1711ECAE65A00EFE509 /* IntroPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */; };
 		8C26A1731ECAE66C00EFE509 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */; };
 		8C26A1751ECAE67800EFE509 /* IntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1741ECAE67800EFE509 /* IntroViewModel.swift */; };
@@ -441,6 +442,7 @@
 		8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
 		8C1729071EF02DB5002ABDDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
 		8C1729091EF119E5002ABDDA /* PagerPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagerPresenter.swift; sourceTree = "<group>"; };
+		8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewModel.swift; sourceTree = "<group>"; };
 		8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroPresenter.swift; path = Intro/IntroPresenter.swift; sourceTree = "<group>"; };
 		8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = Intro/IntroViewController.swift; sourceTree = "<group>"; };
 		8C26A1741ECAE67800EFE509 /* IntroViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroViewModel.swift; path = Intro/IntroViewModel.swift; sourceTree = "<group>"; };
@@ -1034,6 +1036,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		8C20ABAA1F0A1E6F00C9EE33 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2482CAFA1DB12F9F00E892C1 /* OnboardingPager.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		8C26A16F1ECAE64A00EFE509 /* Intro */ = {
 			isa = PBXGroup;
 			children = (
@@ -1138,15 +1148,16 @@
 		8CA461391EC9A2E700587399 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				8C20ABAA1F0A1E6F00C9EE33 /* Views */,
 				8CDCC5F31ECB156100A3D25D /* OnboardingPresenter.swift */,
 				8CDCC5F51ECB156F00A3D25D /* OnboardingViewModel.swift */,
 				513535D51DA2756C00A365A9 /* OnboardingViewController.swift */,
+				8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */,
 				51DDF7171DB4DBC200F9B672 /* OnboardingPage.swift */,
 				2482CAF61DB12F9F00E892C1 /* OnboardingPage1.swift */,
 				2482CAF71DB12F9F00E892C1 /* OnboardingPage2.swift */,
 				2482CAF81DB12F9F00E892C1 /* OnboardingPage3.swift */,
 				2482CAF91DB12F9F00E892C1 /* OnboardingPage4.swift */,
-				2482CAFA1DB12F9F00E892C1 /* OnboardingPager.swift */,
 			);
 			name = Onboarding;
 			path = "On Boarding";
@@ -1751,6 +1762,7 @@
 				8C1728FF1EF02D9A002ABDDA /* SummaryPageViewController.swift in Sources */,
 				BE55CED71E7AD70F006B851E /* MergePipe.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
+				8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */,
 				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */,
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,

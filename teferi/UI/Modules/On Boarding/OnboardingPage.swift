@@ -3,18 +3,14 @@ import RxSwift
 
 class OnboardingPage : UIViewController
 {
+    internal var viewModel : OnboardingPageViewModel!
+    
     //MARK: Public Properties
     var allowPagingSwipe : Bool { return self.nextButtonText != nil }
 
     private(set) var didAppear = false
     private(set) var nextButtonText : String?
-    
-    private(set) var timeService : TimeService!
-    private(set) var timeSlotService : TimeSlotService!
-    private(set) var settingsService : SettingsService!
-    private(set) var appLifecycleService : AppLifecycleService!
-    private(set) var notificationService : NotificationService!
-    
+        
     private(set) var onboardingPageViewController : OnboardingViewController!
     
     //MARK: Initializers
@@ -37,18 +33,9 @@ class OnboardingPage : UIViewController
     
     //MARK: Public Methods
     
-    func inject(_ timeService: TimeService,
-                _ timeSlotService: TimeSlotService,
-                _ settingsService: SettingsService,
-                _ appLifecycleService: AppLifecycleService,
-                _ notificationService: NotificationService,
-                _ onboardingPageViewController: OnboardingViewController)
+    func inject(viewModel: OnboardingPageViewModel, onboardingPageViewController: OnboardingViewController)
     {
-        self.timeService = timeService
-        self.timeSlotService = timeSlotService
-        self.settingsService = settingsService
-        self.appLifecycleService = appLifecycleService
-        self.notificationService = notificationService
+        self.viewModel = viewModel
         self.onboardingPageViewController = onboardingPageViewController
     }
     
@@ -65,29 +52,14 @@ class OnboardingPage : UIViewController
         // override in page
     }
 
-    @objc internal func appBecameActive()
-    {
-        // override in page
-    }
-
-    internal func getDate(addingHours hours : Int, andMinutes minutes : Int) -> Date
-    {
-        return timeService.now
-            .ignoreTimeComponents()
-            .addingTimeInterval(TimeInterval((hours * 60 + minutes) * 60))
-    }
-
     internal func createTimelineCell(for timeSlot: TimeSlot) -> TimelineCell
     {
         let cell = Bundle.main
             .loadNibNamed("TimelineCell", owner: self, options: nil)?
             .first as! TimelineCell
         
-        let duration = timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
-        let timelineItem = TimelineItem(timeSlot: timeSlot,
-                                        durations:[ duration ],
-                                        lastInPastDay: false,
-                                        shouldDisplayCategoryName: true)
+        let timelineItem = viewModel.timelineItem(forTimeslot: timeSlot)
+        let duration = timelineItem.durations.reduce(0, +)
         
         cell.bind(toTimelineItem: timelineItem, index: 0, duration: duration)
         return cell
@@ -152,16 +124,6 @@ class OnboardingPage : UIViewController
             
             delay += 0.2
         }
-    }
-    
-    internal func getTimeSlot(withStartTime startTime: Date, endTime: Date, category: Category) -> TimeSlot
-    {
-        let timeSlot = TimeSlot(withStartTime: startTime,
-                                category: category,
-                                categoryWasSetByUser: false)
-        timeSlot.endTime = endTime
-        
-        return timeSlot
     }
 
     private func createTimelineCells(for timeSlots: [TimeSlot]) -> [TimelineCell]
