@@ -263,6 +263,13 @@ class TimelineViewModelTests : XCTestCase
         }
     }
     
+    func testFetchesTimeslotsWhenAppWakesUp()
+    {
+        let oldCount = observer.events.count
+        appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        expect(self.observer.events.count).to(equal(oldCount + 1))
+    }
+    
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
     {
         return addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)

@@ -29,8 +29,10 @@ class MockTimeSlotService : TimeSlotService
     private let _timeSlotCreatedObservable : Observable<TimeSlot>
     var timeSlotCreatedObservable : Observable<TimeSlot>
     {
-        self.didSubscribe = true
         return _timeSlotCreatedObservable
+            .do(onSubscribe: { [unowned self] in
+                self.didSubscribe = true
+            })
     }
 
     let timeSlotUpdatedObservable : Observable<TimeSlot>
