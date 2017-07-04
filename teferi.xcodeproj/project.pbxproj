@@ -145,6 +145,9 @@
 		8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */; };
 		8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C1729061EF02DB5002ABDDA /* DailySummary.storyboard */; };
 		8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1729091EF119E5002ABDDA /* PagerPresenter.swift */; };
+		8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */; };
+		8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */; };
+		8C20ABB01F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */; };
 		8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */; };
 		8C26A1711ECAE65A00EFE509 /* IntroPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */; };
 		8C26A1731ECAE66C00EFE509 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */; };
@@ -442,6 +445,9 @@
 		8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
 		8C1729071EF02DB5002ABDDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
 		8C1729091EF119E5002ABDDA /* PagerPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagerPresenter.swift; sourceTree = "<group>"; };
+		8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewModelTests.swift; sourceTree = "<group>"; };
+		8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableObserverExtensions.swift; sourceTree = "<group>"; };
+		8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleMockTimeSlotService.swift; sourceTree = "<group>"; };
 		8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewModel.swift; sourceTree = "<group>"; };
 		8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroPresenter.swift; path = Intro/IntroPresenter.swift; sourceTree = "<group>"; };
 		8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = Intro/IntroViewController.swift; sourceTree = "<group>"; };
@@ -652,6 +658,7 @@
 				24B03B5E1D9E5BB900452D16 /* PagerViewModelTests.swift */,
 				24564F6C1D8326F100D9A8AE /* TimelineViewModelTests.swift */,
 				2416B2821E27C7D100CE283B /* MainNavigationViewModelTests.swift */,
+				8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -731,6 +738,7 @@
 				24DE24031E1BBD500089B49E /* MockTimeService.swift */,
 				24EB96861DE7163E0040C211 /* MockTimeSlotService.swift */,
 				ACFF02681E82A21700498981 /* MockTrackEventService.swift */,
+				8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1006,6 +1014,7 @@
 				7E57ECEB1E30EC000094251E /* LocationExtensions.swift */,
 				BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */,
 				8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */,
+				8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1867,9 +1876,11 @@
 				8CAFC16D1E7C66CC009D17F0 /* LocationPumpTests.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
+				8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */,
 				BEAFC0AA1E8A87370050CE70 /* NotificationSchedulingServiceTests.swift in Sources */,
 				24EB96871DE7163E0040C211 /* MockTimeSlotService.swift in Sources */,
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
+				8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */,
 				BE8AD9321E843B17002704A9 /* PersistencySinkTests.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
@@ -1883,6 +1894,7 @@
 				24168E3B1DC21125004F90AD /* MockNotificationService.swift in Sources */,
 				2416B2831E27C7D100CE283B /* MainNavigationViewModelTests.swift in Sources */,
 				7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */,
+				8C20ABB01F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift in Sources */,
 				24B03B5F1D9E5BB900452D16 /* PagerViewModelTests.swift in Sources */,
 				BEAFC0B01E8AA4070050CE70 /* FirstTimeSlotOfDayPipe.swift in Sources */,
 				ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */,

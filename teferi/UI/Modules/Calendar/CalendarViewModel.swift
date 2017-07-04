@@ -5,7 +5,7 @@ import RxSwift
 class CalendarViewModel
 {
     // MARK: Public Properties
-    let minValidDate : Date
+    var minValidDate : Date { return settingsService.installDate ?? timeService.now }
     var maxValidDate : Date { return self.timeService.now }
     
     let dateObservable : Observable<Date>
@@ -25,6 +25,7 @@ class CalendarViewModel
 
     // MARK: Private Properties
     private let timeService : TimeService
+    private let settingsService: SettingsService
     private let timeSlotService : TimeSlotService
     private var selectedDateService : SelectedDateService
     private let currentVisibleCalendarDateVariable : Variable<Date>
@@ -36,10 +37,9 @@ class CalendarViewModel
          selectedDateService: SelectedDateService)
     {
         self.timeService = timeService
+        self.settingsService = settingsService
         self.timeSlotService = timeSlotService
         self.selectedDateService = selectedDateService
-        
-        minValidDate = settingsService.installDate ?? timeService.now
         
         currentVisibleCalendarDateVariable = Variable(timeService.now)
         dateObservable = selectedDateService.currentlySelectedDateObservable
@@ -68,11 +68,6 @@ class CalendarViewModel
     }
     
     // MARK: Private Methods
-    private func categoryIsSet(for timeSlot: TimeSlot) -> Bool
-    {
-        return timeSlot.category != .unknown
-    }
-    
     private func category(_ element1: Activity, _ element2: Activity) -> Bool
     {
         let allCategories = Category.all
