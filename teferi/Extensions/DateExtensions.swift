@@ -108,9 +108,15 @@ extension Date
         return calendar.date(from: currentComponents)!
     }
     
-    func timeIntervalBasedOnWeekDaySince(_ date: Date) -> TimeInterval
+    func absoluteTimeIntervalIgnoringDateSince(_ date: Date) -> TimeInterval
     {
-        let dayDifference = dayOfWeek - date.dayOfWeek
-        return timeIntervalSince(date.convert(calendarUnits: [ .year, .month, .day], sameAs: self).add(days: -dayDifference))
+        let baseTime = self.ignoreDateComponents()
+        let timeToCompare = date.ignoreDateComponents()
+        
+        let differenceIfPreviousDay = abs(baseTime.timeIntervalSince(timeToCompare.add(days: -1)))
+        let differenceIfSameDay = abs(baseTime.timeIntervalSince(timeToCompare))
+        let differenceIfNextDay = abs(baseTime.timeIntervalSince(timeToCompare.add(days: 1)))
+        
+        return min(differenceIfPreviousDay, differenceIfSameDay, differenceIfNextDay)
     }
 }

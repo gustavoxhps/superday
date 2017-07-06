@@ -75,12 +75,12 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
             [
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .leisure, date: date.add(days: -5)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .leisure, date: date.add(days: -5).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(6*60*60))
         ]
         
         persistencyService.smartGuesses =

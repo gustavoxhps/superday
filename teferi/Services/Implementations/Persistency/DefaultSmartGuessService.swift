@@ -116,7 +116,7 @@ class DefaultSmartGuessService : SmartGuessService
     {
         let bestMatches = persistencyService.get()
             .filter(isWithinDistanceThreshold(from: location))
-            .filter(isWithinTimeThresholdInNearByWeekDay(from: location))
+            .filter(isWithinTimeThresholdIgnoringDate(from: location))
         
         guard bestMatches.count > 0 else { return nil }
         
@@ -159,14 +159,14 @@ class DefaultSmartGuessService : SmartGuessService
         return { smartGuess in return smartGuess.location.distance(from: location) <= self.distanceThreshold }
     }
     
-    private func isWithinTimeThresholdInNearByWeekDay(from location: CLLocation) -> (SmartGuess) -> Bool
+    private func isWithinTimeThresholdIgnoringDate(from location: CLLocation) -> (SmartGuess) -> Bool
     {
         return { smartGuess in
             
             let smartGuessTimestamp = smartGuess.location.timestamp
             let locationTimestamp = location.timestamp
             
-            return abs(smartGuessTimestamp.timeIntervalBasedOnWeekDaySince(locationTimestamp)) <= self.timeThreshold
+            return abs(smartGuessTimestamp.absoluteTimeIntervalIgnoringDateSince(locationTimestamp)) <= self.timeThreshold
         }
     }
     
@@ -177,7 +177,7 @@ class DefaultSmartGuessService : SmartGuessService
         let locationDifference = instance1.location.distance(from: instance2.location) / distanceThreshold
         accumulator += pow(locationDifference, 2)
 
-        let timeDifference = instance1.timeStamp.timeIntervalBasedOnWeekDaySince(instance2.timeStamp) / timeThreshold
+        let timeDifference = instance1.timeStamp.absoluteTimeIntervalIgnoringDateSince(instance2.timeStamp) / timeThreshold
         accumulator += pow(timeDifference, 2)
         
         return sqrt(accumulator)
