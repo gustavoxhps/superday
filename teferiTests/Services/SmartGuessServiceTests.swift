@@ -147,10 +147,10 @@ class SmartGuessServiceTests : XCTestCase
         let testInput : [TestData] =
         [
             (distanceFromTarget: 08, category: .leisure, date: date),
-            (distanceFromTarget: 60, category: .work, date: date),
-            (distanceFromTarget: 64, category: .work, date: date),
-            (distanceFromTarget: 69, category: .work, date: date),
-            (distanceFromTarget: 76, category: .work, date: date)
+            (distanceFromTarget: 160, category: .work, date: date),
+            (distanceFromTarget: 264, category: .work, date: date),
+            (distanceFromTarget: 269, category: .work, date: date),
+            (distanceFromTarget: 376, category: .work, date: date)
         ]
         
         persistencyService.smartGuesses =

@@ -6,7 +6,7 @@ class DefaultSmartGuessService : SmartGuessService
     typealias KNNInstance = (location: CLLocation, timeStamp: Date, category: Category, smartGuess: SmartGuess?)
     
     //MARK: Private Properties
-    private let distanceThreshold = 100.0 //TODO: We have to think about the 100m constant. Might be (significantly?) too low.
+    private let distanceThreshold = 400.0 //TODO: We have to think about the 400m constant. Might be too low or too high.
     private let timeThreshold : TimeInterval = 5*60*60 //5h
     private let kNeighbors = 3
     private let smartGuessErrorThreshold = 3
