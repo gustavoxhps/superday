@@ -6,6 +6,9 @@ PODS:
   - Nimble (5.0.0)
   - RxCocoa (3.0.0):
     - RxSwift (~> 3.0)
+  - RxDataSources (1.0.2):
+    - RxCocoa (~> 3.0)
+    - RxSwift (~> 3.0)
   - RxSwift (3.0.0)
   - RxTest (3.0.1):
     - RxSwift (~> 3.0)
@@ -20,6 +23,7 @@ DEPENDENCIES:
   - JTAppleCalendar (= 6.0.2)
   - Nimble (~> 5.0.0)
   - RxCocoa (~> 3.0.0)
+  - RxDataSources (~> 1.0)
   - RxSwift (~> 3.0.0)
   - RxTest (~> 3.0.0)
   - SnapKit (~> 3.0)
@@ -33,6 +37,7 @@ SPEC CHECKSUMS:
   JTAppleCalendar: d0f71bdd45105279fc59329a9c24017e7028e499
   Nimble: 56fc9f5020effa2206de22c3dd910f4fb011b92f
   RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
+  RxDataSources: 1de77880bf5b7fcee42102adcd5a5d65e5b81541
   RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
   RxTest: 9867e6f3c435af30fbdb44b6d8ec30b78c40b515
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
@@ -40,6 +45,6 @@ SPEC CHECKSUMS:
   SwiftLint: b8b683208cc09640898f16318a7a452274e91f61
   SwiftyBeaver: 2b68694df862381235e32bcfc4ec991e26bf131d
 
-PODFILE CHECKSUM: db4c1ad50987d26e0c4e8ef572494687a3766c07
+PODFILE CHECKSUM: 1884a3be82f1050c8bfc2dee3eed2d2397ba2e91
 
 COCOAPODS: 1.1.1
