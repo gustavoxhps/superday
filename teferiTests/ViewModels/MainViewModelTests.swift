@@ -69,7 +69,15 @@ class MainViewModelTests : XCTestCase
     func testTheUpdateMethodCallsTheMetricsService()
     {
         let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            timeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
     }
@@ -82,7 +90,15 @@ class MainViewModelTests : XCTestCase
             .subscribe(onNext: { editingEnded = !$0 })
         
         let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            timeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(editingEnded).to(beTrue())
     }
@@ -109,7 +125,15 @@ class MainViewModelTests : XCTestCase
                                                         smartGuess: smartguess,
                                                         location: location)!
         
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            timeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.last?.category).to(equal(Category.food))
         expect(self.smartGuessService.smartGuesses.last?.errorCount).to(equal(1))
@@ -124,7 +148,15 @@ class MainViewModelTests : XCTestCase
                                                         categoryWasSetByUser: true,
                                                         location: CLLocation(latitude:43.4211, longitude:4.7562))!
         
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            timeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
     }

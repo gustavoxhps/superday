@@ -57,6 +57,29 @@ extension Array
         
         return groups
     }
+    
+    func splitBy<Key: Equatable>(_ selectKey: (Element) -> Key) -> [[Element]]
+    {
+        var groups = [[Element]]()
+        
+        for element in self
+        {
+            guard let lastGroup = groups.last,
+                let lastElement = lastGroup.last else {
+                    groups = [[element]]
+                    continue
+            }
+            if selectKey(lastElement) == selectKey(element) {
+                groups = groups.dropLast() + [lastGroup + [element]]
+                continue
+            } else {
+                groups = groups + [[element]]
+                continue
+            }
+        }
+        
+        return groups
+    }
 }
 
 extension Array where Element : Hashable

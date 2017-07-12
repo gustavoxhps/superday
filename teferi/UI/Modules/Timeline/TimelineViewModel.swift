@@ -80,7 +80,7 @@ class TimelineViewModel
     {
         editStateService
             .notifyEditingBegan(point: point,
-                                timeSlot: timelineItems.value[index].timeSlot)
+                                timelineItem: timelineItems.value[index])
     }
     
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
@@ -98,40 +98,24 @@ class TimelineViewModel
     
     private func toTimelineItems(fromTimeSlots timeSlots: [TimeSlot]) -> [TimelineItem]
     {
-        let count = timeSlots.count
-        
-        return timeSlots
-            .enumerated()
-            .reduce([TimelineItem]()) { accumulated, enumerated in
+        let timelineItems = timeSlots
+            .splitBy { $0.category }
+            .reduce([TimelineItem](), { acc, timeslots in
                 
-                let timeSlot = enumerated.element
-                let n = enumerated.offset
-                let isLastInPastDay = self.isLastInPastDay(n, count: count)
-                
-                if isLastInPastDay && timeSlot.endTime == nil {
-                    loggingService.log(withLogLevel: .warning, message: "Timeslot error: Can't be last in past day and still running")
-                }
-                
-                if timeSlot.category != .unknown,
-                    let last = accumulated.last,
-                    last.timeSlot.category == timeSlot.category
-                {
-                    return accumulated.dropLast() + [
-                        last.withoutDurations(),
-                        TimelineItem(timeSlot: timeSlot,
-                                     durations: last.durations + [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
-                                     lastInPastDay: isLastInPastDay,
-                                     shouldDisplayCategoryName: false)
-                    ]
-                }
-                
-                return accumulated + [
-                    TimelineItem(timeSlot: timeSlot,
-                                 durations: [self.timeSlotService.calculateDuration(ofTimeSlot: timeSlot)],
-                                 lastInPastDay: isLastInPastDay,
-                                 shouldDisplayCategoryName: true)
+                return acc + [
+                    TimelineItem(
+                        timeSlots: timeslots,
+                        category: timeslots.first!.category,
+                        duration: timeslots.map(calculateDuration).reduce(0, +),
+                        shouldDisplayCategoryName: true,
+                        isLastInPastDay: false,
+                        isRunning: false)
                 ]
-        }
+            })
+        
+        // Add isLastInPastDay or isRunning to last timeslot of timeline
+        guard let last = timelineItems.last else { return [] }
+        return Array(timelineItems.dropLast()) + [last.withLastTimeSlotFlag(isCurrentDay: isCurrentDay)]
     }
     
     private func timeSlotBelongsToThisDate(_ timeSlot: TimeSlot) -> Bool

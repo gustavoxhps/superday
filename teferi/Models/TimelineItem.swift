@@ -2,22 +2,34 @@ import Foundation
 
 struct TimelineItem
 {
-    let timeSlot : TimeSlot
-    let durations : [ TimeInterval ]
-    let lastInPastDay : Bool
+    let timeSlots : [TimeSlot]
+    let category: Category
+    let duration : TimeInterval
     let shouldDisplayCategoryName : Bool
+    let isLastInPastDay : Bool
+    let isRunning: Bool
+    
+    var startTime: Date {
+        return timeSlots.first!.startTime
+    }
+    
+    var endTime: Date? {
+        return timeSlots.last!.endTime
+    }
 }
 
 
 extension TimelineItem
 {
-    func withoutDurations() -> TimelineItem
+    func withLastTimeSlotFlag(isCurrentDay: Bool) -> TimelineItem
     {
         return TimelineItem(
-            timeSlot: self.timeSlot,
-            durations: [],
-            lastInPastDay: self.lastInPastDay,
-            shouldDisplayCategoryName: self.shouldDisplayCategoryName
+            timeSlots: self.timeSlots,
+            category: self.category,
+            duration: self.duration,
+            shouldDisplayCategoryName: self.shouldDisplayCategoryName,
+            isLastInPastDay: !isCurrentDay,
+            isRunning: isCurrentDay
         )
     }
 }

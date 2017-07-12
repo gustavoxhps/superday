@@ -146,20 +146,15 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     
     private func constructCell(forTableView tableView: UITableView, withIndex index: Int, timelineItem:TimelineItem) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: IndexPath(row: index, section: 0)) as! TimelineCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: IndexPath(row: index, section: 0)) as! TimelineCell        
+        cell.timelineItem = timelineItem
         
-        let duration = viewModel.calculateDuration(ofTimeSlot: timelineItem.timeSlot)
-        cell.bind(toTimelineItem: timelineItem, index: index, duration: duration)
-        
-        if !cell.isSubscribedToClickObservable
-        {
-            cell.editClickObservable
-                .map{ [unowned self] index in
-                    return (self.buttonPosition(forCellIndex: index), index)
-                }
-                .subscribe(onNext: viewModel.notifyEditingBegan)
-                .addDisposableTo(disposeBag)
-        }
+        cell.editClickObservable
+            .map{ [unowned self] in
+                return (self.buttonPosition(forCellIndex: index), index)
+            }
+            .subscribe(onNext: viewModel.notifyEditingBegan)
+            .addDisposableTo(cell.disposeBag)
         
         return cell
     }

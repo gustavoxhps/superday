@@ -7,7 +7,7 @@ class MainViewModel : RxViewModel
     // MARK: Public Properties
     let dateObservable : Observable<Date>
     let isEditingObservable : Observable<Bool>
-    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+    let beganEditingObservable : Observable<(CGPoint, TimelineItem)>
     let categoryProvider : CategoryProvider
     
     var currentDate : Date { return self.timeService.now }
@@ -85,8 +85,10 @@ class MainViewModel : RxViewModel
         metricsService.log(event: .timeSlotManualCreation)
     }
         
-    func updateTimeSlot(_ timeSlot: TimeSlot, withCategory category: Category)
+    func updateTimelineItem(_ timelineItem: TimelineItem, withCategory category: Category)
     {
+        guard let timeSlot = timelineItem.timeSlots.first else { return }
+        
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
 
         timeSlotService.update(timeSlot: timeSlot, withCategory: category)
