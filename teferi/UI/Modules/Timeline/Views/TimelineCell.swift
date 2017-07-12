@@ -179,6 +179,7 @@ class TimelineCell : UITableViewCell
         bottomMargin.constant = item.isRunning || item.hasCollapseButton ? 20 : 0
         
         expandButton.isHidden = item.timeSlots.count == 1
+        lineView.collapsable = item.timeSlots.count > 1
         
         lineView.layoutIfNeeded()
     }
