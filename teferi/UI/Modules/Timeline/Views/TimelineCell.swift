@@ -39,6 +39,7 @@ class TimelineCell : UITableViewCell
     @IBOutlet private weak var lineHeight: NSLayoutConstraint!
     @IBOutlet private weak var bottomMargin: NSLayoutConstraint!
     @IBOutlet private weak var dotView : UIView!
+    @IBOutlet private weak var collapseButton: UIButton!
     
     private var lineFadeView : AutoResizingLayerView?
     
@@ -54,11 +55,14 @@ class TimelineCell : UITableViewCell
         guard let timelineItem = timelineItem else { return }
         
         //Updates each one of the cell's components
-        layoutLine(withCategory: timelineItem.category, interval: timelineItem.duration, isRunning: timelineItem.isRunning, lastInPastDay: timelineItem.isLastInPastDay)
+        layoutLine(withCategory: timelineItem.category, interval: timelineItem.duration, isRunning: timelineItem.isRunning, lastInPastDay: timelineItem.isLastInPastDay, hasCollapseButton: timelineItem.hasCollapseButton)
         layoutSlotTime(withItem: timelineItem, lastInPastDay: timelineItem.isLastInPastDay)
         layoutElapsedTimeLabel(withColor: timelineItem.category.color, interval: timelineItem.duration, shouldShow: true /*TODO*/)
         layoutDescriptionLabel(withTimelineItem: timelineItem)
         layoutCategoryIcon(forCategory: timelineItem.category)
+        
+        let image = UIImage(asset: Asset.icCollapse).withRenderingMode(.alwaysTemplate)
+        collapseButton.setImage(image, for: .normal)
     }
     
     func animateIntro()
@@ -137,7 +141,7 @@ class TimelineCell : UITableViewCell
     }
     
     /// Updates the line that displays shows how long the TimeSlot lasted
-    private func layoutLine(withCategory category: Category, interval: TimeInterval, isRunning: Bool, lastInPastDay: Bool = false)
+    private func layoutLine(withCategory category: Category, interval: TimeInterval, isRunning: Bool, lastInPastDay: Bool = false, hasCollapseButton: Bool)
     {
         if category == .sleep
         {
@@ -156,8 +160,11 @@ class TimelineCell : UITableViewCell
         
         lineFadeView?.isHidden = !lastInPastDay
         
-        dotView.isHidden = !isRunning && !lastInPastDay
-        bottomMargin.constant = isRunning ? 24 : 0
+        dotView.isHidden = !isRunning && !lastInPastDay || hasCollapseButton
+        collapseButton.isHidden = !hasCollapseButton
+        collapseButton.tintColor = category.color
+        
+        bottomMargin.constant = isRunning || hasCollapseButton ? 20 : 0
         
         lineView.layoutIfNeeded()
     }
