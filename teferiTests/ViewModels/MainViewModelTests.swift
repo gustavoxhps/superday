@@ -74,14 +74,6 @@ class MainViewModelTests : XCTestCase
         expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
     }
     
-    func testTheUpdateTimeSlotMethodChangesATimeSlotsCategory()
-    {
-        let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
-        
-        expect(timeSlot.category).to(equal(Category.commute))
-    }
-    
     func testTheUpdateTimeSlotMethodEndsTheEditingProcess()
     {
         var editingEnded = false
@@ -135,21 +127,6 @@ class MainViewModelTests : XCTestCase
         viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
-    }
-    
-    func testTheUpdateMethodMarksTimeSlotAsSetByUser()
-    {
-        let location = CLLocation(latitude:43.4211, longitude:4.7562)
-        
-        let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
-                                                        smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
-                                                        location: location)!
-        
-        expect(timeSlot.categoryWasSetByUser).to(beFalse())
-        
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
-        
-        expect(timeSlot.categoryWasSetByUser).to(beTrue())
     }
     
     func testHKPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()

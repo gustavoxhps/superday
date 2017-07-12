@@ -33,7 +33,7 @@ protocol TimeSlotService
      
      - Parameter setByUser: Indicates if the user initiated the action that changed the TimeSlot.
      */
-    func update(timeSlot: TimeSlot, withCategory category: Category, setByUser: Bool)
+    func update(timeSlot: TimeSlot, withCategory category: Category)
     
     /**
      Gets last registered TimeSlot.

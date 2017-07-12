@@ -80,12 +80,11 @@ class TimelineViewModelTests : XCTestCase
     func testTheAddNewSlotsMethodEndsThePreviousTimeSlot()
     {
         addTimeSlot()
-        
+        addTimeSlot(minutesAfterNoon: 100)
+
         let lastEvent = observer.events.last!
         let firstItem = lastEvent.value.element!.first!
         let firstSlot = firstItem.timeSlot
-        
-        addTimeSlot()
         
         expect(firstSlot.endTime).toNot(beNil())
     }
@@ -121,7 +120,7 @@ class TimelineViewModelTests : XCTestCase
         
         var timelineItems = observer.events.last!.value.element!
         
-        timeSlotService.update(timeSlot: timelineItems[2].timeSlot, withCategory: .leisure, setByUser: true)
+        timeSlotService.update(timeSlot: timelineItems[2].timeSlot, withCategory: .leisure)
         
         timelineItems = observer.events.last!.value.element!
         
@@ -135,12 +134,11 @@ class TimelineViewModelTests : XCTestCase
     {
         addTimeSlot()
         
-        let timeSlot = addTimeSlot()
-        timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure, setByUser: true)
+        let timeSlot = addTimeSlot(minutesAfterNoon: 100)
+        timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure)
         
-        addTimeSlot()
-        addTimeSlot()
-        
+        addTimeSlot(minutesAfterNoon: 200)
+        addTimeSlot(minutesAfterNoon: 300)
         
         var timelineItems = observer.events.last!.value.element!
 
@@ -154,7 +152,7 @@ class TimelineViewModelTests : XCTestCase
         let ts = addTimeSlot(minutesAfterNoon: 0)
         addTimeSlot(minutesAfterNoon: 3)
         
-        timeSlotService.update(timeSlot: ts, withCategory: .family, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .family)
         
         let timelineItems = observer.events.last!.value.element!
         
@@ -183,7 +181,7 @@ class TimelineViewModelTests : XCTestCase
             .addDisposableTo(disposeBag)
         
         
-        timeSlotService.update(timeSlot: ts, withCategory: .leisure, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .leisure)
         
         let timelineItems = observer.events.last!.value.element!
         

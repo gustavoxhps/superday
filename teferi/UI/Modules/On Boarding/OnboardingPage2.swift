@@ -31,10 +31,7 @@ class OnboardingPage2 : OnboardingPage
         super.viewDidLoad()
         
         let slot = timeSlots[editIndex]
-        editedTimeSlot = TimeSlot(withStartTime: slot.startTime,
-                                       category: editTo,
-                                       categoryWasSetByUser: false)
-        editedTimeSlot.endTime = slot.endTime
+        editedTimeSlot = slot.withCategory(editTo)
         
         initAnimatedTitleText(textView)
         timelineCells = initAnimatingTimeline(with: timeSlots, in: timelineView)

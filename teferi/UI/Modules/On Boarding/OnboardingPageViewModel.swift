@@ -50,9 +50,9 @@ class OnboardingPageViewModel: NSObject
         let endTime = time(from: to)
         
         let timeSlot = TimeSlot(withStartTime: startTime,
+                                endTime: endTime,
                                 category: category,
                                 categoryWasSetByUser: false)
-        timeSlot.endTime = endTime
         
         return timeSlot
     }

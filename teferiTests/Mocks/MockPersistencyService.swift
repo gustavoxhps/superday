@@ -22,9 +22,9 @@ class MockPersistencyService<T> : BasePersistencyService<T>
         return true
     }
     
-    @discardableResult override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> Bool
+    @discardableResult override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> T?
     {
-        return true
+        return nil
     }
     
     @discardableResult override func delete(withPredicate predicate: Predicate?) -> Bool

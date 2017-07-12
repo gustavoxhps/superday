@@ -73,8 +73,7 @@ class DefaultSmartGuessService : SmartGuessService
             return smartGuess
         }
         
-        if !persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
-        {
+        if persistencyService.update(withPredicate: predicate, updateFunction: editFunction) == nil {
             loggingService.log(withLogLevel: .warning, message: "Error trying to update last-used time of SmartGuess with id \(id)")
         }
         
@@ -106,7 +105,7 @@ class DefaultSmartGuessService : SmartGuessService
             return smartGuess
         }
         
-        if !persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        if persistencyService.update(withPredicate: predicate, updateFunction: editFunction) == nil
         {
             loggingService.log(withLogLevel: .warning, message: "Error trying to increase errorCount of SmartGuess with id \(id)")
         }

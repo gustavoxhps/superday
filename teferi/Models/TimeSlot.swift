@@ -2,33 +2,65 @@ import Foundation
 import CoreData
 import CoreLocation
 
-/// Represents each individual activity performed by the app user.
-class TimeSlot
+struct TimeSlot
 {
     // MARK: Properties
-    let startTime : Date
-    let location : CLLocation?
+    let startTime: Date
+    let endTime: Date?
+    let category: Category
+    let smartGuessId : Int?
+    let location: CLLocation?
+    let categoryWasSetByUser: Bool
     
-    var smartGuessId : Int?
-    var endTime : Date? = nil
-    var category = Category.unknown
-    var categoryWasSetByUser : Bool
-    
-    // MARK: Initializers
-    init(withStartTime time: Date, category: Category, categoryWasSetByUser: Bool, location: CLLocation? = nil)
+}
+
+extension TimeSlot
+{
+    init(withStartTime startTime: Date, endTime: Date? = nil, category: Category, categoryWasSetByUser: Bool, location: CLLocation? = nil)
     {
-        self.startTime = time
-        self.location = location
+        self.startTime = startTime
+        self.endTime = endTime
         self.category = category
+        self.smartGuessId = nil
+        self.location = location
         self.categoryWasSetByUser = categoryWasSetByUser
+        
     }
     
-    init(withStartTime time: Date, smartGuess: SmartGuess, location: CLLocation?)
+    init(withStartTime time: Date, endTime: Date? = nil, smartGuess: SmartGuess, location: CLLocation?)
     {
         self.startTime = time
+        self.endTime = endTime
+        self.category = smartGuess.category
+        self.smartGuessId = smartGuess.id
         self.location = location
         self.categoryWasSetByUser = false
-        self.smartGuessId = smartGuess.id
-        self.category = smartGuess.category
+
+    }
+}
+
+extension TimeSlot
+{
+    func withCategory(_ category: Category, setByUser: Bool? = nil) -> TimeSlot
+    {
+        return TimeSlot(
+            withStartTime: self.startTime,
+            endTime: self.endTime,
+            category: category,
+            categoryWasSetByUser: setByUser ?? self.categoryWasSetByUser,
+            location: self.location
+        )
+    }
+    
+    func withEndDate( _ endDate: Date) -> TimeSlot
+    {
+        return TimeSlot(
+            startTime: self.startTime,
+            endTime: endDate,
+            category: self.category,
+            smartGuessId: self.smartGuessId,
+            location: self.location,
+            categoryWasSetByUser: self.categoryWasSetByUser
+        )
     }
 }

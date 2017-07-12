@@ -35,12 +35,7 @@ class TimelineCellTests : XCTestCase
         view = Bundle.main.loadNibNamed("TimelineCell", owner: nil, options: nil)?.first! as! TimelineCell
         view.bind(toTimelineItem: timelineItem, index: 0, duration: duration)
     }
-    
-    override func tearDown()
-    {
-        timelineItem.timeSlot.category = .work
-    }
-    
+        
     func testTheImageChangesAccordingToTheBoundTimeSlot()
     {
         expect(self.view.categoryIcon.image).toNot(beNil())
@@ -63,16 +58,15 @@ class TimelineCellTests : XCTestCase
     func testTheTimeDescriptionShowsEndDateIfIsLastPastTimeSlot()
     {
         let date = Date().yesterday.ignoreTimeComponents()
-        let newTimeSlot = createTimeSlot(withStartTime: date)
-        let duration = timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
+        var newTimeSlot = createTimeSlot(withStartTime: date).withEndDate(date.addingTimeInterval(5000))
+        let duration = timeSlotService.calculateDuration(ofTimeSlot: newTimeSlot)
         let newTimelineItem = TimelineItem(timeSlot: newTimeSlot,
                                            durations: [duration],
                                             lastInPastDay: true,
                                             shouldDisplayCategoryName: true)
         let formatter = DateFormatter()
         formatter.timeStyle = .short
-        newTimeSlot.endTime = date.addingTimeInterval(5000)
-       
+
         view.bind(toTimelineItem: newTimelineItem, index: 0, duration: duration)
         
         let startText = formatter.string(from: newTimeSlot.startTime)
@@ -144,8 +138,8 @@ class TimelineCellTests : XCTestCase
     {
         let oldLineHeight = view.lineView.frame.height
         let date = Date().add(days: -1)
-        let newTimeSlot = createTimeSlot(withStartTime: date)
-        newTimeSlot.endTime = Date()
+        var newTimeSlot = createTimeSlot(withStartTime: date)
+        newTimeSlot = newTimeSlot.withEndDate(Date())
         let duration = timeSlotService.calculateDuration(ofTimeSlot: newTimeSlot)
         let newTimelineItem = TimelineItem(timeSlot: newTimeSlot,
                                            durations: [duration],

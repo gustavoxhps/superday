@@ -45,7 +45,7 @@ class SimpleMockTimeSlotService : TimeSlotService
         return timeSlotsToReturn ?? []
     }
 
-    func update(timeSlot: TimeSlot, withCategory category: teferi.Category, setByUser: Bool)
+    func update(timeSlot: TimeSlot, withCategory category: teferi.Category)
     {
         
     }

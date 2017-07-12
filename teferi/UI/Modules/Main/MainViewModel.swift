@@ -89,7 +89,7 @@ class MainViewModel : RxViewModel
     {
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
 
-        timeSlotService.update(timeSlot: timeSlot, withCategory: category, setByUser: true)
+        timeSlotService.update(timeSlot: timeSlot, withCategory: category)
         metricsService.log(event: .timeSlotEditing)
         
         let smartGuessId = timeSlot.smartGuessId
@@ -102,10 +102,7 @@ class MainViewModel : RxViewModel
         {
             smartGuessService.add(withCategory: category, location: location)
         }
-        
-        timeSlot.category = category
-        timeSlot.categoryWasSetByUser = true
-        
+
         editStateService.notifyEditingEnded()
     }
     
