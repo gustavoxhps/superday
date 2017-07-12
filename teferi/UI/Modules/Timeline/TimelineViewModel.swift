@@ -100,22 +100,53 @@ class TimelineViewModel
     {
         let timelineItems = timeSlots
             .splitBy { $0.category }
-            .reduce([TimelineItem](), { acc, timeslots in
-                
-                return acc + [
-                    TimelineItem(
-                        timeSlots: timeslots,
-                        category: timeslots.first!.category,
-                        duration: timeslots.map(calculateDuration).reduce(0, +),
-                        shouldDisplayCategoryName: true,
-                        isLastInPastDay: false,
-                        isRunning: false)
-                ]
+            .reduce([TimelineItem](), { acc, groupedTimeSlots in
+     
+                if groupedTimeSlots.count > 1 && true // If it's expanded
+                {
+                    return acc + expandedTimelineItems(fromTimeSlots: groupedTimeSlots)
+                }
+                else
+                {
+                    return acc + [
+                        TimelineItem(
+                            timeSlots: groupedTimeSlots,
+                            category: groupedTimeSlots.first!.category,
+                            duration: groupedTimeSlots.map(calculateDuration).reduce(0, +),
+                            shouldDisplayCategoryName: true,
+                            isLastInPastDay: false,
+                            isRunning: false,
+                            hasCollapseButton: false)
+                    ]
+                }
             })
         
         // Add isLastInPastDay or isRunning to last timeslot of timeline
         guard let last = timelineItems.last else { return [] }
         return Array(timelineItems.dropLast()) + [last.withLastTimeSlotFlag(isCurrentDay: isCurrentDay)]
+    }
+    
+    private func expandedTimelineItems(fromTimeSlots timeSlots: [TimeSlot]) -> [TimelineItem]
+    {
+        guard let first = timeSlots.first, let last = timeSlots.last, first.startTime != last.startTime else { return [] }
+        let category = first.category
+        
+        return timeSlots.map {
+            TimelineItem(
+                withTimeSlots: [$0],
+                category: category,
+                duration: calculateDuration(ofTimeSlot: $0),
+                shouldDisplayCategoryName: $0.startTime == first.startTime,
+                hasCollapseButton: $0.startTime == last.startTime)
+        }
+    }
+    
+    private func timelineItem(fromTimeSlot timeSlot: TimeSlot) -> TimelineItem
+    {
+        return TimelineItem(
+            withTimeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: calculateDuration(ofTimeSlot: timeSlot))
     }
     
     private func timeSlotBelongsToThisDate(_ timeSlot: TimeSlot) -> Bool
