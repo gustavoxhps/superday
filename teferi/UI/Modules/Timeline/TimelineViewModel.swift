@@ -28,6 +28,9 @@ class TimelineViewModel
     private var activities : Variable<[Activity]> = Variable([])
     private var timelineItems : Variable<[TimelineItem]> = Variable([])
     
+    private var expandedSlotsLastDate: Date? = nil
+    private var manualRefreshSubject = PublishSubject<Void>()
+    
     //MARK: Initializers
     init(date completeDate: Date,
          timeService: TimeService,
@@ -62,7 +65,7 @@ class TimelineViewModel
             .mapTo(())
         
         let refreshObservable =
-            Observable.of(newTimeSlotForThisDate, updatedTimeSlotForThisDate, movedToForeground)
+            Observable.of(newTimeSlotForThisDate, updatedTimeSlotForThisDate, movedToForeground, manualRefreshSubject.asObservable())
                       .merge()
                       .startWith(()) // This is a hack I can't remove due to something funky with the view controllery lifecycle. We should fix this in the refactor
                 
@@ -81,6 +84,18 @@ class TimelineViewModel
         editStateService
             .notifyEditingBegan(point: point,
                                 timelineItem: timelineItems.value[index])
+    }
+    
+    func collapseSlots(atIndex index: Int)
+    {
+        expandedSlotsLastDate = nil
+        manualRefreshSubject.onNext(())
+    }
+    
+    func expandSlots(atIndex index: Int)
+    {
+        expandedSlotsLastDate = timelineItems.value[index].timeSlots.last?.startTime
+        manualRefreshSubject.onNext(())
     }
     
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
@@ -102,7 +117,7 @@ class TimelineViewModel
             .splitBy { $0.category }
             .reduce([TimelineItem](), { acc, groupedTimeSlots in
      
-                if groupedTimeSlots.count > 1 && true // If it's expanded
+                if groupedTimeSlots.count > 1 && areExpanded(groupedTimeSlots)
                 {
                     return acc + expandedTimelineItems(fromTimeSlots: groupedTimeSlots)
                 }
@@ -160,5 +175,13 @@ class TimelineViewModel
         
         let isLastEntry = count - 1 == index
         return isLastEntry
+    }
+    
+    private func areExpanded(_ timeSlots:[TimeSlot]) -> Bool
+    {
+        guard let expandedSlotsLastDate = expandedSlotsLastDate,
+            let lastDate = timeSlots.last?.startTime else { return false }
+        
+        return expandedSlotsLastDate == lastDate
     }
 }

@@ -126,14 +126,23 @@
                         </constraints>
                         <state key="normal" image="icCollapse"/>
                     </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pUh-mi-CFA">
+                        <rect key="frame" x="53" y="40" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="PU4-qA-gpT"/>
+                            <constraint firstAttribute="width" constant="30" id="rV2-HP-66r"/>
+                        </constraints>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="MQM-XP-kp0" secondAttribute="bottom" priority="750" constant="24" id="300-X0-xqj"/>
                     <constraint firstItem="MQM-XP-kp0" firstAttribute="top" secondItem="dDI-IU-1Pi" secondAttribute="top" constant="8" id="5Ni-jN-hHj"/>
+                    <constraint firstItem="pUh-mi-CFA" firstAttribute="centerY" secondItem="lWX-Wq-cy4" secondAttribute="centerY" id="9JJ-jI-SWg"/>
                     <constraint firstItem="7S1-6Q-QJN" firstAttribute="leading" secondItem="dDI-IU-1Pi" secondAttribute="leading" constant="53" id="9if-q7-Sua"/>
                     <constraint firstItem="LmH-eW-Lnz" firstAttribute="top" secondItem="dDI-IU-1Pi" secondAttribute="top" constant="8" id="AYh-tb-SIr"/>
                     <constraint firstItem="3XR-CB-WIl" firstAttribute="centerX" secondItem="LmH-eW-Lnz" secondAttribute="centerX" id="N9P-IK-U8r"/>
                     <constraint firstItem="MQM-XP-kp0" firstAttribute="leading" secondItem="LmH-eW-Lnz" secondAttribute="trailing" constant="8" id="XUt-6K-9eL"/>
+                    <constraint firstItem="pUh-mi-CFA" firstAttribute="centerX" secondItem="2Oj-R3-3Vm" secondAttribute="centerX" id="ZxT-XX-7cu"/>
                     <constraint firstItem="LmH-eW-Lnz" firstAttribute="leading" secondItem="dDI-IU-1Pi" secondAttribute="leading" constant="16" id="chr-jJ-LLJ"/>
                     <constraint firstItem="3XR-CB-WIl" firstAttribute="centerY" secondItem="LmH-eW-Lnz" secondAttribute="centerY" id="fLJ-zu-HSs"/>
                     <constraint firstAttribute="trailing" secondItem="MQM-XP-kp0" secondAttribute="trailing" priority="750" id="ste-ph-APx"/>
@@ -150,6 +159,7 @@
                 <outlet property="contentHolder" destination="MQM-XP-kp0" id="ntG-lI-XhE"/>
                 <outlet property="dotView" destination="irT-bk-Y4K" id="E5Z-rc-lZx"/>
                 <outlet property="elapsedTime" destination="lWX-Wq-cy4" id="gRF-0t-BZL"/>
+                <outlet property="expandButton" destination="pUh-mi-CFA" id="zxf-Ye-1xT"/>
                 <outlet property="lineHeight" destination="qbz-bm-JId" id="1GM-lN-aJr"/>
                 <outlet property="lineView" destination="2Oj-R3-3Vm" id="iph-AN-HC0"/>
                 <outlet property="slotDescription" destination="2dA-qd-byA" id="lRi-xX-8UG"/>

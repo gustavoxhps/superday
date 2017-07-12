@@ -21,6 +21,17 @@ class TimelineCell : UITableViewCell
             .asObservable()
     }
     
+    var collapseClickObservable : Observable<Void> {
+        return self.collapseButton.rx.tap
+            .asObservable()
+    }
+    
+    var expandClickObservable : Observable<Void> {
+        return self.expandButton.rx.tap
+            .asObservable()
+    }
+    
+    
     @IBOutlet private(set) weak var categoryCircle: UIView!
     
     // MARK: Private Properties
@@ -40,6 +51,7 @@ class TimelineCell : UITableViewCell
     @IBOutlet private weak var bottomMargin: NSLayoutConstraint!
     @IBOutlet private weak var dotView : UIView!
     @IBOutlet private weak var collapseButton: UIButton!
+    @IBOutlet private weak var expandButton: UIButton!
     
     private var lineFadeView : AutoResizingLayerView?
     
@@ -55,7 +67,7 @@ class TimelineCell : UITableViewCell
         guard let timelineItem = timelineItem else { return }
         
         //Updates each one of the cell's components
-        layoutLine(withCategory: timelineItem.category, interval: timelineItem.duration, isRunning: timelineItem.isRunning, lastInPastDay: timelineItem.isLastInPastDay, hasCollapseButton: timelineItem.hasCollapseButton)
+        layoutLine(withItem: timelineItem)
         layoutSlotTime(withItem: timelineItem, lastInPastDay: timelineItem.isLastInPastDay)
         layoutElapsedTimeLabel(withColor: timelineItem.category.color, interval: timelineItem.duration, shouldShow: true /*TODO*/)
         layoutDescriptionLabel(withTimelineItem: timelineItem)
@@ -141,30 +153,32 @@ class TimelineCell : UITableViewCell
     }
     
     /// Updates the line that displays shows how long the TimeSlot lasted
-    private func layoutLine(withCategory category: Category, interval: TimeInterval, isRunning: Bool, lastInPastDay: Bool = false, hasCollapseButton: Bool)
+    private func layoutLine(withItem item: TimelineItem)
     {
-        if category == .sleep
+        if item.category == .sleep
         {
             lineHeight.constant = 20.0
         }
         else
         {
-            let newHeight = Constants.minLineHeight + Constants.timelineSlope * (CGFloat(interval) - Constants.minTimelineInterval)
+            let newHeight = Constants.minLineHeight + Constants.timelineSlope * (CGFloat(item.duration) - Constants.minTimelineInterval)
             lineHeight.constant = max(min(newHeight, Constants.maxLineHeight), Constants.minLineHeight)
         }
         
-        lineView.color = category.color
-        dotView.backgroundColor = category.color
+        lineView.color = item.category.color
+        dotView.backgroundColor = item.category.color
         
-        lineView.fading = lastInPastDay
+        lineView.fading = item.isLastInPastDay
         
-        lineFadeView?.isHidden = !lastInPastDay
+        lineFadeView?.isHidden = !item.isLastInPastDay
         
-        dotView.isHidden = !isRunning && !lastInPastDay || hasCollapseButton
-        collapseButton.isHidden = !hasCollapseButton
-        collapseButton.tintColor = category.color
+        dotView.isHidden = !item.isRunning && !item.isLastInPastDay || item.hasCollapseButton
+        collapseButton.isHidden = !item.hasCollapseButton
+        collapseButton.tintColor = item.category.color
         
-        bottomMargin.constant = isRunning || hasCollapseButton ? 20 : 0
+        bottomMargin.constant = item.isRunning || item.hasCollapseButton ? 20 : 0
+        
+        expandButton.isHidden = item.timeSlots.count == 1
         
         lineView.layoutIfNeeded()
     }
