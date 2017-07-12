@@ -38,7 +38,7 @@ class TimelineCell : UITableViewCell
     @IBOutlet private(set) weak var categoryIcon: UIImageView!
     @IBOutlet private weak var lineHeight: NSLayoutConstraint!
     @IBOutlet private weak var bottomMargin: NSLayoutConstraint!
-    @IBOutlet private weak var dotsView : DottedLineView!
+    @IBOutlet private weak var dotView : UIView!
     
     private var lineFadeView : AutoResizingLayerView?
     
@@ -150,13 +150,13 @@ class TimelineCell : UITableViewCell
         }
         
         lineView.color = category.color
-        dotsView.color = category.color
+        dotView.backgroundColor = category.color
         
         lineView.fading = lastInPastDay
         
         lineFadeView?.isHidden = !lastInPastDay
         
-        dotsView.isHidden = !isRunning && !lastInPastDay
+        dotView.isHidden = !isRunning && !lastInPastDay
         bottomMargin.constant = isRunning ? 24 : 0
         
         lineView.layoutIfNeeded()

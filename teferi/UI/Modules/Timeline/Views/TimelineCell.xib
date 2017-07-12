@@ -15,7 +15,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="93"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" tableViewCell="v4C-kv-C6Y" id="dDI-IU-1Pi">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="93"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="92.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LmH-eW-Lnz" userLabel="Category Background">
@@ -89,13 +89,18 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="irT-bk-Y4K" customClass="DottedLineView" customModule="teferi" customModuleProvider="target">
-                                <rect key="frame" x="10" y="65" width="4" height="20"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="irT-bk-Y4K">
+                                <rect key="frame" x="10" y="65" width="4" height="4"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="4" id="UdH-su-Ohe"/>
-                                    <constraint firstAttribute="height" constant="20" id="XP6-s9-b1z"/>
+                                    <constraint firstAttribute="height" constant="4" id="XP6-s9-b1z"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -132,7 +137,7 @@
                 <outlet property="categoryCircle" destination="LmH-eW-Lnz" id="bU3-ir-pO5"/>
                 <outlet property="categoryIcon" destination="hvt-Yn-Mch" id="9hh-cR-WEO"/>
                 <outlet property="contentHolder" destination="MQM-XP-kp0" id="ntG-lI-XhE"/>
-                <outlet property="dotsView" destination="irT-bk-Y4K" id="Xjk-LE-5dr"/>
+                <outlet property="dotView" destination="irT-bk-Y4K" id="E5Z-rc-lZx"/>
                 <outlet property="elapsedTime" destination="lWX-Wq-cy4" id="gRF-0t-BZL"/>
                 <outlet property="lineHeight" destination="qbz-bm-JId" id="1GM-lN-aJr"/>
                 <outlet property="lineView" destination="2Oj-R3-3Vm" id="iph-AN-HC0"/>
