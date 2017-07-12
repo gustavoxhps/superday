@@ -2,6 +2,37 @@ import RxSwift
 import RxCocoa
 import UIKit
 import CoreGraphics
+import RxDataSources
+
+struct TimelineSection {
+    var items: [Item]
+}
+extension TimelineSection: AnimatableSectionModelType {
+    typealias Item = TimelineItem
+    
+    init(original: TimelineSection, items: [Item]) {
+        self = original
+        self.items = items
+    }
+    
+    var identity: String {
+        return ""
+    }
+}
+
+extension TimelineItem: IdentifiableType, Equatable
+{
+    var identity: String {
+        return timeSlots.first!.startTime.description
+    }
+}
+
+func == (lhs: TimelineItem, rhs: TimelineItem) -> Bool
+{
+    return lhs.category == rhs.category && lhs.timeSlots.count == rhs.timeSlots.count
+        && lhs.hasCollapseButton == rhs.hasCollapseButton && lhs.isRunning == rhs.isRunning
+}
+
 
 protocol TimelineDelegate: class
 {
@@ -36,6 +67,8 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         }
     }
     
+    private let dataSource = RxTableViewSectionedAnimatedDataSource<TimelineSection>()
+
     // MARK: Initializers
     init(presenter: TimelinePresenter, viewModel: TimelineViewModel)
     {
@@ -82,18 +115,21 @@ class TimelineViewController : UIViewController, UITableViewDelegate
             .drive(onNext: onTimeTick)
             .addDisposableTo(disposeBag)
         
-        let itemsObservable = viewModel.timelineItemsObservable
-            .asDriver(onErrorJustReturn: [])
-            
-        itemsObservable
-            .drive(tableView.rx.items, curriedArgument: constructCell)
+        dataSource.animationConfiguration = AnimationConfiguration(
+            insertAnimation: .bottom,
+            reloadAnimation: .fade,
+            deleteAnimation: .top)
+        
+        dataSource.configureCell = constructCell
+        
+        viewModel.timelineItemsObservable
+            .map({ [TimelineSection(items:$0)] })
+            .bindTo(tableView.rx.items(dataSource: dataSource))
             .addDisposableTo(disposeBag)
         
-        itemsObservable
-            .drive(onNext: { [unowned self] items in
-                self.emptyStateView.isHidden = items.count != 0
-                self.handleNewItem(items)
-            })
+        viewModel.timelineItemsObservable
+            .map{$0.count > 0}
+            .bindTo(emptyStateView.rx.isHidden)
             .addDisposableTo(disposeBag)
 
         viewModel.presentEditViewObservable
@@ -144,23 +180,23 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         tableView.scrollToRow(at: scrollIndexPath, at: .bottom, animated: true)
     }
     
-    private func constructCell(forTableView tableView: UITableView, withIndex index: Int, timelineItem:TimelineItem) -> UITableViewCell
+    private func constructCell(dataSource: TableViewSectionedDataSource<TimelineSection>, tableView: UITableView, indexPath: IndexPath, item:TimelineItem) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: IndexPath(row: index, section: 0)) as! TimelineCell        
-        cell.timelineItem = timelineItem
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! TimelineCell
+        cell.timelineItem = item
         
         cell.editClickObservable
             .map{ [unowned self] item in
                 let position = cell.categoryCircle.convert(cell.categoryCircle.center, to: self.view)
                 return (position, item)
             }
-            .subscribe(onNext: viewModel.notifyEditingBegan)
+            .subscribe(onNext: self.viewModel.notifyEditingBegan)
             .addDisposableTo(cell.disposeBag)
         
         cell.collapseClickObservable
             .subscribe(onNext: viewModel.collapseSlots)
             .addDisposableTo(cell.disposeBag)
-
+        
         cell.expandClickObservable
             .subscribe(onNext: viewModel.expandSlots)
             .addDisposableTo(cell.disposeBag)
