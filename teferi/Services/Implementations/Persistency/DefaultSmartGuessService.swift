@@ -7,7 +7,7 @@ class DefaultSmartGuessService : SmartGuessService
     
     //MARK: Private Properties
     private let distanceThreshold = 400.0 //TODO: We have to think about the 400m constant. Might be too low or too high.
-    private let timeThreshold : TimeInterval = 5*60*60 //5h
+    private let timeThreshold : TimeInterval = 2*60*60 //2h
     private let kNeighbors = 3
     private let smartGuessErrorThreshold = 3
     private let smartGuessIdKey = "smartGuessId"
