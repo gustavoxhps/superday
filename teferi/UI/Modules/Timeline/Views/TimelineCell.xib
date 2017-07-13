@@ -14,7 +14,7 @@
         <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="101" id="v4C-kv-C6Y" customClass="TimelineCell" customModule="teferi" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="375" height="93"/>
             <autoresizingMask key="autoresizingMask"/>
-            <tableViewCellContentView key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" tableViewCell="v4C-kv-C6Y" id="dDI-IU-1Pi">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="v4C-kv-C6Y" id="dDI-IU-1Pi">
                 <rect key="frame" x="0.0" y="0.0" width="375" height="92.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -134,7 +134,7 @@
                         </constraints>
                     </button>
                 </subviews>
-                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="MQM-XP-kp0" secondAttribute="bottom" priority="750" constant="24" id="300-X0-xqj"/>
                     <constraint firstItem="MQM-XP-kp0" firstAttribute="top" secondItem="dDI-IU-1Pi" secondAttribute="top" constant="8" id="5Ni-jN-hHj"/>

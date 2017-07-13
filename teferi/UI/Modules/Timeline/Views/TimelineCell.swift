@@ -7,6 +7,8 @@ import RxCocoa
 ///Cell that represents a TimeSlot in the timeline
 class TimelineCell : UITableViewCell
 {
+    static let cellIdentifier = "timelineCell"
+
     // MARK: Public Properties
     var timelineItem: TimelineItem? = nil {
         didSet {

@@ -17,6 +17,10 @@ struct TimelineItem
     var endTime: Date? {
         return timeSlots.last!.endTime
     }
+    
+    var isCollapsed: Bool {
+        return timeSlots.count > 1
+    }
 }
 
 extension TimelineItem

@@ -145,6 +145,8 @@
 		8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */; };
 		8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C1729061EF02DB5002ABDDA /* DailySummary.storyboard */; };
 		8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1729091EF119E5002ABDDA /* PagerPresenter.swift */; };
+		8C1EA3031F17C8A1003C3EEB /* TimelineTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1EA3021F17C8A1003C3EEB /* TimelineTableView.swift */; };
+		8C1EA3051F17EA6F003C3EEB /* TimelineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */; };
 		8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */; };
 		8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */; };
 		8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */; };
@@ -446,6 +448,8 @@
 		8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
 		8C1729071EF02DB5002ABDDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
 		8C1729091EF119E5002ABDDA /* PagerPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagerPresenter.swift; sourceTree = "<group>"; };
+		8C1EA3021F17C8A1003C3EEB /* TimelineTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineTableView.swift; sourceTree = "<group>"; };
+		8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimelineDataSource.swift; path = Datasource/TimelineDataSource.swift; sourceTree = "<group>"; };
 		8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewModel.swift; sourceTree = "<group>"; };
 		8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewModelTests.swift; sourceTree = "<group>"; };
 		8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableObserverExtensions.swift; sourceTree = "<group>"; };
@@ -1199,6 +1203,7 @@
 		8CA4613C1EC9A31B00587399 /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
+				8CEEF5AA1F175DB4007C36DA /* Datasource */,
 				8CA461411EC9A3CE00587399 /* Views */,
 				24564F711D832A4F00D9A8AE /* PagerViewController.swift */,
 				24B03B581D9E4C3E00452D16 /* PagerViewModel.swift */,
@@ -1250,6 +1255,7 @@
 				2420A8671DB56B6800C0478C /* EmptyStateView.xib */,
 				24564F531D83254E00D9A8AE /* TimelineCell.swift */,
 				24564F541D83254E00D9A8AE /* TimelineCell.xib */,
+				8C1EA3021F17C8A1003C3EEB /* TimelineTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1273,6 +1279,14 @@
 				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8CEEF5AA1F175DB4007C36DA /* Datasource */ = {
+			isa = PBXGroup;
+			children = (
+				8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */,
+			);
+			name = Datasource;
 			sourceTree = "<group>";
 		};
 		8CF8C08F1EDED6BE00EA2C77 /* Weekly Summary */ = {
@@ -1793,6 +1807,7 @@
 				8C1729041EF02D9A002ABDDA /* DailySummaryPieChartActivity.swift in Sources */,
 				24B03B5B1D9E4D1100452D16 /* SettingsService.swift in Sources */,
 				24DE23F21E1BB32F0089B49E /* CalendarViewController.swift in Sources */,
+				8C1EA3031F17C8A1003C3EEB /* TimelineTableView.swift in Sources */,
 				8CF0255A1EAFA2FF00BF0A42 /* SwipeInteractionController.swift in Sources */,
 				51EAA2881DC0BA910025680D /* UIViewExtensions.swift in Sources */,
 				246531721DA7B4A10066DFE0 /* PreiOSTenNotificationService.swift in Sources */,
@@ -1854,6 +1869,7 @@
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
 				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,
 				BE84C6161E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift in Sources */,
+				8C1EA3051F17EA6F003C3EEB /* TimelineDataSource.swift in Sources */,
 				24564F4D1D83207900D9A8AE /* MainViewModel.swift in Sources */,
 				BEE5A3BF1E72F6B200CA717D /* (null) in Sources */,
 				8CB9EF9B1E8BB589003D1FFC /* LineView.swift in Sources */,

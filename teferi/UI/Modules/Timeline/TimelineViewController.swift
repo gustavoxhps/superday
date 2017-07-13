@@ -4,42 +4,12 @@ import UIKit
 import CoreGraphics
 import RxDataSources
 
-struct TimelineSection {
-    var items: [Item]
-}
-extension TimelineSection: AnimatableSectionModelType {
-    typealias Item = TimelineItem
-    
-    init(original: TimelineSection, items: [Item]) {
-        self = original
-        self.items = items
-    }
-    
-    var identity: String {
-        return ""
-    }
-}
-
-extension TimelineItem: IdentifiableType, Equatable
-{
-    var identity: String {
-        return timeSlots.first!.startTime.description
-    }
-}
-
-func == (lhs: TimelineItem, rhs: TimelineItem) -> Bool
-{
-    return lhs.category == rhs.category && lhs.timeSlots.count == rhs.timeSlots.count
-        && lhs.hasCollapseButton == rhs.hasCollapseButton && lhs.isRunning == rhs.isRunning
-}
-
-
 protocol TimelineDelegate: class
 {
     func didScroll(oldOffset: CGFloat, newOffset: CGFloat)
 }
 
-class TimelineViewController : UIViewController, UITableViewDelegate
+class TimelineViewController : UIViewController
 {
     // MARK: Public Properties
     var date : Date { return self.viewModel.date }
@@ -49,9 +19,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     private let viewModel : TimelineViewModel
     private let presenter : TimelinePresenter
     
-    private var tableView : UITableView!
-    
-    private let cellIdentifier = "timelineCell"
+    private var tableView : TimelineTableView!
     
     private var willDisplayNewCell:Bool = false
     
@@ -67,7 +35,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         }
     }
     
-    private let dataSource = RxTableViewSectionedAnimatedDataSource<TimelineSection>()
+    private let dataSource = TimelineDataSource()
 
     // MARK: Initializers
     init(presenter: TimelinePresenter, viewModel: TimelineViewModel)
@@ -88,7 +56,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     {
         super.viewDidLoad()
         
-        tableView = UITableView(frame: view.bounds)
+        tableView = TimelineTableView(frame: view.bounds)
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -107,18 +75,13 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         tableView.allowsSelection = false
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
-        tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: TimelineCell.cellIdentifier)
         tableView.contentInset = UIEdgeInsets(top: 34, left: 0, bottom: 120, right: 0)
         
         viewModel.timeObservable
             .asDriver(onErrorJustReturn: ())
             .drive(onNext: onTimeTick)
             .addDisposableTo(disposeBag)
-        
-        dataSource.animationConfiguration = AnimationConfiguration(
-            insertAnimation: .fade,
-            reloadAnimation: .none,
-            deleteAnimation: .fade)
         
         dataSource.configureCell = constructCell
         
@@ -136,7 +99,6 @@ class TimelineViewController : UIViewController, UITableViewDelegate
             .subscribe(onNext: startEditOnLastSlot)
             .addDisposableTo(disposeBag)
         
-        tableView.rx.setDelegate(self).addDisposableTo(disposeBag)
         tableView.rx.willDisplayCell
             .subscribe(onNext: { [unowned self] (cell, indexPath) in
                 guard self.willDisplayNewCell && indexPath.row == self.tableView.numberOfRows(inSection: 0) - 1 else { return }
@@ -182,7 +144,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     
     private func constructCell(dataSource: TableViewSectionedDataSource<TimelineSection>, tableView: UITableView, indexPath: IndexPath, item:TimelineItem) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as! TimelineCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: TimelineCell.cellIdentifier, for: indexPath) as! TimelineCell
         cell.timelineItem = item
         
         cell.editClickObservable
