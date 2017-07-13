@@ -116,9 +116,9 @@ class TimelineViewController : UIViewController, UITableViewDelegate
             .addDisposableTo(disposeBag)
         
         dataSource.animationConfiguration = AnimationConfiguration(
-            insertAnimation: .bottom,
-            reloadAnimation: .fade,
-            deleteAnimation: .top)
+            insertAnimation: .fade,
+            reloadAnimation: .none,
+            deleteAnimation: .fade)
         
         dataSource.configureCell = constructCell
         

@@ -134,6 +134,7 @@
                         </constraints>
                     </button>
                 </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="MQM-XP-kp0" secondAttribute="bottom" priority="750" constant="24" id="300-X0-xqj"/>
                     <constraint firstItem="MQM-XP-kp0" firstAttribute="top" secondItem="dDI-IU-1Pi" secondAttribute="top" constant="8" id="5Ni-jN-hHj"/>
@@ -149,7 +150,7 @@
                     <constraint firstItem="7S1-6Q-QJN" firstAttribute="top" secondItem="MQM-XP-kp0" secondAttribute="bottom" constant="-6" id="yHn-i2-A3i"/>
                 </constraints>
             </tableViewCellContentView>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <connections>
                 <outlet property="bottomMargin" destination="300-X0-xqj" id="7Ui-Ip-bpT"/>
                 <outlet property="categoryButton" destination="3XR-CB-WIl" id="XbJ-hl-Xq8"/>
