@@ -171,6 +171,10 @@ class TimelineCell : UITableViewCell
             lineHeight.constant = max(min(newHeight, Constants.maxLineHeight), Constants.minLineHeight)
         }
         
+        if item.timeSlots.count > 1 {
+            lineHeight.constant = 64
+        }
+        
         lineView.color = item.category.color
         dotView.backgroundColor = item.category.color
         
