@@ -28,7 +28,7 @@ class TimelineViewModel
     private var activities : Variable<[Activity]> = Variable([])
     private var timelineItems : Variable<[TimelineItem]> = Variable([])
     
-    private var expandedSlotsLastDate: Date? = nil
+    private var dateInsideExpandedTimeline: Date? = nil
     private var manualRefreshSubject = PublishSubject<Void>()
     
     //MARK: Initializers
@@ -55,8 +55,10 @@ class TimelineViewModel
             .filter(timeSlotBelongsToThisDate)
             .mapTo(())
         
-        let updatedTimeSlotForThisDate = timeSlotService
-            .timeSlotUpdatedObservable
+        let updatedTimeSlotForThisDate = timeSlotService.timeSlotUpdatedObservable
+            .do(onNext: { timeSlot in
+                self.dateInsideExpandedTimeline = timeSlot.startTime
+            })
             .filter(timeSlotBelongsToThisDate)
             .mapTo(())
         
@@ -90,13 +92,13 @@ class TimelineViewModel
     
     func collapseSlots(item: TimelineItem)
     {
-        expandedSlotsLastDate = nil
+        dateInsideExpandedTimeline = nil
         manualRefreshSubject.onNext(())
     }
     
     func expandSlots(item: TimelineItem)
     {
-        expandedSlotsLastDate = item.timeSlots.last?.startTime
+        dateInsideExpandedTimeline = item.timeSlots.first?.startTime
         manualRefreshSubject.onNext(())
     }
     
@@ -181,9 +183,8 @@ class TimelineViewModel
     
     private func areExpanded(_ timeSlots:[TimeSlot]) -> Bool
     {
-        guard let expandedSlotsLastDate = expandedSlotsLastDate,
-            let lastDate = timeSlots.last?.startTime else { return false }
+        guard let dateInsideExpandedTimeline = dateInsideExpandedTimeline else { return false }
         
-        return expandedSlotsLastDate == lastDate
+        return timeSlots.index(where: { $0.startTime == dateInsideExpandedTimeline }) != nil
     }
 }
