@@ -150,19 +150,18 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         cell.timelineItem = timelineItem
         
         cell.editClickObservable
-            .map{ [unowned self] in
-                return (self.buttonPosition(forCellIndex: index), index)
+            .map{ [unowned self] item in
+                let position = cell.categoryCircle.convert(cell.categoryCircle.center, to: self.view)
+                return (position, item)
             }
             .subscribe(onNext: viewModel.notifyEditingBegan)
             .addDisposableTo(cell.disposeBag)
         
         cell.collapseClickObservable
-            .map{ index }
             .subscribe(onNext: viewModel.collapseSlots)
             .addDisposableTo(cell.disposeBag)
 
         cell.expandClickObservable
-            .map{ index }
             .subscribe(onNext: viewModel.expandSlots)
             .addDisposableTo(cell.disposeBag)
         
@@ -186,7 +185,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
 
         let centerPoint = buttonPosition(forCellIndex: lastRow)
 
-        viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
+        viewModel.notifyEditingBegan(point: centerPoint, item: nil)
     }
     
     private func buttonPosition(forCellIndex index: Int) -> CGPoint

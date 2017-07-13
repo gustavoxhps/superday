@@ -79,22 +79,24 @@ class TimelineViewModel
     
     //MARK: Public methods
     
-    func notifyEditingBegan(point: CGPoint, index: Int)
+    func notifyEditingBegan(point: CGPoint, item: TimelineItem? = nil)
     {
+        let timelineItem: TimelineItem = item ?? timelineItems.value.last!
+
         editStateService
             .notifyEditingBegan(point: point,
-                                timelineItem: timelineItems.value[index])
+                                timelineItem: timelineItem)
     }
     
-    func collapseSlots(atIndex index: Int)
+    func collapseSlots(item: TimelineItem)
     {
         expandedSlotsLastDate = nil
         manualRefreshSubject.onNext(())
     }
     
-    func expandSlots(atIndex index: Int)
+    func expandSlots(item: TimelineItem)
     {
-        expandedSlotsLastDate = timelineItems.value[index].timeSlots.last?.startTime
+        expandedSlotsLastDate = item.timeSlots.last?.startTime
         manualRefreshSubject.onNext(())
     }
     

@@ -16,18 +16,24 @@ class TimelineCell : UITableViewCell
     
     private(set) var disposeBag = DisposeBag()
     
-    var editClickObservable : Observable<Void> {
+    var editClickObservable : Observable<TimelineItem> {
         return self.categoryButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
             .asObservable()
     }
     
-    var collapseClickObservable : Observable<Void> {
+    var collapseClickObservable : Observable<TimelineItem> {
         return self.collapseButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
             .asObservable()
     }
     
-    var expandClickObservable : Observable<Void> {
+    var expandClickObservable : Observable<TimelineItem> {
         return self.expandButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
             .asObservable()
     }
     
