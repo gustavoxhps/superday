@@ -6,7 +6,6 @@ class LocationPump : Pump
 {
     private let trackEventService:TrackEventService
     private let settingsService:SettingsService
-    private let smartGuessService:SmartGuessService
     private let timeSlotService:TimeSlotService
     private let loggingService : LoggingService
     private let timeService : TimeService
@@ -16,7 +15,6 @@ class LocationPump : Pump
     // MARK: Initializers
     init(trackEventService:TrackEventService,
          settingsService:SettingsService,
-         smartGuessService:SmartGuessService,
          timeSlotService:TimeSlotService,
          loggingService: LoggingService,
          timeService: TimeService
@@ -24,7 +22,6 @@ class LocationPump : Pump
     {
         self.trackEventService = trackEventService
         self.settingsService = settingsService
-        self.smartGuessService = smartGuessService
         self.timeSlotService = timeSlotService
         self.loggingService = loggingService
         self.timeService = timeService
@@ -107,8 +104,7 @@ class LocationPump : Pump
     {
         let now = timeService.now
         if let lastTTS = temporaryTimeSlots.last, lastTTS.category == .commute, now.timeIntervalSince(lastLocation.timestamp) > Constants.commuteDetectionLimit {
-            let smartGuess = smartGuessService.get(forLocation: lastLocation.toCLLocation())
-            return temporaryTimeSlots + [TemporaryTimeSlot(location: lastLocation, smartGuess: smartGuess)]
+            return temporaryTimeSlots + [TemporaryTimeSlot(location: lastLocation, category: .unknown)]
         }
         
         return temporaryTimeSlots
@@ -137,12 +133,10 @@ class LocationPump : Pump
             var timeSlotForLastLocation:TemporaryTimeSlot?
             if lastStartTime < previousLocation.timestamp
             {
-                let smartGuess = smartGuessService.get(forLocation: previousLocation.toCLLocation())
-                timeSlotForLastLocation = TemporaryTimeSlot(location: previousLocation, smartGuess: smartGuess)
+                timeSlotForLastLocation = TemporaryTimeSlot(location: previousLocation, category: .unknown)
             }
             
-            let smartGuess = smartGuessService.get(forLocation: location.toCLLocation())
-            return timeSlots + [ timeSlotForLastLocation, TemporaryTimeSlot(location: location, smartGuess: smartGuess) ].flatMap({$0})
+            return timeSlots + [ timeSlotForLastLocation, TemporaryTimeSlot(location: location, category: .unknown) ].flatMap({$0})
         }
 
         return timeSlots

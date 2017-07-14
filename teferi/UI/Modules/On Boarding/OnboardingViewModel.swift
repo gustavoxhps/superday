@@ -20,4 +20,14 @@ class OnboardingViewModel
         self.appLifecycleService = appLifecycleService
         self.notificationService = notificationService
     }
+    
+    func pageViewModel() -> OnboardingPageViewModel
+    {
+        return OnboardingPageViewModel(
+            timeService: timeService,
+            timeSlotService: timeSlotService,
+            settingsService: settingsService,
+            appLifecycleService: appLifecycleService,
+            notificationService: notificationService)
+    }
 }

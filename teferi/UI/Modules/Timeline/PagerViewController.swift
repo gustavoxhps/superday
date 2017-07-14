@@ -47,32 +47,27 @@ class PagerViewController : UIPageViewController
         view.backgroundColor = UIColor.white
         
         view.addSubview(headerView)
-        headerView.createConstraints()
+        headerView.snp.makeConstraints { make in
+            make.left.top.right.equalToSuperview()
+            make.height.equalTo(54)
+        }
         headerView.addGestureRecognizer(ClosureGestureRecognizer(withClosure: { [unowned self] in
             self.presenter.showDailySummary()
         }))
-        
-        headerView.layer.shadowColor = UIColor.black.withAlphaComponent(0.1).cgColor
-        headerView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        headerView.layer.shadowOpacity = 0.0
-        headerView.layer.shadowRadius = 4.0
     }
     
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         setCurrentViewController(forDate: viewModel.currentlySelectedDate, animated: false)
+
+        guard let vc = self.viewControllers?.last as? TimelineViewController else { return }
+        vc.delegate = self
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         viewControllersDictionary = [Date : UIViewController]()
-    }
-    
-    override func viewDidLayoutSubviews()
-    {
-        super.viewDidLayoutSubviews()
-        headerView.layer.shadowPath = UIBezierPath(rect: headerView.bounds).cgPath
     }
     
     // MARK: Private Methods
@@ -142,7 +137,6 @@ class PagerViewController : UIPageViewController
         {
             let newVc =  presenter.createTimeline(forDate: date)
             viewControllersDictionary[date.ignoreTimeComponents()] = newVc
-            newVc.delegate = self
             return newVc
         }
         
@@ -159,7 +153,17 @@ extension PagerViewController : UIPageViewControllerDelegate, UIPageViewControll
         
         let timelineController = viewControllers!.first as! TimelineViewController
         
+        if timelineController.date > viewModel.currentlySelectedDate
+        {
+            headerView.animationDirection = .right
+        } else {
+            headerView.animationDirection = .left
+        }
+        
         viewModel.currentlySelectedDate = timelineController.date
+        
+        (previousViewControllers[0] as! TimelineViewController).delegate = nil
+        timelineController.delegate = self
     }
     
     // MARK: UIPageViewControllerDataSource implementation
@@ -186,18 +190,9 @@ extension PagerViewController : UIPageViewControllerDelegate, UIPageViewControll
 
 extension PagerViewController: TimelineDelegate
 {
-    func resizeHeader(size: CGFloat)
+    func didScroll(oldOffset: CGFloat, newOffset: CGFloat)
     {
-        self.headerView.resize(by: size)
-    }
-    
-    func chageShadow(opacity: Float)
-    {
-        self.headerView.layer.shadowOpacity = opacity
-    }
-    
-    func resetHeaderSize()
-    {
-        self.headerView.reset()
+        headerView.resize(by: newOffset - oldOffset)
+        headerView.setShadowOpacity(opacity: Float(newOffset) > 50 ? 1.0 : Float(newOffset)/50)
     }
 }

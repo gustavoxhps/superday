@@ -4,8 +4,7 @@ import CoreLocation
 
 class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
 {
-    private var locationManager: CLLocationManager!
-    private var disposeBag : DisposeBag? = DisposeBag()
+    private var disposeBag : DisposeBag = DisposeBag()
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -14,43 +13,28 @@ class OnboardingPage3 : OnboardingPage, CLLocationManagerDelegate
     
     override func startAnimations()
     {
-        disposeBag = disposeBag ?? DisposeBag()
+        viewModel.requestLocationAuthorization()
         
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        
-        appLifecycleService
-            .movedToForegroundObservable
+        viewModel.movedToForegroundObservable
             .subscribe(onNext: onMovedToForeground)
-            .addDisposableTo(disposeBag!)
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus)
-    {
-        if status == .authorizedAlways || status == .denied
-        {
-            if status == .authorizedAlways {
-                settingsService.setUserGaveLocationPermission()
-            }
-
-            finish()
-        }
+            .addDisposableTo(disposeBag)
+        
+        viewModel.locationAuthorizationChangedObservable
+            .subscribe(onNext: finish)
+            .addDisposableTo(disposeBag)
     }
     
     override func finish()
-    {
-        locationManager.delegate = nil
+    {        
         onboardingPageViewController.goToNextPage(forceNext: true)
-        disposeBag = nil
+        disposeBag = DisposeBag()
     }
     
     func onMovedToForeground()
     {
         if onboardingPageViewController.isCurrent(page: self)
-            && !settingsService.hasLocationPermission
         {
-            locationManager.requestAlwaysAuthorization()
+            viewModel.requestLocationAuthorization()
         }
     }
 }

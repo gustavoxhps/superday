@@ -5,7 +5,7 @@ import SnapKit
 class OnboardingViewController: UIPageViewController
 {
     //MARK: Private Properties
-    internal lazy var pages : [OnboardingPage] = { return (1...4).map { i in self.page("\(i)") } } ()
+    internal lazy var pages : [OnboardingPage] = { return (1...4).map { i in self.page(i) } } ()
     
     private var viewModel : OnboardingViewModel!
     private var presenter : OnboardingPresenter!
@@ -96,19 +96,15 @@ class OnboardingViewController: UIPageViewController
         return pages.index(of: viewController as! OnboardingPage)
     }
     
-    private func page(_ id: String) -> OnboardingPage
+    private func page(_ id: Int) -> OnboardingPage
     {
         let page = StoryboardScene
                     .Onboarding
                     .storyboard()
                     .instantiateViewController(withIdentifier: "OnboardingScreen\(id)") as! OnboardingPage
         
-        page.inject(viewModel.timeService,
-                    viewModel.timeSlotService,
-                    viewModel.settingsService,
-                    viewModel.appLifecycleService,
-                    viewModel.notificationService, self)
-        
+        page.inject(viewModel: viewModel.pageViewModel(), onboardingPageViewController: self)
+
         return page
     }
     

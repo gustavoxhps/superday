@@ -2,6 +2,7 @@ import UIKit
 
 class OnboardingPage1 : OnboardingPage
 {
+    
     @IBOutlet private weak var textView: UIView!
     @IBOutlet private weak var timelineView: UIView!
     
@@ -9,13 +10,8 @@ class OnboardingPage1 : OnboardingPage
     private lazy var timeSlots : [TimeSlot] =
     {
         return [
-            self.getTimeSlot(withStartTime: self.getDate(addingHours: 9, andMinutes: 30),
-                             endTime: self.getDate(addingHours: 10, andMinutes: 0),
-                             category: .leisure),
-            
-            self.getTimeSlot(withStartTime: self.getDate(addingHours: 10, andMinutes: 0),
-                             endTime: self.getDate(addingHours: 10, andMinutes: 55),
-                             category: .work)
+            self.viewModel.timeSlot(withCategory: .leisure, from: "9:30", to: "10:00"),
+            self.viewModel.timeSlot(withCategory: .work, from: "10:00", to: "10:55")
         ]
     }()
     

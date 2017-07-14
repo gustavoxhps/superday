@@ -75,12 +75,12 @@ class SmartGuessServiceTests : XCTestCase
         
         let testInput : [TestData] =
             [
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .leisure, date: date.add(days: -5)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(19400)),
-                (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(19400))
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -1).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -2).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -3).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .leisure, date: date.add(days: -5).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -5).addingTimeInterval(6*60*60)),
+                (distanceFromTarget: 50, category: .work, date: date.add(days: -6).addingTimeInterval(6*60*60))
         ]
         
         persistencyService.smartGuesses =
@@ -147,10 +147,10 @@ class SmartGuessServiceTests : XCTestCase
         let testInput : [TestData] =
         [
             (distanceFromTarget: 08, category: .leisure, date: date),
-            (distanceFromTarget: 60, category: .work, date: date),
-            (distanceFromTarget: 64, category: .work, date: date),
-            (distanceFromTarget: 69, category: .work, date: date),
-            (distanceFromTarget: 76, category: .work, date: date)
+            (distanceFromTarget: 160, category: .work, date: date),
+            (distanceFromTarget: 264, category: .work, date: date),
+            (distanceFromTarget: 269, category: .work, date: date),
+            (distanceFromTarget: 376, category: .work, date: date)
         ]
         
         persistencyService.smartGuesses =
@@ -208,6 +208,23 @@ class SmartGuessServiceTests : XCTestCase
         let smartGuess = smartGuessService.get(forLocation: targetLocation)!
         
         expect(smartGuess.category).to(equal(teferi.Category.work))
+    }
+    
+    func testCommutesSmartGuessesAreNotSaved()
+    {
+        let targetLocation = CLLocation(latitude: 41.9757219072951, longitude: -71.0225522245947)
+        
+        smartGuessService.add(withCategory: .commute, location: targetLocation)
+        
+        let commuteSmartGuess = smartGuessService.get(forLocation: targetLocation)
+        
+        expect(commuteSmartGuess).to(beNil())
+        
+        smartGuessService.add(withCategory: .food, location: targetLocation)
+        
+        let foodSmartGuess = smartGuessService.get(forLocation: targetLocation)
+        
+        expect(foodSmartGuess?.category).to(equal(Category.food))
     }
     
     private func toLocation(offsetFrom baseLocation: CLLocation) -> (TestData) -> LocationAndCategory

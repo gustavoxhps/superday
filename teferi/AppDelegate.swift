@@ -87,7 +87,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         let locationPump = LocationPump(trackEventService: trackEventService,
                                         settingsService: settingsService,
-                                        smartGuessService: smartGuessService,
                                         timeSlotService: timeSlotService,
                                         loggingService: loggingService,
                                         timeService: timeService)
@@ -96,7 +95,9 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         
         pipeline = Pipeline.with(loggingService: loggingService, pumps: locationPump, healthKitPump)
                                 .pipe(to: MergePipe())
+                                .pipe(to: SmartGuessPipe(smartGuessService: smartGuessService))
                                 .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: timeService))
+                                .pipe(to: MergeShortTimeSlotsPipe())
                                 .pipe(to: FirstTimeSlotOfDayPipe(timeService: timeService, timeSlotService: timeSlotService))
                                 .sink(PersistencySink(settingsService: settingsService,
                                                       timeSlotService: timeSlotService,
@@ -117,6 +118,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         setVersionInSettings()
         setAppearance()
         
+        smartGuessService.purgeEntries(olderThan: timeService.now.add(days: -30))
+        
         let isInBackground = launchOptions?[UIApplicationLaunchOptionsKey.location] != nil
         
         logAppStartup(isInBackground)
@@ -134,9 +137,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             }
         }
         
-        
         appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
-
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -146,7 +147,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         }
         
         initializeWindowIfNeeded()
-        smartGuessService.purgeEntries(olderThan: timeService.now.add(days: -30))
         
         return true
     }

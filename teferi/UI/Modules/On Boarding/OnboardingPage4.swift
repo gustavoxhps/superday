@@ -10,9 +10,6 @@ class OnboardingPage4 : OnboardingPage
     
     override func startAnimations()
     {
-        notificationService.requestNotificationPermission(completed:
-        { [unowned self] in
-            self.finish()
-        })
+        viewModel.requestNotificationPermission(finish)        
     }
 }

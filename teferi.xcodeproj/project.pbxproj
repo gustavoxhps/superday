@@ -132,6 +132,7 @@
 		7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57ECEB1E30EC000094251E /* LocationExtensions.swift */; };
 		8584336EB8DEB2CEBEFB3918 /* Pods_teferi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E298043A2BB331608A8FD2 /* Pods_teferi.framework */; };
 		86499C439951BA9133439EF2 /* Pods_teferiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43617E462FAF7C2B30BED3B4 /* Pods_teferiTests.framework */; };
+		8C028DA81EF8296500CABCE9 /* SmartGuessPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */; };
 		8C030D931EB32A9700938A61 /* CategoryWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A632B1E548FE800D56433 /* CategoryWheel.swift */; };
 		8C1728FC1EF02D9A002ABDDA /* DailySummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728F01EF02D9A002ABDDA /* DailySummaryViewController.swift */; };
 		8C1728FD1EF02D9A002ABDDA /* DailySummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728F11EF02D9A002ABDDA /* DailySummaryViewModel.swift */; };
@@ -144,12 +145,19 @@
 		8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */; };
 		8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C1729061EF02DB5002ABDDA /* DailySummary.storyboard */; };
 		8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1729091EF119E5002ABDDA /* PagerPresenter.swift */; };
+		8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */; };
+		8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */; };
+		8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */; };
+		8C20ABB01F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */; };
 		8C26A1711ECAE65A00EFE509 /* IntroPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */; };
 		8C26A1731ECAE66C00EFE509 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */; };
 		8C26A1751ECAE67800EFE509 /* IntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1741ECAE67800EFE509 /* IntroViewModel.swift */; };
 		8C26A1781ECAEAD800EFE509 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */; };
 		8C26A17A1ECAED7300EFE509 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C26A1791ECAED7300EFE509 /* FadeTransition.swift */; };
 		8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C44B01ECD878C008131D7 /* RxViewModel.swift */; };
+		8C3B2D6E1EF9436800350488 /* SmartGuessPipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */; };
+		8C3C44511F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3C44501F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift */; };
+		8C3C44531F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C3C44521F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift */; };
 		8C460E831EE704500002D70B /* ButtonsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E821EE704500002D70B /* ButtonsCollectionView.swift */; };
 		8C460E851EE705200002D70B /* ButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */; };
 		8C460E8B1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */; };
@@ -425,6 +433,7 @@
 		7E3C06971E30B7CA00859747 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		7E57ECE81E30DF370094251E /* LocationExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationExtensionsTests.swift; sourceTree = "<group>"; };
 		7E57ECEB1E30EC000094251E /* LocationExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationExtensions.swift; sourceTree = "<group>"; };
+		8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmartGuessPipe.swift; sourceTree = "<group>"; };
 		8C1728EF1EF02D9A002ABDDA /* ActivityPieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityPieChartView.swift; sourceTree = "<group>"; };
 		8C1728F01EF02D9A002ABDDA /* DailySummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewController.swift; sourceTree = "<group>"; };
 		8C1728F11EF02D9A002ABDDA /* DailySummaryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryViewModel.swift; sourceTree = "<group>"; };
@@ -438,12 +447,19 @@
 		8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
 		8C1729071EF02DB5002ABDDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
 		8C1729091EF119E5002ABDDA /* PagerPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagerPresenter.swift; sourceTree = "<group>"; };
+		8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewModel.swift; sourceTree = "<group>"; };
+		8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewModelTests.swift; sourceTree = "<group>"; };
+		8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableObserverExtensions.swift; sourceTree = "<group>"; };
+		8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleMockTimeSlotService.swift; sourceTree = "<group>"; };
 		8C26A1701ECAE65A00EFE509 /* IntroPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroPresenter.swift; path = Intro/IntroPresenter.swift; sourceTree = "<group>"; };
 		8C26A1721ECAE66C00EFE509 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = Intro/IntroViewController.swift; sourceTree = "<group>"; };
 		8C26A1741ECAE67800EFE509 /* IntroViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroViewModel.swift; path = Intro/IntroViewModel.swift; sourceTree = "<group>"; };
 		8C26A1771ECAEAD800EFE509 /* MainPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		8C26A1791ECAED7300EFE509 /* FadeTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
 		8C2C44B01ECD878C008131D7 /* RxViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RxViewModel.swift; path = ViewModels/RxViewModel.swift; sourceTree = "<group>"; };
+		8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmartGuessPipeTests.swift; sourceTree = "<group>"; };
+		8C3C44501F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MergeShortSlotsPipe.swift; sourceTree = "<group>"; };
+		8C3C44521F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MergeShortSlotsPipeTests.swift; sourceTree = "<group>"; };
 		8C460E821EE704500002D70B /* ButtonsCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonsCollectionView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonsCollectionView.swift"; sourceTree = SOURCE_ROOT; };
 		8C460E841EE705200002D70B /* ButtonCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonCollectionViewCell.swift; path = "teferi/UI/Modules/Weekly Summary/Views/ButtonCollectionViewCell.swift"; sourceTree = SOURCE_ROOT; };
 		8C460E8A1EE718F40002D70B /* CenterAlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterAlignedCollectionViewFlowLayout.swift; path = "teferi/UI/Modules/Weekly Summary/Views/CenterAlignedCollectionViewFlowLayout.swift"; sourceTree = SOURCE_ROOT; };
@@ -646,6 +662,7 @@
 				24B03B5E1D9E5BB900452D16 /* PagerViewModelTests.swift */,
 				24564F6C1D8326F100D9A8AE /* TimelineViewModelTests.swift */,
 				2416B2821E27C7D100CE283B /* MainNavigationViewModelTests.swift */,
+				8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -725,6 +742,7 @@
 				24DE24031E1BBD500089B49E /* MockTimeService.swift */,
 				24EB96861DE7163E0040C211 /* MockTimeSlotService.swift */,
 				ACFF02681E82A21700498981 /* MockTrackEventService.swift */,
+				8C20ABAF1F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1000,6 +1018,7 @@
 				7E57ECEB1E30EC000094251E /* LocationExtensions.swift */,
 				BE8AD9331E84448B002704A9 /* TempTimelineTestHelper.swift */,
 				8CE6BDE01E7D4BF5003B852C /* TrackEventExtensions.swift */,
+				8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1028,6 +1047,14 @@
 				8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8C20ABAA1F0A1E6F00C9EE33 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2482CAFA1DB12F9F00E892C1 /* OnboardingPager.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		8C26A16F1ECAE64A00EFE509 /* Intro */ = {
@@ -1134,15 +1161,16 @@
 		8CA461391EC9A2E700587399 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				8C20ABAA1F0A1E6F00C9EE33 /* Views */,
 				8CDCC5F31ECB156100A3D25D /* OnboardingPresenter.swift */,
 				8CDCC5F51ECB156F00A3D25D /* OnboardingViewModel.swift */,
 				513535D51DA2756C00A365A9 /* OnboardingViewController.swift */,
+				8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */,
 				51DDF7171DB4DBC200F9B672 /* OnboardingPage.swift */,
 				2482CAF61DB12F9F00E892C1 /* OnboardingPage1.swift */,
 				2482CAF71DB12F9F00E892C1 /* OnboardingPage2.swift */,
 				2482CAF81DB12F9F00E892C1 /* OnboardingPage3.swift */,
 				2482CAF91DB12F9F00E892C1 /* OnboardingPage4.swift */,
-				2482CAFA1DB12F9F00E892C1 /* OnboardingPager.swift */,
 			);
 			name = Onboarding;
 			path = "On Boarding";
@@ -1304,9 +1332,11 @@
 				AC14E7F01E7BDB5C0034A1BA /* HealthKitPump.swift */,
 				8CAFC1651E7BF5A4009D17F0 /* LocationPump.swift */,
 				BE84C6151E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift */,
+				8C3C44501F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift */,
 				BE55CED61E7AD70F006B851E /* MergePipe.swift */,
 				BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */,
 				BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */,
+				8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */,
 			);
 			path = Pipeline;
 			sourceTree = "<group>";
@@ -1330,6 +1360,8 @@
 				BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */,
 				BE1AC7AE1E858346007485B0 /* MergePipeTests.swift */,
 				BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */,
+				8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */,
+				8C3C44521F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift */,
 			);
 			path = Pipeline;
 			sourceTree = "<group>";
@@ -1687,6 +1719,7 @@
 				BEA783651E6DB5AF00D44603 /* DefaultCategoryProvider.swift in Sources */,
 				BE0A5B771EE03F0A00200939 /* DailySummaryBarView.swift in Sources */,
 				8C6417011EAE02B700B893D7 /* ModalPresentationController.swift in Sources */,
+				8C028DA81EF8296500CABCE9 /* SmartGuessPipe.swift in Sources */,
 				AC1085361EEE971700E5F03B /* ActivityPieChartView.swift in Sources */,
 				8C1729021EF02D9A002ABDDA /* SummaryViewController.swift in Sources */,
 				24564F4E1D83207900D9A8AE /* TimelineViewModel.swift in Sources */,
@@ -1730,6 +1763,7 @@
 				8C9C256B1ED348EE00B10187 /* NavigationViewModel.swift in Sources */,
 				24EB96761DE7080F0040C211 /* TimeSlotService.swift in Sources */,
 				AC1085371EEE971700E5F03B /* PieSliceLayer.swift in Sources */,
+				8C3C44511F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift in Sources */,
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
 				2420A86A1DB6271000C0478C /* EditTimeSlotView.swift in Sources */,
 				24B03B651DA3864500452D16 /* AddTimeSlotView.swift in Sources */,
@@ -1744,6 +1778,7 @@
 				8C1728FF1EF02D9A002ABDDA /* SummaryPageViewController.swift in Sources */,
 				BE55CED71E7AD70F006B851E /* MergePipe.swift in Sources */,
 				24526A7D1D92D9BB00DA3FA0 /* Location.swift in Sources */,
+				8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */,
 				AC1E70F11E3F4C490090D474 /* KNN.swift in Sources */,
 				8C2C44B11ECD878C008131D7 /* RxViewModel.swift in Sources */,
 				24116A041D9DACCD00762BD6 /* AnimationHelpers.swift in Sources */,
@@ -1843,13 +1878,16 @@
 				BE1898D01E77F53E00EF3035 /* MockPersistencyService.swift in Sources */,
 				BE8AD9341E84448B002704A9 /* TempTimelineTestHelper.swift in Sources */,
 				BE1BDFB11E79BFAB0077D694 /* LocationServiceTests.swift in Sources */,
+				8C3B2D6E1EF9436800350488 /* SmartGuessPipeTests.swift in Sources */,
 				24564F701D83270000D9A8AE /* MockLocationService.swift in Sources */,
 				8CAFC16D1E7C66CC009D17F0 /* LocationPumpTests.swift in Sources */,
 				240575B91DC7F39E002C0C06 /* MockAppLifecycleService.swift in Sources */,
 				24DE24041E1BBD500089B49E /* MockTimeService.swift in Sources */,
+				8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */,
 				BEAFC0AA1E8A87370050CE70 /* NotificationSchedulingServiceTests.swift in Sources */,
 				24EB96871DE7163E0040C211 /* MockTimeSlotService.swift in Sources */,
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
+				8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */,
 				BE8AD9321E843B17002704A9 /* PersistencySinkTests.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
@@ -1863,6 +1901,7 @@
 				24168E3B1DC21125004F90AD /* MockNotificationService.swift in Sources */,
 				2416B2831E27C7D100CE283B /* MainNavigationViewModelTests.swift in Sources */,
 				7E57ECEC1E30EC000094251E /* LocationExtensions.swift in Sources */,
+				8C20ABB01F0A3F6300C9EE33 /* SimpleMockTimeSlotService.swift in Sources */,
 				24B03B5F1D9E5BB900452D16 /* PagerViewModelTests.swift in Sources */,
 				BEAFC0B01E8AA4070050CE70 /* FirstTimeSlotOfDayPipe.swift in Sources */,
 				ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */,
@@ -1873,6 +1912,7 @@
 				24E7860C1DC399A90048F577 /* OnboardingPageViewControllerTests.swift in Sources */,
 				BE1BDFB31E79BFB20077D694 /* MockCLLocationManager.swift in Sources */,
 				24564F6A1D8326E700D9A8AE /* DateExtensionsTests.swift in Sources */,
+				8C3C44531F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift in Sources */,
 				BE84C6181E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift in Sources */,
 				BE1898CE1E77F27E00EF3035 /* TrackEventServiceTests.swift in Sources */,
 				249B359D1E1A6015005793B9 /* MockLocator.swift in Sources */,
@@ -2067,7 +2107,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 37;
 				DEVELOPMENT_TEAM = B227VTMZ94;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = teferi/Info.plist;
@@ -2090,7 +2130,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 37;
 				DEVELOPMENT_TEAM = B227VTMZ94;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = teferi/Info.plist;
@@ -2221,7 +2261,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_ENTITLEMENTS = teferi/teferi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 37;
 				DEVELOPMENT_TEAM = B227VTMZ94;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = teferi/Info.plist;
