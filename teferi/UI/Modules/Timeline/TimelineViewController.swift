@@ -84,16 +84,16 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         
         let itemsObservable = viewModel.timelineItemsObservable
             .asDriver(onErrorJustReturn: [])
-            
-        itemsObservable
-            .drive(tableView.rx.items, curriedArgument: constructCell)
-            .addDisposableTo(disposeBag)
         
         itemsObservable
             .drive(onNext: { [unowned self] items in
                 self.emptyStateView.isHidden = items.count != 0
                 self.handleNewItem(items)
             })
+            .addDisposableTo(disposeBag)
+            
+        itemsObservable
+            .drive(tableView.rx.items, curriedArgument: constructCell)
             .addDisposableTo(disposeBag)
 
         viewModel.presentEditViewObservable
@@ -134,7 +134,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
 
     // MARK: Private Methods
 
-    private func handleNewItem(_ items:[TimelineItem])
+    private func handleNewItem(_ items: [TimelineItem])
     {
         let numberOfItems = tableView.numberOfRows(inSection: 0)
         guard numberOfItems > 0, items.count == numberOfItems + 1 else { return }

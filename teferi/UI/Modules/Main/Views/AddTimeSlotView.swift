@@ -21,8 +21,10 @@ class AddTimeSlotView : UIView
             .filterNil()
     }()
     
-    var categoryProvider : CategoryProvider? {
-        didSet {
+    var categoryProvider : CategoryProvider?
+    {
+        didSet
+        {
             guard let categoryProvider = categoryProvider else { return }
             
             self.wheel.categoryProvider = categoryProvider
