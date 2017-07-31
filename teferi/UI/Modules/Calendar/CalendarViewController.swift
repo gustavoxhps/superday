@@ -46,7 +46,7 @@ class CalendarViewController : UIViewController
         calendarView.delegate = self
         calendarView.registerCellViewXib(file: calendarCell)
         calendarView.cellInset = CGPoint(x: 1.5, y: 2)
-        calendarView.scrollToDate(viewModel.maxValidDate, animateScroll:false)
+        calendarView.scrollToDate(viewModel.currentVisibleCalendarDate, animateScroll:false)
         
         leftButton.rx.tap
             .subscribe(onNext: onLeftClick)

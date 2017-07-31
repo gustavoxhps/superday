@@ -41,7 +41,7 @@ class CalendarViewModel
         self.timeSlotService = timeSlotService
         self.selectedDateService = selectedDateService
         
-        currentVisibleCalendarDateVariable = Variable(timeService.now)
+        currentVisibleCalendarDateVariable = Variable(selectedDateService.currentlySelectedDate)
         dateObservable = selectedDateService.currentlySelectedDateObservable
         currentVisibleCalendarDateObservable = currentVisibleCalendarDateVariable.asObservable()
     }
