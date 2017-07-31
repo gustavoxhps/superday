@@ -31,10 +31,7 @@ class OnboardingPage2 : OnboardingPage
         super.viewDidLoad()
         
         let slot = timeSlots[editIndex]
-        editedTimeSlot = TimeSlot(withStartTime: slot.startTime,
-                                       category: editTo,
-                                       categoryWasSetByUser: false)
-        editedTimeSlot.endTime = slot.endTime
+        editedTimeSlot = slot.withCategory(editTo)
         
         initAnimatedTitleText(textView)
         timelineCells = initAnimatingTimeline(with: timeSlots, in: timelineView)
@@ -81,10 +78,10 @@ class OnboardingPage2 : OnboardingPage
         Timer.schedule(withDelay: delay)
         {
             let cell = self.timelineCells[self.editIndex]
-            let slot = self.timeSlots[self.editIndex]
+            let item = cell.timelineItem!
             self.editView.onEditBegan(
                 point: cell.categoryCircle.convert(cell.categoryCircle.center, to: self.timelineView),
-                timeSlot: slot)
+                timelineItem: item)
         }
     }
     

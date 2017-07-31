@@ -14,6 +14,7 @@ target 'teferi' do
     pod 'JTAppleCalendar', '6.0.2'
     pod 'SwiftGen'
     pod 'SwiftLint'
+    pod 'RxDataSources', '~> 1.0'
   target 'teferiTests' do
     inherit! :search_paths
     pod 'Nimble', '~> 5.0.0'

@@ -114,9 +114,9 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
         return boolToReturn
     }
     
-    override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> Bool
+    override func update(withPredicate predicate: Predicate, updateFunction: @escaping (T) -> T) -> T?
     {
-        var boolToReturn = false
+        var newEntity: T? = nil
         
         managedObjectContext.performAndWait
         { [unowned self] in
@@ -135,13 +135,11 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
                     let managedObject = managedElement as! NSManagedObject
                     
                     let entity = self.modelAdapter.getModel(fromManagedObject: managedObject)
-                    let newEntity = updateFunction(entity)
+                    newEntity = updateFunction(entity)
                     
-                    self.setManagedElementProperties(newEntity, managedObject)
+                    self.setManagedElementProperties(newEntity!, managedObject)
                     
                     try self.managedObjectContext.save()
-                    
-                    boolToReturn = true
                 }
             }
             catch
@@ -150,7 +148,7 @@ class CoreDataPersistencyService<T> : BasePersistencyService<T>
             }
         }
         
-        return boolToReturn
+        return newEntity
     }
     
     @discardableResult override func delete(withPredicate predicate: Predicate? = nil) -> Bool

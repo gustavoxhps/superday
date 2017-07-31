@@ -110,7 +110,7 @@ class MockTimeSlotService : TimeSlotService
     {
         if let lastTimeSlot = timeSlots.last
         {
-            lastTimeSlot.endTime = timeSlot.startTime
+            timeSlots = timeSlots.dropLast() + [lastTimeSlot.withEndDate(timeSlot.startTime)]
         }
         
         timeSlots.append(timeSlot)
@@ -119,11 +119,19 @@ class MockTimeSlotService : TimeSlotService
         return timeSlot
     }
     
-    func update(timeSlot: TimeSlot, withCategory category: teferi.Category, setByUser: Bool)
+    func update(timeSlot: TimeSlot, withCategory category: teferi.Category)
     {
-        timeSlot.category = category
-        timeSlot.categoryWasSetByUser = setByUser
-        timeSlotUpdatedSubject.on(.next(timeSlot))
+        let updatedTimeSlot = timeSlot.withCategory(category, setByUser: true)
+        timeSlots = timeSlots.map
+        {
+            if $0.startTime == updatedTimeSlot.startTime
+            {
+                return updatedTimeSlot
+            }
+            
+            return $0
+        }
+        timeSlotUpdatedSubject.on(.next(updatedTimeSlot))
     }
 }
 

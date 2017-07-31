@@ -72,33 +72,19 @@ class TimelineViewModelTests : XCTestCase
         
         let lastEvent = observer.events.last!
         let lastItem = lastEvent.value.element!.last!
-        let timeSlot = lastItem.timeSlot
-        
-        expect(timeSlot.endTime).to(beNil())
+
+        expect(lastItem.endTime).to(beNil())
     }
     
     func testTheAddNewSlotsMethodEndsThePreviousTimeSlot()
     {
         addTimeSlot()
-        
+        addTimeSlot(minutesAfterNoon: 100, category: .leisure)
+
         let lastEvent = observer.events.last!
         let firstItem = lastEvent.value.element!.first!
-        let firstSlot = firstItem.timeSlot
         
-        addTimeSlot()
-        
-        expect(firstSlot.endTime).toNot(beNil())
-    }
-    
-    func testConsecutiveTimeSlotsShouldNotDisplayTheCategoryText()
-    {
-        addTimeSlot(minutesAfterNoon: 0)
-        addTimeSlot(minutesAfterNoon: 3)
-        
-        let lastEvent = observer.events.last!
-        let lastItem = lastEvent.value.element!.last!
-        
-        expect(lastItem.shouldDisplayCategoryName).to(beFalse())
+        expect(firstItem.endTime).toNot(beNil())
     }
     
     func testViewModelNeverMergesUnknownTimeSlots()
@@ -112,54 +98,17 @@ class TimelineViewModelTests : XCTestCase
         expect(lastItem.shouldDisplayCategoryName).to(beTrue())
     }
     
-    func testUpdatingTheNthTimeSlotShouldRecalculateWhetherTheNPlus1thShouldDisplayTheCategoryTextOrNot()
-    {
-        addTimeSlot(minutesAfterNoon: 0)
-        addTimeSlot(minutesAfterNoon: 3)
-        addTimeSlot(minutesAfterNoon: 5)
-        addTimeSlot(minutesAfterNoon: 8)
-        
-        var timelineItems = observer.events.last!.value.element!
-        
-        timeSlotService.update(timeSlot: timelineItems[2].timeSlot, withCategory: .leisure, setByUser: true)
-        
-        timelineItems = observer.events.last!.value.element!
-        
-        
-        [ true, false, true, true ]
-            .enumerated()
-            .forEach { i, result in expect(timelineItems[i].shouldDisplayCategoryName).to(equal(result)) }
-    }
-    
-    func testTheViewModelInitializesVerifyingTheShouldDisplayCategoryLogic()
-    {
-        addTimeSlot()
-        
-        let timeSlot = addTimeSlot()
-        timeSlotService.update(timeSlot: timeSlot, withCategory: .leisure, setByUser: true)
-        
-        addTimeSlot()
-        addTimeSlot()
-        
-        
-        var timelineItems = observer.events.last!.value.element!
-
-        [ true, true, true, false ]
-            .enumerated()
-            .forEach { i, result in expect(timelineItems[i].shouldDisplayCategoryName).to(equal(result)) }
-    }
-    
     func testViewModelForwardsUpdatesOnCategoriesForToday()
     {
         let ts = addTimeSlot(minutesAfterNoon: 0)
         addTimeSlot(minutesAfterNoon: 3)
         
-        timeSlotService.update(timeSlot: ts, withCategory: .family, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .family)
         
         let timelineItems = observer.events.last!.value.element!
         
         expect(self.observer.events.count).to(equal(4)) //3 events plus initial one
-        expect(timelineItems[0].timeSlot.category).to(equal(Category.family))
+        expect(timelineItems[0].category).to(equal(Category.family))
     }
     
     func testViewModelForwardsUpdatesOnCategoriesForDaysBeforeToday()
@@ -183,12 +132,12 @@ class TimelineViewModelTests : XCTestCase
             .addDisposableTo(disposeBag)
         
         
-        timeSlotService.update(timeSlot: ts, withCategory: .leisure, setByUser: true)
+        timeSlotService.update(timeSlot: ts, withCategory: .leisure)
         
         let timelineItems = observer.events.last!.value.element!
         
         expect(self.observer.events.count).to(equal(2)) //initial one plus update one
-        expect(timelineItems[0].timeSlot.category).to(equal(Category.leisure))
+        expect(timelineItems[0].category).to(equal(Category.leisure))
     }
     
     func testViewModelForwardsTimeSlotCreationForToday()
@@ -220,47 +169,24 @@ class TimelineViewModelTests : XCTestCase
     func testNotifyEditingBeganGetsTheCorrectlyIndexedItem()
     {
         addTimeSlot(minutesAfterNoon: 0, category: .work)
-        addTimeSlot(minutesAfterNoon: 3, category: .work)
-        addTimeSlot(minutesAfterNoon: 5, category: .work)
+        addTimeSlot(minutesAfterNoon: 3, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 5, category: .family)
         addTimeSlot(minutesAfterNoon: 8, category: .work)
         
-        let observer:TestableObserver<(CGPoint, TimeSlot)> = scheduler.createObserver((CGPoint, TimeSlot).self)
+        let observer:TestableObserver<(CGPoint, TimelineItem)> = scheduler.createObserver((CGPoint, TimelineItem).self)
         editStateService.beganEditingObservable
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        viewModel.notifyEditingBegan(point: .zero, index: 2)
+        let itemsObserver: TestableObserver<[TimelineItem]> = scheduler.createObserver([TimelineItem].self)
+        viewModel.timelineItemsObservable
+            .subscribe(itemsObserver)
+            .addDisposableTo(disposeBag)
+        
+        let items = itemsObserver.events.last!.value.element!
+        
+        viewModel.notifyEditingBegan(point: .zero, item: items[2])
         expect(observer.events.last!.value.element!.1.startTime).to(equal(Date.noon.addingTimeInterval(TimeInterval(5 * 60))))
-    }
-    
-    func testOnlyTheLastOfMultipleTimeslotsShowsTheDuration()
-    {
-        addTimeSlot(minutesAfterNoon: 0, category: .work)
-        addTimeSlot(minutesAfterNoon: 3, category: .work)
-        addTimeSlot(minutesAfterNoon: 5, category: .work)
-        addTimeSlot(minutesAfterNoon: 8, category: .work)
-        
-        var timelineItems = observer.events.last!.value.element!
-        
-        [ true, true, true, false ]
-            .enumerated()
-            .forEach { i, result in expect(timelineItems[i].durations.isEmpty).to(equal(result)) }
-    }
-    
-    func testTheLastSlotContainsTheDurationsOfAllPreviousMergedSlots()
-    {
-        addTimeSlot(minutesAfterNoon: 0, category: .work)
-        addTimeSlot(minutesAfterNoon: 3, category: .work)
-        addTimeSlot(minutesAfterNoon: 5, category: .work)
-        addTimeSlot(minutesAfterNoon: 8, category: .work)
-        
-        let timelineItems = observer.events.last!.value.element!
-        
-        ([ 3*60, 2*60, 3*60, -8*60 ] as [TimeInterval])
-            .enumerated()
-            .forEach { index, result in
-                expect(timelineItems.last!.durations[index]).to(equal(result))
-        }
     }
     
     func testFetchesTimeslotsWhenAppWakesUp()
@@ -270,12 +196,72 @@ class TimelineViewModelTests : XCTestCase
         expect(self.observer.events.count).to(equal(oldCount + 1))
     }
     
-    @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0) -> TimeSlot
+    func testConsecutiveTimeSlotsWithSameCategoryShouldGenerateOneTimelineItem()
     {
-        return addTimeSlot(minutesAfterNoon: minutesAfterNoon, category: .work)
+        addTimeSlot(minutesAfterNoon: 0, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 30, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 60, category: .work)
+        addTimeSlot(minutesAfterNoon: 90, category: .work)
+        
+        let lastEvent = observer.events.last!
+        let items = lastEvent.value.element!
+        
+        expect(items.count).to(equal(2))
     }
     
-    @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category) -> TimeSlot
+    func testConsecutiveTimeSlotsCanBeExpanded()
+    {
+        addTimeSlot(minutesAfterNoon: 0, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 30, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 60, category: .work)
+        addTimeSlot(minutesAfterNoon: 90, category: .work)
+        
+        var lastEvent = observer.events.last!
+        var items = lastEvent.value.element!
+        
+        viewModel.expandSlots(item: items[0])
+
+        lastEvent = observer.events.last!
+        items = lastEvent.value.element!
+
+        expect(items.count).to(equal(3))
+    }
+    
+    func testExpandingOneSlotCollapsesPreviousOne()
+    {
+        addTimeSlot(minutesAfterNoon: 0, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 30, category: .leisure)
+        addTimeSlot(minutesAfterNoon: 60, category: .work)
+        addTimeSlot(minutesAfterNoon: 90, category: .work)
+        addTimeSlot(minutesAfterNoon: 120, category: .work)
+        
+        var lastEvent = observer.events.last!
+        var items = lastEvent.value.element!
+        
+        viewModel.expandSlots(item: items[0])
+        
+        lastEvent = observer.events.last!
+        items = lastEvent.value.element!
+        
+        expect(items.count).to(equal(3))
+        expect(items[0].category).to(equal(Category.leisure))
+        expect(items[1].category).to(equal(Category.leisure))
+        expect(items[2].category).to(equal(Category.work))
+        
+        viewModel.expandSlots(item: items[2])
+        
+        lastEvent = observer.events.last!
+        items = lastEvent.value.element!
+        
+        expect(items.count).to(equal(4))
+        expect(items[0].category).to(equal(Category.leisure))
+        expect(items[1].category).to(equal(Category.work))
+        expect(items[2].category).to(equal(Category.work))
+        expect(items[3].category).to(equal(Category.work))
+
+    }
+    
+    @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category = .work) -> TimeSlot
     {
         let noon = Date.noon
         

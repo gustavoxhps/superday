@@ -145,6 +145,7 @@
 		8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */; };
 		8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8C1729061EF02DB5002ABDDA /* DailySummary.storyboard */; };
 		8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1729091EF119E5002ABDDA /* PagerPresenter.swift */; };
+		8C1EA3051F17EA6F003C3EEB /* TimelineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */; };
 		8C20ABA91F0A115200C9EE33 /* OnboardingPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */; };
 		8C20ABAC1F0A231100C9EE33 /* CalendarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */; };
 		8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */; };
@@ -179,7 +180,6 @@
 		8C9D25E51E97FD3F00D39119 /* MockMetricsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B03B621D9E946900452D16 /* MockMetricsService.swift */; };
 		8CAFC1661E7BF5A4009D17F0 /* LocationPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAFC1651E7BF5A4009D17F0 /* LocationPump.swift */; };
 		8CAFC16D1E7C66CC009D17F0 /* LocationPumpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CAFC16C1E7C66CC009D17F0 /* LocationPumpTests.swift */; };
-		8CB9EF991E8BB55A003D1FFC /* DottedLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */; };
 		8CB9EF9B1E8BB589003D1FFC /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB9EF9A1E8BB589003D1FFC /* LineView.swift */; };
 		8CBE30A21ECC5385007C8F6F /* PermissionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE30A11ECC5385007C8F6F /* PermissionPresenter.swift */; };
 		8CDCC5F41ECB156100A3D25D /* OnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDCC5F31ECB156100A3D25D /* OnboardingPresenter.swift */; };
@@ -447,6 +447,7 @@
 		8C1728FA1EF02D9A002ABDDA /* DailySummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailySummaryTableViewCell.swift; sourceTree = "<group>"; };
 		8C1729071EF02DB5002ABDDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DailySummary.storyboard; sourceTree = "<group>"; };
 		8C1729091EF119E5002ABDDA /* PagerPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagerPresenter.swift; sourceTree = "<group>"; };
+		8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimelineDataSource.swift; path = Datasource/TimelineDataSource.swift; sourceTree = "<group>"; };
 		8C20ABA81F0A115200C9EE33 /* OnboardingPageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewModel.swift; sourceTree = "<group>"; };
 		8C20ABAB1F0A231100C9EE33 /* CalendarViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewModelTests.swift; sourceTree = "<group>"; };
 		8C20ABAD1F0A338300C9EE33 /* TestableObserverExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableObserverExtensions.swift; sourceTree = "<group>"; };
@@ -478,7 +479,6 @@
 		8C9C256A1ED348EE00B10187 /* NavigationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationViewModel.swift; path = Navigation/NavigationViewModel.swift; sourceTree = "<group>"; };
 		8CAFC1651E7BF5A4009D17F0 /* LocationPump.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPump.swift; sourceTree = "<group>"; };
 		8CAFC16C1E7C66CC009D17F0 /* LocationPumpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPumpTests.swift; sourceTree = "<group>"; };
-		8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DottedLineView.swift; sourceTree = "<group>"; };
 		8CB9EF9A1E8BB589003D1FFC /* LineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		8CBE30A11ECC5385007C8F6F /* PermissionPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionPresenter.swift; sourceTree = "<group>"; };
 		8CDCC5F31ECB156100A3D25D /* OnboardingPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -1201,6 +1201,7 @@
 		8CA4613C1EC9A31B00587399 /* Timeline */ = {
 			isa = PBXGroup;
 			children = (
+				8CEEF5AA1F175DB4007C36DA /* Datasource */,
 				8CA461411EC9A3CE00587399 /* Views */,
 				24564F711D832A4F00D9A8AE /* PagerViewController.swift */,
 				24B03B581D9E4C3E00452D16 /* PagerViewModel.swift */,
@@ -1246,11 +1247,10 @@
 			isa = PBXGroup;
 			children = (
 				BE0A5B761EE03F0A00200939 /* DailySummaryBarView.swift */,
-				8CB9EF981E8BB55A003D1FFC /* DottedLineView.swift */,
+				8CB9EF9A1E8BB589003D1FFC /* LineView.swift */,
 				2420A8691DB6271000C0478C /* EditTimeSlotView.swift */,
 				2420A8651DB56B5500C0478C /* EmptyStateView.swift */,
 				2420A8671DB56B6800C0478C /* EmptyStateView.xib */,
-				8CB9EF9A1E8BB589003D1FFC /* LineView.swift */,
 				24564F531D83254E00D9A8AE /* TimelineCell.swift */,
 				24564F541D83254E00D9A8AE /* TimelineCell.xib */,
 			);
@@ -1276,6 +1276,14 @@
 				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8CEEF5AA1F175DB4007C36DA /* Datasource */ = {
+			isa = PBXGroup;
+			children = (
+				8C1EA3041F17EA6F003C3EEB /* TimelineDataSource.swift */,
+			);
+			name = Datasource;
 			sourceTree = "<group>";
 		};
 		8CF8C08F1EDED6BE00EA2C77 /* Weekly Summary */ = {
@@ -1767,7 +1775,6 @@
 				24D18E261DEF6D640046B202 /* SmartGuess.swift in Sources */,
 				2420A86A1DB6271000C0478C /* EditTimeSlotView.swift in Sources */,
 				24B03B651DA3864500452D16 /* AddTimeSlotView.swift in Sources */,
-				8CB9EF991E8BB55A003D1FFC /* DottedLineView.swift in Sources */,
 				BE03D9241E797A1D00F79377 /* EventSource.swift in Sources */,
 				2421F8C31D9BACB500AF8857 /* ClosureGestureRecognizer.swift in Sources */,
 				AC14E7F11E7BDB5C0034A1BA /* HealthKitPump.swift in Sources */,
@@ -1858,6 +1865,7 @@
 				24D18E241DEF6B300046B202 /* DefaultSmartGuessService.swift in Sources */,
 				AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */,
 				BE84C6161E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift in Sources */,
+				8C1EA3051F17EA6F003C3EEB /* TimelineDataSource.swift in Sources */,
 				24564F4D1D83207900D9A8AE /* MainViewModel.swift in Sources */,
 				BEE5A3BF1E72F6B200CA717D /* (null) in Sources */,
 				8CB9EF9B1E8BB589003D1FFC /* LineView.swift in Sources */,

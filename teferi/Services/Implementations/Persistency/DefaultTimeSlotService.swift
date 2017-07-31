@@ -95,22 +95,18 @@ class DefaultTimeSlotService : TimeSlotService
         return timeSlots
     }
     
-    func update(timeSlot: TimeSlot, withCategory category: Category, setByUser: Bool)
+    func update(timeSlot: TimeSlot, withCategory category: Category)
     {
-        guard canChangeCategory(of: timeSlot, to: category, setByUser: setByUser) else { return }
-        
+        guard category != timeSlot.category else { return }
+
         let predicate = Predicate(parameter: "startTime", equals: timeSlot.startTime as AnyObject)
         let editFunction = { (timeSlot: TimeSlot) -> (TimeSlot) in
-            
-            timeSlot.categoryWasSetByUser = setByUser
-            timeSlot.category = category
-            return timeSlot
+            return timeSlot.withCategory(category, setByUser: true)
         }
         
-        if persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
+        if let updatedTimeSlot = persistencyService.update(withPredicate: predicate, updateFunction: editFunction)
         {
-            timeSlot.category = category
-            timeSlotUpdatedSubject.on(.next(timeSlot))
+            timeSlotUpdatedSubject.on(.next(updatedTimeSlot))
         }
         else
         {
@@ -145,22 +141,6 @@ class DefaultTimeSlotService : TimeSlotService
         timeSlotCreatedSubject.on(.next(timeSlot))
         
         return timeSlot
-    }
-    
-    private func canChangeCategory(of timeSlot : TimeSlot, to category : Category, setByUser : Bool) -> Bool
-    {
-        if setByUser == timeSlot.categoryWasSetByUser
-        {
-            return category != timeSlot.category
-        }
-        
-        if setByUser
-        {
-            return true
-        }
-        
-        loggingService.log(withLogLevel: .warning, message: "Tried automatically updating category of TimeSlot which was set by user")
-        return false
     }
     
     private func getEndTime(ofTimeSlot timeSlot: TimeSlot) -> Date
@@ -199,13 +179,10 @@ class DefaultTimeSlotService : TimeSlotService
         let predicate = Predicate(parameter: "startTime", equals: timeSlot.startTime as AnyObject)
         let editFunction = { (timeSlot: TimeSlot) -> TimeSlot in
             
-            timeSlot.endTime = endDate
-            return timeSlot
+            return timeSlot.withEndDate(endDate)
         }
         
-        timeSlot.endTime = endDate
-        
-        guard persistencyService.update(withPredicate: predicate, updateFunction: editFunction) else
+        guard let _ = persistencyService.update(withPredicate: predicate, updateFunction: editFunction) else
         {
             loggingService.log(withLogLevel: .warning, message: "Failed to end TimeSlot started at \(timeSlot.startTime) with category \(timeSlot.category)")
             return false

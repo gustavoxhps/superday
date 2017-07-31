@@ -38,10 +38,11 @@ class OnboardingPageViewModel: NSObject
     func timelineItem(forTimeslot timeslot: TimeSlot) -> TimelineItem
     {
         let duration = timeSlotService.calculateDuration(ofTimeSlot: timeslot)
-        return TimelineItem(timeSlot: timeslot,
-                            durations:[ duration ],
-                            lastInPastDay: false,
-                            shouldDisplayCategoryName: true)
+        return TimelineItem(
+            withTimeSlots: [timeslot],
+            category: timeslot.category,
+            duration: duration,
+            shouldDisplayCategoryName: true)
     }
     
     func timeSlot(withCategory category: Category, from: String, to: String) -> TimeSlot
@@ -50,9 +51,9 @@ class OnboardingPageViewModel: NSObject
         let endTime = time(from: to)
         
         let timeSlot = TimeSlot(withStartTime: startTime,
+                                endTime: endTime,
                                 category: category,
                                 categoryWasSetByUser: false)
-        timeSlot.endTime = endTime
         
         return timeSlot
     }

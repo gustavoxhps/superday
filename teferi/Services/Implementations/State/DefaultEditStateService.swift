@@ -3,10 +3,10 @@ import RxSwift
 class DefaultEditStateService : EditStateService
 {
     let isEditingObservable : Observable<Bool>
-    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+    let beganEditingObservable : Observable<(CGPoint, TimelineItem)>
 
     private let isEditingSubject = PublishSubject<Bool>()
-    private let beganEditingSubject = PublishSubject<(CGPoint, TimeSlot)>()
+    private let beganEditingSubject = PublishSubject<(CGPoint, TimelineItem)>()
     
     //MARK: Initializers
     init(timeService: TimeService)
@@ -15,10 +15,10 @@ class DefaultEditStateService : EditStateService
         beganEditingObservable = beganEditingSubject.asObservable()
     }
     
-    func notifyEditingBegan(point: CGPoint, timeSlot: TimeSlot)
+    func notifyEditingBegan(point: CGPoint, timelineItem: TimelineItem)
     {
         isEditingSubject.on(.next(true))
-        beganEditingSubject.on(.next((point, timeSlot)))
+        beganEditingSubject.on(.next((point, timelineItem)))
     }
     
     func notifyEditingEnded()

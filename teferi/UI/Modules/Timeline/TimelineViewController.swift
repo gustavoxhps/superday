@@ -2,13 +2,14 @@ import RxSwift
 import RxCocoa
 import UIKit
 import CoreGraphics
+import RxDataSources
 
 protocol TimelineDelegate: class
 {
     func didScroll(oldOffset: CGFloat, newOffset: CGFloat)
 }
 
-class TimelineViewController : UIViewController, UITableViewDelegate
+class TimelineViewController : UIViewController
 {
     // MARK: Public Properties
     var date : Date { return self.viewModel.date }
@@ -19,8 +20,6 @@ class TimelineViewController : UIViewController, UITableViewDelegate
     private let presenter : TimelinePresenter
     
     private var tableView : UITableView!
-    
-    private let cellIdentifier = "timelineCell"
     
     private var willDisplayNewCell:Bool = false
     
@@ -36,6 +35,8 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         }
     }
     
+    private let dataSource = TimelineDataSource()
+
     // MARK: Initializers
     init(presenter: TimelinePresenter, viewModel: TimelineViewModel)
     {
@@ -74,7 +75,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         tableView.allowsSelection = false
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
-        tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        tableView.register(UINib.init(nibName: "TimelineCell", bundle: Bundle.main), forCellReuseIdentifier: TimelineCell.cellIdentifier)
         tableView.contentInset = UIEdgeInsets(top: 34, left: 0, bottom: 120, right: 0)
         
         viewModel.timeObservable
@@ -82,25 +83,22 @@ class TimelineViewController : UIViewController, UITableViewDelegate
             .drive(onNext: onTimeTick)
             .addDisposableTo(disposeBag)
         
-        let itemsObservable = viewModel.timelineItemsObservable
-            .asDriver(onErrorJustReturn: [])
+        dataSource.configureCell = constructCell
         
-        itemsObservable
-            .drive(onNext: { [unowned self] items in
-                self.emptyStateView.isHidden = items.count != 0
-                self.handleNewItem(items)
-            })
+        viewModel.timelineItemsObservable
+            .map({ [TimelineSection(items:$0)] })
+            .bindTo(tableView.rx.items(dataSource: dataSource))
+            .addDisposableTo(disposeBag)
+        
+        viewModel.timelineItemsObservable
+            .map{$0.count > 0}
+            .bindTo(emptyStateView.rx.isHidden)
             .addDisposableTo(disposeBag)
             
-        itemsObservable
-            .drive(tableView.rx.items, curriedArgument: constructCell)
-            .addDisposableTo(disposeBag)
-
         viewModel.presentEditViewObservable
             .subscribe(onNext: startEditOnLastSlot)
             .addDisposableTo(disposeBag)
         
-        tableView.rx.setDelegate(self).addDisposableTo(disposeBag)
         tableView.rx.willDisplayCell
             .subscribe(onNext: { [unowned self] (cell, indexPath) in
                 guard self.willDisplayNewCell && indexPath.row == self.tableView.numberOfRows(inSection: 0) - 1 else { return }
@@ -144,22 +142,26 @@ class TimelineViewController : UIViewController, UITableViewDelegate
         tableView.scrollToRow(at: scrollIndexPath, at: .bottom, animated: true)
     }
     
-    private func constructCell(forTableView tableView: UITableView, withIndex index: Int, timelineItem:TimelineItem) -> UITableViewCell
+    private func constructCell(dataSource: TableViewSectionedDataSource<TimelineSection>, tableView: UITableView, indexPath: IndexPath, item:TimelineItem) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: IndexPath(row: index, section: 0)) as! TimelineCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: TimelineCell.cellIdentifier, for: indexPath) as! TimelineCell
+        cell.timelineItem = item
         
-        let duration = viewModel.calculateDuration(ofTimeSlot: timelineItem.timeSlot)
-        cell.bind(toTimelineItem: timelineItem, index: index, duration: duration)
+        cell.editClickObservable
+            .map{ [unowned self] item in
+                let position = cell.categoryCircle.convert(cell.categoryCircle.center, to: self.view)
+                return (position, item)
+            }
+            .subscribe(onNext: self.viewModel.notifyEditingBegan)
+            .addDisposableTo(cell.disposeBag)
         
-        if !cell.isSubscribedToClickObservable
-        {
-            cell.editClickObservable
-                .map{ [unowned self] index in
-                    return (self.buttonPosition(forCellIndex: index), index)
-                }
-                .subscribe(onNext: viewModel.notifyEditingBegan)
-                .addDisposableTo(disposeBag)
-        }
+        cell.collapseClickObservable
+            .subscribe(onNext: viewModel.collapseSlots)
+            .addDisposableTo(cell.disposeBag)
+        
+        cell.expandClickObservable
+            .subscribe(onNext: viewModel.expandSlots)
+            .addDisposableTo(cell.disposeBag)
         
         return cell
     }
@@ -181,7 +183,7 @@ class TimelineViewController : UIViewController, UITableViewDelegate
 
         let centerPoint = buttonPosition(forCellIndex: lastRow)
 
-        viewModel.notifyEditingBegan(point: centerPoint, index: lastRow)
+        viewModel.notifyEditingBegan(point: centerPoint, item: nil)
     }
     
     private func buttonPosition(forCellIndex index: Int) -> CGPoint
