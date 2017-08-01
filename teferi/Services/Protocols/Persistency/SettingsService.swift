@@ -20,6 +20,8 @@ protocol SettingsService
     
     var lastNotificationLocation : CLLocation? { get }
     
+    var welcomeMessageHidden : Bool { get }
+    
     //MARK: Methods
     func lastHealthKitUpdate(for identifier: String) -> Date
     
@@ -36,4 +38,6 @@ protocol SettingsService
     func setUserGaveHealthKitPermission()
     
     func setLastNotificationLocation(_ location: CLLocation)
+    
+    func setWelcomeMessageHidden()
 }

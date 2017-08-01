@@ -19,12 +19,12 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
     
     private var editView : EditTimeSlotView!
     private var addButton : AddTimeSlotView!
+    @IBOutlet private weak var welcomeMessageView: WelcomeView!
     
     func inject(presenter:MainPresenter, viewModel: MainViewModel)
     {
         self.presenter = presenter
         self.viewModel = viewModel
-        
     }
     
     // MARK: UIViewController lifecycle
@@ -107,6 +107,10 @@ class MainViewController : UIViewController, MFMailComposeViewControllerDelegate
         
         viewModel.showPermissionControllerObservable
             .subscribe(onNext: presenter.showPermissionController)
+            .addDisposableTo(disposeBag)
+        
+        viewModel.welcomeMessageHiddenObservable
+            .bindTo(welcomeMessageView.rx.isHidden)
             .addDisposableTo(disposeBag)
     }
     

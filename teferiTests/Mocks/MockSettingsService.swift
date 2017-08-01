@@ -12,6 +12,8 @@ class MockSettingsService : SettingsService
     var lastNotificationLocation : CLLocation? = nil
     var lastAskedForLocationPermission : Date? = nil
     var userEverGaveLocationPermission : Bool = false
+    var welcomeMessageHidden : Bool = true
+    
 
     var hasLocationPermission = true
     var hasHealthKitPermission = true
@@ -74,5 +76,10 @@ class MockSettingsService : SettingsService
     func setUserGaveHealthKitPermission()
     {
         hasHealthKitPermission = true
+    }
+    
+    func setWelcomeMessageHidden()
+    {
+        welcomeMessageHidden = true
     }
 }

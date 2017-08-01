@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -29,21 +29,58 @@
                                     <segue destination="7OT-Wf-TWW" kind="embed" id="6ps-b0-68Z"/>
                                 </connections>
                             </containerView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1QJ-v9-Pue" customClass="WelcomeView" customModule="teferi" customModuleProvider="target">
+                                <rect key="frame" x="94" y="276" width="187.5" height="50"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I30-ze-lOs">
+                                        <rect key="frame" x="0.0" y="0.0" width="187.5" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ix1-n4-nkM">
+                                        <rect key="frame" x="0.0" y="29" width="187.5" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.37639358639717102" green="0.36870422959327698" blue="0.36871346831321716" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Ix1-n4-nkM" secondAttribute="trailing" id="0RR-tc-wif"/>
+                                    <constraint firstItem="I30-ze-lOs" firstAttribute="leading" secondItem="1QJ-v9-Pue" secondAttribute="leading" id="7Vz-yt-ASw"/>
+                                    <constraint firstItem="Ix1-n4-nkM" firstAttribute="leading" secondItem="1QJ-v9-Pue" secondAttribute="leading" id="Qju-3C-2M2"/>
+                                    <constraint firstItem="Ix1-n4-nkM" firstAttribute="top" secondItem="I30-ze-lOs" secondAttribute="bottom" constant="8" id="S0j-SC-5aX"/>
+                                    <constraint firstAttribute="trailing" secondItem="I30-ze-lOs" secondAttribute="trailing" id="bu7-yX-0fi"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ix1-n4-nkM" secondAttribute="bottom" id="nDk-y6-Hbv"/>
+                                    <constraint firstItem="I30-ze-lOs" firstAttribute="top" secondItem="1QJ-v9-Pue" secondAttribute="top" id="z61-ra-Nmb"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="subTitleLabel" destination="Ix1-n4-nkM" id="OoC-OF-ZMf"/>
+                                    <outlet property="titleLabel" destination="I30-ze-lOs" id="1IV-Ol-O90"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="1QJ-v9-Pue" firstAttribute="centerX" secondItem="OG6-wl-hm1" secondAttribute="centerX" id="4nt-ZG-0zd"/>
                             <constraint firstItem="OG6-wl-hm1" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="NCU-n0-Cem"/>
                             <constraint firstAttribute="trailing" secondItem="OG6-wl-hm1" secondAttribute="trailing" id="VX2-IW-m1O"/>
+                            <constraint firstItem="1QJ-v9-Pue" firstAttribute="centerY" secondItem="OG6-wl-hm1" secondAttribute="centerY" id="YxV-0c-sm2"/>
+                            <constraint firstItem="1QJ-v9-Pue" firstAttribute="width" secondItem="OG6-wl-hm1" secondAttribute="width" multiplier="0.5" id="cxQ-Tm-1Ob"/>
                             <constraint firstItem="OG6-wl-hm1" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="lht-ho-e0D"/>
                             <constraint firstItem="OG6-wl-hm1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pya-Vf-OrV"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <connections>
+                        <outlet property="welcomeMessageView" destination="1QJ-v9-Pue" id="c1g-VS-23D"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="260" y="298"/>
+            <point key="canvasLocation" x="260" y="297.30134932533736"/>
         </scene>
         <!--Pager View Controller-->
         <scene sceneID="ZWI-cF-Vuk">

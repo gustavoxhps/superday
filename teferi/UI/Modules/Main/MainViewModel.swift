@@ -30,6 +30,21 @@ class MainViewModel : RxViewModel
             .filterNil()
     }
     
+    var welcomeMessageHiddenObservable : Observable<Bool>
+    {
+        return Observable.of(
+            self.appLifecycleService.movedToForegroundObservable,
+            self.didBecomeActive,
+            self.beganEditingObservable.mapTo(()),
+            self.timeSlotService.timeSlotCreatedObservable.mapTo(()) )
+            .merge()
+            .map { [unowned self] () -> Bool in
+                let value = self.settingsService.welcomeMessageHidden
+                self.settingsService.setWelcomeMessageHidden()
+                return value
+            }
+    }
+
     
     // MARK: Private Properties
     private let timeService : TimeService

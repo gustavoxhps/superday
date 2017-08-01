@@ -204,6 +204,7 @@
 		AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */; };
 		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
 		AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */; };
+		AC8BE49F1F2A011900351C2F /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8BE49E1F2A011900351C2F /* WelcomeView.swift */; };
 		ACA337EC1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */; };
 		ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCAFD241E8BDF490097F037 /* NotificationType.swift */; };
 		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
@@ -506,6 +507,7 @@
 		AC449C321E93798600847957 /* HealthKitPermissionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionViewModel.swift; sourceTree = "<group>"; };
 		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionViewModelTests.swift; sourceTree = "<group>"; };
+		AC8BE49E1F2A011900351C2F /* WelcomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		ACA337EB1E2CE82D00D3753F /* PostiOSTenNotificationServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostiOSTenNotificationServiceTests.swift; sourceTree = "<group>"; };
 		ACCAFD241E8BDF490097F037 /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationType.swift; sourceTree = "<group>"; };
 		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthSampleExtensions.swift; sourceTree = "<group>"; };
@@ -1274,6 +1276,7 @@
 				242FE7D51DE7689A00EAEEE3 /* AutoResizingLayerView.swift */,
 				AC0A632B1E548FE800D56433 /* CategoryWheel.swift */,
 				8C7CCB4C1E9D150A00315BF7 /* MaterialButton.swift */,
+				AC8BE49E1F2A011900351C2F /* WelcomeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1764,6 +1767,7 @@
 				AC449C331E93798600847957 /* HealthKitPermissionViewModel.swift in Sources */,
 				24564F601D8325CC00D9A8AE /* TimeSlot.swift in Sources */,
 				24D18E301DF06B9E0046B202 /* SmartGuessModelAdapter.swift in Sources */,
+				AC8BE49F1F2A011900351C2F /* WelcomeView.swift in Sources */,
 				513535D61DA2756C00A365A9 /* OnboardingViewController.swift in Sources */,
 				AC3901F41E5665CF008063C7 /* CategoryButtonsHandler.swift in Sources */,
 				8C26A1711ECAE65A00EFE509 /* IntroPresenter.swift in Sources */,
