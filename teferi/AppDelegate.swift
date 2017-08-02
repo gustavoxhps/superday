@@ -163,7 +163,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().barTintColor = UIColor.white
     }
     
     private func logAppStartup(_ isInBackground: Bool)
