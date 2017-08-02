@@ -16,6 +16,10 @@ extension Date
         return self.add(days: 1)
     }
     
+    var firstDateOfMonth: Date
+    {
+        return self.add(days: -(self.day - 1)).ignoreTimeComponents()
+    }
     //MARK: Methods
     
     /**

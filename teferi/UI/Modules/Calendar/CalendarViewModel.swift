@@ -17,10 +17,9 @@ class CalendarViewModel
         set(value) { self.selectedDateService.currentlySelectedDate = value }
     }
     
-    var currentVisibleCalendarDate : Date
+    var currentVisibleMonth : Date
     {
-        get { return self.currentVisibleCalendarDateVariable.value }
-        set(value) { self.currentVisibleCalendarDateVariable.value = value }
+        return self.currentVisibleCalendarDateVariable.value
     }
 
     // MARK: Private Properties
@@ -41,13 +40,18 @@ class CalendarViewModel
         self.timeSlotService = timeSlotService
         self.selectedDateService = selectedDateService
         
-        currentVisibleCalendarDateVariable = Variable(selectedDateService.currentlySelectedDate)
+        currentVisibleCalendarDateVariable = Variable(selectedDateService.currentlySelectedDate.firstDateOfMonth)
         dateObservable = selectedDateService.currentlySelectedDateObservable
-        currentVisibleCalendarDateObservable = currentVisibleCalendarDateVariable.asObservable()
+        currentVisibleCalendarDateObservable = currentVisibleCalendarDateVariable.asObservable().distinctUntilChanged()
     }
     
     
     // MARK: Public Methods
+    func setCurrentVisibleMonth(date: Date)
+    {
+        self.currentVisibleCalendarDateVariable.value = date.firstDateOfMonth
+    }
+    
     func canScroll(toDate date: Date) -> Bool
     {
         let cellDate = date.ignoreTimeComponents()
