@@ -97,6 +97,10 @@ class OnboardingPage : UIViewController
                 make.leading.trailing.equalToSuperview()
             }
             
+            cell.contentView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+            
             cell.transform = CGAffineTransform(translationX: 0, y: 15)
             cell.alpha = 0
             
