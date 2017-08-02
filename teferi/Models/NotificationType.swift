@@ -1,6 +1,7 @@
 import Foundation
 
-enum NotificationType : String {
+enum NotificationType : String
+{
     case normal
     case categorySelection
 }

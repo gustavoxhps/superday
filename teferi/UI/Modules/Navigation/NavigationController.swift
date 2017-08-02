@@ -3,8 +3,8 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class NavigationController: UINavigationController {
-    
+class NavigationController: UINavigationController
+{
     private var viewModel : NavigationViewModel!
     private var presenter : NavigationPresenter!
     
@@ -24,7 +24,8 @@ class NavigationController: UINavigationController {
         bindViewModel()
     }
 
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         
         calendarButton = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))

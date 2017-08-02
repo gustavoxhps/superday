@@ -28,7 +28,8 @@ class WeeklySummaryViewController: UIViewController
         self.viewModel = viewModel
     }
     
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         
         view.backgroundColor = Color.white

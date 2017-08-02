@@ -68,7 +68,8 @@ class CalendarViewController : UIViewController
         calendarView.reloadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool)
+    {
         super.viewDidAppear(animated)
         
         show()

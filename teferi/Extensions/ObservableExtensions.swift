@@ -30,8 +30,10 @@ extension Optional: OptionalType
     public var value: Wrapped? { return self }
 }
 
-extension ObservableType {
-    public func completeAfter(_ predicate: @escaping (Self.E) throws -> Bool) -> Observable<Self.E> {
+extension ObservableType
+{
+    public func completeAfter(_ predicate: @escaping (Self.E) throws -> Bool) -> Observable<Self.E>
+    {
         return Observable<Self.E>.create { observer in
             return self.subscribe { event in
                 switch event {

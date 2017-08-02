@@ -3,12 +3,14 @@ import CoreGraphics
 
 class AddTimeSlotButton : MaterialButton
 {
-    override init(frame: CGRect) {
+    override init(frame: CGRect)
+    {
         super.init(frame: frame)
         setup()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder)
+    {
         super.init(coder: aDecoder)
         setup()
     }

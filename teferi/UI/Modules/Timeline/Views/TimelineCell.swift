@@ -65,7 +65,8 @@ class TimelineCell : UITableViewCell
     
     // MARK: Public Methods
     
-    override func prepareForReuse() {
+    override func prepareForReuse()
+    {
         super.prepareForReuse()
         disposeBag = DisposeBag()
     }

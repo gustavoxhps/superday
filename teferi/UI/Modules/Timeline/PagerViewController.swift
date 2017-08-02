@@ -65,7 +65,8 @@ class PagerViewController : UIPageViewController
         vc.delegate = self
     }
     
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         viewControllersDictionary = [Date : UIViewController]()
     }

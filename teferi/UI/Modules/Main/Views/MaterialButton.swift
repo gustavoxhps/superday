@@ -1,17 +1,19 @@
 import UIKit
 
-class MaterialButton: UIButton {
-    
+class MaterialButton: UIButton
+{
     // MARK: Private Properties
     private var tapView:UIView!
 
     // MARK: Initializer
-    override init(frame: CGRect) {
+    override init(frame: CGRect)
+    {
         super.init(frame: frame)
         setup()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder)
+    {
         super.init(coder: aDecoder)
         setup()
     }

@@ -5,8 +5,8 @@ import Nimble
 
 @testable import teferi
 
-class LocationPumpTests: XCTestCase {
-    
+class LocationPumpTests: XCTestCase
+{    
     private var trackEventService:MockTrackEventService!
     private var settingsService:MockSettingsService!
     private var timeSlotService:MockTimeSlotService!

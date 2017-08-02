@@ -83,7 +83,8 @@ class ChartView: UIView
         
     }
     
-    override func layoutSubviews() {
+    override func layoutSubviews()
+    {
         super.layoutSubviews()
         
         guard let datasource = datasource else { return }

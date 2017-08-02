@@ -34,7 +34,8 @@ class MockLocator : ViewModelLocator
                                        appLifecycleService: appLifecycleService)
     }
     
-    func getIntroViewModel() -> IntroViewModel {
+    func getIntroViewModel() -> IntroViewModel
+    {
         return IntroViewModel(settingsService: settingsService)
     }
     

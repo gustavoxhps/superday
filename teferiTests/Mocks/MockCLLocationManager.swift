@@ -6,9 +6,7 @@ class MockCLLocationManager:CLLocationManager
     private(set) var updatingLocation:Bool = false
     private(set) var monitoringSignificantLocationChanges:Bool = false
     
-    override init() {
-        
-    }
+    override init() { }
     
     override func startUpdatingLocation()
     {

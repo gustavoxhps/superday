@@ -57,8 +57,8 @@ class WeeklySummaryCategoryTableViewCell: UITableViewCell
         return attributedString
     }
     
-    private func stringFromTimeInterval(interval: TimeInterval) -> String {
-        
+    private func stringFromTimeInterval(interval: TimeInterval) -> String
+    {        
         let ti = NSInteger(interval)
         
         let seconds = ti % 60

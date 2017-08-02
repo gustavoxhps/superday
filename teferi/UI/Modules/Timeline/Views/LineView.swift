@@ -26,7 +26,8 @@ class LineView: UIView
         }
     }
     
-    override func awakeFromNib() {
+    override func awakeFromNib()
+    {
         super.awakeFromNib()
         backgroundColor = UIColor.clear
     }

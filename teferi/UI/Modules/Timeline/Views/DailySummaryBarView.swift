@@ -49,12 +49,14 @@ class DailySummaryBarView : UIView
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
+    override func layoutSubviews()
+    {
         super.layoutSubviews()
         shadowView.layer.shadowPath = UIBezierPath(rect: shadowView.bounds).cgPath
     }
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView?
+    {
         return containerView.hitTest(point, with:event)
     }
     
@@ -157,7 +159,8 @@ class BarView: UIView
     }
     private var old_activities: [Activity]?
     
-    override init(frame: CGRect) {
+    override init(frame: CGRect)
+    {
         super.init(frame: frame)
         
         backgroundColor = Style.Color.lightGray
@@ -165,11 +168,13 @@ class BarView: UIView
         layer.cornerRadius = frame.height / 2
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder)
+    {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
+    override func layoutSubviews()
+    {
         super.layoutSubviews()
         layer.cornerRadius = frame.height / 2
     }
