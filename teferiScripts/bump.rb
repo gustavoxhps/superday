@@ -20,16 +20,6 @@ def setVersion(major, minor, maintenance)
 	logAndExit(output) unless $?.success?
 
 	puts "Set version to #{versionString}"
-	bumpBuild()
-end
-
-def bumpBuild
-	output = `agvtool next-version -all`
-	logAndExit(output) unless $?.success?
-	
-	lines = output.split("\n")
-	version = lines[1].match(/\d+/)[0]
-	puts "Bump build to #{version}"
 end
 
 def bumpHotfix
@@ -51,17 +41,15 @@ def bumpMajor
 end
 
 verb = ARGV[0]
-validCommands = [ "build", "hotfix", "minor", "major"]
+validCommands = ["hotfix", "minor", "major"]
 
 commandDescriptions = {
-	"build" => "increments build number",
-	"hotfix" => "increments maintenance version and build number",
-	"minor" => "increments minor version and build number",
-	"major" => "increments major version and build number"
-} 
+	"hotfix" => "increments maintenance version",
+	"minor" => "increments minor version and resets hotfix",
+	"major" => "increments major version and resets minor and hotfix"
+}
 
 commands = {
-	"build" => :bumpBuild,
 	"hotfix" => :bumpHotfix,
 	"minor" => :bumpMinor,
 	"major" => :bumpMajor
@@ -74,6 +62,6 @@ if command
 else
 	puts "Unknown command '#{verb}'" unless verb == nil
 	puts "Usage:"
-	
+
 	validCommands.each { |c| puts "bump #{ c } -> #{ commandDescriptions[c] }" }
 end

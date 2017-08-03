@@ -1406,6 +1406,7 @@
 				8866EB9FABB8B93E2CA7511D /* [CP] Copy Pods Resources */,
 				24E0949C1DA823E70035EC19 /* Run Script */,
 				8CECFB131ED6CA7700A18A6B /* Swift Lint */,
+				8CB7890C1F321D3600448E3D /* Set Build Number */,
 			);
 			buildRules = (
 			);
@@ -1636,6 +1637,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-teferi/Pods-teferi-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		8CB7890C1F321D3600448E3D /* Set Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Set Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh $SRCROOT/teferiScripts/set_build_number.sh";
 		};
 		8CECFB131ED6CA7700A18A6B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
