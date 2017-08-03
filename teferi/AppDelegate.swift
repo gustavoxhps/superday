@@ -199,11 +199,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        healthKitService: healthKitService,
                                                        notificationService: notificationService)
         
-        if settingsService.installDate == nil
-        {
-            notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
-        }
-        
         window!.rootViewController = IntroPresenter.create(with: viewModelLocator)
         window!.makeKeyAndVisible()
     }
