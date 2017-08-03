@@ -94,10 +94,6 @@ class TimelineViewController : UIViewController
             .map{$0.count > 0}
             .bindTo(emptyStateView.rx.isHidden)
             .addDisposableTo(disposeBag)
-            
-        viewModel.presentEditViewObservable
-            .subscribe(onNext: startEditOnLastSlot)
-            .addDisposableTo(disposeBag)
         
         tableView.rx.willDisplayCell
             .subscribe(onNext: { [unowned self] (cell, indexPath) in
@@ -170,20 +166,6 @@ class TimelineViewController : UIViewController
     {
         let indexPath = IndexPath(row: tableView.numberOfRows(inSection: 0) - 1, section: 0)
         tableView.reloadRows(at: [indexPath], with: .none)
-    }
-    
-    private func startEditOnLastSlot()
-    {
-        let lastRow = tableView.numberOfRows(inSection: 0) - 1
-        guard lastRow >= 0 else { return }
-        
-        let indexPath = IndexPath(row: lastRow, section: 0)
-        
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-
-        let centerPoint = buttonPosition(forCellIndex: lastRow)
-
-        viewModel.notifyEditingBegan(point: centerPoint, item: nil)
     }
     
     private func buttonPosition(forCellIndex index: Int) -> CGPoint

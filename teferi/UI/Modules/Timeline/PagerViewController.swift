@@ -85,11 +85,6 @@ class PagerViewController : UIPageViewController
             .subscribe(onNext: onEditChanged)
             .addDisposableTo(disposeBag)
         
-        viewModel.showEditOnLastObservable
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: showToday)
-            .addDisposableTo(disposeBag)
-        
         viewModel.newDayObservable
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: newDay)

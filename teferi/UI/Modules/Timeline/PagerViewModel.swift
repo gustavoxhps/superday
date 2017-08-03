@@ -28,11 +28,6 @@ class PagerViewModel
     
     var currentDate : Date { return self.timeService.now }
     
-    private(set) lazy var showEditOnLastObservable : Observable<Void> =
-    {
-        return self.appLifecycleService.startedOnNotificationObservable
-    }()
-    
     var currentlySelectedDate : Date
     {
         get { return self.selectedDate.ignoreTimeComponents() }

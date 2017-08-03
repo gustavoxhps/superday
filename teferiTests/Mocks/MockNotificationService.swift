@@ -20,11 +20,6 @@ class MockNotificationService : NotificationService
         
     }
     
-    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
-    {
-        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
-    }
-    
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {
         shouldShowFakeTimeSlot = possibleFutureSlotStart != nil

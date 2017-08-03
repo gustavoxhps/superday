@@ -18,14 +18,4 @@ extension AppLifecycleService
             }
             .mapTo(())
     }
-    
-    var startedOnNotificationObservable : Observable<Void>
-    {
-        return self.lifecycleEventObservable
-            .filter {
-                guard case .movedToForeground(let fromNotification) = $0 else { return false }
-                return fromNotification
-            }
-            .mapTo(())
-    }
 }

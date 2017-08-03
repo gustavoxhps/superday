@@ -9,12 +9,6 @@ class TimelineViewModel
     let timeObservable : Observable<Void>
     var timelineItemsObservable : Observable<[TimelineItem]> { return self.timelineItems.asObservable() }
 
-    var presentEditViewObservable : Observable<Void>
-    {
-        return self.appLifecycleService.startedOnNotificationObservable
-            .filter({ [unowned self] in self.isCurrentDay })
-    }
-
     //MARK: Private Properties
     private var isCurrentDay : Bool
     private let disposeBag = DisposeBag()
