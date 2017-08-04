@@ -44,17 +44,15 @@ class TimelineCell : UITableViewCell
     
     // MARK: Private Properties
     private var currentIndex = 0
-    private let hourMask = "%02d h %02d min"
-    private let minuteMask = "%02d min"
     
     @IBOutlet private weak var contentHolder: UIView!
-    @IBOutlet private(set) weak var lineView : LineView!
-    @IBOutlet private(set) weak var slotTime : UILabel!
-    @IBOutlet private(set) weak var elapsedTime : UILabel!
+    @IBOutlet private weak var lineView : LineView!
+    @IBOutlet private weak var slotTime : UILabel!
+    @IBOutlet private weak var elapsedTime : UILabel!
     @IBOutlet private weak var categoryButton : UIButton!
-    @IBOutlet private(set) weak var slotDescription : UILabel!
+    @IBOutlet private weak var slotDescription : UILabel!
     @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
-    @IBOutlet private(set) weak var categoryIcon: UIImageView!
+    @IBOutlet private weak var categoryIcon: UIImageView!
     @IBOutlet private weak var lineHeight: NSLayoutConstraint!
     @IBOutlet private weak var bottomMargin: NSLayoutConstraint!
     @IBOutlet private weak var dotView : UIView!
@@ -77,9 +75,9 @@ class TimelineCell : UITableViewCell
         
         //Updates each one of the cell's components
         layoutLine(withItem: timelineItem)
-        layoutSlotTime(withItem: timelineItem, lastInPastDay: timelineItem.isLastInPastDay)
-        layoutElapsedTimeLabel(withColor: timelineItem.category.color, interval: timelineItem.duration, shouldShow: true /*TODO*/)
-        layoutDescriptionLabel(withTimelineItem: timelineItem)
+        layoutSlotTime(withItem: timelineItem)
+        layoutElapsedTimeLabel(withItem: timelineItem)
+        layoutDescriptionLabel(withItem: timelineItem)
         layoutCategoryIcon(forCategory: timelineItem.category)
         
         let image = UIImage(asset: Asset.icCollapse).withRenderingMode(.alwaysTemplate)
@@ -118,67 +116,29 @@ class TimelineCell : UITableViewCell
     }
     
     /// Updates the label that displays the description and starting time of the slot
-    private func layoutDescriptionLabel(withTimelineItem timelineItem: TimelineItem)
+    private func layoutDescriptionLabel(withItem item: TimelineItem)
     {
-        let shouldShowCategory = !timelineItem.shouldDisplayCategoryName || timelineItem.category == .unknown
-        let categoryText = shouldShowCategory ? "" : timelineItem.category.description
-        slotDescription.text = categoryText
-        timeSlotDistanceConstraint.constant = shouldShowCategory ? 0 : 6
+        slotDescription.text = item.slotDescriptionText
+        timeSlotDistanceConstraint.constant = item.slotDescriptionText.isEmpty ? 0 : 6
     }
     
     /// Updates the label that shows the time the TimeSlot was created
-    private func layoutSlotTime(withItem timelineItem: TimelineItem, lastInPastDay: Bool)
+    private func layoutSlotTime(withItem timelineItem: TimelineItem)
     {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let startString = formatter.string(from: timelineItem.startTime)
-        
-        if lastInPastDay, let endTime = timelineItem.endTime
-        {
-            let endString = formatter.string(from: endTime)
-            slotTime.text = startString + " - " + endString
-        }
-        else
-        {
-            slotTime.text = startString
-        }
+        slotTime.text = timelineItem.slotTimeText
     }
     
     /// Updates the label that shows how long the slot lasted
-    private func layoutElapsedTimeLabel(withColor color: UIColor, interval: TimeInterval, shouldShow: Bool)
+    private func layoutElapsedTimeLabel(withItem item: TimelineItem)
     {
-        let minutes = (Int(interval) / 60) % 60
-        let hours = (Int(interval) / 3600)
-        
-        if shouldShow
-        {
-            elapsedTime.textColor = color
-            elapsedTime.text = hours > 0 ? String(format: hourMask, hours, minutes) : String(format: minuteMask, minutes)
-        }
-        else
-        {
-            elapsedTime.text = ""
-        }
+        elapsedTime.textColor = item.category.color
+        elapsedTime.text = item.elapsedTimeText
     }
     
     /// Updates the line that displays shows how long the TimeSlot lasted
     private func layoutLine(withItem item: TimelineItem)
     {
-        if item.category == .sleep
-        {
-            lineHeight.constant = 20.0
-        }
-        else
-        {
-            let newHeight = Constants.minLineHeight + Constants.timelineSlope * (CGFloat(item.duration) - Constants.minTimelineInterval)
-            lineHeight.constant = max(min(newHeight, Constants.maxLineHeight), Constants.minLineHeight)
-        }
-        
-        if item.timeSlots.count > 1
-        {
-            lineHeight.constant = 64
-        }
-        
+        lineHeight.constant = item.lineHeight
         lineView.color = item.category.color
         dotView.backgroundColor = item.category.color
         
