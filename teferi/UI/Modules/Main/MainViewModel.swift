@@ -39,6 +39,12 @@ class MainViewModel : RxViewModel
             self.timeSlotService.timeSlotCreatedObservable.mapTo(()) )
             .merge()
             .map { [unowned self] () -> Bool in
+                guard self.timeService.now.ignoreTimeComponents() == self.settingsService.installDate!.ignoreTimeComponents()
+                else {
+                    self.settingsService.setWelcomeMessageHidden()
+                    return true
+                }
+                
                 let value = self.settingsService.welcomeMessageHidden
                 self.settingsService.setWelcomeMessageHidden()
                 return value
