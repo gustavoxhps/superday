@@ -12,7 +12,7 @@ class MergeShortTimeSlotsPipe : Pipe
         var shortestSlotIndex = findShortestSlotIndexSkipingLast(auxTimeline)
         var shortestSlot = auxTimeline[shortestSlotIndex]
         
-        while shortestSlot.duration != nil && shortestSlot.duration! < shortTimeSlotThreshold && auxTimeline.count > 1
+        while auxTimeline.count > 1 && shortestSlot.duration != nil && shortestSlot.duration! < shortTimeSlotThreshold && auxTimeline.count > 1
         {
             defer {
                 shortestSlotIndex = findShortestSlotIndexSkipingLast(auxTimeline)
