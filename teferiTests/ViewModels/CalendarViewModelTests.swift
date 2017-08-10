@@ -48,7 +48,7 @@ class CalendarViewModelTests: XCTestCase
         expect(observer.values).to(equal(dates))
     }
     
-    func testCurrentlyVisibleCalendarDateForwardsEventsToObservable()
+    func testCurrentlyVisibleCalendarDateForwardsEventsToObservableOnlyWhenMonthChanges()
     {
         let observer:TestableObserver<Date> = scheduler.createObserver(Date.self)
         viewModel.currentVisibleCalendarDateObservable
@@ -56,12 +56,12 @@ class CalendarViewModelTests: XCTestCase
             .subscribe(observer)
             .addDisposableTo(disposeBag)
         
-        let dates = [Date().addingTimeInterval(2*24*60*60), Date().addingTimeInterval(3*24*60*60)]
-        viewModel.currentVisibleCalendarDate = dates[0]
-        viewModel.currentVisibleCalendarDate = dates[1]
+        let dates = [Date().addingTimeInterval(2*24*60*60), Date().addingTimeInterval(35*24*60*60)]
+        viewModel.setCurrentVisibleMonth(date: dates[0])
+        viewModel.setCurrentVisibleMonth(date: dates[1])
         
-        expect(observer.events.count).to(equal(2))
-        expect(observer.values).to(equal(dates))
+        expect(observer.events.count).to(equal(1))
+        expect(observer.values.first!).to(equal(dates[1].firstDateOfMonth))
     }
     
     func testMaxValidDateReturnsCurrentDateAlways()

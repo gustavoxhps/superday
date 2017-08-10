@@ -70,6 +70,7 @@ class OnboardingViewController: UIPageViewController
         {
             
             viewModel.settingsService.setInstallDate(viewModel.timeService.now)
+            viewModel.notificationService.scheduleNormalNotification(date: viewModel.settingsService.installDate!.addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
             presenter.showMain()
 
             return

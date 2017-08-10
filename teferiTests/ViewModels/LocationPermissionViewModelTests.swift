@@ -43,7 +43,7 @@ class LocationPermissionViewModelTests : XCTestCase
         
         viewModel.permissionGiven()
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(self.viewModel.remindMeLater).to(beFalse())
     }

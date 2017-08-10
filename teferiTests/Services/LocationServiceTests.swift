@@ -5,8 +5,8 @@ import RxSwift
 import RxTest
 import CoreLocation
 
-class LocationServiceTests: XCTestCase {
-    
+class LocationServiceTests: XCTestCase
+{    
     private let baseLocation = CLLocation(latitude: 41.9754219072948, longitude: -71.0230522245947)
     
     var locationService:DefaultLocationService!

@@ -2,9 +2,10 @@ import UIKit
 import Foundation
 import RxSwift
 import RxCocoa
+import Crashlytics
 
-class NavigationController: UINavigationController {
-    
+class NavigationController: UINavigationController
+{
     private var viewModel : NavigationViewModel!
     private var presenter : NavigationPresenter!
     
@@ -24,7 +25,8 @@ class NavigationController: UINavigationController {
         bindViewModel()
     }
 
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         
         calendarButton = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
@@ -58,6 +60,23 @@ class NavigationController: UINavigationController {
         titleLabel.font = UIFont.systemFont(ofSize: 14, weight: UIFontWeightMedium)
         titleLabel.textColor = Style.Color.offBlack
         
+        let crashTaps = UITapGestureRecognizer(target: self, action: #selector(NavigationController.showCrashDialog))
+        crashTaps.numberOfTapsRequired = 10
+        logoImageView.isUserInteractionEnabled = true
+        logoImageView.addGestureRecognizer(crashTaps)
+    }
+    
+    @objc private func showCrashDialog()
+    {
+        let alert = UIAlertController(title: "Crash the app?", message: "Choose the error to force", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Crash", style: .default, handler: { _ in
+            Crashlytics.sharedInstance().crash()
+        }))
+        alert.addAction(UIAlertAction(title: "Error", style: .default, handler: { _ in
+            Crashlytics.sharedInstance().recordError(NSError(domain: "TestError", code: 0))
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     private func bindViewModel()

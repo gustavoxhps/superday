@@ -98,7 +98,7 @@ class MainNavigationViewModelTests : XCTestCase
     {
         appLifecycleService.publish(.movedToBackground)
         timeService.mockDate = getDate(withDay: 1)
-        appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToForeground)
         
         let dateText = dateLabelObserver.events.last!.value.element!
         
@@ -109,7 +109,7 @@ class MainNavigationViewModelTests : XCTestCase
     {
         appLifecycleService.publish(.movedToBackground)
         timeService.mockDate = getDate(withDay: 14)
-        appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToForeground)
         
         let dateText = dateLabelObserver.events.last!.value.element!
 
@@ -129,7 +129,7 @@ class MainNavigationViewModelTests : XCTestCase
 
         appLifecycleService.publish(.movedToBackground)
         timeService.mockDate = today.add(days: 1)
-        appLifecycleService.publish(.movedToForeground(fromNotification: false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(observer.events.last!.value.element!).to(equal(L10n.yesterdayBarTitle))
     }

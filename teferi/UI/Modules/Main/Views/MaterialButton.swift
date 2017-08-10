@@ -1,17 +1,19 @@
 import UIKit
 
-class MaterialButton: UIButton {
-    
+class MaterialButton: UIButton
+{
     // MARK: Private Properties
     private var tapView:UIView!
 
     // MARK: Initializer
-    override init(frame: CGRect) {
+    override init(frame: CGRect)
+    {
         super.init(frame: frame)
         setup()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder)
+    {
         super.init(coder: aDecoder)
         setup()
     }
@@ -26,6 +28,7 @@ class MaterialButton: UIButton {
         
         addTarget(self, action: #selector(MaterialButton.touchDown(sender:withEvent:)), for: UIControlEvents.touchDown)
         addTarget(self, action: #selector(MaterialButton.touchUpInside(sender:withEvent:)), for: UIControlEvents.touchUpInside)
+        addTarget(self, action: #selector(MaterialButton.touchUpOutside(sender:withEvent:)), for: UIControlEvents.touchUpOutside)
     }
     
     @objc private func touchDown(sender:UIButton, withEvent event:UIEvent)
@@ -66,5 +69,19 @@ class MaterialButton: UIButton {
             completion: { _ in
                 self.tapView.isHidden = true
             })
+    }
+    
+    @objc private func touchUpOutside(sender:UIButton, withEvent event:UIEvent)
+    {
+        UIView.animate(
+            withDuration: 0.6,
+            delay: 0,
+            options: .curveEaseOut,
+            animations: { [unowned self] in
+                self.tapView.alpha = 0.0
+            },
+            completion: { _ in
+                self.tapView.isHidden = false
+        })
     }
 }

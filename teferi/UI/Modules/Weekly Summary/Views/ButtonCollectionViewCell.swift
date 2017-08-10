@@ -56,8 +56,8 @@ class CategoryButtonCircleView: UIView
         }
     }
     
-    override func draw(_ rect: CGRect) {
-        
+    override func draw(_ rect: CGRect)
+    {        
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
         
         ctx.addEllipse(in: CGRect(x: rect.width/2 - 4, y: rect.height/2-4, width: 8, height: 8))

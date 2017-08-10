@@ -4,7 +4,7 @@ import RxSwift
 class MockAppLifecycleService : AppLifecycleService
 {
     //MARK: Fields
-    private let lifecycleEventSubject = BehaviorSubject<LifecycleEvent>(value: .movedToForeground(fromNotification:false))
+    private let lifecycleEventSubject = BehaviorSubject<LifecycleEvent>(value: .movedToForeground)
     
     //MARK: Initializers
     init()

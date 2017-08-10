@@ -95,14 +95,4 @@ class PagerViewModelTests : XCTestCase
         
         expect(self.viewModel.canScroll(toDate: theDayAfterInstallDate)).to(beTrue())
     }
-    
-    func testWhenTheAppWakesFromANotificationItShouldShowEdit()
-    {
-        var editLastRow = false
-        _ = viewModel.showEditOnLastObservable.subscribe({ _ in editLastRow = true })
-
-        appLifecycleService.publish(.movedToForeground(fromNotification:true))
-        
-        expect(editLastRow).to(beTrue())
-    }
 }

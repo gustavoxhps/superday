@@ -33,11 +33,6 @@ class PreiOSTenNotificationService : NotificationService
         scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
     }
     
-    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
-    {
-        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
-    }
-    
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
         UIApplication.shared.cancelAllLocalNotifications()

@@ -46,7 +46,7 @@ class CalendarViewController : UIViewController
         calendarView.delegate = self
         calendarView.registerCellViewXib(file: calendarCell)
         calendarView.cellInset = CGPoint(x: 1.5, y: 2)
-        calendarView.scrollToDate(viewModel.maxValidDate, animateScroll:false)
+        calendarView.scrollToDate(viewModel.currentVisibleMonth, animateScroll:false)
         
         leftButton.rx.tap
             .subscribe(onNext: onLeftClick)
@@ -68,7 +68,8 @@ class CalendarViewController : UIViewController
         calendarView.reloadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool)
+    {
         super.viewDidAppear(animated)
         
         show()
@@ -259,7 +260,7 @@ extension CalendarViewController: JTAppleCalendarViewDelegate, JTAppleCalendarVi
     {
         guard let startDate = visibleDates.monthDates.first else { return }
         
-        viewModel.currentVisibleCalendarDate = startDate
+        viewModel.setCurrentVisibleMonth(date: startDate)
     }
 }
 

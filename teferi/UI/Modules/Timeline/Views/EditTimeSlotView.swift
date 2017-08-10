@@ -4,7 +4,7 @@ import RxSwift
 class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
 {
     typealias DismissType = (() -> ())
-    typealias TimeSlotEdit = (TimeSlot, Category)
+    typealias TimeSlotEdit = (TimelineItem, Category)
     
     // MARK: Public Properties
     var dismissAction : DismissType?
@@ -41,7 +41,7 @@ class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
         }
     }
     
-    private var timeSlot : TimeSlot!
+    private var timelineItem : TimelineItem!
     private var selectedItem : Category?
     private let editEndedSubject = PublishSubject<TimeSlotEdit>()
     
@@ -94,27 +94,27 @@ class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
     func categorySelected(category: Category)
     {
         selectedItem = category
-        editEndedSubject.onNext((timeSlot, category))
+        editEndedSubject.onNext((timelineItem, category))
     }
     
-    func onEditBegan(point: CGPoint, timeSlot: TimeSlot)
+    func onEditBegan(point: CGPoint, timelineItem: TimelineItem)
     {
         guard point.x != 0 && point.y != 0 else { return }
         layoutIfNeeded()
         
-        self.timeSlot = timeSlot
-        selectedItem = timeSlot.category
+        self.timelineItem = timelineItem
+        selectedItem = timelineItem.category
         
         alpha = 1.0
         
-        let items = categoryProvider.getAll(but: .unknown, timeSlot.category)
+        let items = categoryProvider.getAll(but: .unknown, timelineItem.category)
         
         viewHandler?.cleanAll()
         viewHandler = CategoryButtonsHandler(items: items)
         
         currentCategoryBackgroundView?.removeFromSuperview()
         currentCategoryBackgroundView = UIView()
-        currentCategoryBackgroundView?.backgroundColor = timeSlot.category.color
+        currentCategoryBackgroundView?.backgroundColor = timelineItem.category.color
         currentCategoryBackgroundView?.layer.cornerRadius = 16
         
         addSubview(currentCategoryBackgroundView!)
@@ -125,8 +125,8 @@ class EditTimeSlotView : UIView, TrigonometryHelper, CategoryButtonDelegate
         }
         
         currentCategoryImageView?.removeFromSuperview()
-        currentCategoryImageView = newImageView(with: UIImage(asset: timeSlot.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
-        currentCategoryImageView?.isHidden = timeSlot.category == .unknown
+        currentCategoryImageView = newImageView(with: UIImage(asset: timelineItem.category.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)
+        currentCategoryImageView?.isHidden = timelineItem.category == .unknown
         
         plusImageView?.removeFromSuperview()
         plusImageView = newImageView(with: UIImage(asset: Category.unknown.icon), cornerRadius: 16, contentMode: .scaleAspectFit, basedOn: point)

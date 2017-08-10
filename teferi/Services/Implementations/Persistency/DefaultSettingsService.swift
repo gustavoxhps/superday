@@ -74,6 +74,11 @@ class DefaultSettingsService : SettingsService
         return getBool(forKey: userGaveLocationPermissionKey)
     }
     
+    var welcomeMessageHidden : Bool
+    {
+        return getBool(forKey: welcomeMessageHiddenKey)
+    }
+    
     //MARK: Private Properties
     
     private let timeService : TimeService
@@ -87,6 +92,7 @@ class DefaultSettingsService : SettingsService
     private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
     private let healthKitPermissionKey = "healthKitPermission"
+    private let welcomeMessageHiddenKey = "welcomeMessageHidden"
     
     private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
     private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
@@ -149,12 +155,19 @@ class DefaultSettingsService : SettingsService
         set(date, forKey: lastAskedForLocationPermissionKey)
     }
     
-    func setUserGaveLocationPermission() {
+    func setUserGaveLocationPermission()
+    {
         set(true, forKey: userGaveLocationPermissionKey)
     }
     
-    func setUserGaveHealthKitPermission() {
+    func setUserGaveHealthKitPermission()
+    {
         set(true, forKey: healthKitPermissionKey)
+    }
+    
+    func setWelcomeMessageHidden()
+    {
+        set(true, forKey: welcomeMessageHiddenKey)
     }
     
     // MARK: Private Methods

@@ -69,17 +69,17 @@ class MainViewModelTests : XCTestCase
     func testTheUpdateMethodCallsTheMetricsService()
     {
         let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            withTimeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
-    }
-    
-    func testTheUpdateTimeSlotMethodChangesATimeSlotsCategory()
-    {
-        let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
-        
-        expect(timeSlot.category).to(equal(Category.commute))
     }
     
     func testTheUpdateTimeSlotMethodEndsTheEditingProcess()
@@ -90,7 +90,15 @@ class MainViewModelTests : XCTestCase
             .subscribe(onNext: { editingEnded = !$0 })
         
         let timeSlot = addTimeSlot(withCategory: .work)
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            withTimeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(editingEnded).to(beTrue())
     }
@@ -117,7 +125,15 @@ class MainViewModelTests : XCTestCase
                                                         smartGuess: smartguess,
                                                         location: location)!
         
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            withTimeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.last?.category).to(equal(Category.food))
         expect(self.smartGuessService.smartGuesses.last?.errorCount).to(equal(1))
@@ -132,24 +148,17 @@ class MainViewModelTests : XCTestCase
                                                         categoryWasSetByUser: true,
                                                         location: CLLocation(latitude:43.4211, longitude:4.7562))!
         
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
+        let item = TimelineItem(
+            withTimeSlots: [timeSlot],
+            category: timeSlot.category,
+            duration: 0,
+            shouldDisplayCategoryName: true,
+            isLastInPastDay: false,
+            isRunning: false)
+        
+        viewModel.updateTimelineItem(item, withCategory: .commute)
         
         expect(self.smartGuessService.smartGuesses.count).to(equal(previousCount + 1))
-    }
-    
-    func testTheUpdateMethodMarksTimeSlotAsSetByUser()
-    {
-        let location = CLLocation(latitude:43.4211, longitude:4.7562)
-        
-        let timeSlot = timeSlotService.addTimeSlot(withStartTime: Date(),
-                                                        smartGuess: SmartGuess(withId: 0, category: .food, location: location, lastUsed: Date()),
-                                                        location: location)!
-        
-        expect(timeSlot.categoryWasSetByUser).to(beFalse())
-        
-        viewModel.updateTimeSlot(timeSlot, withCategory: .commute)
-        
-        expect(timeSlot.categoryWasSetByUser).to(beTrue())
     }
     
     func testHKPermissionShouldNotBeShownIfTheUserHasAlreadyAuthorized()
@@ -172,7 +181,7 @@ class MainViewModelTests : XCTestCase
         disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(wouldShow).to(beTrue())
     }
@@ -186,7 +195,7 @@ class MainViewModelTests : XCTestCase
         disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { _ in wouldShow = true })
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(wouldShow).to(beFalse())
     }
@@ -211,7 +220,7 @@ class MainViewModelTests : XCTestCase
         disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { type in wouldShow = type == .location })
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(wouldShow).to(beTrue())
     }
@@ -225,7 +234,7 @@ class MainViewModelTests : XCTestCase
         disposable = viewModel.showPermissionControllerObservable
             .subscribe(onNext: { type in wouldShow = type == .location })
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:false))
+        appLifecycleService.publish(.movedToForeground)
         
         expect(wouldShow).to(beTrue())
     }

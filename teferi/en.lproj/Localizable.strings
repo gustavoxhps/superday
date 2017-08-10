@@ -22,6 +22,9 @@
 
 "DailySummaryTitle" = "Daily Summary";
 
+"WelcomeMessageTitle" = "That's it! 🎉";
+"WelcomeMessageSubTitle" = "Check back later to see where your time goes.";
+
 
 //Categories
 "Commute" = "Commute";

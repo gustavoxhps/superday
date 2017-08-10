@@ -8,10 +8,23 @@
   # swiftlint rules
 whitelist_rules:
   - comma
+  - custom_rules
 #  - attributes, closing_brace, closure_end_indentation, closure_parameter_position, closure_spacing, colon, comma, control_statement, cyclomatic_complexity, empty_count
 # DONT: conditional_returns_on_newline
+custom_rules:
+  brace_on_new_line: # rule identifier
+    name: "Brace on new line" # rule name. optional.
+    regex: "(class|struct|enum|protocol|extension)[ :][^\n]*\{"
+    message: "Opening braces for classes, structs, protocols, enums and extensions must be on a new line" # violation message. optional.
+    severity: error # violation severity. optional.
+  func_brace_on_new_line:
+    name: "Func brace on new line" # rule name. optional.
+    regex: "(func|init)[ \!\?\(][^\n]*\{(?![^\n]*\})"
+    message: "Opening braces for functions and methods must be on a new line" # violation message. optional.
+    severity: error # violation severity. optional.
 included: # paths to include during linting. `--path` is ignored if present.
   - teferi
   - teferiTests
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
+  - teferi/Generated

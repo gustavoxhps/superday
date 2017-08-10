@@ -11,7 +11,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     var window: UIWindow?
 
     //MARK: Private Properties
-    fileprivate var didReceiveCategoryNotification = false
     private let disposeBag = DisposeBag()
     private let notificationAuthorizedSubject = PublishSubject<Void>()
     
@@ -30,7 +29,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     private let appLifecycleService : AppLifecycleService
     private let notificationService : NotificationService
     private let selectedDateService : DefaultSelectedDateService
-    private let notificationSchedulingService : NotificationSchedulingService
     
     private let coreDataStack : CoreDataStack
     
@@ -104,12 +102,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       smartGuessService: smartGuessService,
                                                       trackEventService: trackEventService,
                                                       timeService: timeService))
-
-        notificationSchedulingService = NotificationSchedulingService(timeService: timeService,
-                                                                           settingsService: settingsService,
-                                                                           locationService: locationService,
-                                                                           smartGuessService: smartGuessService,
-                                                                           notificationService: notificationService)
     }
     
     //MARK: UIApplicationDelegate lifecycle
@@ -129,15 +121,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
             healthKitService.startHealthKitTracking()
         }
         
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().delegate = self
-        } else {
-            if let notification = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? UILocalNotification {
-                didReceiveCategoryNotification = isCategorySelectionNotification(notification)
-            }
-        }
-        
-        appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground(fromNotification:didReceiveCategoryNotification))
+        appLifecycleService.publish(isInBackground ? .movedToBackground : .movedToForeground)
         
         //Faster startup when the app wakes up for location updates
         if isInBackground
@@ -163,7 +147,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().barTintColor = UIColor.white
     }
     
     private func logAppStartup(_ isInBackground: Bool)
@@ -199,11 +183,6 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                        healthKitService: healthKitService,
                                                        notificationService: notificationService)
         
-        if settingsService.installDate == nil
-        {
-            notificationService.scheduleNormalNotification(date: Date().addingTimeInterval(Constants.timeToWaitBeforeShowingHealthKitPermissions), title: "", message: L10n.notificationHealthKitAccessBody)
-        }
-        
         window!.rootViewController = IntroPresenter.create(with: viewModelLocator)
         window!.makeKeyAndVisible()
     }
@@ -223,11 +202,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         pipeline.run()
         
         initializeWindowIfNeeded()
-     
-        notificationService.unscheduleAllNotifications(ofTypes: .categorySelection)
         
-        appLifecycleService.publish(.movedToForeground(fromNotification:didReceiveCategoryNotification))
-        didReceiveCategoryNotification = false
+        appLifecycleService.publish(.movedToForeground)
     }
     
     func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings)
@@ -235,44 +211,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         notificationAuthorizedSubject.on(.next(()))
     }
     
-    func application(_ application: UIApplication, didReceive notification: UILocalNotification)
-    {
-        didReceiveCategoryNotification = isCategorySelectionNotification(notification)
-    }
-    
-    private func isCategorySelectionNotification(_ notification:UILocalNotification) -> Bool
-    {
-        guard
-            let identifier = notification.userInfo?["id"] as? String,
-            identifier == NotificationType.categorySelection.rawValue
-            else { return false }
-        
-        return true
-    }
-    
-    @available(iOS 10.0, *)
-    fileprivate func isCategorySelectionNotification(_ notification:UNNotification) -> Bool
-    {
-        guard
-            let identifier = notification.request.content.userInfo["id"] as? String,
-            identifier == NotificationType.categorySelection.rawValue
-            else { return false }
-        
-        return true
-    }
-    
     func applicationWillTerminate(_ application: UIApplication)
     {
         coreDataStack.saveContext()
-    }
-}
-
-@available(iOS 10.0, *)
-extension AppDelegate:UNUserNotificationCenterDelegate
-{
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        didReceiveCategoryNotification = isCategorySelectionNotification(response.notification)
-        completionHandler()
     }
 }

@@ -61,11 +61,6 @@ class PostiOSTenNotificationService : NotificationService
         scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
     }
     
-    func scheduleCategorySelectionNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?)
-    {
-        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: possibleFutureSlotStart, ofType: .categorySelection)
-    }
-    
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
         let giveTypes = types.flatMap { $0 }
@@ -128,12 +123,6 @@ class PostiOSTenNotificationService : NotificationService
         
         var content = notificationContent(title: title, message: message)
         
-        switch type {
-        case .categorySelection:
-            content = prepareForCategorySelectionNotification(content: content, possibleFutureSlotStart: possibleFutureSlotStart)
-        default: break
-        }
-        
         content.userInfo["id"] = type.rawValue
         
         let fireTime = date.timeIntervalSinceNow
@@ -158,40 +147,6 @@ class PostiOSTenNotificationService : NotificationService
         content.title = title
         content.body = message
         content.sound = UNNotificationSound(named: UILocalNotificationDefaultSoundName)
-        return content
-    }
-    
-    private func prepareForCategorySelectionNotification(content oldContent: UNMutableNotificationContent, possibleFutureSlotStart: Date?) -> UNMutableNotificationContent
-    {
-        let content = oldContent
-        
-        //We shouldn't try guessing which categories the user will pick before we have enough data
-        guard appIsBeingUsedForOverAWeek else
-        {
-            return content
-        }
-        
-        let numberOfSlotsForNotification : Int = 3
-        
-        let latestTimeSlots =
-            timeSlotService
-                .getTimeSlots(forDay: timeService.now)
-                .suffix(numberOfSlotsForNotification)
-        
-        var latestTimeSlotsForNotification = latestTimeSlots.map(toDictionary)
-        
-        if let possibleFutureSlotStart = possibleFutureSlotStart
-        {
-            if latestTimeSlots.count > numberOfSlotsForNotification - 1
-            {
-                latestTimeSlotsForNotification.removeFirst()
-            }
-            
-            latestTimeSlotsForNotification.append( ["date": formatter.string(from: possibleFutureSlotStart)] )
-        }
-        
-        content.userInfo = ["timeSlots": latestTimeSlotsForNotification]
-        
         return content
     }
     

@@ -115,7 +115,7 @@ extension CLLocation
     }
 }
 
-fileprivate func randomBetweenNumbers(firstNum: Double, secondNum: Double) -> Double{
+fileprivate func randomBetweenNumbers(firstNum: Double, secondNum: Double) -> Double
+{
     return Double(arc4random()) / Double(Int.max) * (secondNum - firstNum) + firstNum
-
 }

@@ -65,7 +65,8 @@ class PagerViewController : UIPageViewController
         vc.delegate = self
     }
     
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         viewControllersDictionary = [Date : UIViewController]()
     }
@@ -82,11 +83,6 @@ class PagerViewController : UIPageViewController
         viewModel.isEditingObservable
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: onEditChanged)
-            .addDisposableTo(disposeBag)
-        
-        viewModel.showEditOnLastObservable
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: showToday)
             .addDisposableTo(disposeBag)
         
         viewModel.newDayObservable

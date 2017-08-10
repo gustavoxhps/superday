@@ -7,59 +7,81 @@ import RxCocoa
 ///Cell that represents a TimeSlot in the timeline
 class TimelineCell : UITableViewCell
 {
+    static let cellIdentifier = "timelineCell"
+
     // MARK: Public Properties
-    private(set) var isSubscribedToClickObservable = false
+    var timelineItem: TimelineItem? = nil {
+        didSet {
+            configure()
+        }
+    }
     
-    lazy var editClickObservable : Observable<Int> =
-        {
-            self.isSubscribedToClickObservable = true
-            
-            return self.categoryButton.rx.tap
-                .map { return self.currentIndex }
-                .asObservable()
-    }()
+    private(set) var disposeBag = DisposeBag()
+    
+    var editClickObservable : Observable<TimelineItem> {
+        return self.categoryButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
+            .asObservable()
+    }
+    
+    var collapseClickObservable : Observable<TimelineItem> {
+        return self.collapseButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
+            .asObservable()
+    }
+    
+    var expandClickObservable : Observable<TimelineItem> {
+        return self.expandButton.rx.tap
+            .mapTo(self.timelineItem)
+            .filterNil()
+            .asObservable()
+    }
+    
     
     @IBOutlet private(set) weak var categoryCircle: UIView!
     
     // MARK: Private Properties
     private var currentIndex = 0
-    private let hourMask = "%02d h %02d min"
-    private let minuteMask = "%02d min"
     
     @IBOutlet private weak var contentHolder: UIView!
-    @IBOutlet private(set) weak var lineView : LineView!
-    @IBOutlet private(set) weak var slotTime : UILabel!
-    @IBOutlet private(set) weak var elapsedTime : UILabel!
+    @IBOutlet private weak var lineView : LineView!
+    @IBOutlet private weak var slotTime : UILabel!
+    @IBOutlet private weak var elapsedTime : UILabel!
     @IBOutlet private weak var categoryButton : UIButton!
-    @IBOutlet private(set) weak var slotDescription : UILabel!
+    @IBOutlet private weak var slotDescription : UILabel!
     @IBOutlet private weak var timeSlotDistanceConstraint : NSLayoutConstraint!
-    @IBOutlet private(set) weak var categoryIcon: UIImageView!
+    @IBOutlet private weak var categoryIcon: UIImageView!
     @IBOutlet private weak var lineHeight: NSLayoutConstraint!
     @IBOutlet private weak var bottomMargin: NSLayoutConstraint!
-    @IBOutlet private weak var dotsView : DottedLineView!
+    @IBOutlet private weak var dotView : UIView!
+    @IBOutlet private weak var collapseButton: UIButton!
+    @IBOutlet private weak var expandButton: UIButton!
     
     private var lineFadeView : AutoResizingLayerView?
     
-    private let disposeBag = DisposeBag()
-    
     // MARK: Public Methods
-
-    func bind(toTimelineItem timelineItem: TimelineItem, index: Int, duration: TimeInterval)
+    
+    override func prepareForReuse()
     {
-        currentIndex = index
-        
-        let timeSlot = timelineItem.timeSlot
-        let isRunning = timeSlot.endTime == nil
-        let interval = Int(duration)
-        let totalInterval = Int(isRunning ? timelineItem.durations.dropLast(1).reduce(duration, +) : timelineItem.durations.reduce(0.0, +))
-        let categoryColor = timeSlot.category.color
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+
+    func configure()
+    {
+        guard let timelineItem = timelineItem else { return }
         
         //Updates each one of the cell's components
-        layoutLine(withCategory: timeSlot.category, interval: interval, isRunning: isRunning, lastInPastDay: timelineItem.lastInPastDay)
-        layoutSlotTime(withTimeSlot: timeSlot, lastInPastDay: timelineItem.lastInPastDay)
-        layoutElapsedTimeLabel(withColor: categoryColor, interval: totalInterval, shouldShow: timelineItem.durations.count > 0)
-        layoutDescriptionLabel(withTimelineItem: timelineItem)
-        layoutCategoryIcon(withAsset: timeSlot.category.icon, color: categoryColor)
+        layoutLine(withItem: timelineItem)
+        layoutSlotTime(withItem: timelineItem)
+        layoutElapsedTimeLabel(withItem: timelineItem)
+        layoutDescriptionLabel(withItem: timelineItem)
+        layoutCategoryIcon(forCategory: timelineItem.category)
+        
+        let image = UIImage(asset: Asset.icCollapse).withRenderingMode(.alwaysTemplate)
+        collapseButton.setImage(image, for: .normal)
     }
     
     func animateIntro()
@@ -84,82 +106,54 @@ class TimelineCell : UITableViewCell
     // MARK: Private Methods
     
     /// Updates the icon that indicates the slot's category
-    private func layoutCategoryIcon(withAsset asset: Asset, color: UIColor)
+    private func layoutCategoryIcon(forCategory category: Category)
     {
-        categoryCircle.backgroundColor = color
-        let image = UIImage(asset: asset)!
+        categoryCircle.backgroundColor = category.color
+        let image = UIImage(asset: category.icon)!
         let icon = categoryIcon!
         icon.image = image
         icon.contentMode = .scaleAspectFit
     }
     
     /// Updates the label that displays the description and starting time of the slot
-    private func layoutDescriptionLabel(withTimelineItem timelineItem: TimelineItem)
+    private func layoutDescriptionLabel(withItem item: TimelineItem)
     {
-        let timeSlot = timelineItem.timeSlot
-        let shouldShowCategory = !timelineItem.shouldDisplayCategoryName || timeSlot.category == .unknown
-        let categoryText = shouldShowCategory ? "" : timeSlot.category.description
-        slotDescription.text = categoryText
-        timeSlotDistanceConstraint.constant = shouldShowCategory ? 0 : 6
+        slotDescription.text = item.slotDescriptionText
+        timeSlotDistanceConstraint.constant = item.slotDescriptionText.isEmpty ? 0 : 6
     }
     
     /// Updates the label that shows the time the TimeSlot was created
-    private func layoutSlotTime(withTimeSlot timeSlot: TimeSlot, lastInPastDay: Bool)
+    private func layoutSlotTime(withItem timelineItem: TimelineItem)
     {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        let startString = formatter.string(from: timeSlot.startTime)
-        
-        if lastInPastDay, let endTime = timeSlot.endTime
-        {
-            let endString = formatter.string(from: endTime)
-            slotTime.text = startString + " - " + endString
-        }
-        else
-        {
-            slotTime.text = startString
-        }
+        slotTime.text = timelineItem.slotTimeText
     }
     
     /// Updates the label that shows how long the slot lasted
-    private func layoutElapsedTimeLabel(withColor color: UIColor, interval: Int, shouldShow: Bool)
+    private func layoutElapsedTimeLabel(withItem item: TimelineItem)
     {
-        let minutes = (interval / 60) % 60
-        let hours = (interval / 3600)
-        
-        if shouldShow
-        {
-            elapsedTime.textColor = color
-            elapsedTime.text = hours > 0 ? String(format: hourMask, hours, minutes) : String(format: minuteMask, minutes)
-        }
-        else
-        {
-            elapsedTime.text = ""
-        }
+        elapsedTime.textColor = item.category.color
+        elapsedTime.text = item.elapsedTimeText
     }
     
     /// Updates the line that displays shows how long the TimeSlot lasted
-    private func layoutLine(withCategory category: Category, interval: Int, isRunning: Bool, lastInPastDay: Bool = false)
+    private func layoutLine(withItem item: TimelineItem)
     {
-        if category == .sleep
-        {
-            lineHeight.constant = 20.0
-        }
-        else
-        {
-            let newHeight = Constants.minLineHeight + Constants.timelineSlope * (CGFloat(interval) - Constants.minTimelineInterval)
-            lineHeight.constant = max(min(newHeight, Constants.maxLineHeight), Constants.minLineHeight)
-        }
+        lineHeight.constant = item.lineHeight
+        lineView.color = item.category.color
+        dotView.backgroundColor = item.category.color
         
-        lineView.color = category.color
-        dotsView.color = category.color
+        lineView.fading = item.isLastInPastDay
         
-        lineView.fading = lastInPastDay
+        lineFadeView?.isHidden = !item.isLastInPastDay
         
-        lineFadeView?.isHidden = !lastInPastDay
+        dotView.isHidden = !item.isRunning && !item.isLastInPastDay || item.hasCollapseButton
+        collapseButton.isHidden = !item.hasCollapseButton
+        collapseButton.tintColor = item.category.color
         
-        dotsView.isHidden = !isRunning && !lastInPastDay
-        bottomMargin.constant = isRunning ? 24 : 0
+        bottomMargin.constant = item.isRunning || item.hasCollapseButton ? 20 : 0
+        
+        expandButton.isHidden = item.timeSlots.count == 1
+        lineView.collapsable = item.timeSlots.count > 1
         
         lineView.layoutIfNeeded()
     }

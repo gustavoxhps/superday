@@ -7,7 +7,7 @@ class MainViewModel : RxViewModel
     // MARK: Public Properties
     let dateObservable : Observable<Date>
     let isEditingObservable : Observable<Bool>
-    let beganEditingObservable : Observable<(CGPoint, TimeSlot)>
+    let beganEditingObservable : Observable<(CGPoint, TimelineItem)>
     let categoryProvider : CategoryProvider
     
     var currentDate : Date { return self.timeService.now }
@@ -30,6 +30,27 @@ class MainViewModel : RxViewModel
             .filterNil()
     }
     
+    var welcomeMessageHiddenObservable : Observable<Bool>
+    {
+        return Observable.of(
+            self.appLifecycleService.movedToForegroundObservable,
+            self.didBecomeActive,
+            self.beganEditingObservable.mapTo(()),
+            self.timeSlotService.timeSlotCreatedObservable.mapTo(()) )
+            .merge()
+            .map { [unowned self] () -> Bool in
+                guard self.timeService.now.ignoreTimeComponents() == self.settingsService.installDate!.ignoreTimeComponents()
+                else {
+                    self.settingsService.setWelcomeMessageHidden()
+                    return true
+                }
+                
+                let value = self.settingsService.welcomeMessageHidden
+                self.settingsService.setWelcomeMessageHidden()
+                return value
+            }
+    }
+
     
     // MARK: Private Properties
     private let timeService : TimeService
@@ -67,7 +88,8 @@ class MainViewModel : RxViewModel
     }
     
     //MARK: Public Methods
-    
+    func notifyEditingEnded() { editStateService.notifyEditingEnded() }
+
     func addNewSlot(withCategory category: Category)
     {
         guard let timeSlot =
@@ -85,11 +107,21 @@ class MainViewModel : RxViewModel
         metricsService.log(event: .timeSlotManualCreation)
     }
         
-    func updateTimeSlot(_ timeSlot: TimeSlot, withCategory category: Category)
+    func updateTimelineItem(_ timelineItem: TimelineItem, withCategory category: Category)
+    {
+        for timeSlot in timelineItem.timeSlots
+        {
+            updateTimeSlot(timeSlot, withCategory: category)
+        }
+        
+        editStateService.notifyEditingEnded()
+    }
+    
+    private func updateTimeSlot(_ timeSlot: TimeSlot, withCategory category: Category)
     {
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
 
-        timeSlotService.update(timeSlot: timeSlot, withCategory: category, setByUser: true)
+        timeSlotService.update(timeSlot: timeSlot, withCategory: category)
         metricsService.log(event: .timeSlotEditing)
         
         let smartGuessId = timeSlot.smartGuessId
@@ -102,14 +134,7 @@ class MainViewModel : RxViewModel
         {
             smartGuessService.add(withCategory: category, location: location)
         }
-        
-        timeSlot.category = category
-        timeSlot.categoryWasSetByUser = true
-        
-        editStateService.notifyEditingEnded()
     }
-    
-    func notifyEditingEnded() { editStateService.notifyEditingEnded() }
     
     //MARK: Private Methods
     

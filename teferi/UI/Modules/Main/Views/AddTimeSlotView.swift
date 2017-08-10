@@ -21,8 +21,10 @@ class AddTimeSlotView : UIView
             .filterNil()
     }()
     
-    var categoryProvider : CategoryProvider? {
-        didSet {
+    var categoryProvider : CategoryProvider?
+    {
+        didSet
+        {
             guard let categoryProvider = categoryProvider else { return }
             
             self.wheel.categoryProvider = categoryProvider
@@ -70,7 +72,8 @@ class AddTimeSlotView : UIView
             .addDisposableTo(disposeBag!)
     }
     
-    override func layoutSubviews() {
+    override func layoutSubviews()
+    {
         super.layoutSubviews()
         
         wheel.frame = bounds

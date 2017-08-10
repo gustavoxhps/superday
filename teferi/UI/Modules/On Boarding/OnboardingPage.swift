@@ -58,10 +58,7 @@ class OnboardingPage : UIViewController
             .loadNibNamed("TimelineCell", owner: self, options: nil)?
             .first as! TimelineCell
         
-        let timelineItem = viewModel.timelineItem(forTimeslot: timeSlot)
-        let duration = timelineItem.durations.reduce(0, +)
-        
-        cell.bind(toTimelineItem: timelineItem, index: 0, duration: duration)
+        cell.timelineItem = viewModel.timelineItem(forTimeslot: timeSlot)
         return cell
     }
 
@@ -98,6 +95,10 @@ class OnboardingPage : UIViewController
                     make.top.equalToSuperview()
                 }
                 make.leading.trailing.equalToSuperview()
+            }
+            
+            cell.contentView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
             }
             
             cell.transform = CGAffineTransform(translationX: 0, y: 15)
