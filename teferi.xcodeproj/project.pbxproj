@@ -185,6 +185,8 @@
 		8CF8C0991EDED99300EA2C77 /* WeeklySummary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CF8C0981EDED99300EA2C77 /* WeeklySummary.storyboard */; };
 		8CF8C09D1EDEFEE900EA2C77 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8C09C1EDEFEE900EA2C77 /* ChartView.swift */; };
 		AC0A632A1E548F0800D56433 /* TrigonometryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */; };
+		AC0CA4BD1F3DB76300EAEB44 /* TimelineVoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0CA4BC1F3DB76300EAEB44 /* TimelineVoteView.swift */; };
+		AC0CA4BF1F3DB78400EAEB44 /* TimelineVoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AC0CA4BE1F3DB78400EAEB44 /* TimelineVoteView.xib */; };
 		AC1085361EEE971700E5F03B /* ActivityPieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085341EEE971700E5F03B /* ActivityPieChartView.swift */; };
 		AC1085371EEE971700E5F03B /* PieSliceLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085351EEE971700E5F03B /* PieSliceLayer.swift */; };
 		AC1085391EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1085381EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift */; };
@@ -471,6 +473,8 @@
 		924EEB50371CD17ACC6BCFF9 /* Pods-teferiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teferiTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-teferiTests/Pods-teferiTests.release.xcconfig"; sourceTree = "<group>"; };
 		AC0A63291E548F0800D56433 /* TrigonometryHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrigonometryHelper.swift; sourceTree = "<group>"; };
 		AC0A632B1E548FE800D56433 /* CategoryWheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryWheel.swift; sourceTree = "<group>"; };
+		AC0CA4BC1F3DB76300EAEB44 /* TimelineVoteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineVoteView.swift; sourceTree = "<group>"; };
+		AC0CA4BE1F3DB78400EAEB44 /* TimelineVoteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimelineVoteView.xib; sourceTree = "<group>"; };
 		AC1085341EEE971700E5F03B /* ActivityPieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityPieChartView.swift; sourceTree = "<group>"; };
 		AC1085351EEE971700E5F03B /* PieSliceLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieSliceLayer.swift; sourceTree = "<group>"; };
 		AC1085381EEE9FDD00E5F03B /* WeeklySummaryEmptyEtateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeeklySummaryEmptyEtateView.swift; path = "teferi/UI/Modules/Weekly Summary/Views/WeeklySummaryEmptyEtateView.swift"; sourceTree = SOURCE_ROOT; };
@@ -1180,6 +1184,8 @@
 				24564F531D83254E00D9A8AE /* TimelineCell.swift */,
 				24564F541D83254E00D9A8AE /* TimelineCell.xib */,
 				8C71A5321F33779B00E8258C /* TimelineItem+TimelineCell.swift */,
+				AC0CA4BC1F3DB76300EAEB44 /* TimelineVoteView.swift */,
+				AC0CA4BE1F3DB78400EAEB44 /* TimelineVoteView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1431,6 +1437,7 @@
 				513535D31DA26E3B00A365A9 /* Onboarding.storyboard in Resources */,
 				8CF8C0991EDED99300EA2C77 /* WeeklySummary.storyboard in Resources */,
 				24DE23ED1E1BB3180089B49E /* CalendarCell.xib in Resources */,
+				AC0CA4BF1F3DB78400EAEB44 /* TimelineVoteView.xib in Resources */,
 				8C1729081EF02DB5002ABDDA /* DailySummary.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1755,6 +1762,7 @@
 				ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */,
 				8C17290A1EF119E5002ABDDA /* PagerPresenter.swift in Sources */,
 				BE0A5B791EE151FE00200939 /* TimelinePresenter.swift in Sources */,
+				AC0CA4BD1F3DB76300EAEB44 /* TimelineVoteView.swift in Sources */,
 				BEC84F311E708D4B0096275C /* Style.swift in Sources */,
 				BEA783631E6DB4D500D44603 /* OnboardingCategoryProvider.swift in Sources */,
 				24D18E2E1DF06B450046B202 /* TimeSlotModelAdapter.swift in Sources */,
