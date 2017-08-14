@@ -125,7 +125,9 @@ class DefaultViewModelLocator : ViewModelLocator
                                           timeSlotService: self.timeSlotService,
                                           editStateService: self.editStateService,
                                           appLifecycleService: self.appLifecycleService,
-                                          loggingService: self.loggingService)
+                                          loggingService: self.loggingService,
+                                          settingsService: self.settingsService,
+                                          metricsService: self.metricsService)
         return viewModel
     }
     

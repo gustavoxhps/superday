@@ -24,6 +24,7 @@ class TimelineViewController : UIViewController
     private var willDisplayNewCell:Bool = false
     
     private var emptyStateView: EmptyStateView!
+    private var voteView: TimelineVoteView!
     
     weak var delegate: TimelineDelegate?
     {
@@ -124,6 +125,21 @@ class TimelineViewController : UIViewController
             self.delegate?.didScroll(oldOffset: old + topInset, newOffset: new + topInset)
         })
         .addDisposableTo(disposeBag)
+        
+        if viewModel.canShowVotingUI()
+        {
+            voteView = TimelineVoteView.fromNib()
+            
+            var newFrame = self.voteView.frame
+            newFrame.size.height = 230
+            self.voteView.frame = newFrame
+            tableView.tableFooterView = self.voteView
+            
+            voteView
+                .didVoteObservable
+                .subscribe(onNext: viewModel.didVote)
+                .addDisposableTo(disposeBag)
+        }
     }
 
     // MARK: Private Methods

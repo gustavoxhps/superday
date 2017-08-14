@@ -18,6 +18,8 @@ class TimelineViewModel
     private let editStateService : EditStateService
     private let appLifecycleService : AppLifecycleService
     private let loggingService : LoggingService
+    private let settingsService : SettingsService
+    private let metricsService : MetricsService
     
     private var activities : Variable<[Activity]> = Variable([])
     private var timelineItems : Variable<[TimelineItem]> = Variable([])
@@ -31,13 +33,17 @@ class TimelineViewModel
          timeSlotService: TimeSlotService,
          editStateService: EditStateService,
          appLifecycleService: AppLifecycleService,
-         loggingService: LoggingService)
+         loggingService: LoggingService,
+         settingsService: SettingsService,
+         metricsService: MetricsService)
     {
         self.timeService = timeService
         self.timeSlotService = timeSlotService
         self.editStateService = editStateService
         self.appLifecycleService = appLifecycleService
         self.loggingService = loggingService
+        self.settingsService = settingsService
+        self.metricsService = metricsService
         self.date = completeDate.ignoreTimeComponents()
         
         isCurrentDay = timeService.now.ignoreTimeComponents() == date
@@ -98,6 +104,17 @@ class TimelineViewModel
     func calculateDuration(ofTimeSlot timeSlot: TimeSlot) -> TimeInterval
     {
         return timeSlotService.calculateDuration(ofTimeSlot: timeSlot)
+    }
+    
+    func canShowVotingUI() -> Bool
+    {
+        return settingsService.canShowVotingView(forDate: date)
+    }
+    
+    func didVote(vote: Bool)
+    {
+        settingsService.didVote(forDate: date)
+//        metricService.log(event: .)
     }
     
     
