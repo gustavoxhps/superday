@@ -4,6 +4,8 @@ import CoreLocation
 
 class DefaultSettingsService : SettingsService
 {
+    let sevenDays = TimeInterval(7*24*60*60)
+    
     //MARK: Public Properties
     
     var installDate : Date?
@@ -93,6 +95,7 @@ class DefaultSettingsService : SettingsService
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
     private let healthKitPermissionKey = "healthKitPermission"
     private let welcomeMessageHiddenKey = "welcomeMessageHidden"
+    private let votingHistoryKey = "votingHistory"
     
     private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
     private let lastNotificationLocationLngKey = "lastNotificationLocationLng"
@@ -168,6 +171,42 @@ class DefaultSettingsService : SettingsService
     func setWelcomeMessageHidden()
     {
         set(true, forKey: welcomeMessageHiddenKey)
+    }
+    
+    func canShowVotingView(forDate date: Date) -> Bool
+    {
+        guard
+            timeService.now.timeIntervalSince(date) < sevenDays ||
+            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() && date.hour > 18 )
+        else { return false }
+        
+        let alreadyVoted = !cleanedUpVotingHistory().contains(date.ignoreTimeComponents())
+        
+        return alreadyVoted
+    }
+    
+    func didVote(forDate date: Date)
+    {
+        var history = cleanedUpVotingHistory()
+        history.append(date.ignoreTimeComponents())
+        UserDefaults.standard.setValue(history, forKey: votingHistoryKey)
+    }
+    
+    private func cleanedUpVotingHistory() -> [Date]
+    {
+        guard let history = UserDefaults.standard.object(forKey: votingHistoryKey) as? [Date]
+        else
+        {
+            let history = [Date]()
+            UserDefaults.standard.setValue(history, forKey: votingHistoryKey)
+            return history
+        }
+        
+        let cleanedUpHistory = history.filter { timeService.now.timeIntervalSince($0) < sevenDays }
+        
+        UserDefaults.standard.setValue(cleanedUpHistory, forKey: votingHistoryKey)
+        
+        return cleanedUpHistory
     }
     
     // MARK: Private Methods

@@ -40,4 +40,7 @@ protocol SettingsService
     func setLastNotificationLocation(_ location: CLLocation)
     
     func setWelcomeMessageHidden()
+    
+    func canShowVotingView(forDate date: Date) -> Bool
+    func didVote(forDate date: Date)
 }
