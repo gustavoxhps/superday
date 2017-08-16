@@ -7,7 +7,7 @@ enum CustomEvent
     case timeSlotCreated(date: Date, category: Category, duration: Double?)
     case timeSlotSmartGuessed(date: Date, category: Category, duration: Double?)
     case timeSlotNotSmartGuessed(date: Date, category: Category, duration: Double?)
-    case timelineVote(date: Date, vote: Bool)
+    case timelineVote(date: Date, voteDate: Date, vote: Bool)
     
     var name : String
     {
@@ -55,10 +55,11 @@ enum CustomEvent
             attributesToReturn["category"] = category.rawValue
             attributesToReturn["duration"] = duration ?? -1
             
-        case .timelineVote(let date, let vote):
+        case .timelineVote(let date, let voteDate, let vote):
             
             attributesToReturn["localHour"] = date.hour
             attributesToReturn["dayOfWeek"] = date.dayOfWeek
+            attributesToReturn["voteDate"] = "\(voteDate.month)-\(voteDate.day)"
             attributesToReturn["vote"] = vote ? "+" : "-"
         }
         

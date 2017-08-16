@@ -112,7 +112,7 @@ class TimelineViewModel
     func didVote(vote: Bool)
     {
         settingsService.didVote(forDate: date)
-        metricsService.log(event: .timelineVote(date: date, vote: vote))
+        metricsService.log(event: .timelineVote(date: timeService.now, voteDate: date, vote: vote))
     }
     
     
