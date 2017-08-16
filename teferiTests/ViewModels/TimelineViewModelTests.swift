@@ -271,6 +271,13 @@ class TimelineViewModelTests : XCTestCase
 
     }
     
+    func testVotesAreLoggedToFabric()
+    {
+        viewModel.didVote(vote: true)
+        
+        expect(self.metricsService.didLog(event: .timelineVote(date: self.timeService.now, voteDate: self.viewModel.date, vote: true))).to(beTrue())
+    }
+    
     @discardableResult private func addTimeSlot(minutesAfterNoon: Int = 0, category : teferi.Category = .work) -> TimeSlot
     {
         let noon = Date.noon
