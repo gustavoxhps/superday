@@ -64,3 +64,12 @@ extension TimeSlot
         )
     }
 }
+
+extension TimeSlot
+{
+    var duration: Double?
+    {
+        guard let endTime = endTime else { return nil }
+        return endTime.timeIntervalSince(startTime)
+    }
+}

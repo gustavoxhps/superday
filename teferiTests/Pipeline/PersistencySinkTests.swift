@@ -20,6 +20,7 @@ class PersistencySinkTests : XCTestCase
     private var timeSlotService : MockTimeSlotService!
     private var smartGuessService : MockSmartGuessService!
     private var trackEventService : MockTrackEventService!
+    private var metricsService : MockMetricsService!
     
     private func getTestData() -> [TemporaryTimeSlot]
     {
@@ -39,19 +40,21 @@ class PersistencySinkTests : XCTestCase
         baseSlot = TemporaryTimeSlot(start: noon, category: Category.unknown)
         
         timeService = MockTimeService()
-        timeService.mockDate = noon
+        timeService.mockDate = noon.addingTimeInterval(1301)
         
         locationService = MockLocationService()
         settingsService = MockSettingsService()
         timeSlotService = MockTimeSlotService(timeService: timeService, locationService: locationService)
         smartGuessService = MockSmartGuessService()
         trackEventService = MockTrackEventService()
+        metricsService = MockMetricsService()
         
         persistencySink = PersistencySink(settingsService: settingsService,
                                                timeSlotService: timeSlotService,
                                                smartGuessService: smartGuessService,
                                                trackEventService: trackEventService,
-                                               timeService: timeService)
+                                               timeService: timeService,
+                                               metricsService: metricsService)
     }
     
     func testTheLastUsedLocationIsPersisted()
@@ -90,6 +93,29 @@ class PersistencySinkTests : XCTestCase
         let actualDate = smartGuessService.smartGuessUpdates.last!.1
         
         expect(actualDate).to(equal(expectedDate))
+    }
+    
+    func testNewSlotCreationCallsTheMetricsService()
+    {
+        var data = getTestData()
+        
+        let smartGuess = SmartGuess(withId: 0,
+                                    category: .food,
+                                    location: CLLocation(latitude: 38.628060, longitude: -117.848463),
+                                    lastUsed: noon.addingTimeInterval(-500))
+        
+        data[5] = data[5].with(smartGuess: smartGuess)
+        
+        persistencySink.execute(timeline: data)
+        
+        data.forEach { tempTimeSLot in
+            expect(self.metricsService.didLog(event: .timeSlotCreated(date: self.timeService.now, category: .unknown, duration: tempTimeSLot.duration))).to(beTrue())
+            if let _ = tempTimeSLot.smartGuess {
+                expect(self.metricsService.didLog(event: .timeSlotSmartGuessed(date: self.timeService.now, category: .food, duration: tempTimeSLot.duration))).to(beTrue())
+            } else {
+                expect(self.metricsService.didLog(event: .timeSlotNotSmartGuessed(date: self.timeService.now, category: .unknown, duration: tempTimeSLot.duration))).to(beTrue())
+            }
+        }
     }
     
     func testAllTempDataIsCleared()

@@ -81,8 +81,6 @@ class TimelineViewModel
     func notifyEditingBegan(point: CGPoint, item: TimelineItem? = nil)
     {
         let timelineItem: TimelineItem = item ?? timelineItems.value.last!
-
-        self.dateInsideExpandedTimeline = timelineItem.startTime
         
         editStateService
             .notifyEditingBegan(point: point,

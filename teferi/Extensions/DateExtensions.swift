@@ -81,6 +81,8 @@ extension Date
     
     var dayOfWeek : Int { return Calendar.current.component(.weekday, from: self) - 1 }
     
+    var hour : Int { return Calendar.current.component(.hour, from: self) }
+    
     var day : Int { return Calendar.current.component(.day, from: self) }
     
     var month : Int { return Calendar.current.component(.month, from: self) }

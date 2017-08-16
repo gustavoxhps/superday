@@ -101,7 +101,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                                       timeSlotService: timeSlotService,
                                                       smartGuessService: smartGuessService,
                                                       trackEventService: trackEventService,
-                                                      timeService: timeService))
+                                                      timeService: timeService,
+                                                      metricsService: metricsService))
     }
     
     //MARK: UIApplicationDelegate lifecycle

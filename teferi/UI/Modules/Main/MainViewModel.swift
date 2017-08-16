@@ -104,7 +104,8 @@ class MainViewModel : RxViewModel
             smartGuessService.add(withCategory: timeSlot.category, location: location)
         }
         
-        metricsService.log(event: .timeSlotManualCreation)
+        metricsService.log(event: .timeSlotManualCreation(date: timeService.now, category: category))
+        metricsService.log(event: .timeSlotCreated(date: timeService.now, category: category, duration: nil))
     }
         
     func updateTimelineItem(_ timelineItem: TimelineItem, withCategory category: Category)
@@ -122,7 +123,7 @@ class MainViewModel : RxViewModel
         let categoryWasOriginallySetByUser = timeSlot.categoryWasSetByUser
 
         timeSlotService.update(timeSlot: timeSlot, withCategory: category)
-        metricsService.log(event: .timeSlotEditing)
+        metricsService.log(event: .timeSlotEditing(date: timeService.now, fromCategory: timeSlot.category, toCategory: category, duration: timeSlot.duration))
         
         let smartGuessId = timeSlot.smartGuessId
         if !categoryWasOriginallySetByUser && smartGuessId != nil
