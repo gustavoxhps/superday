@@ -176,8 +176,8 @@ class DefaultSettingsService : SettingsService
     func canShowVotingView(forDate date: Date) -> Bool
     {
         guard
-            timeService.now.timeIntervalSince(date) < sevenDays ||
-            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() && date.hour > 18 )
+            timeService.now.timeIntervalSince(date) < sevenDays &&
+            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? date.hour > 18 : true )
         else { return false }
         
         let alreadyVoted = !cleanedUpVotingHistory().contains(date.ignoreTimeComponents())
