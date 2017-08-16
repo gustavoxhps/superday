@@ -15,7 +15,7 @@ class FabricMetricsService : MetricsService
     func log(event: CustomEvent)
     {
         #if !DEBUG
-            Answers.logCustomEvent(withName: event.rawValue, customAttributes: [:])
+            Answers.logCustomEvent(withName: event.name, customAttributes: event.attributes)
         #endif
     }
 }

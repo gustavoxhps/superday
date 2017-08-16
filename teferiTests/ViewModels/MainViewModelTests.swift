@@ -63,7 +63,7 @@ class MainViewModelTests : XCTestCase
     func testTheAddNewSlotMethodCallsTheMetricsService()
     {
         viewModel.addNewSlot(withCategory: .commute)
-        expect(self.metricsService.didLog(event: .timeSlotManualCreation)).to(beTrue())
+        expect(self.metricsService.didLog(event: .timeSlotManualCreation(date: self.timeService.now, category: .commute))).to(beTrue())
     }
     
     func testTheUpdateMethodCallsTheMetricsService()
@@ -79,7 +79,7 @@ class MainViewModelTests : XCTestCase
         
         viewModel.updateTimelineItem(item, withCategory: .commute)
         
-        expect(self.metricsService.didLog(event: .timeSlotEditing)).to(beTrue())
+        expect(self.metricsService.didLog(event: .timeSlotEditing(date: self.timeService.now, fromCategory: .work, toCategory: .commute, duration: timeSlot.duration))).to(beTrue())
     }
     
     func testTheUpdateTimeSlotMethodEndsTheEditingProcess()
