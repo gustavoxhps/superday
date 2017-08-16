@@ -82,4 +82,14 @@ class MockSettingsService : SettingsService
     {
         welcomeMessageHidden = true
     }
+    
+    func canShowVotingView(forDate date: Date) -> Bool
+    {
+        return true
+    }
+    
+    func didVote(forDate date: Date)
+    {
+        
+    }
 }

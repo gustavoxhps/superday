@@ -17,6 +17,7 @@ class TimelineViewModelTests : XCTestCase
     private var editStateService : MockEditStateService!
     private var appLifecycleService : MockAppLifecycleService!
     private var loggingService : MockLoggingService!
+    private var settingsService : MockSettingsService!
     
     private var observer: TestableObserver<[TimelineItem]>!
     private var scheduler:TestScheduler!
@@ -32,13 +33,16 @@ class TimelineViewModelTests : XCTestCase
         timeSlotService = MockTimeSlotService(timeService: timeService,
                                                    locationService: locationService)
         loggingService = MockLoggingService()
+        settingsService = MockSettingsService()
         
         viewModel = TimelineViewModel(date: Date(),
                                            timeService: timeService,
                                            timeSlotService: timeSlotService,
                                            editStateService: editStateService,
                                            appLifecycleService: appLifecycleService,
-                                           loggingService: loggingService)
+                                           loggingService: loggingService,
+                                           settingsService: settingsService,
+                                           metricsService: metricsService)
         
         scheduler = TestScheduler(initialClock:0)
         observer = scheduler.createObserver([TimelineItem].self)
@@ -61,7 +65,9 @@ class TimelineViewModelTests : XCTestCase
                               timeSlotService: newMockTimeSlotService,
                               editStateService: editStateService,
                               appLifecycleService: appLifecycleService,
-                              loggingService: loggingService)
+                              loggingService: loggingService,
+                              settingsService: settingsService,
+                              metricsService: metricsService)
         
         expect(newMockTimeSlotService.didSubscribe).to(beFalse())
     }
@@ -124,7 +130,9 @@ class TimelineViewModelTests : XCTestCase
                                            timeSlotService: timeSlotService,
                                            editStateService: editStateService,
                                            appLifecycleService: appLifecycleService,
-                                           loggingService: loggingService)
+                                           loggingService: loggingService,
+                                           settingsService: settingsService,
+                                           metricsService: metricsService)
         
         observer = scheduler.createObserver([TimelineItem].self)
         viewModel.timelineItemsObservable
@@ -155,7 +163,9 @@ class TimelineViewModelTests : XCTestCase
                                            timeSlotService: timeSlotService,
                                            editStateService: editStateService,
                                            appLifecycleService: appLifecycleService,
-                                           loggingService: loggingService)
+                                           loggingService: loggingService,
+                                           settingsService: settingsService,
+                                           metricsService: metricsService)
         
         observer = scheduler.createObserver([TimelineItem].self)
         viewModel.timelineItemsObservable
