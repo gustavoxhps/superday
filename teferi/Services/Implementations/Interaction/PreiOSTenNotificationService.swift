@@ -42,7 +42,7 @@ class PreiOSTenNotificationService : NotificationService
     {
         for i in 2...7
         {
-            let date = Date.create(weekday: i, hour: 18, minute: 00, second: 00)
+            let date = Date.create(weekday: i, hour: Constants.hourToShowDailyVotingUI, minute: 00, second: 00)
             scheduleNotification(date: date, title: L10n.votingNotificationTittle, message: L10n.votingNotificationMessage, ofType: .repeatWeekly)
         }
     }

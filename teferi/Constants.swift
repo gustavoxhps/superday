@@ -14,6 +14,7 @@ class Constants
     
     ///Timeline height slope to calculate the Timeslot cell line height.
     static let timelineSlope = (Constants.maxLineHeight - Constants.minLineHeight) / (Constants.maxTimelineInterval - Constants.minTimelineInterval)
+    static let hourToShowDailyVotingUI = 18
 
     ///Key used for the preference that indicates whether the user is currently traveling or not.
     static let isTravelingKey = "isTravelingKey"
