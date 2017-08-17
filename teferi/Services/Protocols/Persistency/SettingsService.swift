@@ -20,7 +20,8 @@ protocol SettingsService
     
     var lastNotificationLocation : CLLocation? { get }
     
-    var welcomeMessageHidden : Bool { get }
+    var didShowWelcomeMessage : Bool { get }
+    var welcomeMessageVisible : Bool { get }
     
     //MARK: Methods
     func lastHealthKitUpdate(for identifier: String) -> Date
@@ -39,7 +40,8 @@ protocol SettingsService
     
     func setLastNotificationLocation(_ location: CLLocation)
     
-    func setWelcomeMessageHidden()
+    func setWelcomeMessageShown()
+    func setWelcomeMessage(visible: Bool)
     
     func canShowVotingView(forDate date: Date) -> Bool
     func didVote(forDate date: Date)

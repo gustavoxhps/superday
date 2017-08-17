@@ -76,9 +76,13 @@ class DefaultSettingsService : SettingsService
         return getBool(forKey: userGaveLocationPermissionKey)
     }
     
-    var welcomeMessageHidden : Bool
+    var didShowWelcomeMessage : Bool
     {
-        return getBool(forKey: welcomeMessageHiddenKey)
+        return getBool(forKey: welcomeMessageShownKey)
+    }
+    var welcomeMessageVisible : Bool
+    {
+        return getBool(forKey: welcomeMessageVisibleKey)
     }
     
     //MARK: Private Properties
@@ -94,7 +98,8 @@ class DefaultSettingsService : SettingsService
     private let userGaveLocationPermissionKey = "canIgnoreLocationPermission"
     private let lastHealthKitUpdateKey = "lastHealthKitUpdate"
     private let healthKitPermissionKey = "healthKitPermission"
-    private let welcomeMessageHiddenKey = "welcomeMessageHidden"
+    private let welcomeMessageShownKey = "welcomeMessageShown"
+    private let welcomeMessageVisibleKey = "welcomeMessageVisible"
     private let votingHistoryKey = "votingHistory"
     
     private let lastNotificationLocationLatKey = "lastNotificationLocationLat"
@@ -168,16 +173,21 @@ class DefaultSettingsService : SettingsService
         set(true, forKey: healthKitPermissionKey)
     }
     
-    func setWelcomeMessageHidden()
+    func setWelcomeMessageShown()
     {
-        set(true, forKey: welcomeMessageHiddenKey)
+        set(true, forKey: welcomeMessageShownKey)
+    }
+    func setWelcomeMessage(visible: Bool)
+    {
+        set(visible, forKey: welcomeMessageVisibleKey)
     }
     
     func canShowVotingView(forDate date: Date) -> Bool
     {
         guard
             timeService.now.timeIntervalSince(date) < sevenDays &&
-            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? date.hour > 18 : true )
+            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? date.hour > 18 : true ) &&
+            !welcomeMessageVisible
         else { return false }
         
         let alreadyVoted = !cleanedUpVotingHistory().contains(date.ignoreTimeComponents())
