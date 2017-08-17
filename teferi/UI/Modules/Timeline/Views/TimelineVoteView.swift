@@ -10,10 +10,17 @@ class TimelineVoteView: UIView
     private let didVoteSubject = PublishSubject<Bool>()
     
     @IBOutlet private weak var actionView: UIView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var messageLabel: UILabel!
+    @IBOutlet private weak var thankYouLabel: UILabel!
     
     class func fromNib() -> TimelineVoteView
     {
-        return Bundle.main.loadNibNamed("TimelineVoteView", owner: nil, options: nil)![0] as! TimelineVoteView
+        let voteView = Bundle.main.loadNibNamed("TimelineVoteView", owner: nil, options: nil)![0] as! TimelineVoteView
+        voteView.titleLabel.text = L10n.votingUITitle
+        voteView.messageLabel.text = L10n.votingUIMessage
+        voteView.thankYouLabel.text = L10n.votingUIThankYou
+        return voteView
     }
     
     @IBAction private func upVoteAction(_ sender: UIButton)
