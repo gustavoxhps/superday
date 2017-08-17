@@ -81,6 +81,10 @@ extension Date
     
     var dayOfWeek : Int { return Calendar.current.component(.weekday, from: self) - 1 }
     
+    var second : Int { return Calendar.current.component(.second, from: self) }
+    
+    var minute : Int { return Calendar.current.component(.minute, from: self) }
+    
     var hour : Int { return Calendar.current.component(.hour, from: self) }
     
     var day : Int { return Calendar.current.component(.day, from: self) }
@@ -124,5 +128,19 @@ extension Date
         let differenceIfNextDay = abs(baseTime.timeIntervalSince(timeToCompare.add(days: 1)))
         
         return min(differenceIfPreviousDay, differenceIfSameDay, differenceIfNextDay)
+    }
+    
+    static func create(weekday: Int, hour: Int, minute: Int, second: Int) -> Date
+    {
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        components.second = second
+        components.weekday = weekday
+        components.weekdayOrdinal = 10
+        components.timeZone = .current
+        
+        let calendar = Calendar(identifier: .gregorian)
+        return calendar.date(from: components)!
     }
 }

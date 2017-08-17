@@ -8,4 +8,6 @@ protocol NotificationService
     func scheduleNormalNotification(date: Date, title: String, message: String)
     
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
+    
+    func scheduleVotingNotifications()
 }

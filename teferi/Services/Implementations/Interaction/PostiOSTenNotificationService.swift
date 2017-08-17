@@ -60,19 +60,47 @@ class PostiOSTenNotificationService : NotificationService
         scheduleNotification(date: date, title: title, message: message, ofType: .normal)
     }
     
+    func scheduleVotingNotifications()
+    {
+        for i in 2...7
+        {
+            let date = Date.create(weekday: i, hour: 18, minute: 00, second: 00)
+            scheduleNotification(date: date, title: L10n.votingNotificationTittle, message: L10n.votingNotificationMessage, ofType: .repeatWeekly)
+        }
+    }
+    
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
     {
-        let giveTypes = types.flatMap { $0 }
+        let givenTypes = types.flatMap { $0 }
         
-        if giveTypes.isEmpty
+        if givenTypes.isEmpty
         {
             notificationCenter.removeAllDeliveredNotifications()
             notificationCenter.removeAllPendingNotificationRequests()
             return
         }
         
-        notificationCenter.removeDeliveredNotifications(withIdentifiers: giveTypes.map { $0.rawValue })
-        notificationCenter.removePendingNotificationRequests(withIdentifiers: giveTypes.map { $0.rawValue })
+        notificationCenter.getDeliveredNotifications { (notifications) in
+            notifications.forEach({ (notification) in
+                givenTypes.forEach({ (type) in
+                    if notification.request.identifier.contains(type.rawValue)
+                    {
+                        self.notificationCenter.removeDeliveredNotifications(withIdentifiers: [notification.request.identifier])
+                    }
+                })
+            })
+        }
+        
+        notificationCenter.getPendingNotificationRequests { (requests) in
+            requests.forEach({ (request) in
+                givenTypes.forEach({ (type) in
+                    if request.identifier.contains(type.rawValue)
+                    {
+                        self.notificationCenter.removePendingNotificationRequests(withIdentifiers: [request.identifier])
+                    }
+                })
+            })
+        }
     }
     
     func setUserNotificationActions()
@@ -109,12 +137,21 @@ class PostiOSTenNotificationService : NotificationService
         loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
         
         let content = notificationContent(title: title, message: message)
+        let identifier = type.rawValue + "\(date.dayOfWeek)\(date.hour)\(date.minute)\(date.second)"
+        var trigger : UNNotificationTrigger! = nil
         
-        content.userInfo["id"] = type.rawValue
+        switch type {
+        case .normal:
+            let fireTime = date.timeIntervalSinceNow
+            trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
+        case .repeatWeekly:
+            let triggerWeekly = Calendar.current.dateComponents([.weekday, .hour, .minute, .second], from: date)
+            trigger = UNCalendarNotificationTrigger(dateMatching: triggerWeekly, repeats: true)
+        }
         
-        let fireTime = date.timeIntervalSinceNow
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireTime, repeats: false)
-        let request  = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
+        content.userInfo["id"] = identifier
+        
+        let request  = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
         notificationCenter.add(request) { [unowned self] (error) in
             if let error = error

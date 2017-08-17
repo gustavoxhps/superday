@@ -25,6 +25,9 @@
 "WelcomeMessageTitle" = "That's it! 🎉";
 "WelcomeMessageSubTitle" = "Check back later to see where your time goes.";
 
+"VotingNotificationTittle" = "Rate your experience";
+"VotingNotificationMessage" = "Did the app track your time accurately?";
+
 
 //Categories
 "Commute" = "Commute";
