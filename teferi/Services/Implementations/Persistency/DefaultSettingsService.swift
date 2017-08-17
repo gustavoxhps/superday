@@ -186,7 +186,7 @@ class DefaultSettingsService : SettingsService
     {
         guard
             timeService.now.timeIntervalSince(date) < sevenDays &&
-            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? date.hour > 18 : true ) &&
+            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? timeService.now.hour >= 18 : true ) &&
             !welcomeMessageVisible
         else { return false }
         
