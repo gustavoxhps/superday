@@ -38,14 +38,6 @@ class PreiOSTenNotificationService : NotificationService
         UIApplication.shared.cancelAllLocalNotifications()
     }
     
-    func handleNotificationAction(withIdentifier identifier: String?)
-    {
-    }
-    
-    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
-    {
-    }
-    
     //MARK: Private Methods
     private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
     {

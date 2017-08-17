@@ -34,7 +34,6 @@ class PostiOSTenNotificationService : NotificationService
         return formatter
     }()
     
-    private var actionSubsribers = [(Category) -> ()]()
     private let notificationCenter = UNUserNotificationCenter.current()
     
     //MARK: Initializers
@@ -58,7 +57,7 @@ class PostiOSTenNotificationService : NotificationService
     
     func scheduleNormalNotification(date: Date, title: String, message: String)
     {
-        scheduleNotification(date: date, title: title, message: message, possibleFutureSlotStart: nil, ofType: .normal)
+        scheduleNotification(date: date, title: title, message: message, ofType: .normal)
     }
     
     func unscheduleAllNotifications(ofTypes types: NotificationType?...)
@@ -74,18 +73,6 @@ class PostiOSTenNotificationService : NotificationService
         
         notificationCenter.removeDeliveredNotifications(withIdentifiers: giveTypes.map { $0.rawValue })
         notificationCenter.removePendingNotificationRequests(withIdentifiers: giveTypes.map { $0.rawValue })
-    }
-    
-    func handleNotificationAction(withIdentifier identifier: String?)
-    {
-        guard let identifier = identifier, let category = Category(rawValue: identifier) else { return }
-        
-        actionSubsribers.forEach { action in action(category) }
-    }
-    
-    func subscribeToCategoryAction(_ action : @escaping (Category) -> ())
-    {
-        actionSubsribers.append(action)
     }
     
     func setUserNotificationActions()
@@ -117,11 +104,11 @@ class PostiOSTenNotificationService : NotificationService
     }
     
     //MARK: Private Methods
-    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
+    private func scheduleNotification(date: Date, title: String, message: String, ofType type: NotificationType)
     {
         loggingService.log(withLogLevel: .info, message: "Scheduling message for date: \(date)")
         
-        var content = notificationContent(title: title, message: message)
+        let content = notificationContent(title: title, message: message)
         
         content.userInfo["id"] = type.rawValue
         
