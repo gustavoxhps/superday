@@ -12,17 +12,17 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clipsSubviews="YES" contentMode="scaleToFill" id="iN0-l3-epB" customClass="TimelineVoteView" customModule="teferi" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="156"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thank you! 🤘" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="niX-5g-FYT">
-                    <rect key="frame" x="128.5" y="323" width="118" height="21"/>
+                    <rect key="frame" x="128.5" y="67.5" width="118" height="21"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="dmB-33-JBd">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="156"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Help us out" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yd4-c5-OfS">
                             <rect key="frame" x="141" y="8" width="93" height="21"/>
@@ -37,7 +37,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iMj-Pv-aB1">
-                            <rect key="frame" x="130" y="604" width="55" height="55"/>
+                            <rect key="frame" x="130" y="93" width="55" height="55"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="55" id="eT7-mc-hce"/>
                                 <constraint firstAttribute="width" constant="55" id="jLH-D4-obL"/>
@@ -49,7 +49,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xHP-1S-BZ3">
-                            <rect key="frame" x="190" y="604" width="55" height="55"/>
+                            <rect key="frame" x="190" y="93" width="55" height="55"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="55" id="0Jw-lh-mH0"/>
                                 <constraint firstAttribute="height" constant="55" id="H3o-AF-j4c"/>
@@ -86,10 +86,11 @@
                 <constraint firstItem="niX-5g-FYT" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="dZJ-Mz-ooK"/>
                 <constraint firstItem="dmB-33-JBd" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="pM0-MS-PxJ"/>
             </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="actionView" destination="dmB-33-JBd" id="PtC-mD-sib"/>
             </connections>
-            <point key="canvasLocation" x="4.5" y="-424.5"/>
+            <point key="canvasLocation" x="-68.5" y="-277"/>
         </view>
     </objects>
 </document>

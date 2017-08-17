@@ -125,20 +125,31 @@ class TimelineViewController : UIViewController
             self.delegate?.didScroll(oldOffset: old + topInset, newOffset: new + topInset)
         })
         .addDisposableTo(disposeBag)
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
+        super.viewDidLayoutSubviews()
         
         if viewModel.canShowVotingUI()
         {
             voteView = TimelineVoteView.fromNib()
             
-            var newFrame = self.voteView.frame
-            newFrame.size.height = 230
-            self.voteView.frame = newFrame
-            tableView.tableFooterView = self.voteView
+            tableView.tableFooterView = voteView
             
-            voteView
-                .didVoteObservable
+            voteView.didVoteObservable
                 .subscribe(onNext: viewModel.didVote)
                 .addDisposableTo(disposeBag)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+        
+        if !viewModel.canShowVotingUI()
+        {
+            tableView.tableFooterView = nil
         }
     }
 
