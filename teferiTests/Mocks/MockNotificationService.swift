@@ -17,12 +17,19 @@ class MockNotificationService : NotificationService
     
     func scheduleNormalNotification(date: Date, title: String, message: String)
     {
-        
+        scheduleNotification(date: date, title: title, message: message, ofType: .normal)
     }
     
-    private func scheduleNotification(date: Date, title: String, message: String, possibleFutureSlotStart: Date?, ofType type: NotificationType)
+    func scheduleVotingNotifications()
     {
-        shouldShowFakeTimeSlot = possibleFutureSlotStart != nil
+        for i in 2...7
+        {
+            scheduleNotification(date: Date.create(weekday: i, hour: Constants.hourToShowDailyVotingUI, minute: 00, second: 00), title: L10n.votingNotificationTittle, message: L10n.votingNotificationMessage, ofType: .repeatWeekly)
+        }
+    }
+    
+    private func scheduleNotification(date: Date, title: String, message: String, ofType type: NotificationType)
+    {
         schedulings += 1
         scheduledNotifications += 1
     }
@@ -31,21 +38,5 @@ class MockNotificationService : NotificationService
     {
         cancellations += 1
         scheduledNotifications = 0
-    }
-    
-    func handleNotificationAction(withIdentifier identifier: String?)
-    {
-        
-    }
-    
-    func subscribeToCategoryAction(_ action : @escaping (teferi.Category) -> ())
-    {
-        subscriptions.append(action)
-    }
-    
-    
-    func sendAction(withCategory category : teferi.Category)
-    {
-        subscriptions.forEach { $0(category) }
     }
 }
