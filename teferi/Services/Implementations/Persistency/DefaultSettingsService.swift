@@ -190,19 +190,19 @@ class DefaultSettingsService : SettingsService
             !welcomeMessageVisible
         else { return false }
         
-        let alreadyVoted = !cleanedUpVotingHistory().contains(date.ignoreTimeComponents())
+        let alreadyVoted = !lastSevenDaysOfVotingHistory().contains(date.ignoreTimeComponents())
         
         return alreadyVoted
     }
     
     func setVote(forDate date: Date)
     {
-        var history = cleanedUpVotingHistory()
+        var history = lastSevenDaysOfVotingHistory()
         history.append(date.ignoreTimeComponents())
         UserDefaults.standard.setValue(history, forKey: votingHistoryKey)
     }
     
-    private func cleanedUpVotingHistory() -> [Date]
+    private func lastSevenDaysOfVotingHistory() -> [Date]
     {
         guard let history = UserDefaults.standard.object(forKey: votingHistoryKey) as? [Date]
         else
