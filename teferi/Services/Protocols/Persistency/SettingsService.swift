@@ -43,6 +43,6 @@ protocol SettingsService
     func setWelcomeMessageShown()
     func setWelcomeMessage(visible: Bool)
     
-    func canShowVotingView(forDate date: Date) -> Bool
     func setVote(forDate date: Date)
+    func lastSevenDaysOfVotingHistory() -> [Date]
 }

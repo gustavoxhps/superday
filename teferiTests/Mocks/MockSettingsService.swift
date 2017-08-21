@@ -88,13 +88,13 @@ class MockSettingsService : SettingsService
         welcomeMessageVisible = visible
     }
     
-    func canShowVotingView(forDate date: Date) -> Bool
-    {
-        return true
-    }
-    
     func setVote(forDate date: Date)
     {
         
+    }
+    
+    func lastSevenDaysOfVotingHistory() -> [Date]
+    {
+        return []
     }
 }

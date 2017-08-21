@@ -106,7 +106,7 @@ class TimelineViewModel
     
     func canShowVotingUI() -> Bool
     {
-        return settingsService.canShowVotingView(forDate: date)
+        return canShowVotingView(forDate: date)
     }
     
     func setVote(vote: Bool)
@@ -117,11 +117,23 @@ class TimelineViewModel
     
     
     //MARK: Private Methods
+    private func canShowVotingView(forDate date: Date) -> Bool
+    {
+        guard
+            timeService.now.timeIntervalSince(date) < Constants.sevenDaysInSeconds &&
+                ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? timeService.now.hour >= Constants.hourToShowDailyVotingUI : true ) &&
+                !settingsService.welcomeMessageVisible
+            else { return false }
+        
+        let alreadyVoted = !settingsService.lastSevenDaysOfVotingHistory().contains(date.ignoreTimeComponents())
+        
+        return alreadyVoted
+    }
+    
     private func timeSlotsForToday() -> [TimeSlot]
     {
         return timeSlotService.getTimeSlots(forDay: date)
     }
-    
     
     private func toTimelineItems(fromTimeSlots timeSlots: [TimeSlot]) -> [TimelineItem]
     {

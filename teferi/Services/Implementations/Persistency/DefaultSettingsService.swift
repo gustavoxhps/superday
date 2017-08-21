@@ -4,8 +4,6 @@ import CoreLocation
 
 class DefaultSettingsService : SettingsService
 {
-    let sevenDays = TimeInterval(7*24*60*60)
-    
     //MARK: Public Properties
     
     var installDate : Date?
@@ -182,19 +180,6 @@ class DefaultSettingsService : SettingsService
         set(visible, forKey: welcomeMessageVisibleKey)
     }
     
-    func canShowVotingView(forDate date: Date) -> Bool
-    {
-        guard
-            timeService.now.timeIntervalSince(date) < sevenDays &&
-            ( timeService.now.ignoreTimeComponents() == date.ignoreTimeComponents() ? timeService.now.hour >= Constants.hourToShowDailyVotingUI : true ) &&
-            !welcomeMessageVisible
-        else { return false }
-        
-        let alreadyVoted = !lastSevenDaysOfVotingHistory().contains(date.ignoreTimeComponents())
-        
-        return alreadyVoted
-    }
-    
     func setVote(forDate date: Date)
     {
         var history = lastSevenDaysOfVotingHistory()
@@ -202,7 +187,7 @@ class DefaultSettingsService : SettingsService
         UserDefaults.standard.setValue(history, forKey: votingHistoryKey)
     }
     
-    private func lastSevenDaysOfVotingHistory() -> [Date]
+    func lastSevenDaysOfVotingHistory() -> [Date]
     {
         guard let history = UserDefaults.standard.object(forKey: votingHistoryKey) as? [Date]
         else
@@ -212,7 +197,7 @@ class DefaultSettingsService : SettingsService
             return history
         }
         
-        let cleanedUpHistory = history.filter { timeService.now.timeIntervalSince($0) < sevenDays }
+        let cleanedUpHistory = history.filter { timeService.now.timeIntervalSince($0) < Constants.sevenDaysInSeconds }
         
         UserDefaults.standard.setValue(cleanedUpHistory, forKey: votingHistoryKey)
         
