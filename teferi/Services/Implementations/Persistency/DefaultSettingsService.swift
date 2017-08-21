@@ -195,7 +195,7 @@ class DefaultSettingsService : SettingsService
         return alreadyVoted
     }
     
-    func didVote(forDate date: Date)
+    func setVote(forDate date: Date)
     {
         var history = cleanedUpVotingHistory()
         history.append(date.ignoreTimeComponents())

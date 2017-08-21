@@ -109,9 +109,9 @@ class TimelineViewModel
         return settingsService.canShowVotingView(forDate: date)
     }
     
-    func didVote(vote: Bool)
+    func setVote(vote: Bool)
     {
-        settingsService.didVote(forDate: date)
+        settingsService.setVote(forDate: date)
         metricsService.log(event: .timelineVote(date: timeService.now, voteDate: date, vote: vote))
     }
     

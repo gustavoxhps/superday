@@ -44,5 +44,5 @@ protocol SettingsService
     func setWelcomeMessage(visible: Bool)
     
     func canShowVotingView(forDate date: Date) -> Bool
-    func didVote(forDate date: Date)
+    func setVote(forDate date: Date)
 }

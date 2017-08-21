@@ -3,11 +3,11 @@ import RxSwift
 
 class TimelineVoteView: UIView
 {
-    private(set) lazy var didVoteObservable : Observable<Bool> =
+    private(set) lazy var setVoteObservable : Observable<Bool> =
     {
-        return self.didVoteSubject.asObservable()
+        return self.setVoteSubject.asObservable()
     }()
-    private let didVoteSubject = PublishSubject<Bool>()
+    private let setVoteSubject = PublishSubject<Bool>()
     
     @IBOutlet private weak var actionView: UIView!
     @IBOutlet private weak var titleLabel: UILabel!
@@ -25,13 +25,13 @@ class TimelineVoteView: UIView
     
     @IBAction private func upVoteAction(_ sender: UIButton)
     {
-        didVoteSubject.onNext(true)
+        setVoteSubject.onNext(true)
         hideActionView()
     }
     
     @IBAction private func downVoteAction(_ sender: UIButton)
     {
-        didVoteSubject.onNext(false)
+        setVoteSubject.onNext(false)
         hideActionView()
     }
     

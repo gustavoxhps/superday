@@ -273,7 +273,7 @@ class TimelineViewModelTests : XCTestCase
     
     func testVotesAreLoggedToFabric()
     {
-        viewModel.didVote(vote: true)
+        viewModel.setVote(vote: true)
         
         expect(self.metricsService.didLog(event: .timelineVote(date: self.timeService.now, voteDate: self.viewModel.date, vote: true))).to(beTrue())
     }

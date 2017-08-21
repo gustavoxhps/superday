@@ -93,7 +93,7 @@ class MockSettingsService : SettingsService
         return true
     }
     
-    func didVote(forDate date: Date)
+    func setVote(forDate date: Date)
     {
         
     }

@@ -137,8 +137,8 @@ class TimelineViewController : UIViewController
             
             tableView.tableFooterView = voteView
             
-            voteView.didVoteObservable
-                .subscribe(onNext: viewModel.didVote)
+            voteView.setVoteObservable
+                .subscribe(onNext: viewModel.setVote)
                 .addDisposableTo(disposeBag)
         }
     }
