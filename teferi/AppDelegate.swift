@@ -96,6 +96,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
                                 .pipe(to: SmartGuessPipe(smartGuessService: smartGuessService))
                                 .pipe(to: MergeMiniCommuteTimeSlotsPipe(timeService: timeService))
                                 .pipe(to: MergeShortTimeSlotsPipe())
+                                .pipe(to: CapMidnightPipe(timeService: timeService))
                                 .pipe(to: FirstTimeSlotOfDayPipe(timeService: timeService, timeSlotService: timeSlotService))
                                 .sink(PersistencySink(settingsService: settingsService,
                                                       timeSlotService: timeSlotService,
