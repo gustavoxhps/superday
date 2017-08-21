@@ -200,6 +200,8 @@
 		AC449C3B1E95690700847957 /* LocationPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */; };
 		AC449C3D1E95695C00847957 /* HealthKitPermissionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */; };
 		AC8BE49F1F2A011900351C2F /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8BE49E1F2A011900351C2F /* WelcomeView.swift */; };
+		AC9718451F4734570027E761 /* CapMidnightPipeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9718441F4734570027E761 /* CapMidnightPipeTest.swift */; };
+		ACA622031F4723D600D71E49 /* CapMidnightPipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA622021F4723D600D71E49 /* CapMidnightPipe.swift */; };
 		ACCAFD251E8BDF490097F037 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACCAFD241E8BDF490097F037 /* NotificationType.swift */; };
 		ACFF02631E8286F500498981 /* HealthSampleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */; };
 		ACFF02671E829D7C00498981 /* HealthKitPumpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFF02661E829D7C00498981 /* HealthKitPumpTests.swift */; };
@@ -489,6 +491,8 @@
 		AC449C3A1E95690700847957 /* LocationPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC449C3C1E95695C00847957 /* HealthKitPermissionViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionViewModelTests.swift; sourceTree = "<group>"; };
 		AC8BE49E1F2A011900351C2F /* WelcomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		AC9718441F4734570027E761 /* CapMidnightPipeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CapMidnightPipeTest.swift; sourceTree = "<group>"; };
+		ACA622021F4723D600D71E49 /* CapMidnightPipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CapMidnightPipe.swift; sourceTree = "<group>"; };
 		ACCAFD241E8BDF490097F037 /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationType.swift; sourceTree = "<group>"; };
 		ACFF02621E8286F500498981 /* HealthSampleExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthSampleExtensions.swift; sourceTree = "<group>"; };
 		ACFF02661E829D7C00498981 /* HealthKitPumpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HealthKitPumpTests.swift; sourceTree = "<group>"; };
@@ -1276,6 +1280,7 @@
 				BE84C6151E8E6D7D0064D746 /* MergeMiniCommuteTimeSlotsPipe.swift */,
 				8C3C44501F0CCA9800E3ECF4 /* MergeShortSlotsPipe.swift */,
 				BE55CED61E7AD70F006B851E /* MergePipe.swift */,
+				ACA622021F4723D600D71E49 /* CapMidnightPipe.swift */,
 				BEF8AB201E8413AA00B4F289 /* PersistencySink.swift */,
 				BEF8AB1E1E840C7400B4F289 /* Pipeline.swift */,
 				8C028DA71EF8296500CABCE9 /* SmartGuessPipe.swift */,
@@ -1301,6 +1306,7 @@
 				8CAFC16C1E7C66CC009D17F0 /* LocationPumpTests.swift */,
 				BE84C6171E8EAC2C0064D746 /* MergeMiniCommuteTimeSlotsPipeTests.swift */,
 				BE1AC7AE1E858346007485B0 /* MergePipeTests.swift */,
+				AC9718441F4734570027E761 /* CapMidnightPipeTest.swift */,
 				BE8AD9311E843B17002704A9 /* PersistencySinkTests.swift */,
 				8C3B2D6D1EF9436800350488 /* SmartGuessPipeTests.swift */,
 				8C3C44521F0D006300E3ECF4 /* MergeShortSlotsPipeTests.swift */,
@@ -1639,6 +1645,7 @@
 				8C1729051EF02D9A002ABDDA /* DailySummaryTableViewCell.swift in Sources */,
 				24EB96751DE7080F0040C211 /* EditStateService.swift in Sources */,
 				24DE23F51E1BB33B0089B49E /* Activity.swift in Sources */,
+				ACA622031F4723D600D71E49 /* CapMidnightPipe.swift in Sources */,
 				2407A9881D9D512D00066889 /* LaunchAnimationView.swift in Sources */,
 				24DE23EC1E1BB3180089B49E /* CalendarCell.swift in Sources */,
 				BEF8AB1F1E840C7400B4F289 /* Pipeline.swift in Sources */,
@@ -1815,6 +1822,7 @@
 				240575BB1DC7F3F4002C0C06 /* MockEditStateService.swift in Sources */,
 				8C20ABAE1F0A338300C9EE33 /* TestableObserverExtensions.swift in Sources */,
 				BE8AD9321E843B17002704A9 /* PersistencySinkTests.swift in Sources */,
+				AC9718451F4734570027E761 /* CapMidnightPipeTest.swift in Sources */,
 				247E27591DC3B41400A38A2D /* PagerViewControllerTests.swift in Sources */,
 				24DE24061E1BBD6E0089B49E /* MockSelectedDateService.swift in Sources */,
 				BE3D19FE1E8187BD00701AE6 /* MockPump.swift in Sources */,
