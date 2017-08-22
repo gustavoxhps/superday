@@ -1,6 +1,6 @@
 import UIKit
 
-class WeeklySummaryEmptyEtateView: UIView
+class WeeklySummaryEmptyStateView: UIView
 {
     @IBOutlet private weak var noDataLabel: UILabel!
     @IBOutlet private weak var bottomLeftImageView: UIImageView!

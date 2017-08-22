@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -89,7 +89,7 @@
                                                 </constraints>
                                             </view>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="S5S-3Y-WGR" customClass="ButtonsCollectionView" customModule="teferi" customModuleProvider="target">
-                                                <rect key="frame" x="53.5" y="265" width="270" height="69"/>
+                                                <rect key="frame" x="52.5" y="265" width="270" height="69"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="69" id="deG-wp-VzM"/>
@@ -168,7 +168,7 @@
                                                         <rect key="frame" x="0.0" y="28" width="375" height="48"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r6K-ax-f88" id="PGV-ya-5fQ">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="47"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="47.5"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6fG-RT-91I">
@@ -300,7 +300,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Gc-Vt-Hac" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="HwA-Gj-C8z" customClass="WeeklySummaryEmptyEtateView" customModule="teferi" customModuleProvider="target">
+                <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="HwA-Gj-C8z" customClass="WeeklySummaryEmptyStateView" customModule="teferi" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="240"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>

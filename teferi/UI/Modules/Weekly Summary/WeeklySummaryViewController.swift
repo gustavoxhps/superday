@@ -18,7 +18,7 @@ class WeeklySummaryViewController: UIViewController
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tableViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var pieChart: ActivityPieChartView!
-    @IBOutlet var emptyStateView: WeeklySummaryEmptyEtateView!
+    @IBOutlet weak var emptyStateView: WeeklySummaryEmptyStateView!
     
     private var disposeBag = DisposeBag()
     
@@ -104,6 +104,7 @@ class WeeklySummaryViewController: UIViewController
         
         //Empty state
         viewModel.weekActivities
+            .observeOn(MainScheduler.instance)
             .subscribe(onNext: { activityWithPercentage in
                 self.emptyStateView.isHidden = !activityWithPercentage.isEmpty
             })
